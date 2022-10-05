@@ -1,14 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
+import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Login from "./pages/Login/Login";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Interex</h1>
-      <h1>Web app</h1> <span>dhgdhdfh</span>
-      <h2>dsgdfgdfg</h2>
-      <h1>Web app ABC</h1>
-    </div>
+    <>
+      <ToastContainer />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </>
   );
 }
 
