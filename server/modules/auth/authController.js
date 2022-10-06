@@ -28,46 +28,6 @@ const findByUsername = (username) => {
     return null
 }
 
-exports.register = catchAsync(async (req, res, next) => {
-    const validationErrors = validationResult(req)
-    if(!validationErrors.isEmpty()) {
-        const err = new AppError("Validatsiya xatosi", 400)
-        err.isOperational = false;
-        err.errors = validationErrors.errors
-        return next(err)
-    }
-    const existedUser = await findByUsername(req.body.username)
-    if(existedUser) {
-        return next(new AppError("Bunday username ga ega foydaluvchi mavjud"))
-    }
-    const newUser = await User.create(req.body)
-    const payload = {
-        id: newUser.id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        phoneNumber: newUser.phoneNumber,
-        passportNumber: newUser.passportNumber,
-        username: newUser.username,
-        password: newUser.password,
-        userRole: newUser.userRole
-    }
-    const token = await generateToken(payload, process.env.JWT_SECRET, {
-        algorithm: "HS512",
-        expiresIn: "30d"
-    })
-    res.status(201).json({
-        status: "success",
-        message: "Registartsiya muvaffaqiyatli yakunlandi",
-        error: null,
-        data: {
-            user: {
-                ...payload
-            },
-            jwt: token
-        }
-    })
-})
-
 exports.login = catchAsync(async (req, res, next) => {
     const superAdmin = {
         firstName: "Bekzod",
@@ -81,6 +41,13 @@ exports.login = catchAsync(async (req, res, next) => {
     const admin = await User.findAll()
     if(admin.length === 0) {
         await User.create({...superAdmin})
+    }
+    const validationErrors = validationResult(req)
+    if(!validationErrors.isEmpty()) {
+        const err = new AppError("Validatsiya xatosi", 400)
+        err.isOperational = false;
+        err.errors = validationErrors.errors
+        return next(err)
     }
     const {username, password} = req.body
     const candidate = await findByUsername(username)

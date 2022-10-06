@@ -7,14 +7,7 @@ const router = express.Router()
 
 router
         .get("/", userController.getUsers)
-        .post("/", userController.createUsers)
-        .get("/roles",userController.getUserRole)
-router   
-    .route("/:id")
-        .get(userController.getById)
-        .patch(userController.updateUsers)
-router
-        .post("/register",
+        .post("/",
         body("firstName")
         .notEmpty()
         .withMessage("Ism bo'sh bo'lishi mumkin emas"),
@@ -40,6 +33,11 @@ router
         .withMessage("Parol bo'sh bo'lishi mumkin emas")
         .isLength({min: 8})
         .withMessage("Parol 8 ta belgidan kam bo'lmasligi kerak"),
-    authController.register)
+         userController.createUsers)
+router.get("/roles", userController.getUserRole)
+router   
+    .route("/:id")
+        .get(userController.getById)
+        .patch(userController.updateUsers)
 
 module.exports = router
