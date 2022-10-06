@@ -1,6 +1,7 @@
 const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/appError");
+const userENUM = require("../../core/utils/userENUM")
 
 exports.getUsers = catchAsync(async (req, res, next) => {
     const allUsers = await User.findAndCountAll()
@@ -42,9 +43,7 @@ exports.createUsers = catchAsync(async (req, res, next) => {
         status: "success",
         message: "New user created",
         error: null,
-        data: {
-            newUser
-        }
+        data: null
     })
 })
 exports.updateUsers = catchAsync(async (req, res, next) => {
@@ -76,5 +75,16 @@ exports.deleteUsers = catchAsync(async (req, res, next) => {
         message: "User deleted",
         error: null,
         data: null
+    })
+})
+exports.getUserRole = catchAsync(async (req, res, next) => {
+    const userRole = Object.values(userENUM)
+    res.status(200).json({
+        status: "success",
+        message: "All user roles",
+        error: null,
+        data: {
+            userRole
+        }
     })
 })
