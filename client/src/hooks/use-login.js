@@ -25,10 +25,18 @@ const useLogin = () => {
   const { register, handleSubmit, reset } = useForm({
     resolver: yupResolver(schema),
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const login = async (data) => {
     try {
       const res = await loginSubmit(data);
+      localStorage.setItem("token", res.data.jwt);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      dispatch(appActions.login(res.data));
+      toast.success(res.message);
+      reset();
+      navigate("/home");
     } catch (error) {
       const err = await error.response.data;
       toast.error(err.message);
