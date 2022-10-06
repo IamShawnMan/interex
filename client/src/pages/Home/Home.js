@@ -1,20 +1,15 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { appActions } from "../../store/index";
+import UserContext, { appActions } from "../../context/UserContext";
 import styles from "./Home.module.css";
 
 function Home() {
-  const dispatch = useDispatch();
+  const ctx = useContext(UserContext);
+  console.log(ctx);
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.clear();
-    dispatch(
-      appActions.login({
-        user: "",
-        token: "",
-      })
-    );
+    ctx.onReset();
     navigate("/");
   };
 
