@@ -2,10 +2,10 @@ const dotenv = require("dotenv")
 const nodeEnv = process.env.NODE_ENV
 let envPath;
 if(nodeEnv === "dev") {
-    envPath = ".env.development"
+    envPath = ".env.dev"
 }
 else if(nodeEnv==="prod") {
-    envPath = ".env.production"
+    envPath = ".env.prod"
 }
 const env = dotenv.config({path: `./${envPath}`})
 
@@ -15,7 +15,7 @@ const database = require("./core/config/database/database")
 
 database.authenticate().then(() => {
     console.log("Database succesfully connected");
-    database.sync({force: true})
+    database.sync()
 }).catch(error => {
     console.log(error);
 })

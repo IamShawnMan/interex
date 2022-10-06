@@ -44,9 +44,7 @@ exports.createUsers = catchAsync(async (req, res, next) => {
         err.errors = validationErrors.errors
         return next(err)
     }
-    const superAdmin = await User.findAll(
-        {where: {userRole: {[Op.eq] : process.env.USER_ROLE}}})
-    if(superAdmin) {
+    if(req.body.userRole===userENUM.SUPER_ADMIN) {
         return next(new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin"))
     }    
     const newUser = await User.create(req.body)
@@ -78,13 +76,13 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 })
 
 exports.getUserRole = catchAsync(async (req, res, next) => {
-    const userRole = Object.values(userENUM)
+    const roles = Object.values(userENUM).slice(1)
     res.status(200).json({
         status: "success",
         message: "All user roles",
         error: null,
         data: {
-            userRole
+            roles
         }
     })
 })
