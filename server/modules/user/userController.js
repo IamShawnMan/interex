@@ -1,7 +1,7 @@
 const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/appError");
-const userRole = require("../../core/utils/userENUM")
+const userENUM = require("../../core/utils/userENUM")
 const { validationResult } = require("express-validator")
 const {Op} = require("sequelize")
 
@@ -45,8 +45,7 @@ exports.createUsers = catchAsync(async (req, res, next) => {
         return next(err)
     }
     const superAdmin = await User.findAll(
-        {where: {userRole: {[Op.eq] : userRole.SUPER_ADMIN}}}
-        )
+        {where: {userRole: {[Op.eq] : process.env.USER_ROLE}}})
     if(superAdmin) {
         return next(new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin"))
     }    

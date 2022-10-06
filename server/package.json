@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=dev&&nodemon server.js",
-    "start:prod": "set NODE_ENV=prod&&node server.js"
+    "start:dev:win": "set NODE_ENV=dev&&nodemon server.js",
+    "start:prod:win": "set NODE_ENV=prod&&node server.js",
+    "start:dev:lin": "NODE_ENV=dev nodemon server.js",
+    "start:prod:lin": "NODE_ENV=prod node server.js"
   },
   "author": "",
   "license": "ISC",

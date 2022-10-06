@@ -9,7 +9,7 @@ const databaseConfig = {
     password: vars.DB_PASSWORD,
     dialect: vars.DB_DIALECT
 }
-
+console.log(vars.DB_NAME)
 const database = new Sequelize(databaseConfig)
 
 module.exports = database
