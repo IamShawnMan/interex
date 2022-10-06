@@ -5,6 +5,7 @@ const AppError = require("../../core/utils/appError")
 const catchAsync = require("../../core/utils/catchAsync")
 const {Op} = require("sequelize")
 const { validationResult } = require("express-validator")
+const userRole = require("../../core/utils/userENUM")
 
 const generateToken = (payload, jwtSecret, options) => {
     return new Promise((resolve, reject) => {
@@ -29,7 +30,7 @@ const findByUsername = (username) => {
 }
 
 exports.login = catchAsync(async (req, res, next) => {
-    const superAdmin = {
+    const superAdminInfo = {
         firstName: "Bekzod",
         lastName: "Ismatov",
         phoneNumber: "+998906479794",
@@ -40,7 +41,7 @@ exports.login = catchAsync(async (req, res, next) => {
     }
     const admin = await User.findAll()
     if(admin.length === 0) {
-        await User.create({...superAdmin})
+        await User.create({...superAdminInfo})
     }
     const validationErrors = validationResult(req)
     if(!validationErrors.isEmpty()) {

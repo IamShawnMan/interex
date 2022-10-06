@@ -1,8 +1,9 @@
 const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/appError");
-const userENUM = require("../../core/utils/userENUM")
+const userRole = require("../../core/utils/userENUM")
 const { validationResult } = require("express-validator")
+const {Op} = require("sequelize")
 
 exports.getUsers = catchAsync(async (req, res, next) => {
     const allUsers = await User.findAndCountAll()
@@ -43,6 +44,12 @@ exports.createUsers = catchAsync(async (req, res, next) => {
         err.errors = validationErrors.errors
         return next(err)
     }
+    const superAdmin = await User.findAll(
+        {where: {userRole: {[Op.eq] : userRole.SUPER_ADMIN}}}
+        )
+    if(superAdmin) {
+        return next(new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin"))
+    }    
     const newUser = await User.create(req.body)
     if(!newUser) {
         return next(new AppError("New user not found", 404))
