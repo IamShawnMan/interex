@@ -37,7 +37,7 @@ function Login() {
       });
       localStorage.setItem("token", res.data.data.jwt);
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
-      ctx.setUser({
+      ctx.setAppData({
         user: JSON.parse(localStorage.getItem("user")),
         token: localStorage.getItem("token"),
         isAuth: true,
