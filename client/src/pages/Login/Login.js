@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import http from "../../utils/axios-instance";
-import UserContext from "../../context/UserContext";
+import UserContext from "../../context/AppContext";
 
 const schema = yup.object().shape({
   username: yup
@@ -46,7 +46,7 @@ function Login() {
       reset();
       navigate("/home");
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 

@@ -1,7 +1,6 @@
 const userReducer = (state, action) => {
-  console.log(action);
   switch (action.type) {
-    case "ADD":
+    case "LOGIN":
       return {
         token: action.item.token,
         user: action.item.user,
