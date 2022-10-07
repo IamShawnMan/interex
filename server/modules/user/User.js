@@ -1,7 +1,7 @@
 const {DataTypes} = require("sequelize")
 const sequelize = require("../../core/config/database/database")
 const {hash} = require("bcrypt")
-const userRole = require("../../core/utils/userENUM")
+const userRole = require("../../core/constants/userRole")
 
 const User = sequelize.define("user", {
     id: {

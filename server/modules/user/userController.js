@@ -1,7 +1,7 @@
 const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/appError");
-const userENUM = require("../../core/utils/userENUM")
+const userRole = require("../../core/constants/userRole")
 const { validationResult } = require("express-validator")
 
 exports.getUsers = catchAsync(async (req, res, next) => {
@@ -43,7 +43,7 @@ exports.createUsers = catchAsync(async (req, res, next) => {
         err.errors = validationErrors.errors
         return next(err)
     }
-    if(req.body.userRole===userENUM.SUPER_ADMIN) {
+    if(req.body.userRole===userRole.SUPER_ADMIN) {
         return next(new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin"))
     }    
     const newUser = await User.create(req.body)
@@ -72,7 +72,7 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 })
 
 exports.getUserRole = catchAsync(async (req, res, next) => {
-    const roles = Object.values(userENUM).slice(1)
+    const roles = Object.values(userRole).slice(1)
     res.status(200).json({
         status: "success",
         message: "Barcha foydalanuvchi rollari",
