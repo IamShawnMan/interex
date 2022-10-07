@@ -17,10 +17,6 @@ const userENUM = require("../utils/userENUM")
             password: "19981998",
             userRole: "SUPER_ADMIN"
         }
-
       const createdUser = await  User.create(superAdminInfo)
     }
-   
-
-
 })
