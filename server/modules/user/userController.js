@@ -3,16 +3,15 @@ const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/appError");
 const userENUM = require("../../core/utils/userENUM")
 const { validationResult } = require("express-validator")
-const {Op} = require("sequelize")
 
 exports.getUsers = catchAsync(async (req, res, next) => {
     const allUsers = await User.findAndCountAll()
     if(!allUsers) {
-        return next(new AppError("Users list is empty", 404))
+        return next(new AppError("Foydalanuvchilar mavjud emas", 404))
     }
     res.json({
         status: "success",
-        message: "All users",
+        message: "Barcha foydalanuvchilar",
         error: null,
         data: {
             allUsers
@@ -24,11 +23,11 @@ exports.getById = catchAsync(async (req, res, next) => {
     const {id} = req.params
     const userById = await User.findByPk(id)
     if(!userById) {
-        return next(new AppError(`Users with this ${id} is not defined`))
+        return next(new AppError(`Ushbu foydalanuvchi mavjud`))
     }
     res.json({
         status: "success",
-        message: "User found by id",
+        message: `Foydalanuvchi ${userById.firstName}`,
         error: null,
         data: {
             userById
@@ -48,12 +47,9 @@ exports.createUsers = catchAsync(async (req, res, next) => {
         return next(new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin"))
     }    
     const newUser = await User.create(req.body)
-    if(!newUser) {
-        return next(new AppError("New user not found", 404))
-    }
     res.json({
         status: "success",
-        message: "New user created",
+        message: "Yangi foydalanuvchi yaratildi",
         error: null,
         data: null
     })
@@ -62,12 +58,12 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
     const {id} = req.params
     const userById = await User.findByPk(id)
     if(!userById) {
-        return next(new AppError(`Users with this ${id} is not defined`))
+        return next(new AppError(`Bunday foydalanuvchi topilmadi`, 404))
     }
     const updateUser = await userById.update(req.body)
     res.json({
         status: "success",
-        message: "User updated",
+        message: "Foydalanuvchi ma'lumotlari yangilandi",
         error: null, 
         data: {
             updateUser
@@ -79,7 +75,7 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
     const roles = Object.values(userENUM).slice(1)
     res.status(200).json({
         status: "success",
-        message: "All user roles",
+        message: "Barcha foydalanuvchi rollari",
         error: null,
         data: {
             roles

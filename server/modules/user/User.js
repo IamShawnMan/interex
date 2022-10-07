@@ -38,14 +38,12 @@ const User = sequelize.define("user", {
         type: DataTypes.ENUM(Object.values(userRole)),
         allowNull: false
     },
-    // chatId: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: false
-    // },
-    // userStatus: {
-    //     type: DataTypes.ENUM(Object.values(userStatus)),
-    //     allowNull: false
-    // }
+    chatId: {
+        type: DataTypes.INTEGER
+    },
+    userStatus: {
+        type: DataTypes.ENUM(Object.values(userStatus))
+    }
 }, {
     underscored: true,
     hooks: {

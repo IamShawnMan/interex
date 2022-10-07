@@ -11,17 +11,30 @@ const env = dotenv.config({path: `./${envPath}`})
 
 
 const app = require("./app");
-const database = require("./core/config/database/database")
-
-database.authenticate().then(() => {
-    console.log("Database succesfully connected");
-    database.sync()
-}).catch(error => {
-    console.log(error);
-})
-
+const database = require("./core/config/database/database");
+const initialData = require("./core/utils/initialData");
 const PORT = process.env.PORT || 8080
+const start = async()=>{
+    try {
+         await database.authenticate()
+        await database.sync({
+            // force:true
+        })
+        app.listen(PORT, () => {
+            console.log(`Server ${process.env.NODE_ENV} started on port ${PORT}`);
+        })
 
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
-})
+        initialData()
+    } catch (error) {
+        console.log(error);
+        process.exit(1)
+    }
+}
+
+
+start()
+
+    
+
+
+
