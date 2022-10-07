@@ -5,19 +5,19 @@ import { ToastContainer } from "react-toastify";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import { useContext, useEffect } from "react";
-import UserContext from "./context/UserContext";
+import AppContext from "./context/AppContext";
 
 function App() {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
-  const ctx = useContext(UserContext);
-  const { isAuth } = useContext(UserContext);
+  const ctx = useContext(AppContext);
+  const { isAuth } = useContext(AppContext);
   const navigate = useNavigate();
   useEffect(() => {
     if (!token) {
       navigate("/login");
     }
-    ctx.setUser({
+    ctx.setAppData({
       user: JSON.parse(user),
       token,
       isAuth: token?.trim().length > 0,

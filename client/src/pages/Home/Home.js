@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import UserContext, { appActions } from "../../context/UserContext";
+import AppContext from "../../context/AppContext";
+
 import styles from "./Home.module.css";
 
 function Home() {
-  const ctx = useContext(UserContext);
-  console.log(ctx);
+  const ctx = useContext(AppContext);
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.clear();
