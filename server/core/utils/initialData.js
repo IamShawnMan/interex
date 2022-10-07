@@ -1,13 +1,13 @@
 const { Op } = require("sequelize");
 const User = require("../../modules/user/User");
 const catchAsync = require("./catchAsync");
-
+const userENUM = require("../utils/userENUM")
 
  module.exports =  catchAsync(async()=>{
-    const superAdmin = await User.count({
-        where:{userRole:{[Op.eq]:"SUPER_ADMIN"}}
+    const superAdminCount = await User.count({
+        where:{userRole:{[Op.eq]: userENUM.SUPER_ADMIN}}
     })
-    if(superAdmin===0){
+    if(superAdminCount===0){
         const superAdminInfo = {
             firstName: "Bekzod",
             lastName: "Ismatov",
@@ -19,7 +19,6 @@ const catchAsync = require("./catchAsync");
         }
 
       const createdUser = await  User.create(superAdminInfo)
-      console.log(createdUser);
     }
    
 

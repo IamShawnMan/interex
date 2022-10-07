@@ -1,4 +1,4 @@
-const User = require("../user/User");
+const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/appError");
 const userENUM = require("../../core/utils/userENUM")
