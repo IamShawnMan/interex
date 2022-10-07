@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const User = require("../../modules/user/User");
 const catchAsync = require("./catchAsync");
-const userENUM = require("../constants/userRole")
+const userRole = require("../constants/userRole")
 
  module.exports = catchAsync(async()=>{
     const superAdminCount = await User.count({
