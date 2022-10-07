@@ -1,6 +1,6 @@
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
@@ -29,6 +29,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         {isAuth && <Route path="/home" element={<Home />} />}
+        {isAuth && <Route path="*" element={<Navigate to={"home"} />} />}
+        <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>
   );
