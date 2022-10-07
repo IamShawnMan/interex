@@ -1,7 +1,7 @@
 import { useReducer } from "react";
 import AppContext from "./AppContext";
 
-import userReducer from "./appReduser";
+import appReducer from "./appReducer";
 const token = localStorage.getItem("token") || "";
 const user = JSON.parse(localStorage.getItem("user")) || {};
 const defaultUserState = {
@@ -11,7 +11,7 @@ const defaultUserState = {
 };
 
 const AppContextProvider = (props) => {
-  const [appState, dispatch] = useReducer(userReducer, defaultUserState);
+  const [appState, dispatch] = useReducer(appReducer, defaultUserState);
 
   const setUserDataHandler = (item) => {
     dispatch({ type: "LOGIN", item });
