@@ -10,22 +10,27 @@ import UserContext from "../../context/AppContext";
 const schema = yup.object().shape({
   username: yup
     .string()
-    .min(5, "Username nomi eng kamida 5 ta belgidan iborat bo'lishi kerak")
-    .max(20, "Username 20 ta belgidan ko'p bo'lishi mumkin emas")
-    .required("Username bo'sh bo'lishi mumkin emas"),
+    .trim()
+    .required("Username bo'sh bo'lishi mumkin emas")
+    .min(5, "Username xato kiritildi")
+    .max(20, "Username xato kiritildi"),
   password: yup
     .string()
-    .min(6, "Parol  eng kamida 6 ta belgidan iborat bo'lishi kerak")
-    .max(20, "Parol 20 ta belgidan ko'p bo'lishi mumkin emas")
-    .required("Parol bo'sh bo'lishi mumkin emas"),
+    .trim()
+    .required("Parol bo'sh bo'lishi mumkin emas")
+    .min(6, "Parol  xato kiritildi")
+    .max(20, "Parol xato kiritildi"),
 });
 
 function Login() {
-  const { register, handleSubmit, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
   const ctx = useContext(UserContext);
-  console.log(ctx);
   const navigate = useNavigate();
 
   const login = async (data) => {
@@ -43,7 +48,6 @@ function Login() {
         isAuth: true,
       });
       toast.success(res.data.message);
-      reset();
       navigate("/home");
     } catch (error) {
       toast.error(error.response.data.message);
@@ -61,6 +65,7 @@ function Login() {
             name="username"
             {...register("username")}
           />
+          {errors.username && <p>{errors.username.message}</p>}
         </div>
         <div>
           <label htmlFor="password">Password</label>
@@ -70,6 +75,7 @@ function Login() {
             id="password"
             {...register("password")}
           />
+          {errors.password && <p>{errors.password.message}</p>}
         </div>
         <div>
           <button>Sign In</button>
