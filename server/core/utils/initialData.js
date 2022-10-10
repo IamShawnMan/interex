@@ -9,7 +9,6 @@ const regionJson = require("../../modules/region/regions.json");
     const haveRegion = await Region.count()
     if(haveRegion===0){
         const createdRegion = await Region.bulkCreate(regionJson);
-        console.log(createdRegion);
     }
     
     const superAdminCount = await User.count({

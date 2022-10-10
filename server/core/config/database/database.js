@@ -1,5 +1,10 @@
-const {Sequelize} = require("sequelize")
+const {Sequelize, BOOLEAN} = require("sequelize")
 const vars = process.env
+
+
+let isLog 
+vars.DB_LOGGING === "true"? isLog = true: isLog = false
+
 
 const databaseConfig = {
     host: vars.DB_HOST,
@@ -7,9 +12,9 @@ const databaseConfig = {
     database: vars.DB_NAME,
     username: vars.DB_USER,
     password: vars.DB_PASSWORD,
-    dialect: vars.DB_DIALECT
+    dialect: vars.DB_DIALECT,
+    logging: isLog  
 }
-console.log(vars.DB_NAME)
 const database = new Sequelize(databaseConfig)
 
 module.exports = database
