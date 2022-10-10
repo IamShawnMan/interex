@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
 
 import styles from "./Home.module.css";
@@ -15,6 +15,7 @@ function Home() {
 
   return (
     <div>
+      <Link to="/users">Users</Link>
       <h1 className={styles.h1}>Welcome to the Interex.uz portal</h1>
       <h2 onClick={logoutHandle} className={styles.logout}>
         Log Out
