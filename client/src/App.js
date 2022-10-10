@@ -6,6 +6,9 @@ import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import { useContext, useEffect } from "react";
 import AppContext from "./context/AppContext";
+import Users from "./pages/Users/users/Users";
+import UserAddEdit from "./pages/Users/user-add-edit/UserAddEdit";
+
 
 function App() {
   const token = localStorage.getItem("token");
@@ -30,6 +33,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         {isAuth && <Route path="/home" element={<Home />} />}
         {isAuth && <Route path="*" element={<Navigate to={"home"} />} />}
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserAddEdit />} />
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>
