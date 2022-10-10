@@ -2,6 +2,7 @@ const {DataTypes} = require("sequelize")
 const sequelize = require("../../core/config/database/database")
 const {hash} = require("bcrypt")
 const userRole = require("../../core/constants/userRole")
+const Region = require("../region/Region");
 
 const User = sequelize.define("user", {
     id: {
@@ -55,5 +56,9 @@ const User = sequelize.define("user", {
         }
     }
 })
+
+
+Region.hasMany(User, {as: "user"})
+User.belongsTo(Region)
 
 module.exports = User

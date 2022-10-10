@@ -1,0 +1,57 @@
+[
+    {
+        "id": "12",
+        "region_id": "1",
+        "district_name": "Konimex"
+    },
+    {
+        "id": "13",
+        "region_id": "1",
+        "district_name": "Karmana"
+    },
+    {
+        "id": "14",
+        "region_id": "1",
+        "district_name": "Qiziltepa"
+    },
+    {
+        "id": "15",
+        "region_id": "1",
+        "district_name": "Xatirchi"
+    },
+    {
+        "id": "16",
+        "region_id": "1",
+        "district_name": "Navbahor"
+    },
+    {
+        "id": "17",
+        "region_id": "1",
+        "district_name": "Nurota"
+    },
+    {
+        "id": "18",
+        "region_id": "1",
+        "district_name": "Tomdi"
+    },
+    {
+        "id": "19",
+        "region_id": "1",
+        "district_name": "Uchquduq"
+    },
+    {
+        "id": "12",
+        "region_id": "2",
+        "district_name": "Bekobod"
+    },
+    {
+        "id": "12",
+        "region_id": "2",
+        "district_name": "Bo`stonliq"
+    },
+    {
+        "id": "12",
+        "region_id": "2",
+        "district_name": "Bo`ka"
+    }
+]

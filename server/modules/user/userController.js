@@ -2,13 +2,21 @@ const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/appError");
 const userRole = require("../../core/constants/userRole")
-const { validationResult } = require("express-validator")
+const { validationResult } = require("express-validator");
+const QueryBuilder = require("../../core/utils/QueryBuilder");
+
 
 exports.getUsers = catchAsync(async (req, res, next) => {
-    const allUsers = await User.findAndCountAll()
+    const queryBuilder = new QueryBuilder(req.query);
+    queryBuilder.paginate();
+    let allUsers = await User.findAndCountAll(queryBuilder.queryOptions)
+
     if(!allUsers) {
         return next(new AppError("Foydalanuvchilar mavjud emas", 404))
     }
+
+    allUsers = queryBuilder.createPagination(allUsers);
+    
     res.json({
         status: "success",
         message: "Barcha foydalanuvchilar",

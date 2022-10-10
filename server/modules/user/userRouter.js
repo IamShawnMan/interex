@@ -1,6 +1,6 @@
 const express = require("express")
 const userController = require("./userController")
-const {isCourier} = require("./userMiddleware")
+const {isCourier} = require("../../core/middlewares/userMiddleware")
 const {loginValidator} = require("./userValidator")
 
 const router = express.Router()
@@ -12,7 +12,7 @@ router
 router.get("/roles", userController.getUserRole)
 router   
     .route("/:id")
-        .get(userController.getById)
+        .get(loginValidator, userController.getById)
         .patch(userController.updateUsers)
 
 module.exports = router

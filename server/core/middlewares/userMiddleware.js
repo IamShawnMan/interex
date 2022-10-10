@@ -1,4 +1,4 @@
-const AppError = require("../../core/utils/appError")
+const AppError = require("../utils/appError")
 
 exports.isCourier = async(req,res,next)=>{
     const {userRole} = req.body

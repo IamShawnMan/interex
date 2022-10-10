@@ -6,4 +6,3 @@ const regionController = require("./regionController");
 module.exports = router
 .get("/", regionController.getAllRegions)
 .get("/:id", regionController.getRegionById)
-.post("/", regionController.createRegion)
