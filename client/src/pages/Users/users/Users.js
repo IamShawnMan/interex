@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 import http from "../../../utils/axios-instance";
 import { useState } from "react";
 import { BasicTable } from "../../../components/table/BasicTable";
+import Layout from "../../../components/Layout/Layout";
 function Users() {
   const [value, setValue] = useState(null);
-  const getAllUser=async()=>{
+  const getAllUser = async () => {
     const res = await http({
-    url: "/users",
-    method: "GET",
-  });
- setValue( res.data.data.allUsers.rows)
-  }
+      url: "/users",
+    });
+    setValue(res.data.data.allUsers.content);
+  };
   useEffect(() => {
     getAllUser();
-  },[]);
+  }, []);
 
   const usersCols = [
     { Header: "First Name", accessor: "firstName" },
@@ -26,17 +26,16 @@ function Users() {
   ];
 
   return (
-    <>
-    <Link to="/users/new">Add User</Link>
-    <br/>
-    <Link to="/home">Home</Link>
+    <Layout>
+      <Link to="/users/new">Add User</Link>
+      <br />
+      <Link to="/home">Home</Link>
       {value?.length > 0 ? (
         <BasicTable columns={usersCols} data={value} />
       ) : (
         <p>Malumotlar yoq</p>
       )}
- </>
-    
+    </Layout>
   );
 }
 
