@@ -38,6 +38,9 @@ const User = sequelize.define("user", {
         type: DataTypes.ENUM(Object.values(userRole)),
         allowNull: false
     },
+    regionId: {
+        type: DataTypes.INTEGER
+    }
     // chatId: {
     //     type: DataTypes.INTEGER
     // },

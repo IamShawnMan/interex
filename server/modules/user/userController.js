@@ -36,6 +36,8 @@ exports.getById = catchAsync(async (req, res, next) => {
 })
 
 exports.createUsers = catchAsync(async (req, res, next) => {
+    
+    const regionId = req.body.regionId;
     const validationErrors = validationResult(req)
     if(!validationErrors.isEmpty()) {
         const err = new AppError("Validatsiya xatosi", 400)
@@ -45,7 +47,7 @@ exports.createUsers = catchAsync(async (req, res, next) => {
     }
     if(req.body.userRole===userRole.SUPER_ADMIN) {
         return next(new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin"))
-    }    
+    }
     const newUser = await User.create(req.body)
     res.json({
         status: "success",
