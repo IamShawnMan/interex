@@ -1,9 +1,17 @@
 const { Op } = require("sequelize");
 const User = require("../../modules/user/User");
 const catchAsync = require("./catchAsync");
-const userRole = require("../constants/userRole")
+const userRole = require("../constants/userRole");
+const Region = require("../../modules/region/Region");
+const regionJson = require("../../modules/region/regions.json");
 
  module.exports = catchAsync(async()=>{
+    const haveRegion = await Region.count()
+    if(haveRegion===0){
+        const createdRegion = await Region.bulkCreate(regionJson);
+        console.log(createdRegion);
+    }
+    
     const superAdminCount = await User.count({
         where:{userRole:{[Op.eq]: userRole.SUPER_ADMIN}}
     })
@@ -20,3 +28,4 @@ const userRole = require("../constants/userRole")
       const createdUser = await User.create(superAdminInfo)
     }
 })
+

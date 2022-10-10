@@ -32,24 +32,3 @@ exports.getRegionById = catchAsync(async(req,res,next)=>{
         }
     })
 })
-
-exports.createRegion = catchAsync(async(req, res, next)=>{
-    
-    const validationErrors = validationResult(req);
-
-    if(!validationErrors.isEmpty()){
-        const err = new AppError("Viloyat bo'sh bo'lishi mumkin emas!", 400);
-        err.isOperational = false;
-        err.errors = validationErrors.errors;
-        return next(err)
-    }
-
-    await Region.create(req.body);
-
-    res.status(201).json({
-        status:"success",
-        message: "Region added",
-        error: null,
-        data: null
-    })
-})
