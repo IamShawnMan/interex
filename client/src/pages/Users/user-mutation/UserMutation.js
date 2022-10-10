@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import * as yup from "yup";
 import http from "../../../utils/axios-instance";
 import { toast } from "react-toastify";
@@ -36,7 +36,7 @@ const schema = yup.object().shape({
     .min(6, "Parol 6 ta belgidan kop bolishi kerak")
     .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
 });
-const UserAddEdit = () => {
+const UserMutation = () => {
   const navigate = useNavigate();
   const [role,setRole]=useState(null)
   const [roles,setRoles]=useState(null)
@@ -45,7 +45,6 @@ const UserAddEdit = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm(
 {  resolver: yupResolver(schema),
@@ -189,4 +188,4 @@ const UserAddEdit = () => {
   );
 };
 
-export default UserAddEdit;
+export default UserMutation;

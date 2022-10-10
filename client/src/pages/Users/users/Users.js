@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import http from "../../../utils/axios-instance";
 import { useState } from "react";
-import { BasicTable } from "../../../components/BasicTable";
+import { BasicTable } from "../../../components/table/BasicTable";
 function Users() {
   const [value, setValue] = useState(null);
   const getAllUser=async()=>{
