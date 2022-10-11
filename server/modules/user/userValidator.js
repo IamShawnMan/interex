@@ -17,7 +17,7 @@ exports.loginValidator = [
     .notEmpty()
     .withMessage("Username bo'sh bo'lishi mumkin emas")
     .isLength({min: 5})
-    .withMessage("Usename 6 ta belgidan kam bo'lmasligi kerak")
+    .withMessage("Usename 5 ta belgidan kam bo'lmasligi kerak")
     .trim()
     .isLowercase()
     .withMessage("Username faqat kichkina harflardan iborat bo'lishi kerak"),
