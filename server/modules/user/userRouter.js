@@ -1,17 +1,17 @@
 const express = require("express")
 const userController = require("./userController")
-const {loginValidator} = require("./userValidator")
+const {loginValidator, userValidator} = require("./userValidator")
 
 const router = express.Router()
 
 router
         .get("/", userController.getUsers)
-        .post("/", loginValidator,
+        .post("/", loginValidator, userValidator,
          userController.createUsers)
 router.get("/roles", userController.getUserRole)
 router   
     .route("/:id")
-        .get(loginValidator, userController.getById)
+        .get(loginValidator, userValidator, userController.getById)
         .patch(userController.updateUsers)
 
 module.exports = router

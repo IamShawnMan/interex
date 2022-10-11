@@ -1,4 +1,5 @@
 const {body} = require("express-validator")
+const AppError = require("../../core/utils/appError")
 
 exports.loginValidator = [
     body("firstName")
@@ -27,3 +28,13 @@ exports.loginValidator = [
     .isLength({min: 8})
     .withMessage("Parol 8 ta belgidan kam bo'lmasligi kerak"),
 ]
+exports.userValidator = async (req, res, next) => {
+    const {phoneNumber, passportNumber} = req.body
+    if(!phoneNumber.match( /^[+]998[0-9]{9}$/)) {
+        return next(new AppError("Telefon raqam xato kiritildi"))
+    }
+    if(!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
+        return next(new AppError("Passport raqami xato kiritildi"))
+    }
+    next()
+}
