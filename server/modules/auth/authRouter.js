@@ -9,7 +9,7 @@ router
     body("username")
     .notEmpty()
     .withMessage("Login yoki parol xato")
-    .isLength({min: 6})
+    .isLength({min: 5})
     .withMessage("Login yoki parol xato")
     .trim()
     .isLowercase()
@@ -17,7 +17,7 @@ router
     body("password")
     .notEmpty()
     .withMessage("Login yoki parol xato")
-    .isLength({min: 8})
+    .isLength({min: 6})
     .withMessage("Login yoki parol xato"),
     authController.login)
 
