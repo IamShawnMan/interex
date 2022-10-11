@@ -10,7 +10,7 @@ const { where, Op } = require("sequelize");
 exports.getUsers = catchAsync(async (req, res, next) => {
     const {userRole} = req.body;
     const queryBuilder = new QueryBuilder(req.query);
-    queryBuilder.paginate();
+    queryBuilder.paginate().limitFields();
     let allUsers = await User.findAndCountAll({...queryBuilder.queryOptions, where:{
         userRole: {
             [Op.ne]: "SUPER_ADMIN"
