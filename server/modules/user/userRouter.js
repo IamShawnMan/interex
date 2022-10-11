@@ -1,13 +1,12 @@
 const express = require("express")
 const userController = require("./userController")
-const {isCourier} = require("../../core/middlewares/userMiddleware")
 const {loginValidator} = require("./userValidator")
 
 const router = express.Router()
 
 router
         .get("/", userController.getUsers)
-        .post("/", isCourier, loginValidator,
+        .post("/", loginValidator,
          userController.createUsers)
 router.get("/roles", userController.getUserRole)
 router   

@@ -4,11 +4,10 @@ const AppError = require("../../core/utils/appError");
 const userRole = require("../../core/constants/userRole")
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
-const { where, Op } = require("sequelize");
+const { Op } = require("sequelize");
 
 
 exports.getUsers = catchAsync(async (req, res, next) => {
-    const {userRole} = req.body;
     const queryBuilder = new QueryBuilder(req.query);
     queryBuilder.paginate();
     let allUsers = await User.findAndCountAll({...queryBuilder.queryOptions, where:{

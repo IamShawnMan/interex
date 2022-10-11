@@ -6,7 +6,7 @@ const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
 const cors = require("cors");
 const authMiddleware = require("./core/middlewares/authMiddleware");
-const isSuperAdmin = require("./core/middlewares/superAdminMiddleware");
+const isSuperAdmin = require("./core/middlewares/roleMiddleware");
 require("./modules/user/User");
 
 const app = express();
