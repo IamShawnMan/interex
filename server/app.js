@@ -6,6 +6,7 @@ const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
 const cors = require("cors");
 const authMiddleware = require("./core/middlewares/authMiddleware");
+const statusMiddleware = require("./core/middlewares/statusMiddleware");
 require("./modules/user/User");
 
 const app = express();

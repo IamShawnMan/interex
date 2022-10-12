@@ -22,7 +22,8 @@ const regionJson = require("../../modules/region/regions.json");
             passportNumber: "AB4332323",
             username: "myusername",
             password: "19981998",
-            userRole: "SUPER_ADMIN"
+            userRole: "SUPER_ADMIN",
+            status: "ACTIVE"
         }
       const createdUser = await User.create(superAdminInfo)
     }

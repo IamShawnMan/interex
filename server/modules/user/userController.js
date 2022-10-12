@@ -4,8 +4,8 @@ const AppError = require("../../core/utils/appError");
 const userRole = require("../../core/constants/userRole")
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
-const { where, Op } = require("sequelize");
-
+const { Op } = require("sequelize");
+const userStatus = require("../../core/constants/userStatus")
 
 exports.getUsers = catchAsync(async (req, res, next) => {
     const {userRole} = req.body;
@@ -97,4 +97,22 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
             roles
         }
     })
+})
+
+exports.updateStatus = catchAsync(async (req, res, next) => {
+    const {userRole} = req.body 
+    if(userRole !== userRole.SUPER_ADMIN){
+        const {id, status} = req.params
+        const userById = await User.findByPk(id)
+        if(!userById) {
+            return next(new AppError(`Bunday foydalanuvchi topilmadi`, 404))
+        }
+        const updateUserStatus = await userById.update({status})
+        res.status(203).json({
+            status: "success",
+            message: "Foydalanuvchi statusi o'zgardi",
+            error: null,
+            data: updateUserStatus
+        })
+    }
 })
