@@ -14,10 +14,7 @@ const OrderItem = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        max: {
-          args: 30,
-          msg: "Tovar nomi ko`pi bilan 30ta belgidan oshmasligi kerak",
-        },
+        notEmpty: true,
       },
     },
     quantity: {
