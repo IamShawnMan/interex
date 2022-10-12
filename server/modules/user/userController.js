@@ -100,7 +100,6 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
 })
 
 exports.updateStatus = catchAsync(async (req, res, next) => {
-    const {userRole} = req.body 
         const {id, status} = req.params
         const userById = await User.findByPk(id)
         if(!userById) {
