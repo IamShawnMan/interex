@@ -101,7 +101,6 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
 
 exports.updateStatus = catchAsync(async (req, res, next) => {
     const {userRole} = req.body 
-    if(userRole !== userRole.SUPER_ADMIN){
         const {id, status} = req.params
         const userById = await User.findByPk(id)
         if(!userById) {
@@ -115,4 +114,4 @@ exports.updateStatus = catchAsync(async (req, res, next) => {
             data: updateUserStatus
         })
     }
-})
+)
