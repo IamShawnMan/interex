@@ -1,13 +1,13 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../core/config/database/database");
-const orderStatus = require("../orderStatus");
+const orderStatus = require("../../core/constants/orderStatus");
 
 const Order = sequelize.define(
   "order",
   {
     id: {
       type: DataTypes.INTEGER,
-      primeryKey: true,
+      primaryKey: true,
       autoIncrement: true,
     },
     recipient: {
