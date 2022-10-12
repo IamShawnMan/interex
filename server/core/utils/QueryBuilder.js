@@ -8,6 +8,14 @@ class QueryBuilder {
 		this.queryOptions = {};
 	}
 
+	limitFields() {
+		if (this.queryParams.hasOwnProperty("fields")) {
+			const attributes = this.queryParams.fields.split(",");
+			this.queryOptions.attributes = attributes;
+		}
+		return this;
+	}
+
 	paginate() {
 		const page = (this.queryParams.page = +this.queryParams.page || 1);
 		const limit = (this.queryParams.size = +this.queryParams.size || 50);

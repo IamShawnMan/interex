@@ -1,19 +1,23 @@
 const AppError = require("../utils/appError");
 
-const roleMiddleware = (req, res, next) => {
-	const userAccess = (role, reqMethod) => {
-		if (reqMethod === "GET" && role !== "SUPER_ADMIN" && role !== "ADMIN") {
-			return next(new AppError("Only ADMIN and SUPER_ADMIN can access", 403));
+const roleMiddleware = (roles) => {
+	console.log(typeof roles);
+	let selectedRoles;
+	return (req, res, next) => {
+		if (typeof roles === "string") {
+			selectedRoles = [roles];
+			console.log(selectedRoles);
+		} else {
+			selectedRoles = roles;
+			console.log(selectedRoles);
 		}
-		if (
-			(reqMethod === "POST" || reqMethod === "PUT") &&
-			role !== "SUPER_ADMIN"
-		) {
-			return next(new AppError("only SUPER_ADMIN can access", 403));
+
+		if (!selectedRoles.includes(req.user.userRole)) {
+			next(new AppError("Forbidden", 403));
+		} else {
+			next();
 		}
 	};
-	userAccess(req.user.userRole, req.method);
-	next();
 };
 
 module.exports = roleMiddleware;
