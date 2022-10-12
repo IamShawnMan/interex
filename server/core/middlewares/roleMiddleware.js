@@ -1,14 +1,19 @@
 const AppError = require("../utils/appError");
-const jwt = require("jsonwebtoken");
 
-const isSuperAdmin = async(req, res, next)=>{
-    const authHeader = req.headers.authorization;
-    const token = authHeader.slice(7);
-    const user = jwt.verify(token, process.env.JWT_SECRET)
-    if(user.userRole !== "SUPER_ADMIN"){
-        return next(new AppError("Forbidden", 403))
-    }
-    next()
-}
+const roleMiddleware = (req, res, next) => {
+	const userAccess = (role, reqMethod) => {
+		if (reqMethod === "GET" && role !== "SUPER_ADMIN" && role !== "ADMIN") {
+			return next(new AppError("Only ADMIN and SUPER_ADMIN can access", 403));
+		}
+		if (
+			(reqMethod === "POST" || reqMethod === "PUT") &&
+			role !== "SUPER_ADMIN"
+		) {
+			return next(new AppError("only SUPER_ADMIN can access", 403));
+		}
+	};
+	userAccess(req.user.userRole, req.method);
+	next();
+};
 
-module.exports = isSuperAdmin
+module.exports = roleMiddleware;

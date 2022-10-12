@@ -1,4 +1,4 @@
-const {Sequelize, BOOLEAN} = require("sequelize")
+const {Sequelize} = require("sequelize")
 const vars = process.env
 
 
