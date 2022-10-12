@@ -4,6 +4,7 @@ const User = require("../user/User")
 const AppError = require("../../core/utils/appError")
 const catchAsync = require("../../core/utils/catchAsync")
 const {Op} = require("sequelize")
+const userStatus = require("../../core/constants/userStatus")
 
 const generateToken = (payload, jwtSecret, options) => {
     return new Promise((resolve, reject) => {
