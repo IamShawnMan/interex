@@ -12,6 +12,5 @@ module.exports = (req, res, next) => {
         return next(new AppError("Registratsiyadan o'tilmagan", 401))
     }
     req.user = user
-    console.log(req.user);
     next()
 }
