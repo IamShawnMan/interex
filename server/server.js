@@ -6,7 +6,7 @@ if (nodeEnv === "dev") {
 } else if (nodeEnv === "prod") {
   envPath = ".env.prod";
 }
-const env = dotenv.config({ path: `./${envPath}` });
+dotenv.config({ path: `./${envPath}` });
 
 const app = require("./app");
 const database = require("./core/config/database/database");
@@ -16,7 +16,7 @@ const start = async () => {
   try {
     await database.authenticate();
     await database.sync({
-      force: true,
+      // force: true,
     });
     app.listen(PORT, () => {
       console.log(`Server ${process.env.NODE_ENV} started on port ${PORT}`);

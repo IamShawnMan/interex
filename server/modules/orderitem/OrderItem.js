@@ -27,6 +27,10 @@ const OrderItem = sequelize.define(
       defaultValue: 0,
       allowNull: false,
     },
+    totalPrice: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   { underscored: true }
 );

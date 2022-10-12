@@ -22,12 +22,12 @@ const Order = sequelize.define(
       allowNull: false,
     },
     deliveryPrice: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 45000,
     },
     totalPrice: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
       defaultValue: 0,
       allowNull: false,
     },
