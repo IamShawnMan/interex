@@ -12,9 +12,7 @@ class QueryBuilder{
         if(this.queryParams.hasOwnProperty("fields")) {
             const attributes = this.queryParams.fields.split(",")
             this.queryOptions.attributes = attributes
-        } else {
-            console.log("Ushbu field mavjud emas");
-        }
+        } 
         return this
     }
 

@@ -4,7 +4,6 @@ const User = require("../user/User")
 const AppError = require("../../core/utils/appError")
 const catchAsync = require("../../core/utils/catchAsync")
 const {Op} = require("sequelize")
-const userStatus = require("../../core/constants/userStatus")
 
 const generateToken = (payload, jwtSecret, options) => {
     return new Promise((resolve, reject) => {
@@ -35,10 +34,10 @@ exports.login = catchAsync(async (req, res, next) => {
     if(!candidate) {
         return next(new AppError("Login yoki parol xato", 400))
     }
-    const passwordIsMatch = await compare(password, candidate.password)
-    if(!passwordIsMatch) {
-        return next(new AppError("Login yoki parol xato", 400))
-    }
+    // const passwordIsMatch = await compare(password, candidate.password)
+    // if(!passwordIsMatch) {
+    //     return next(new AppError("Login yoki parol xato", 400))
+    // }
     if(candidate.status==="BLOCKED"){
         return next(new AppError("Foydalanuvchi bloklangan"))
     }

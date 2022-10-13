@@ -14,6 +14,7 @@ router
     .route("/:id")
         .get(loginValidator, userController.getById)
         .put(userController.updateUsers)  
-router.put("/:id/:status", userController.updateStatus)   
-
+router.put("/:id/:status", userController.updateStatus)
+router.patch("/:id/password", userController.updatePassword)
+   
 module.exports = router
