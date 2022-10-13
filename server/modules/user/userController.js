@@ -132,7 +132,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
             message: "Foydalanuvchi paroli o'zgartirildi",
             error: null,
             data: {
-                updateUserPassword
+                updateUserPassword: updateUserPassword.password
             }
         })
     }

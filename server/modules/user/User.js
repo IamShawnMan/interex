@@ -45,6 +45,9 @@ const User = sequelize.define("user", {
     },
     status: {
         type: DataTypes.ENUM(Object.values(userStatus))
+    },
+    storeName: {
+        type: DataTypes.STRING,
     }
     // chatId: {
     //     type: DataTypes.INTEGER
