@@ -6,7 +6,7 @@ const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
 const cors = require("cors");
 const authMiddleware = require("./core/middlewares/authMiddleware");
-// const roleMiddleware = require("./core/middlewares/roleMiddleware");
+const districtRouter = require("./modules/district/districtRouter");
 require("./modules/user/User");
 
 const app = express();
@@ -16,6 +16,7 @@ app.use(cors());
 app.use("/api/v1/users", authMiddleware, userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/regions", regionRouter);
+app.use("/api/v1/districts", districtRouter);
 
 app.use(express.static(__dirname + "/build"));
 

@@ -11,7 +11,7 @@ router
 router.get("/roles", userController.getUserRole);
 router
 	.route("/:id")
-	.get(roleMiddleware("SUPER_ADMIN", "ADMIN"), userController.getById)
+	.get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), userController.getById)
 	.patch(userController.updateUsers);
 
 module.exports = router;

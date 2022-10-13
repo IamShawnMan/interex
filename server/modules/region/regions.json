@@ -1,18 +1,18 @@
 [
     {
         "id": "1",
-        "name": "Navoiy"
+        "name": "Navoiy viloyati"
     },
     {
         "id": "2",
-        "name": "Toshkent"
+        "name": "Toshkent shahri"
     },
     {
         "id": "3",
-        "name": "Samarqand"
+        "name": "Samarqand viloyati"
     },
     {
         "id": "4",
-        "name": "Sirdaryo"
+        "name": "Sirdaryo viloyati"
     }
 ]
