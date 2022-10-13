@@ -5,5 +5,6 @@ router.route("/").get(orderControllers.getAllOrders).post(
   // orderValidator.creatingOrderValidator,
   orderControllers.createOrder
 );
+router.route("/:id").get(orderControllers.getOrderById);
 
 module.exports = router;
