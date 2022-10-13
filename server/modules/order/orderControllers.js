@@ -5,8 +5,14 @@ const OrderItemModel = require("../orderitem/OrderItem");
 const { validationResult } = require("express-validator");
 const AppError = require("../../core/utils/appError");
 const OrderItem = require("../orderitem/OrderItem");
+const QueryBuilder = require("../../core/utils/QueryBuilder")
 exports.getAllOrders = catchAsync(async (req, res, next) => {
-  const allOrders = await OrderModel.findAndCountAll();
+
+  const queryBuilder = new QueryBuilder(req.query)
+  queryBuilder.paginate().limitFields()
+
+  let allOrders = await OrderModel.findAndCountAll({...queryBuilder.queryOptions});
+  allOrders = queryBuilder.createPagination(allOrders)
   res.json({
     status: "success",
     message: "Barcha buyurtmalar",
@@ -19,7 +25,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 
 exports.createOrder = catchAsync(async (req, res, next) => {
   const orders = req.body;
-
+  
   orders.forEach(async order => {
     const newOrder = await OrderModel.create({
       recipient: order.recipient,
@@ -44,10 +50,16 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
+
+
 
   const orderById = await OrderModel.findByPk(id, {
     include: { model: OrderItemModel, as: "item" },
   });
+
+  if(!orderById){
+    return next(new AppError("bunday ID order topilmadi", 404))
+  }
+
   res.send(orderById);
 });
