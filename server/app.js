@@ -6,6 +6,7 @@ const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
 const cors = require("cors");
 const authMiddleware = require("./core/middlewares/authMiddleware");
+// const roleMiddleware = require("./core/middlewares/roleMiddleware");
 require("./modules/user/User");
 
 const app = express();
@@ -19,11 +20,11 @@ app.use("/api/v1/regions", regionRouter);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/build/index.html");
+	res.sendFile(__dirname + "/build/index.html");
 });
 
 app.all("*", (req, res, next) => {
-  return next(new AppError(`${req.path} yo'li mavjud emas`, 404));
+	return next(new AppError(`${req.path} yo'li mavjud emas`, 404));
 });
 
 app.use(errorController);
