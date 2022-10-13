@@ -9,6 +9,7 @@ const cors = require("cors");
 // ROUTES
 const orderRoutes = require("./modules/order/orderRoutes");
 const authMiddleware = require("./core/middlewares/authMiddleware");
+// const roleMiddleware = require("./core/middlewares/roleMiddleware");
 require("./modules/user/User");
 
 const app = express();
@@ -23,11 +24,11 @@ app.use("/api/v1/orders", orderRoutes);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/build/index.html");
+	res.sendFile(__dirname + "/build/index.html");
 });
 
 app.all("*", (req, res, next) => {
-  return next(new AppError(`${req.path} yo'li mavjud emas`, 404));
+	return next(new AppError(`${req.path} yo'li mavjud emas`, 404));
 });
 
 app.use(errorController);
