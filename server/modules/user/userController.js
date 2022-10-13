@@ -125,8 +125,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     if(!userById) {
         return next(new AppError(`Bunday foydalanuvchi topilmadi`))
     }
-    console.log(userById);
-    console.log();
     if(userRole !== "SUPER_ADMIN") {
         const updateUserPassword = await userById.update({password: req.body.password})
         res.status(203).json({
