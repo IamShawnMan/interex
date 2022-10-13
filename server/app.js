@@ -9,7 +9,7 @@ const cors = require("cors");
 // ROUTES
 const orderRoutes = require("./modules/order/orderRoutes");
 const authMiddleware = require("./core/middlewares/authMiddleware");
-// const roleMiddleware = require("./core/middlewares/roleMiddleware");
+const districtRouter = require("./modules/district/districtRouter");
 require("./modules/user/User");
 
 const app = express();

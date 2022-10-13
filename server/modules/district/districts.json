@@ -1,57 +1,207 @@
 [
     {
         "id": "12",
-        "region_id": "1",
-        "district_name": "Konimex"
+        "regionId": "1",
+        "districtName": "Konimex tumani"
     },
     {
         "id": "13",
-        "region_id": "1",
-        "district_name": "Karmana"
+        "regionId": "1",
+        "districtName": "Karmana tumani"
     },
     {
         "id": "14",
-        "region_id": "1",
-        "district_name": "Qiziltepa"
+        "regionId": "1",
+        "districtName": "Qiziltepa tumani"
     },
     {
         "id": "15",
-        "region_id": "1",
-        "district_name": "Xatirchi"
+        "regionId": "1",
+        "districtName": "Xatirchi tumani"
     },
     {
         "id": "16",
-        "region_id": "1",
-        "district_name": "Navbahor"
+        "regionId": "1",
+        "districtName": "Navbahor tumani"
     },
     {
         "id": "17",
-        "region_id": "1",
-        "district_name": "Nurota"
+        "regionId": "1",
+        "districtName": "Nurota tumani"
     },
     {
         "id": "18",
-        "region_id": "1",
-        "district_name": "Tomdi"
+        "regionId": "1",
+        "districtName": "Tomdi tumani"
     },
     {
         "id": "19",
-        "region_id": "1",
-        "district_name": "Uchquduq"
+        "regionId": "1",
+        "districtName": "Uchquduq tumani"
     },
     {
-        "id": "12",
-        "region_id": "2",
-        "district_name": "Bekobod"
+        "id": "20",
+        "regionId": "2",
+        "districtName": "Bektemir tumani"
     },
     {
-        "id": "12",
-        "region_id": "2",
-        "district_name": "Bo`stonliq"
+        "id": "21",
+        "regionId": "2",
+        "districtName": "Mirobod tumani"
     },
     {
-        "id": "12",
-        "region_id": "2",
-        "district_name": "Bo`ka"
+        "id": "22",
+        "regionId": "2",
+        "districtName": "Mirzo Ulug'bek tumani"
+    },
+    {
+        "id": "23",
+        "regionId": "2",
+        "districtName": "Sergeli tumani"
+    },
+    {
+        "id": "24",
+        "regionId": "2",
+        "districtName": "Olmazor tumani"
+    },
+    {
+        "id": "25",
+        "regionId": "2",
+        "districtName": "Uchtepa tumani"
+    },
+    {
+        "id": "26",
+        "regionId": "2",
+        "districtName": "Shayxontoxur tumani"
+    },
+    {
+        "id": "27",
+        "regionId": "2",
+        "districtName": "Yashnobod tumani"
+    },
+    {
+        "id": "28",
+        "regionId": "2",
+        "districtName": "Chilonzor tumani"
+    },
+    {
+        "id": "29",
+        "regionId": "2",
+        "districtName": "Yunusobod tumani"
+    },
+    {
+        "id": "30",
+        "regionId": "2",
+        "districtName": "Yakkasaroy tumani"
+    },
+    {
+        "id": "31",
+        "regionId": "3",
+        "districtName": "Bulung'ur tumani"
+    },
+    {
+        "id": "32",
+        "regionId": "3",
+        "districtName": "Ishtixon tumani"
+    },
+    {
+        "id": "33",
+        "regionId": "3",
+        "districtName": "Jomboy tumani"
+    },
+    {
+        "id": "34",
+        "regionId": "3",
+        "districtName": "Kattaqo'rg'on tumani"
+    },
+    {
+        "id": "35",
+        "regionId": "3",
+        "districtName": "Qo'shrabot tumani"
+    },
+    {
+        "id": "36",
+        "regionId": "3",
+        "districtName": "Narpay tumani"
+    },
+    {
+        "id": "37",
+        "regionId": "3",
+        "districtName": "Nurobod tumani"
+    },
+    {
+        "id": "38",
+        "regionId": "3",
+        "districtName": "Oqdaro tumani"
+    },
+    {
+        "id": "39",
+        "regionId": "3",
+        "districtName": "Paxtachi tumani"
+    },
+    {
+        "id": "40",
+        "regionId": "3",
+        "districtName": "Payariq tumani"
+    },
+    {
+        "id": "41",
+        "regionId": "3",
+        "districtName": "Pasdarg'om tumani"
+    },
+    {
+        "id": "42",
+        "regionId": "3",
+        "districtName": "Samarqand tumani"
+    },
+    {
+        "id": "43",
+        "regionId": "3",
+        "districtName": "Toyloq tumani"
+    },
+    {
+        "id": "44",
+        "regionId": "3",
+        "districtName": "Urgut tumani"
+    },
+    {
+        "id": "45",
+        "regionId": "4",
+        "districtName": "Boyovut tumani"
+    },
+    {
+        "id": "46",
+        "regionId": "4",
+        "districtName": "Oqoltin tumani"
+    },
+    {
+        "id": "47",
+        "regionId": "4",
+        "districtName": "Guliston tumani"
+    },
+    {
+        "id": "48",
+        "regionId": "4",
+        "districtName": "Xovos tumani"
+    },
+    {
+        "id": "49",
+        "regionId": "4",
+        "districtName": "Mirzaobod tumani"
+    },
+    {
+        "id": "50",
+        "regionId": "4",
+        "districtName": "Sardoba tumani"
+    },
+    {
+        "id": "51",
+        "regionId": "4",
+        "districtName": "Sayxunobod tumani"
+    },
+    {
+        "id": "52",
+        "regionId": "4",
+        "districtName": "Sirdaryo tumani"
     }
 ]
