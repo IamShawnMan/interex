@@ -5,6 +5,7 @@ const userRole = require("../../core/constants/userRole")
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const { Op } = require("sequelize");
+const {hash} = require("bcrypt")
 
 const findById = async(id, next) => {
     const byId = await User.findByPk(id, {attributes: {exclude: ["password"]}})
@@ -15,16 +16,17 @@ const findById = async(id, next) => {
 }
 
 exports.getUsers = catchAsync(async (req, res, next) => {
+    const {userRole} = req.body
     const queryBuilder = new QueryBuilder(req.query);
     queryBuilder.paginate().limitFields();
-    let allUsers = await User.findAndCountAll({...queryBuilder.queryOptions, 
-        where:{
-            userRole: {
-                [Op.ne]: "SUPER_ADMIN"
-            }
-        },
-        attributes: {exclude: ["password"]},
-    })
+    let allUsers = await User.findAndCountAll({...queryBuilder.queryOptions, where:{
+        userRole: {
+            [Op.ne]: "SUPER_ADMIN"
+        }
+    },
+    attributes: {exclude: ["password"]},
+})
+
     if(!allUsers) {
         return next(new AppError("Foydalanuvchilar mavjud emas", 404))
     }
@@ -66,6 +68,13 @@ exports.createUsers = catchAsync(async (req, res, next) => {
     if(req.body.userRole===userRole.SUPER_ADMIN) {
         return next(new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin"))
     }
+    const {phoneNumber, passportNumber} = req.body
+    if(!phoneNumber.match( /^[+]998[0-9]{9}$/)) {
+        return next(new AppError("Telefon raqam xato kiritildi"))
+    }
+    if(!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
+        return next(new AppError("Passport raqami xato kiritildi"))
+    }
     const newUser = await User.create(req.body)
     res.json({
         status: "success",
@@ -75,10 +84,24 @@ exports.createUsers = catchAsync(async (req, res, next) => {
     })
 })
 exports.updateUsers = catchAsync(async (req, res, next) => {
+    const validationErrors = validationResult(req)
+    if(!validationErrors.isEmpty()) {
+        const err = new AppError("Validatsiya xatosi", 400)
+        err.isOperational = false;
+        err.errors = validationErrors.errors
+        return next(err)
+    }
     const {id} = req.params
     const userById = await findById(id)
     if(!userById) {
         return next(new AppError(`Bunday foydalanuvchi topilmadi`))
+    }
+    const {phoneNumber, passportNumber} = req.body
+    if(!phoneNumber.match( /^[+]998[0-9]{9}$/)) {
+        return next(new AppError("Telefon raqam xato kiritildi"))
+    }
+    if(!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
+        return next(new AppError("Passport raqami xato kiritildi"))
     }
     const updateUser = await userById.update(req.body)
     res.json({
@@ -119,14 +142,20 @@ exports.updateStatus = catchAsync(async (req, res, next) => {
     }
 )
 exports.updatePassword = catchAsync(async (req, res, next) => {
-    const {userRole} = req.user
+    const validationErrors = validationResult(req)
+    if(!validationErrors.isEmpty()) {
+        const err = new AppError("Validatsiya xatosi", 400)
+        err.isOperational = false;
+        err.errors = validationErrors.errors
+        return next(err)
+    }
     const {id} = req.params
-    const userById = await User.findByPk(id)
-    if(!userById) {
+    const byIdUser = await User.findByPk(id)
+    if(!byIdUser) {
         return next(new AppError(`Bunday foydalanuvchi topilmadi`))
     }
-    if(userRole !== "SUPER_ADMIN") {
-        const updateUserPassword = await userById.update({password: req.body.password})
+    const newPassword = await hash(req.body.password, 8)
+    const updateUserPassword = await byIdUser.update({password: newPassword})
         res.status(203).json({
             status: "success",
             message: "Foydalanuvchi paroli o'zgartirildi",
@@ -134,9 +163,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
             data: {
                 updateUserPassword: updateUserPassword.password
             }
-        })
-    }
-    else {
-        return next(new AppError("Siz foydalanuvchi parolini o'zgartira olmaysiz"))
-    }
+    })
 })

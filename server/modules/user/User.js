@@ -34,7 +34,7 @@ const User = sequelize.define("user", {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     userRole: {
         type: DataTypes.ENUM(Object.values(userRole)),
@@ -44,11 +44,12 @@ const User = sequelize.define("user", {
         type: DataTypes.INTEGER
     },
     status: {
-        type: DataTypes.ENUM(Object.values(userStatus))
+        type: DataTypes.ENUM(Object.values(userStatus)),
+        defaultValue: userStatus.ACTIVE
     },
     storeName: {
         type: DataTypes.STRING,
-    }
+    },
     // chatId: {
     //     type: DataTypes.INTEGER
     // },
@@ -58,9 +59,7 @@ const User = sequelize.define("user", {
         async beforeCreate(user) {
             user.password = await hash(user.password, 8)
         },
-        async beforeUpdate(user) {
-            user.password = await hash(user.password, 8)
-        }
+        
     }
 })
 

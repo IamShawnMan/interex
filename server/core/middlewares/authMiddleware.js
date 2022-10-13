@@ -1,7 +1,7 @@
 const AppError = require("../utils/appError")
 const jwt = require("jsonwebtoken")
 
-module.exports = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization
     if(!authHeader) {
         return next(new AppError("Registratsiyadan o'tilmagan", 401))
@@ -14,3 +14,5 @@ module.exports = (req, res, next) => {
     req.user = user
     next()
 }
+
+module.exports = authMiddleware;

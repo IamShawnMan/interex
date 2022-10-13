@@ -34,10 +34,10 @@ exports.login = catchAsync(async (req, res, next) => {
     if(!candidate) {
         return next(new AppError("Login yoki parol xato", 400))
     }
-    // const passwordIsMatch = await compare(password, candidate.password)
-    // if(!passwordIsMatch) {
-    //     return next(new AppError("Login yoki parol xato", 400))
-    // }
+    const passwordIsMatch = await compare(password, candidate.password)
+    if(!passwordIsMatch) {
+        return next(new AppError("Login yoki parol xato", 400))
+    }
     if(candidate.status==="BLOCKED"){
         return next(new AppError("Foydalanuvchi bloklangan"))
     }
