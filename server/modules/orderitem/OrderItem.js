@@ -10,7 +10,7 @@ const OrderItem = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    productName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -27,10 +27,7 @@ const OrderItem = sequelize.define(
       defaultValue: 0,
       allowNull: false,
     },
-    totalPrice: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
+    orderItemTotalPrice: DataTypes.INTEGER,
   },
   { underscored: true }
 );

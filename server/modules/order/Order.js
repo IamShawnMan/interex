@@ -26,11 +26,7 @@ const Order = sequelize.define(
       allowNull: false,
       defaultValue: 45000,
     },
-    totalPrice: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-      allowNull: false,
-    },
+    totalPrice: DataTypes.INTEGER,
   },
   { underscored: true }
 );
