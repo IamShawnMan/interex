@@ -15,12 +15,12 @@ const Order = sequelize.define(
     },
     recipient: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
     },
     note: DataTypes.TEXT,
     recipientPhoneNumber: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
     },
     orderStatus: {
       type: DataTypes.ENUM(Object.values(orderStatus)),
