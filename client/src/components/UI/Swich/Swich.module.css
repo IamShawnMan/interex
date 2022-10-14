@@ -1,4 +1,4 @@
-.swichMutation {
+.toggleButton {
   width: 5.3rem;
   height: 2.8rem;
   border-radius: 15.5px;
@@ -7,11 +7,11 @@
   cursor: pointer;
 }
 
-.swichMutationActive {
+.buttonEnabled {
   background-color: #7d41ed;
 }
 
-.swichMutationChild {
+.toggle {
   width: 2.4rem;
   height: 2.4rem;
   border-radius: 14.5px;
@@ -20,6 +20,6 @@
   transition: all 300ms;
 }
 
-.swichActive {
+.toggleEnabled {
   transform: translateX(100%);
 }

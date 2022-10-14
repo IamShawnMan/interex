@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import http from "../../../utils/axios-instance";
+import http from "../../utils/axios-instance";
 import { useState } from "react";
-import { BasicTable } from "../../../components/Table/BasicTable";
-import Layout from "../../../components/Layout/Layout";
+import { BasicTable } from "../../components/Table/BasicTable";
+import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
 import styles from "./Users.module.css";
-import Swich from "../../../components/UI/Swich/Swich";
+import Swich from "../../components/UI/Swich/Swich";
 function Users() {
   const [value, setValue] = useState([]);
   const getAllUser = async () => {
@@ -24,10 +24,10 @@ function Users() {
   }, []);
 
   const userStatusChangeHandler = async ({ id, status }) => {
-    const isActive = !status;
     try {
       const res = await http({
-        url: `/users/${id}/status/${isActive ? "ACTIVE" : "BLOCKED"}`,
+        url: `users/${id}/status`,
+        data: { status },
         method: "PUT",
       });
       getAllUser();
@@ -64,13 +64,15 @@ function Users() {
       id: "userStatus",
       Header: "Status",
       accessor: (user) => {
-        const isActive = user.status === "ACTIVE";
+        const isEnabled = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
 
         return (
           <Swich
-            fn={userStatusChangeHandler}
-            fnConfig={{ id: user.id, status: isActive }}
-            isActive={isActive}
+            onSwich={userStatusChangeHandler.bind(this, {
+              id: user.id,
+              status: isEnabled,
+            })}
+            enabled={user.status === "ACTIVE"}
           />
         );
       },

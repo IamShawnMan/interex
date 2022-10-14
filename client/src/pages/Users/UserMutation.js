@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
-import http from "../../../utils/axios-instance";
+import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
-import Layout from "../../../components/Layout/Layout";
+import Layout from "../../components/Layout/Layout";
 
 const schema = yup.object().shape({
   firstName: yup

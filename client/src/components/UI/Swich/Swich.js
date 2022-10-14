@@ -1,22 +1,20 @@
 import React, { useEffect } from "react";
 import styles from "./Swich.module.css";
 
-function Swich({ fn, fnConfig, isActive }) {
+function Swich({ onSwich, enabled }) {
   const swichChangeHandler = async () => {
-    await fn({ ...fnConfig });
+    await onSwich();
   };
 
   return (
     <div
       onClick={swichChangeHandler}
-      className={`${styles.swichMutation} ${
-        isActive ? styles.swichMutationActive : ""
+      className={`${styles.toggleButton} ${
+        enabled ? styles.buttonEnabled : ""
       }`}
     >
       <div
-        className={`${styles.swichMutationChild} ${
-          isActive ? styles.swichActive : ""
-        }`}
+        className={`${styles.toggle} ${enabled ? styles.toggleEnabled : ""}`}
       ></div>
     </div>
   );

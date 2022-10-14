@@ -6,8 +6,8 @@ import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import { useContext, useEffect } from "react";
 import AppContext from "./context/AppContext";
-import Users from "./pages/Users/Users/Users";
-import UserAddEdit from "./pages/Users/User-mutation/UserMutation";
+import Users from "./pages/Users/Users";
+import UserAddEdit from "./pages/Users/UserMutation";
 
 function App() {
   const token = localStorage.getItem("token");
