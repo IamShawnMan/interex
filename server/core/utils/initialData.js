@@ -7,6 +7,29 @@ const regionJson = require("../../modules/region/regions.json");
 const districtJson = require("../../modules/district/districts.json");
 const District = require("../../modules/district/District");
 
+ module.exports = catchAsync(async()=>{
+    const haveRegion = await Region.count()
+    if(haveRegion===0){
+        const createdRegion = await Region.bulkCreate(regionJson);
+    }
+    
+    const superAdminCount = await User.count({
+        where:{userRole:{[Op.eq]: userRole.SUPER_ADMIN}}
+    })
+    if(superAdminCount===0){
+        const superAdminInfo = {
+            firstName: "Bekzod",
+            lastName: "Ismatov",
+            phoneNumber: "+998906479794",
+            passportNumber: "AB4332323",
+            username: "myusername",
+            password: "19981998",
+            userRole: "SUPER_ADMIN",
+            status: "ACTIVE"
+        }
+      const createdUser = await User.create(superAdminInfo)
+    }
+})
 module.exports = catchAsync(async () => {
 	const haveRegion = await Region.count();
 	if (haveRegion === 0) {

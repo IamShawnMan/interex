@@ -5,6 +5,7 @@ const Region = require("../region/Region");
 const District = sequelize.define("district", {
 	id: {
 		type: DataTypes.INTEGER,
+		autoIncrement: true,
 		primaryKey: true,
 	},
 	districtName: {
