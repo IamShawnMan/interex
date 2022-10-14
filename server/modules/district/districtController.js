@@ -25,7 +25,7 @@ exports.getById = catchAsync(async (req, res, next) => {
 
 	res.json({
 		status: "Success",
-		message: "Viloyat id bo`yicha",
+		message: "tuman id bo`yicha",
 		error: null,
 		data: null,
 	});

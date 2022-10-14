@@ -21,7 +21,6 @@ const OrderItem = sequelize.define(
     },
     price: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
       allowNull: false,
     },
     orderItemTotalPrice: DataTypes.INTEGER,

@@ -29,14 +29,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   
    const validationError = validationResult(req)
   if(!validationError.isEmpty()){
-    console.log("BHJBBHBHJBKJBJKKJN");
     let err = new AppError("Validation error", 403)
     err.isOperational = false
     err.errors = validationError.errors
     return next(err)
   }
-  
-   console.log("DGXGHDFFGHHGHJGUGGFGYFYDTDTDTFRDTYFYFUYGYUVYU");
   let existedPackage = await PackageModel.findOne({where: {storeOwnerId: {[Op.eq]: req.user.id}}})
 
   if(!existedPackage){
@@ -73,7 +70,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 exports.getOrderById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const orderById = await OrderModel.findByPk(id, {
+  const queryBuilder = new QueryBuilder(req.query)
+
+  queryBuilder.limitFields()
+
+  const orderById = await OrderModel.findByPk(id, {...queryBuilder.queryOptions,
     include: { model: OrderItemModel, as: "item" },
   });
 
