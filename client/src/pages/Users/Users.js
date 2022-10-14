@@ -64,13 +64,13 @@ function Users() {
       id: "userStatus",
       Header: "Status",
       accessor: (user) => {
-        const isEnabled = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
+        const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
 
         return (
           <Switch
-            onSwich={userStatusChangeHandler.bind(this, {
+            onSwich={userStatusChangeHandler.bind(null, {
               id: user.id,
-              status: isEnabled,
+              status,
             })}
             enabled={user.status === "ACTIVE"}
           />
