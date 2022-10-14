@@ -3,6 +3,7 @@ const sequelize = require("../../core/config/database/database")
 const {hash} = require("bcrypt")
 const userRole = require("../../core/constants/userRole")
 const Region = require("../region/Region");
+const userStatus = require("../../core/constants/userStatus")
 
 const User = sequelize.define("user", {
     id: {
@@ -33,7 +34,7 @@ const User = sequelize.define("user", {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     userRole: {
         type: DataTypes.ENUM(Object.values(userRole)),
@@ -41,19 +42,24 @@ const User = sequelize.define("user", {
     },
     regionId: {
         type: DataTypes.INTEGER
-    }
+    },
+    status: {
+        type: DataTypes.ENUM(Object.values(userStatus)),
+        defaultValue: userStatus.ACTIVE
+    },
+    storeName: {
+        type: DataTypes.STRING,
+    },
     // chatId: {
     //     type: DataTypes.INTEGER
     // },
-    // userStatus: {
-    //     type: DataTypes.ENUM(Object.values(userStatus))
-    // }
 }, {
     underscored: true,
     hooks: {
         async beforeCreate(user) {
             user.password = await hash(user.password, 8)
-        }
+        },
+        
     }
 })
 
