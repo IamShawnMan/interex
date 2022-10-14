@@ -44,15 +44,16 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   }
 
   const orders = req.body;
-  orders.forEach(async(order)  => {
+  orders?.forEach(async(order)  => {
     const newOrder = await OrderModel.create({
       recipient: order.recipient,
       regionId: order.regionId,
+      note: order.note,
       recipientPhoneNumber: order.recipientPhoneNumber,
       districtId: order.districtId,
       packageId: existedPackage.id
     });
-    order.items.forEach(async (item) => {
+    order?.items?.forEach(async (item) => {
       await OrderItemModel.create({
         orderId: newOrder.id,
         orderItemTotalPrice: item.quantity * item.price,

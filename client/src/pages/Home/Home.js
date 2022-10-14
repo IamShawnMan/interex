@@ -24,6 +24,7 @@ function Home() {
     <Layout>
       <div>
         <Link to="/users">Users</Link>
+        <Link to="/orders">Orders</Link>
         <h1 className={styles.h1}>Welcome to the Interex.uz portal</h1>
         <h2 onClick={logoutHandle} className={styles.logout}>
           Log Out

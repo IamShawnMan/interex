@@ -9,7 +9,7 @@ const cors = require("cors");
 // ROUTES
 const orderRoutes = require("./modules/order/orderRoutes");
 const authMiddleware = require("./core/middlewares/authMiddleware");
-// const districtRouter = require("./modules/district/districtRouter");
+const districtRouter = require("./modules/district/districtRouter");
 const packageRoutes = require("./modules/package/packageRoutes")
 require("./modules/user/User");
 
@@ -20,9 +20,12 @@ app.use(cors());
 app.use("/api/v1/users", authMiddleware, userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/regions", regionRouter);
-app.use("/api/v1/orders", authMiddleware, orderRoutes);
+app.use("/api/v1/orders", (req,res,next)=>{
+	req.body = req.body.orders
+	next()
+}, authMiddleware, orderRoutes);
 app.use("/api/v1/package", packageRoutes)
-
+app.use("/api/v1/districts", districtRouter);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
