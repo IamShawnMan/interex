@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import styles from "./Swich.module.css";
+import styles from "./Switch.module.css";
 
 function Switch({ onSwitch, enabled }) {
   const switchChangeHandler = async () => {
