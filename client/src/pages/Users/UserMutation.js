@@ -78,6 +78,7 @@ const UserMutation = () => {
     reset(res.data.data.userById);
   };
   const formSubmit = async (data) => {
+    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/users/${id}` : "/users",
