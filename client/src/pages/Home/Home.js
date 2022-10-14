@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout/Layout";
 import AppContext from "../../context/AppContext";
+import http from "../../utils/axios-instance";
 
 import styles from "./Home.module.css";
 
@@ -11,6 +12,11 @@ function Home() {
   const logoutHandle = () => {
     localStorage.clear();
     ctx.onReset();
+    http({
+      headers: {
+        authorization: "",
+      },
+    });
     navigate("/");
   };
 
