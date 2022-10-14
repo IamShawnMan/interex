@@ -11,13 +11,13 @@ exports.creatingOrderValidator = [
   body("*.districtId")
     .notEmpty()
     .withMessage("Tumanlar Id topilmadi"),
-  body("*.items.*.productName")
+  body("*.orderItems.*.productName")
     .notEmpty()
     .withMessage("Tovar nomi bo`sh bo`lmasligi kerak"),
-  body("*.items.*.quantity")
+  body("*.orderItems.*.quantity")
     .notEmpty()
     .withMessage("Tovar miqdori bo`sh bo`lmasligi kerak"),
-  body("*.items.*.price")
+  body("*.orderItems.*.price")
     .notEmpty()
     .withMessage("Tovar miqdori bo`sh bo`lmasligi kerak"),
 ];
