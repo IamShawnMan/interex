@@ -5,14 +5,27 @@ const userRole = require("../../core/constants/userRole");
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const { Op } = require("sequelize");
+const { hash } = require("bcrypt");
+
+const findById = async (id, next) => {
+	const byId = await User.findByPk(id, {
+		attributes: { exclude: ["password"] },
+	});
+	if (byId) {
+		return byId;
+	}
+	return null;
+};
 
 exports.getUsers = catchAsync(async (req, res, next) => {
+	const { id } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.limitFields().filter().paginate().order();
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {
 		queryBuilder.queryOptions.where.userRole = { [Op.ne]: "SUPER_ADMIN" };
+		queryBuilder.queryOptions.where.id = { [Op.ne]: id };
 	}
 
 	if (queryBuilder.queryOptions.attributes) {
@@ -24,19 +37,11 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 
 	// get and count all users
 	let allUsers = await User.findAndCountAll(queryBuilder.queryOptions);
+
 	if (!allUsers) {
 		return next(new AppError("Foydalanuvchilar mavjud emas", 404));
 	}
-	// paginated all users
 	allUsers = queryBuilder.createPagination(allUsers);
-
-	// get users info except user password
-	// allUsers.content.map((user) => {
-	// 	if (user._options.attributes.includes("password")) {
-	// 		delete user.dataValues.password;
-	// 	}
-	// });
-
 	res.json({
 		status: "success",
 		message: "Barcha foydalanuvchilar",
@@ -49,9 +54,9 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 
 exports.getById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
-	const userById = await User.findByPk(id);
+	const userById = await findById(id);
 	if (!userById) {
-		return next(new AppError(`Ushbu foydalanuvchi mavjud`));
+		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
 	}
 	res.json({
 		status: "success",
@@ -64,7 +69,6 @@ exports.getById = catchAsync(async (req, res, next) => {
 });
 
 exports.createUsers = catchAsync(async (req, res, next) => {
-	const regionId = req.body.regionId;
 	const validationErrors = validationResult(req);
 	if (!validationErrors.isEmpty()) {
 		const err = new AppError("Validatsiya xatosi", 400);
@@ -77,6 +81,13 @@ exports.createUsers = catchAsync(async (req, res, next) => {
 			new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin")
 		);
 	}
+	const { phoneNumber, passportNumber } = req.body;
+	if (!phoneNumber.match(/^[+]998[0-9]{9}$/)) {
+		return next(new AppError("Telefon raqam xato kiritildi"));
+	}
+	if (!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
+		return next(new AppError("Passport raqami xato kiritildi"));
+	}
 	const newUser = await User.create(req.body);
 	res.json({
 		status: "success",
@@ -86,10 +97,24 @@ exports.createUsers = catchAsync(async (req, res, next) => {
 	});
 });
 exports.updateUsers = catchAsync(async (req, res, next) => {
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		const err = new AppError("Validatsiya xatosi", 400);
+		err.isOperational = false;
+		err.errors = validationErrors.errors;
+		return next(err);
+	}
 	const { id } = req.params;
-	const userById = await User.findByPk(id);
+	const userById = await findById(id);
 	if (!userById) {
-		return next(new AppError(`Bunday foydalanuvchi topilmadi`, 404));
+		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
+	}
+	const { phoneNumber, passportNumber } = req.body;
+	if (!phoneNumber.match(/^[+]998[0-9]{9}$/)) {
+		return next(new AppError("Telefon raqam xato kiritildi"));
+	}
+	if (!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
+		return next(new AppError("Passport raqami xato kiritildi"));
 	}
 	const updateUser = await userById.update(req.body);
 	res.json({
@@ -111,5 +136,50 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
 		data: {
 			roles,
 		},
+	});
+});
+
+exports.updateStatus = catchAsync(async (req, res, next) => {
+	const { id } = req.params;
+	const { status } = req.body;
+	const userById = await findById(id);
+	if (!userById) {
+		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
+	}
+	const updateUserStatus = await userById.update({ status });
+	res.status(203).json({
+		status: "success",
+		message: "Foydalanuvchi statusi o'zgardi",
+		error: null,
+		data: updateUserStatus,
+	});
+});
+exports.updatePassword = catchAsync(async (req, res, next) => {
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		const err = new AppError("Validatsiya xatosi", 400);
+		err.isOperational = false;
+		err.errors = validationErrors.errors;
+		return next(err);
+	}
+	const { id } = req.user;
+	const byIdUser = await User.findByPk(id);
+	if (!byIdUser) {
+		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
+	}
+	if (id === +req.params.id) {
+		const newPassword = await hash(req.body.password, 8);
+		await byIdUser.update({ password: newPassword });
+	} else {
+		return next(
+			new AppError("Siz bu foydalanuvchi parolini o'zgartira olmaysiz", 400)
+		);
+	}
+
+	res.status(203).json({
+		status: "success",
+		message: "Foydalanuvchi paroli o'zgartirildi",
+		error: null,
+		data: null,
 	});
 });

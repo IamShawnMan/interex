@@ -38,13 +38,17 @@ exports.login = catchAsync(async (req, res, next) => {
     if(!passwordIsMatch) {
         return next(new AppError("Login yoki parol xato", 400))
     }
+    if(candidate.status==="BLOCKED"){
+        return next(new AppError("Foydalanuvchi bloklangan"))
+    }
     const payload = {
         id: candidate.id,
         firstName: candidate.firstName,
         lastName: candidate.lastName,
         phoneNumber: candidate.phoneNumber,
         passportNumber: candidate.passportNumber,
-        userRole: candidate.userRole
+        userRole: candidate.userRole,
+        status: candidate.status
     }
     const token = await generateToken(payload, process.env.JWT_SECRET, {
         algorithm: "HS512",

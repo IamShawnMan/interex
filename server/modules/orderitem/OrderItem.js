@@ -13,9 +13,6 @@ const OrderItem = sequelize.define(
     productName: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
     quantity: {
       type: DataTypes.INTEGER,
@@ -24,7 +21,6 @@ const OrderItem = sequelize.define(
     },
     price: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
       allowNull: false,
     },
     orderItemTotalPrice: DataTypes.INTEGER,
