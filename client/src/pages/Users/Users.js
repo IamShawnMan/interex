@@ -6,7 +6,7 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
 import styles from "./Users.module.css";
-import Swich from "../../components/UI/Swich/Swich";
+import Switch from "../../components/UI/Switch/Switch";
 function Users() {
   const [value, setValue] = useState([]);
   const getAllUser = async () => {
@@ -67,7 +67,7 @@ function Users() {
         const isEnabled = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
 
         return (
-          <Swich
+          <Switch
             onSwich={userStatusChangeHandler.bind(this, {
               id: user.id,
               status: isEnabled,

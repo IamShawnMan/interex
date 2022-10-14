@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import styles from "./Swich.module.css";
 
-function Swich({ onSwich, enabled }) {
-  const swichChangeHandler = async () => {
+function Switch({ onSwich, enabled }) {
+  const switchChangeHandler = async () => {
     await onSwich();
   };
 
   return (
     <div
-      onClick={swichChangeHandler}
+      onClick={switchChangeHandler}
       className={`${styles.toggleButton} ${
         enabled ? styles.buttonEnabled : ""
       }`}
@@ -20,4 +20,4 @@ function Swich({ onSwich, enabled }) {
   );
 }
 
-export default Swich;
+export default Switch;
