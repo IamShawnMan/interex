@@ -10,7 +10,6 @@ dotenv.config({ path: `./${envPath}` });
 
 const app = require("./app");
 const database = require("./core/config/database/database");
-const Package = require("./modules/package/Package");
 const initialData = require("./core/utils/initialData");
 const PORT = process.env.PORT || 8080;
 const start = async () => {
