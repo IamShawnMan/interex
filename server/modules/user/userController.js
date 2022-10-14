@@ -149,13 +149,14 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
         err.errors = validationErrors.errors
         return next(err)
     }
-    const {id} = req.params
+    const {id} = req.user
     const byIdUser = await User.findByPk(id)
     if(!byIdUser) {
         return next(new AppError(`Bunday foydalanuvchi topilmadi`))
     }
     const newPassword = await hash(req.body.password, 8)
     const updateUserPassword = await byIdUser.update({password: newPassword})
+    console.log(byIdUser.password);
         res.status(203).json({
             status: "success",
             message: "Foydalanuvchi paroli o'zgartirildi",

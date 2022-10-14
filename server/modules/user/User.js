@@ -58,8 +58,7 @@ const User = sequelize.define("user", {
     hooks: {
         async beforeCreate(user) {
             user.password = await hash(user.password, 8)
-        },
-        
+        }, 
     }
 })
 
