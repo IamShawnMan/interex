@@ -16,21 +16,24 @@ const findById = async(id, next) => {
 }
 
 exports.getUsers = catchAsync(async (req, res, next) => {
-    const {userRole} = req.body
     const queryBuilder = new QueryBuilder(req.query);
-    queryBuilder.paginate().limitFields();
+    queryBuilder.paginate()
     let allUsers = await User.findAndCountAll({...queryBuilder.queryOptions, where:{
         userRole: {
             [Op.ne]: "SUPER_ADMIN"
         }
     },
-    attributes: {exclude: ["password"]},
 })
 
     if(!allUsers) {
         return next(new AppError("Foydalanuvchilar mavjud emas", 404))
     }
     allUsers = queryBuilder.createPagination(allUsers);
+    // allUsers.content.map((user) => {
+    //     if(user._options.attributes.includes("password")) {
+    //         delete user.dataValues.password
+    //     }
+    // })
     res.json({
         status: "success",
         message: "Barcha foydalanuvchilar",
@@ -127,10 +130,14 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
 })
 
 exports.updateStatus = catchAsync(async (req, res, next) => {
-        const {id, status} = req.params
+        const {id} = req.params
+        const {status} = req.body
         const userById = await findById(id)
         if(!userById) {
             return next(new AppError(`Bunday foydalanuvchi topilmadi`))
+        }
+        if(userById.id === req.user.id) {
+            return next(new AppError(`Super adminni bloklash mumkin emas`))
         }
         const updateUserStatus = await userById.update({status})
         res.status(203).json({
@@ -156,7 +163,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     }
     const newPassword = await hash(req.body.password, 8)
     const updateUserPassword = await byIdUser.update({password: newPassword})
-    console.log(byIdUser.password);
         res.status(203).json({
             status: "success",
             message: "Foydalanuvchi paroli o'zgartirildi",

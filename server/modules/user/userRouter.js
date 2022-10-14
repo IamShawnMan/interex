@@ -12,10 +12,10 @@ router
 router.get("/roles", userController.getUserRole);
 router
 	.route("/:id")
-	.get(roleMiddleware("SUPER_ADMIN", "ADMIN"), userController.getById)
+	.get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), userController.getById)
 	.put(loginValidator, userController.updateUsers);
-router.put("/:id/status/:status", roleMiddleware("SUPER_ADMIN"), userController.updateStatus)
-router.put("/:id/password", roleMiddleware("ADMIN", "COURIER", "STORE_OWNER"),
+router.put("/:id/status", roleMiddleware("SUPER_ADMIN"), userController.updateStatus)
+router.put("/:id/password", roleMiddleware(["ADMIN", "COURIER", "STORE_OWNER"]),
         body("password")
         .notEmpty()
 		.withMessage("Parol bo'sh bo'lishi mumkin emas")
