@@ -1,7 +1,8 @@
 const AppError = require("../utils/appError");
 
+
 const roleMiddleware = roles => {
-  
+
   let selectedRoles;
   return (req, res, next) => {
     if (typeof roles === "string") {
