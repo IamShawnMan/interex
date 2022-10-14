@@ -2,22 +2,22 @@ const { body, check, } = require("express-validator");
 
 exports.creatingOrderValidator = [
 
-  check("*.recipient").not()
+  body("*.recipient")
     .notEmpty()
     .withMessage("Buyurtma egasi bo`sh bo`lmasligi kerak"),
-  check("*.regionId").not()
+  body("*.regionId")
     .notEmpty()
     .withMessage("Viloyatlar ID si bo`sh bo`lmasligi kerak"),
-  check("*.districtId").not()
+  body("*.districtId")
     .notEmpty()
     .withMessage("Tumanlar Id topilmadi"),
-  check("items.*.productName").not() 
+  body("*.items.*.productName")
     .notEmpty()
     .withMessage("Tovar nomi bo`sh bo`lmasligi kerak"),
-  check("items.*.quantity").not()
+  body("*.items.*.quantity")
     .notEmpty()
     .withMessage("Tovar miqdori bo`sh bo`lmasligi kerak"),
-  check("items.*.price").not()
+  body("*.items.*.price")
     .notEmpty()
     .withMessage("Tovar miqdori bo`sh bo`lmasligi kerak"),
 ];

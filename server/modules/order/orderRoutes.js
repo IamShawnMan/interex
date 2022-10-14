@@ -8,7 +8,7 @@ router
     .get(orderControllers.getAllOrders)
     .post(
       roleMiddleware(["STORE_OWNER"]),
-  // orderValidator.creatingOrderValidator,
+  orderValidator.creatingOrderValidator,
   orderControllers.createOrder
 );
 router.route("/:id").get(orderControllers.getOrderById);

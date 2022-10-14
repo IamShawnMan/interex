@@ -13,9 +13,6 @@ const OrderItem = sequelize.define(
     productName: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
     quantity: {
       type: DataTypes.INTEGER,

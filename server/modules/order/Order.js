@@ -15,7 +15,7 @@ const Order = sequelize.define(
     },
     recipient: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     note: DataTypes.TEXT,
     recipientPhoneNumber: {
