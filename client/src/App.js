@@ -7,7 +7,7 @@ import Home from "./pages/Home/Home";
 import { useContext, useEffect } from "react";
 import AppContext from "./context/AppContext";
 import Users from "./pages/Users/Users";
-import UserAddEdit from "./pages/Users/UserMutation";
+import UserMutation from "./pages/Users/UserMutation";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -32,8 +32,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         {isAuth && <Route path="/home" element={<Home />} />}
         {isAuth && <Route path="*" element={<Navigate to={"home"} />} />}
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<UserAddEdit />} />
+        {isAuth && <Route path="/users" element={<Users />} />}
+        {isAuth && <Route path="/users/:id" element={<UserMutation />} />}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>
