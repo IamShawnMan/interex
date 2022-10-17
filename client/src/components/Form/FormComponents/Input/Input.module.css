@@ -1,0 +1,64 @@
+.formControl {
+  padding-left: 4rem;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.label {
+  font-family: RobotoMedium;
+  font-size: 1.8rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.01em;
+  color: #4b5563;
+  margin-bottom: 1.6rem;
+}
+
+.input {
+  padding: 0.8rem 1rem 0.8rem 1.6rem;
+  background: #ffffff;
+  border: 0.1rem solid #a7abb6;
+  border-radius: 0.7rem;
+  outline: none;
+}
+
+.input::placeholder {
+  font-family: RobotoRegular;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+  align-items: center;
+  letter-spacing: -0.01em;
+  color: #7a7a7a;
+}
+
+.input:focus {
+  background: rgba(125, 65, 237, 0.1);
+  border: 0.1rem solid #7d41ed;
+  border-radius: 0.7rem;
+}
+
+.input:hover {
+  background: rgba(125, 65, 237, 0.05);
+  border: 0.1rem solid #7d41ed;
+}
+
+.error {
+  border: 0.1rem solid #ff5f4a;
+}
+
+.errorText {
+  font-family: RobotoMedium;
+  font-size: 1.6rem;
+  line-height: 2rem;
+  align-items: center;
+  letter-spacing: -0.01em;
+  color: #ff5f4a;
+  margin: 1rem 0;
+}
+
+.success {
+  border: 0.1rem solid #1fb186;
+}
