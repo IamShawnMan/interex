@@ -103,12 +103,18 @@ exports.changeOrderStatus = catchAsync(async(req,res,next)=>{
   const {userRole} = req.user
   const {orderStatus, deliveryPrice} = req.body
   const orderById = await OrderModel.findByPk(id)
-  const orderStatusByAdmin = Object.values(statusOrder).slice(1,3)
+  const orderStatusVariables = Object.values(statusOrder).slice(1,3)
   if(userRole === "ADMIN"){
     let deliverySum = deliveryPrice || 45000
-    const resultStatus = orderStatusByAdmin.find(e=>e === orderStatus)
-    await orderById.update({orderStatus: resultStatus, deliveryPrice: deliverySum})
+    const changeOrderStatus = orderStatusVariables.find(e=>e === orderStatus)
+    await orderById.update({orderStatus: changeOrderStatus, deliveryPrice: deliverySum})
    
   }
    res.send(orderById)
 })
+
+exports.adminOrderStatus = catchAsync(async(req,res,next)=>{
+  const orderStatusVariables = Object.values(statusOrder).slice(1,3)
+  res.json(orderStatusVariables)
+})
+
