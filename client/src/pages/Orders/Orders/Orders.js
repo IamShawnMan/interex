@@ -7,7 +7,7 @@ import Layout from "../../../components/Layout/Layout";
 function Orders() {
   const [value, setValue] = useState(null);
   const getAllUser = async () => {
-    const res = await http({
+    const res = await http( {
       url: "/orders",
     });
     setValue(res.data.data.allOrders.content);
