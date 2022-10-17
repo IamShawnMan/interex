@@ -7,7 +7,7 @@ import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
 import Layout from "../../components/Layout/Layout";
 
-const schema = yup.object().shape({
+const registerSchema = yup.object().shape({
   firstName: yup
     .string()
     .trim()
@@ -27,12 +27,6 @@ const schema = yup.object().shape({
     .required("Username bo'sh bo'lishi mumkin emas")
     .min(5, "Username 5 ta belgidan kop bolishi kerak")
     .max(20, "Username 20 ta belgidan kam bolishi kerak"),
-  password: yup
-    .string()
-    .trim()
-    .required("Parol bo'sh bo'lishi mumkin emas")
-    .min(6, "Parol 6 ta belgidan kop bolishi kerak")
-    .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
 });
 const UserMutation = () => {
   const navigate = useNavigate();
@@ -41,21 +35,22 @@ const UserMutation = () => {
   const [regions, setRegions] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
+  console.log(isUpdate);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({
+    resolver: yupResolver(isUpdate ? updateSchema : registerSchema),
+  });
 
   useEffect(() => {
-    if (isUpdate) {
-      try {
-        getById();
-      } catch (error) {}
-    }
     getAllUserRoles();
     getAllRegions();
+    if (isUpdate) {
+      getById();
+    }
   }, []);
 
   const getAllUserRoles = async () => {
@@ -75,17 +70,19 @@ const UserMutation = () => {
     const res = await http({
       url: `/users/${id}`,
     });
-    reset(res.data.data.userById);
+    const user = res.data.data.userById;
+    if (user.userRole === "COURIER") {
+      setRole("COURIER");
+    }
+    reset(user);
   };
   const formSubmit = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/users/${id}` : "/users",
         method: isUpdate ? "PUT" : "POST",
         data,
       });
-      console.log(res);
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
@@ -96,10 +93,7 @@ const UserMutation = () => {
   return (
     <>
       <Layout>
-        <form
-          onSubmit={handleSubmit((data) => formSubmit(data))}
-          className="form"
-        >
+        <form onSubmit={handleSubmit(formSubmit)} className="form">
           <select
             {...register("userRole")}
             onChange={(e) => setRole(e.target.value)}
@@ -171,9 +165,8 @@ const UserMutation = () => {
             {...register("phoneNumber")}
           />
           {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
-          {role === "COURIER" && (
+          {role === "COURIER" &&  (
             <>
-              {" "}
               <label htmlFor="regionId"></label>
               <select name="func" {...register(`regionId`)}>
                 <option value={null}></option>
@@ -187,8 +180,8 @@ const UserMutation = () => {
               {errors.regionId && <p>{errors.regionId.message}</p>}
             </>
           )}
-          <button className="btnLogin" type="submit">
-            Create Accaunt
+          <button className="btnLogin">
+            {!isUpdate ? "Create Accaunt" : "Update User"}
           </button>
         </form>
         <button
