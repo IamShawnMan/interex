@@ -109,6 +109,7 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 		err.errors = validationErrors.errors;
 		return next(err);
 	}
+
 	const { id } = req.params;
 	const userById = await findById(id);
 	if (!userById) {
@@ -173,14 +174,18 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
 	}
 	if (id === +req.params.id) {
-		const newPassword = await hash(req.body.password, 8);
-		await byIdUser.update({ password: newPassword });
+		if(byIdUser.username === req.body.username) {
+			const newPassword = await hash(req.body.password, 8);
+			await byIdUser.update({ password: newPassword });
+		} 
+		else {
+			return next(new AppError("Username to'g'ri kiritilmadi"))
+		}
 	} else {
 		return next(
 			new AppError("Siz bu foydalanuvchi parolini o'zgartira olmaysiz", 400)
 		);
 	}
-
 	res.status(203).json({
 		status: "success",
 		message: "Foydalanuvchi paroli o'zgartirildi",

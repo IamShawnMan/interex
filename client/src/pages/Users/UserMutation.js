@@ -27,51 +27,6 @@ const registerSchema = yup.object().shape({
     .required("Username bo'sh bo'lishi mumkin emas")
     .min(5, "Username 5 ta belgidan kop bolishi kerak")
     .max(20, "Username 20 ta belgidan kam bolishi kerak"),
-  password: yup
-    .string()
-    .trim()
-    .required("Parol bo'sh bo'lishi mumkin emas")
-    .min(6, "Parol 6 ta belgidan kop bolishi kerak")
-    .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
-  userRole: yup
-    .string()
-    .trim()
-    .required("Foydalanuvchi mansabi bo'sh bo'lishi mumkin emas!")
-    .min(
-      5,
-      "Foydalanavchi mansabi eng kamida 5 ta belgidan iborat bo'lishi kerak!"
-    )
-    .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
-});
-const updateSchema = yup.object().shape({
-  firstName: yup
-    .string()
-    .trim()
-    .required("FirstName bo'sh bo'lishi mumkin emas"),
-  phoneNumber: yup
-    .string()
-    .trim()
-    .required("Telefon raqami bo'sh bo'lishi mumkin emas"),
-  passportNumber: yup
-    .string()
-    .trim()
-    .required("Pasport raqami bo'sh bo'lishi mumkin emas"),
-  lastName: yup.string().trim().required("LastName bo'sh bo'lishi mumkin emas"),
-  username: yup
-    .string()
-    .trim()
-    .required("Username bo'sh bo'lishi mumkin emas")
-    .min(5, "Username 5 ta belgidan kop bolishi kerak")
-    .max(20, "Username 20 ta belgidan kam bolishi kerak"),
-  userRole: yup
-    .string()
-    .trim()
-    .required("Foydalanuvchi mansabi bo'sh bo'lishi mumkin emas!")
-    .min(
-      5,
-      "Foydalanavchi mansabi eng kamida 5 ta belgidan iborat bo'lishi kerak!"
-    )
-    .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
 const UserMutation = () => {
   const navigate = useNavigate();
@@ -80,7 +35,7 @@ const UserMutation = () => {
   const [regions, setRegions] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
-  console.log(id);
+  console.log(isUpdate);
   const {
     register,
     handleSubmit,
@@ -122,7 +77,6 @@ const UserMutation = () => {
     reset(user);
   };
   const formSubmit = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/users/${id}` : "/users",
@@ -211,7 +165,7 @@ const UserMutation = () => {
             {...register("phoneNumber")}
           />
           {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
-          {role && role === "COURIER" && (
+          {role === "COURIER" &&  (
             <>
               <label htmlFor="regionId"></label>
               <select name="func" {...register(`regionId`)}>
