@@ -11,26 +11,41 @@ export const BasicTable = ({ columns, data }) => {
   return data.length > 0 ? (
     <table {...getTableProps()}>
       <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps(column.getSortByToggleProps)}>
-                {column.render("Header")}
-                <span>
-                  {column.isSorted ? (column.isSortedDesc ? "🔽" : "🔼") : ""}
-                </span>
-              </th>
-            ))}
-          </tr>
-        ))}
+        {headerGroups.map((headerGroup, i, arr) => {
+          return (
+            <tr key={i + arr[i + 2]} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => {
+                return (
+                  <th
+                    key={column.id ? column.id : column.Header}
+                    {...column.getHeaderProps(column.getSortByToggleProps)}
+                  >
+                    {column.render("Header")}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? "🔽"
+                          : "🔼"
+                        : ""}
+                    </span>
+                  </th>
+                );
+              })}
+            </tr>
+          );
+        })}
       </thead>
       <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
+        {rows.map((row, i, arr) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
+            <tr key={row.id ? row.id : i + arr[i + 2]} {...row.getRowProps()}>
               {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                return (
+                  <td key={cell.column.id} {...cell.getCellProps()}>
+                    {cell.render("Cell")}
+                  </td>
+                );
               })}
             </tr>
           );
