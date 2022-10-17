@@ -27,12 +27,6 @@ const schema = yup.object().shape({
     .required("Username bo'sh bo'lishi mumkin emas")
     .min(5, "Username 5 ta belgidan kop bolishi kerak")
     .max(20, "Username 20 ta belgidan kam bolishi kerak"),
-  password: yup
-    .string()
-    .trim()
-    .required("Parol bo'sh bo'lishi mumkin emas")
-    .min(6, "Parol 6 ta belgidan kop bolishi kerak")
-    .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
 });
 const UserMutation = () => {
   const navigate = useNavigate();
@@ -41,6 +35,7 @@ const UserMutation = () => {
   const [regions, setRegions] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
+  console.log(isUpdate);
   const {
     register,
     handleSubmit,
@@ -78,7 +73,6 @@ const UserMutation = () => {
     reset(res.data.data.userById);
   };
   const formSubmit = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/users/${id}` : "/users",
@@ -171,7 +165,7 @@ const UserMutation = () => {
             {...register("phoneNumber")}
           />
           {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
-          {role === "COURIER" && (
+          {role === "COURIER" &&  (
             <>
               {" "}
               <label htmlFor="regionId"></label>

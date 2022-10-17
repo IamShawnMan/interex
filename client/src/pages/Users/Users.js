@@ -69,7 +69,7 @@ function Users() {
 
         return (
           <Switch
-            onSwich={userStatusChangeHandler.bind(null, {
+            onSwitch={userStatusChangeHandler.bind(null, {
               id: user.id,
               status,
             })}
