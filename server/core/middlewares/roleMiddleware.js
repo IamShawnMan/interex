@@ -7,18 +7,18 @@ const roleMiddleware = roles => {
   return (req, res, next) => {
     if (typeof roles === "string") {
       selectedRoles = [roles];
+      console.log(selectedRoles);
     } else {
       selectedRoles = roles;
-      console.log(selectedRoles)
      
     }
 
-    if (!selectedRoles.includes(req.user.userRole)) {
-      next(new AppError("Forbidden", 403));
-    } else {
-      next();
-    }
-  };
+		if (!selectedRoles.includes(req.user.userRole)) {
+			next(new AppError("Forbidden", 403));
+		} else {
+			next();
+		}
+	};
 };
 
 module.exports = roleMiddleware;
