@@ -40,8 +40,8 @@ const Order = sequelize.define(
 RegiomModel.hasMany(Order, { as: "order", foreignKey: "regionId" });
 Order.belongsTo(RegiomModel, { as: "region" });
 
-DistrictModel.hasMany(Order, { as: "order", foreignKey: "districtId" });
-Order.belongsTo(DistrictModel, { as: "district" });
+DistrictModel.hasMany(Order, {as: "order", foreignKey: "districtId"})
+DistrictModel.belongsTo(DistrictModel, {as: "district"})
 
 PackageModel.hasMany(Order, { as: "order", foreignKey: "packageId" });
 Order.belongsTo(PackageModel, { as: "package" });
