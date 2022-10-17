@@ -193,3 +193,31 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 		data: null,
 	});
 });
+
+exports.getAdmins = catchAsync(async (req, res, next) => {
+	const queryBuilder = new QueryBuilder(req.query);
+	queryBuilder
+		.limitFields()
+		.filter()
+		.paginate()
+		.order()
+		.search(["phoneNumber", "firstName", "lastName"]);
+	
+	queryBuilder.queryOptions.where.userRole = { [Op.eq]: "ADMIN" };
+	queryBuilder.queryOptions.attributes = ["firstName", "lastName", "phoneNumber"]
+
+	let allAdmins = await User.findAndCountAll(queryBuilder.queryOptions)
+
+	if (!allAdmins) {
+		return next(new AppError("Foydalanuvchilar mavjud emas", 404));
+	}
+	allAdmins = queryBuilder.createPagination(allAdmins);
+	res.json({
+		status: "success",
+		message: "All admins",
+		error: null,
+		data: {
+			allAdmins
+		}
+	})
+}) 

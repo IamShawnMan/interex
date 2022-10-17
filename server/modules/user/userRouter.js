@@ -29,5 +29,6 @@ router.put(
 	passwordChangeValidator,
 	userController.updatePassword
 );
+router.get("/info/admins", roleMiddleware(["STORE_OWNER", "COURIER"]), userController.getAdmins)
 
 module.exports = router;
