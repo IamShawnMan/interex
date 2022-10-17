@@ -5,8 +5,6 @@ const PackageModel = require("./Package")
 const OrderModel = require("../order/Order")
 const AppError = require("../../core/utils/appError")
 
-
-
 exports.getAllPackage = catchAsync(async(req,res,next)=>{
     
     const queryBuilder = new QueryBuilder(req.body)
