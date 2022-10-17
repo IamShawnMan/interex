@@ -1,8 +1,10 @@
 const catchAsync = require("../../core/utils/catchAsync")
+const {Op} = require("sequelize")
 const QueryBuilder = require("../../core/utils/QueryBuilder")
 const PackageModel = require("./Package")
 const OrderModel = require("../order/Order")
 const AppError = require("../../core/utils/appError")
+
 
 
 exports.getAllPackage = catchAsync(async(req,res,next)=>{
@@ -42,5 +44,12 @@ exports.getByidPackage = catchAsync(async(req,res,next)=>{
         }
     })
 
+})
+
+exports.getMyOrders = catchAsync(async(req,res,next)=>{
+    console.log(req.user)
+    const {id} = req.user
+    const myOrdersByPackage = await PackageModel.findOne({where: {storeOwnerId: {[Op.eq]: id}}, include: {model: OrderModel, as: "order"}}) 
+    res.json(myOrdersByPackage)
 })
 

@@ -6,6 +6,7 @@ const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult} = require("express-validator");
 const AppError = require("../../core/utils/appError");
 const QueryBuilder = require("../../core/utils/QueryBuilder")
+const statusOrder = require("../../core/constants/orderStatus")
 
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
@@ -28,7 +29,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 exports.createOrder = catchAsync(async (req, res, next) => {
   
    const validationError = validationResult(req)
-  if(!validationError.isEmpty()){
+    if(!validationError.isEmpty()){
     let err = new AppError("Validation error", 403)
     err.isOperational = false
     err.errors = validationError.errors
@@ -40,7 +41,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     existedPackage = await PackageModel.create({storeOwnerId: req.user.id})
   }
 
-  const orders = req.body;
+  const orders = req.body.orders;
   orders?.forEach(async(order)  => {
     const newOrder = await OrderModel.create({
       recipient: order.recipient,
@@ -50,13 +51,19 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       districtId: order.districtId,
       packageId: existedPackage.id
     });
+    newOrder.totalPrice = 0;
     order?.items?.forEach(async (item) => {
-      await OrderItemModel.create({
+      const newItem = await OrderItemModel.create({
         orderId: newOrder.id,
         orderItemTotalPrice: item.quantity * item.price,
         ...item,
       });
+      
+      newOrder.totalPrice += +newItem.orderItemTotalPrice
     });
+    setTimeout(async() => {
+      await newOrder.save()
+    }, 12);
   });
 
   res.status(201).json({
@@ -90,3 +97,18 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
     data: {orderById}
     });
 });
+
+exports.changeOrderStatus = catchAsync(async(req,res,next)=>{
+  const {id} = req.params
+  const {userRole} = req.user
+  const {orderStatus, deliveryPrice} = req.body
+  const orderById = await OrderModel.findByPk(id)
+  const orderStatusByAdmin = Object.values(statusOrder).slice(1,3)
+  if(userRole === "ADMIN"){
+    let deliverySum = deliveryPrice || 45000
+    const resultStatus = orderStatusByAdmin.find(e=>e === orderStatus)
+    await orderById.update({orderStatus: resultStatus, deliveryPrice: deliverySum})
+   
+  }
+   res.send(orderById)
+})
