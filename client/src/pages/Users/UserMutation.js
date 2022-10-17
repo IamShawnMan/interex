@@ -7,7 +7,7 @@ import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
 import Layout from "../../components/Layout/Layout";
 
-const schema = yup.object().shape({
+const registerSchema = yup.object().shape({
   firstName: yup
     .string()
     .trim()
@@ -41,16 +41,16 @@ const UserMutation = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({
+    resolver: yupResolver(isUpdate ? updateSchema : registerSchema),
+  });
 
   useEffect(() => {
-    if (isUpdate) {
-      try {
-        getById();
-      } catch (error) {}
-    }
     getAllUserRoles();
     getAllRegions();
+    if (isUpdate) {
+      getById();
+    }
   }, []);
 
   const getAllUserRoles = async () => {
@@ -70,7 +70,11 @@ const UserMutation = () => {
     const res = await http({
       url: `/users/${id}`,
     });
-    reset(res.data.data.userById);
+    const user = res.data.data.userById;
+    if (user.userRole === "COURIER") {
+      setRole("COURIER");
+    }
+    reset(user);
   };
   const formSubmit = async (data) => {
     try {
@@ -79,7 +83,6 @@ const UserMutation = () => {
         method: isUpdate ? "PUT" : "POST",
         data,
       });
-      console.log(res);
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
@@ -90,10 +93,7 @@ const UserMutation = () => {
   return (
     <>
       <Layout>
-        <form
-          onSubmit={handleSubmit((data) => formSubmit(data))}
-          className="form"
-        >
+        <form onSubmit={handleSubmit(formSubmit)} className="form">
           <select
             {...register("userRole")}
             onChange={(e) => setRole(e.target.value)}
@@ -167,7 +167,6 @@ const UserMutation = () => {
           {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
           {role === "COURIER" &&  (
             <>
-              {" "}
               <label htmlFor="regionId"></label>
               <select name="func" {...register(`regionId`)}>
                 <option value={null}></option>
@@ -181,8 +180,8 @@ const UserMutation = () => {
               {errors.regionId && <p>{errors.regionId.message}</p>}
             </>
           )}
-          <button className="btnLogin" type="submit">
-            Create Accaunt
+          <button className="btnLogin">
+            {!isUpdate ? "Create Accaunt" : "Update User"}
           </button>
         </form>
         <button
