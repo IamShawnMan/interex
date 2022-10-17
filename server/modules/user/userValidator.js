@@ -1,5 +1,4 @@
 const { body } = require("express-validator");
-const AppError = require("../../core/utils/appError");
 
 exports.createValidator = [
 	body("firstName")
