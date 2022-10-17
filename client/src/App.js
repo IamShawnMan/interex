@@ -7,7 +7,7 @@ import Home from "./pages/Home/Home";
 import { useContext, useEffect } from "react";
 import AppContext from "./context/AppContext";
 import Users from "./pages/Users/Users";
-import UserAddEdit from "./pages/Users/UserMutation";
+import UserMutation from "./pages/Users/UserMutation";
 import Orders from "./pages/Orders/Orders/Orders";
 import OrderMutation from "./pages/Orders/OrderMutation/OrderMutation";
 
@@ -34,10 +34,12 @@ function App() {
         <Route path="/login" element={<Login />} />
         {isAuth && <Route path="/home" element={<Home />} />}
         {isAuth && <Route path="*" element={<Navigate to={"home"} />} />}
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<UserAddEdit />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/orders/:id" element={<OrderMutation/>} />
+
+        {isAuth && <Route path="/users" element={<Users />} />}
+        {isAuth && <Route path="/users/:id" element={<UserMutation />} />}
+
+        {isAuth && <Route path="/orders" element={<Orders />} />}
+        {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>

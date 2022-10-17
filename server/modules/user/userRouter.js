@@ -2,7 +2,7 @@ const express = require("express");
 const { body } = require("express-validator");
 const roleMiddleware = require("../../core/middlewares/roleMiddleware");
 const userController = require("./userController");
-const { createValidator, updateValidator } = require("./userValidator");
+const { updateValidator, createValidator, passwordChangeValidator } = require("./userValidator");
 
 const router = express.Router();
 
@@ -26,12 +26,7 @@ router.put(
 );
 router.put(
 	"/:id/password",
-	roleMiddleware(["ADMIN", "COURIER", "STORE_OWNER"]),
-	body("password")
-		.notEmpty()
-		.withMessage("Parol bo'sh bo'lishi mumkin emas")
-		.isLength({ min: 6 })
-		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak"),
+	passwordChangeValidator,
 	userController.updatePassword
 );
 

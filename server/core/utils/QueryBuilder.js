@@ -44,6 +44,24 @@ class QueryBuilder {
 		return this;
 	}
 
+	order() {
+        if(this.queryParams.hasOwnProperty("order")) {
+            const order = this.queryParams.order.split(",")
+            this.queryOptions.order = order.map((field) => {
+				console.log(field);
+                if(field.startsWith("-")) {
+                    return (
+                        [field.slice(1), "desc"]
+                    )
+                } 
+				else  return [field, "asc"]
+            })
+        } else {
+			this.queryOptions.order = [["createdAt", "desc"]]  
+		}
+        return this
+    }
+
 	paginate() {
 		const page = (this.queryParams.page = +this.queryParams.page || 1);
 		const limit = (this.queryParams.size = +this.queryParams.size || 50);
