@@ -9,8 +9,12 @@ router
     .post(roleMiddleware(["STORE_OWNER"]), orderValidator, orderControllers.createOrder
 );
 router
+    .route("/orderstatus")
+    .get(roleMiddleware(["ADMIN"]), orderControllers.getAdminOrderStatus)
+router
     .route("/:id")
     .get(orderControllers.getOrderById)
-    .patch(roleMiddleware(["ADMIN", "COURER"]), orderControllers.changeOrderStatus );
+    .patch(roleMiddleware(["ADMIN", "COURER"]), orderControllers.changeOrderStatus )
+    ;
 
 module.exports = router;
