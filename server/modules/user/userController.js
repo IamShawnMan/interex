@@ -20,7 +20,12 @@ const findById = async (id, next) => {
 exports.getUsers = catchAsync(async (req, res, next) => {
 	const { id } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.limitFields().filter().paginate().order();
+	queryBuilder
+		.limitFields()
+		.filter()
+		.paginate()
+		.order()
+		.search(["phoneNumber", "firstName"]);
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {
