@@ -43,6 +43,8 @@ const registerSchema = yup.object().shape({
     )
     .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
+
+
 const updateSchema = yup.object().shape({
   firstName: yup
     .string()
@@ -73,6 +75,7 @@ const updateSchema = yup.object().shape({
     )
     .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
+
 const UserMutation = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState(null);
@@ -210,7 +213,8 @@ const UserMutation = () => {
             {...register("phoneNumber")}
           />
           {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
-          {role && role === "COURIER" && (
+
+          {role === "COURIER" && (
             <>
               <label htmlFor="regionId"></label>
               <select name="func" {...register(`regionId`)}>
