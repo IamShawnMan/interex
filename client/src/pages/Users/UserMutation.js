@@ -30,9 +30,9 @@ const registerSchema = yup.object().shape({
   password: yup
     .string()
     .trim()
-    .required("Password bo'sh bo'lishi mumkin emas")
-    .min(6, "Password 5 ta belgidan kop bolishi kerak")
-    .max(20, "Password 20 ta belgidan kam bolishi kerak"),
+    .required("Parol bo'sh bo'lishi mumkin emas")
+    .min(6, "Parol 6 ta belgidan kop bolishi kerak")
+    .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
   userRole: yup
     .string()
     .trim()
@@ -43,6 +43,7 @@ const registerSchema = yup.object().shape({
     )
     .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
+
 
 const updateSchema = yup.object().shape({
   firstName: yup
@@ -82,7 +83,7 @@ const UserMutation = () => {
   const [regions, setRegions] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
-  console.log(isUpdate);
+  console.log(id);
   const {
     register,
     handleSubmit,
@@ -212,6 +213,7 @@ const UserMutation = () => {
             {...register("phoneNumber")}
           />
           {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
+
           {role === "COURIER" && (
             <>
               <label htmlFor="regionId"></label>
