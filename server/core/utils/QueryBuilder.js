@@ -1,11 +1,39 @@
 const { Op } = require("sequelize");
 
 const excludeParams = ["page", "size", "fields", "search", "order"];
+const operators = ["gt", "lt", "gte", "lte", "in"];
 
 class QueryBuilder {
 	constructor(queryParams) {
 		this.queryParams = queryParams;
 		this.queryOptions = {};
+	}
+
+	filter() {
+		const filterFields = { ...this.queryParams };
+		excludeParams.forEach((p) => delete filterFields[p]);
+
+		const filteredObj = {};
+		Object.keys(filterFields).forEach((k) => {
+			const filterItem = filterFields[k];
+
+			if (typeof filterItem === "object") {
+				Object.keys(filterItem).forEach((ik) => {
+					if (operators.includes[ik]) {
+						filteredObj[k] = { [Op[ik]]: filterItem[ik] };
+					}
+				});
+			} else {
+				filteredObj[k] = { [Op.eq]: filterItem };
+			}
+		});
+		if (this.queryOptions.where) {
+			this.queryOptions.where = { ...filteredObj, ...this.queryOptions.where };
+		} else {
+			this.queryOptions.where = filteredObj;
+		}
+
+		return this;
 	}
 
 	limitFields() {
@@ -22,6 +50,23 @@ class QueryBuilder {
 
 		this.queryOptions.limit = +limit;
 		this.queryOptions.offset = +(page - 1) * limit;
+		return this;
+	}
+
+	search(searchFielsd) {
+		if (!this.queryParams.search) return this;
+
+		const searchObj = {
+			[Op.or]: searchFielsd.map((field) => ({
+				[field]: { [Op.iLike]: `%${this.queryParams.search}%` },
+			})),
+		};
+
+		if (this.queryOptions.where) {
+			this.queryOptions.where = { ...searchObj, ...this.queryOptions.where };
+		} else {
+			this.queryOptions.where = searchObj;
+		}
 		return this;
 	}
 
@@ -46,6 +91,20 @@ class QueryBuilder {
 				},
 			};
 		}
+	}
+
+	order() {
+		if (this.queryParams.hasOwnProperty("order")) {
+			const order = this.queryParams.order.split(",");
+			this.queryOptions.order = order.map((field) => {
+				if (field.startsWith("-")) {
+					return [field.slice(1), "desc"];
+				} else return [field, "asc"];
+			});
+		} else {
+			this.queryOptions.order = [["createdAt", "desc"]];
+		}
+		return this;
 	}
 }
 
