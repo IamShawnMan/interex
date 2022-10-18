@@ -8,12 +8,11 @@ const District = sequelize.define("district", {
 		autoIncrement: true,
 		primaryKey: true,
 	},
-	districtName: {
+	name: {
 		type: DataTypes.STRING,
 		unique: true,
 		allowNull: false,
 	},
 });
-
 
 module.exports = District;

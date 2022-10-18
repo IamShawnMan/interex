@@ -2,206 +2,206 @@
     {
         "id": "12",
         "regionId": "1",
-        "districtName": "Konimex tumani"
+        "name": "Konimex tumani"
     },
     {
         "id": "13",
         "regionId": "1",
-        "districtName": "Karmana tumani"
+        "name": "Karmana tumani"
     },
     {
         "id": "14",
         "regionId": "1",
-        "districtName": "Qiziltepa tumani"
+        "name": "Qiziltepa tumani"
     },
     {
         "id": "15",
         "regionId": "1",
-        "districtName": "Xatirchi tumani"
+        "name": "Xatirchi tumani"
     },
     {
         "id": "16",
         "regionId": "1",
-        "districtName": "Navbahor tumani"
+        "name": "Navbahor tumani"
     },
     {
         "id": "17",
         "regionId": "1",
-        "districtName": "Nurota tumani"
+        "name": "Nurota tumani"
     },
     {
         "id": "18",
         "regionId": "1",
-        "districtName": "Tomdi tumani"
+        "name": "Tomdi tumani"
     },
     {
         "id": "19",
         "regionId": "1",
-        "districtName": "Uchquduq tumani"
+        "name": "Uchquduq tumani"
     },
     {
         "id": "20",
         "regionId": "2",
-        "districtName": "Bektemir tumani"
+        "name": "Bektemir tumani"
     },
     {
         "id": "21",
         "regionId": "2",
-        "districtName": "Mirobod tumani"
+        "name": "Mirobod tumani"
     },
     {
         "id": "22",
         "regionId": "2",
-        "districtName": "Mirzo Ulug'bek tumani"
+        "name": "Mirzo Ulug'bek tumani"
     },
     {
         "id": "23",
         "regionId": "2",
-        "districtName": "Sergeli tumani"
+        "name": "Sergeli tumani"
     },
     {
         "id": "24",
         "regionId": "2",
-        "districtName": "Olmazor tumani"
+        "name": "Olmazor tumani"
     },
     {
         "id": "25",
         "regionId": "2",
-        "districtName": "Uchtepa tumani"
+        "name": "Uchtepa tumani"
     },
     {
         "id": "26",
         "regionId": "2",
-        "districtName": "Shayxontoxur tumani"
+        "name": "Shayxontoxur tumani"
     },
     {
         "id": "27",
         "regionId": "2",
-        "districtName": "Yashnobod tumani"
+        "name": "Yashnobod tumani"
     },
     {
         "id": "28",
         "regionId": "2",
-        "districtName": "Chilonzor tumani"
+        "name": "Chilonzor tumani"
     },
     {
         "id": "29",
         "regionId": "2",
-        "districtName": "Yunusobod tumani"
+        "name": "Yunusobod tumani"
     },
     {
         "id": "30",
         "regionId": "2",
-        "districtName": "Yakkasaroy tumani"
+        "name": "Yakkasaroy tumani"
     },
     {
         "id": "31",
         "regionId": "3",
-        "districtName": "Bulung'ur tumani"
+        "name": "Bulung'ur tumani"
     },
     {
         "id": "32",
         "regionId": "3",
-        "districtName": "Ishtixon tumani"
+        "name": "Ishtixon tumani"
     },
     {
         "id": "33",
         "regionId": "3",
-        "districtName": "Jomboy tumani"
+        "name": "Jomboy tumani"
     },
     {
         "id": "34",
         "regionId": "3",
-        "districtName": "Kattaqo'rg'on tumani"
+        "name": "Kattaqo'rg'on tumani"
     },
     {
         "id": "35",
         "regionId": "3",
-        "districtName": "Qo'shrabot tumani"
+        "name": "Qo'shrabot tumani"
     },
     {
         "id": "36",
         "regionId": "3",
-        "districtName": "Narpay tumani"
+        "name": "Narpay tumani"
     },
     {
         "id": "37",
         "regionId": "3",
-        "districtName": "Nurobod tumani"
+        "name": "Nurobod tumani"
     },
     {
         "id": "38",
         "regionId": "3",
-        "districtName": "Oqdaro tumani"
+        "name": "Oqdaro tumani"
     },
     {
         "id": "39",
         "regionId": "3",
-        "districtName": "Paxtachi tumani"
+        "name": "Paxtachi tumani"
     },
     {
         "id": "40",
         "regionId": "3",
-        "districtName": "Payariq tumani"
+        "name": "Payariq tumani"
     },
     {
         "id": "41",
         "regionId": "3",
-        "districtName": "Pasdarg'om tumani"
+        "name": "Pasdarg'om tumani"
     },
     {
         "id": "42",
         "regionId": "3",
-        "districtName": "Samarqand tumani"
+        "name": "Samarqand tumani"
     },
     {
         "id": "43",
         "regionId": "3",
-        "districtName": "Toyloq tumani"
+        "name": "Toyloq tumani"
     },
     {
         "id": "44",
         "regionId": "3",
-        "districtName": "Urgut tumani"
+        "name": "Urgut tumani"
     },
     {
         "id": "45",
         "regionId": "4",
-        "districtName": "Boyovut tumani"
+        "name": "Boyovut tumani"
     },
     {
         "id": "46",
         "regionId": "4",
-        "districtName": "Oqoltin tumani"
+        "name": "Oqoltin tumani"
     },
     {
         "id": "47",
         "regionId": "4",
-        "districtName": "Guliston tumani"
+        "name": "Guliston tumani"
     },
     {
         "id": "48",
         "regionId": "4",
-        "districtName": "Xovos tumani"
+        "name": "Xovos tumani"
     },
     {
         "id": "49",
         "regionId": "4",
-        "districtName": "Mirzaobod tumani"
+        "name": "Mirzaobod tumani"
     },
     {
         "id": "50",
         "regionId": "4",
-        "districtName": "Sardoba tumani"
+        "name": "Sardoba tumani"
     },
     {
         "id": "51",
         "regionId": "4",
-        "districtName": "Sayxunobod tumani"
+        "name": "Sayxunobod tumani"
     },
     {
         "id": "52",
         "regionId": "4",
-        "districtName": "Sirdaryo tumani"
+        "name": "Sirdaryo tumani"
     }
 ]

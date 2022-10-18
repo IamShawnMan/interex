@@ -2,9 +2,7 @@ const { body } = require("express-validator");
 const AppError = require("../../core/utils/appError");
 
 exports.createValidator = [
-	body("firstName")
-		.notEmpty()
-		.withMessage("Ism bo'sh bo'lishi mumkin emas"),
+	body("firstName").notEmpty().withMessage("Ism bo'sh bo'lishi mumkin emas"),
 	body("lastName")
 		.notEmpty()
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
@@ -30,9 +28,7 @@ exports.createValidator = [
 ];
 
 exports.updateValidator = [
-	body("firstName")
-		.notEmpty()
-		.withMessage("Ism bo'sh bo'lishi mumkin emas"),
+	body("firstName").notEmpty().withMessage("Ism bo'sh bo'lishi mumkin emas"),
 	body("lastName")
 		.notEmpty()
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
@@ -66,4 +62,4 @@ exports.passwordChangeValidator = [
 		.withMessage("Parol bo'sh bo'lishi mumkin emas")
 		.isLength({ min: 6 })
 		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak"),
-]
+];
