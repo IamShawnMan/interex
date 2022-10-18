@@ -7,7 +7,7 @@ router
     .get(roleMiddleware(["STORE_OWNER"]), packageControllers.getMyOrders)
 
 router
-    .route("/:id")
+    .route("/:id/orders")
     .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]),packageControllers.getOrdersByPackage)
 
 router
