@@ -5,16 +5,20 @@ const orderValidator = require("./orderExpressValidator");
 
 router
     .route("/")
-    .get(roleMiddleware(["ADMIN", "SUPER_ADMIN","STORE_OWNER"]),orderControllers.getAllOrders)
-    .post(roleMiddleware(["STORE_OWNER"]), orderValidator, orderControllers.createOrder
-);
+
+    .get(roleMiddleware(["ADMIN", "SUPER_ADMIN"]),orderControllers.getAllOrders)
+    .post(roleMiddleware(["STORE_OWNER"]), orderValidator.creatingOrderValidator, orderControllers.createOrder);
     router
-        .route("/orderstatus")
+        .route("/ ")
         .get(roleMiddleware(["ADMIN"]), orderControllers.adminOrderStatus)
 router
     .route("/:id")
     .get(orderControllers.getOrderById)
-    .patch(roleMiddleware(["ADMIN", "COURER"]), orderControllers.changeOrderStatus )
-    ;
+    .put(orderValidator.updatedOrderValidator, orderControllers.updateOrder)
+    .patch(roleMiddleware(["ADMIN", "COURER"]), orderControllers.changeOrderStatus );
+
+router
+    .route("/devprice")
+    .get(orderControllers.getAllDeliveryPrice)
 
 module.exports = router;

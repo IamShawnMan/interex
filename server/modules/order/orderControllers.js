@@ -1,12 +1,13 @@
 const OrderModel = require("./Order");
 const OrderItemModel = require("../orderitem/OrderItem");
 const PackageModel = require("../package/Package")
-const { Op } = require("sequelize");
+const {Op} = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult} = require("express-validator");
 const AppError = require("../../core/utils/appError");
 const QueryBuilder = require("../../core/utils/QueryBuilder")
 const statusOrder = require("../../core/constants/orderStatus")
+const priceDelivery = require("../../core/constants/deliveryPrice")
 
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
@@ -63,7 +64,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     });
     setTimeout(async() => {
       await newOrder.save()
-    }, 12);
+    }, 1000);
   });
 
   res.status(201).json({
@@ -72,7 +73,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     errrors: null,
     data: null
   });
-  //
 });
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
@@ -83,7 +83,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
   queryBuilder.limitFields()
 
   const orderById = await OrderModel.findByPk(id, {...queryBuilder.queryOptions,
-    include: { model: OrderItemModel, as: "item" },
+    include: { model: OrderItemModel, as: "items" },
   });
 
   if(!orderById){
@@ -102,18 +102,21 @@ exports.changeOrderStatus = catchAsync(async(req,res,next)=>{
   const {id} = req.params
   const {userRole} = req.user
   const {orderStatus, deliveryPrice} = req.body
-  console.log(orderStatus);
   const orderById = await OrderModel.findByPk(id)
-  const orderStatusVariables = Object.values(statusOrder)
+  const orderStatusVariables = Object.values(statusOrder).slice(1,3)
   if(userRole === "ADMIN"){
-    let deliverySum = deliveryPrice || 45000
-    console.log(orderStatusVariables);
+    const deliverySum = deliveryPrice || 45000
     const changeOrderStatus = orderStatusVariables.find(e=>e === orderStatus)
-    console.log(changeOrderStatus,"sfsdfsfsdfs");
+    
     await orderById.update({orderStatus: changeOrderStatus, deliveryPrice: deliverySum})
    
   }
-   res.send(orderById)
+   res.status(203).json({
+    status: "success",
+    message: "order statusi o`zgardi",
+    error: null,
+    data: null
+   })
 })
 
 exports.adminOrderStatus = catchAsync(async(req,res,next)=>{
@@ -121,3 +124,40 @@ exports.adminOrderStatus = catchAsync(async(req,res,next)=>{
   res.json(orderStatusVariables)
 })
 
+exports.updateOrder = catchAsync(async(req,res,next)=>{
+  const {id} = req.params;
+  
+  const {recipient, recipientPhoneNumber, regionId, districtId, items} = req.body
+  
+  let orderById = await OrderModel.findByPk(id, {include: {model: OrderItemModel, as: "items"}})
+
+  await OrderItemModel.destroy({where: {orderId: {[Op.eq]: orderById.id}}})
+
+  await orderById.update({recipient, recipientPhoneNumber, regionId, districtId})
+  orderById.totalPrice = 0
+  items?.forEach(async (item) => {
+    const newItem = await OrderItemModel.create({
+      productName: item.productName, 
+      quantity: item.quantity, 
+      price: item.price, 
+      orderItemTotalPrice: +item.quantity * +item.price,
+      orderId: orderById.id
+  })
+  orderById.totalPrice += newItem.orderItemTotalPrice
+})
+setTimeout(async()=>{
+  await orderById.save()
+}, 1000)
+  res.status(203).json({
+    status: "success",
+    message: "buyurtma taxrirlandi",
+    error: null,
+    data: null
+  })
+})
+
+exports.getAllDeliveryPrice = (req,res,next)=>{
+  const allPrice = Object.values(priceDelivery)
+
+  res.json(allPrice)
+}
