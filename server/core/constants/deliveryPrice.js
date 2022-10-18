@@ -1,0 +1,12 @@
+exports.SUM45000 = 45000
+exports.SUM50000 = 50000
+exports.SUM55000 = 55000
+exports.SUM60000 = 60000
+exports.SUM65000 = 65000
+exports.SUM70000 = 70000
+exports.SUM75000 = 75000
+exports.SUM80000 = 80000
+exports.SUM85000 = 85000
+exports.SUM90000 = 90000
+exports.SUM95000 = 95000
+exports.SUM100000 = 100000
