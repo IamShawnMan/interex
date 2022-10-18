@@ -21,7 +21,7 @@ const Post = sequelize.define("post", {
 	},
 	postStatus: {
 		type: DataTypes.ENUM(Object.values(postStatus)),
-		// allowNull: false,
+		defaultValue: postStatus.POST_NEW,
 	},
 });
 

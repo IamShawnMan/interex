@@ -6,7 +6,7 @@ const QueryBuilder = require("../../core/utils/QueryBuilder");
 const Order = require("../order/Order");
 const Region = require("../region/Region");
 const userRoles = require("../../core/constants/userRole");
-const postAllStatuses = require("../../core/constants/postStatus");
+const postStatuses = require("../../core/constants/postStatus");
 const orderStatuses = require("../../core/constants/orderStatus");
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
@@ -78,25 +78,23 @@ exports.createPost = catchAsync(async (req, res, next) => {
 
 	const newPost = await Post.create({
 		regionId: regionId,
-		postStatus: postAllStatuses.POST_NEW,
 	});
 
-	const allAcceptedOrdersByRegion = await Order.findAll({
-		where: {
-			orderStatus: {
-				[Op.eq]: orderStatuses.STATUS_ACCEPTED,
-			},
-			regionId: {
-				[Op.eq]: regionId,
-			},
-		},
-	});
-
-	allAcceptedOrdersByRegion.map(async (ord) => {
-		await ord.update({
+	await Order.update(
+		{
 			postId: newPost.id,
-		});
-	});
+		},
+		{
+			where: {
+				orderStatus: {
+					[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+				},
+				regionId: {
+					[Op.eq]: regionId,
+				},
+			},
+		}
+	);
 
 	res.json({
 		status: "success",
@@ -122,4 +120,3 @@ exports.postStatusUpdate = catchAsync(async (req, res, next) => {
 		await getPostById.update({ postStatus: postStatus });
 	}
 });
-
