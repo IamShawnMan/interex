@@ -62,8 +62,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       
       newOrder.totalPrice += +newItem.orderItemTotalPrice
     });
-    const all = await OrderItemModel.findAll({where: {orderId: newOrder.id}})
-    const price = await all.sum("orderItemTotalPrice")
+    const a = await OrderItemModel.count({where: {orderId: newOrder.id}})
+    console.log(a)    
     setTimeout(async() => {
       await newOrder.save()
     }, 1000);
