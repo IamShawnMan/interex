@@ -61,7 +61,6 @@ function Orders() {
 
   return (
     <Layout>
-
         {user.userRole === "STORE_OWNER" &&  <Link to="/orders/new">Add Order</Link>}
       {value?.length > 0 ? (
         <BasicTable columns={ordersCols} data={value} />
