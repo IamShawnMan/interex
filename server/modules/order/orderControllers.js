@@ -52,7 +52,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       districtId: order.districtId,
       packageId: existedPackage.id
     });
-    newOrder.totalPrice = 0;
+    // newOrder.totalPrice = 0;
     order?.items?.forEach(async (item) => {
       const newItem = await OrderItemModel.create({
         orderId: newOrder.id,
@@ -62,6 +62,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       
       newOrder.totalPrice += +newItem.orderItemTotalPrice
     });
+    const all = await OrderItemModel.findAll({where: {orderId: newOrder.id}})
+    const price = await all.sum("orderItemTotalPrice")
     setTimeout(async() => {
       await newOrder.save()
     }, 1000);
