@@ -18,7 +18,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
     .filter()
     .paginate()
     .order()
-    .search(["recipientPhoneNumber", "recepient"]);
+    .search(["recipientPhoneNumber", "recipient"]);
 
   let allOrders = await OrderModel.findAndCountAll({...queryBuilder.queryOptions});
   allOrders = queryBuilder.createPagination(allOrders)
