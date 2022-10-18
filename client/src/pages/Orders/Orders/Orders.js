@@ -42,6 +42,8 @@ function Orders() {
     { Header: "DistrictId", accessor: "districtId" },
     { Header:"Action", accessor: (order)=>{ return (
       <div>
+       { user.userRole==="STORE_OWNER"&& <Link to={`/orders/${order.id}`}>Update</Link>}
+   { user.userRole==="ADMIN"&&  <>
         <button
           style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
           onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}
@@ -49,17 +51,16 @@ function Orders() {
           <>ACCEPTED</> 
         </button><button
           style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
-          onClick={()=>changeOrderStatus(order.id,"REJECTED")}
+          onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}
         >
-         <>REJECTED</> 
-        </button>
-      </div>
+         <>NOT EXIST</> 
+        </button></>}
+              </div>
     );}}
   ];
 
   return (
     <Layout>
-
         {user.userRole === "STORE_OWNER" &&  <Link to="/orders/new">Add Order</Link>}
       {value?.length > 0 ? (
         <BasicTable columns={ordersCols} data={value} />

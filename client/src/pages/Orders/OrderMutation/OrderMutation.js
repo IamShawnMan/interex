@@ -33,14 +33,26 @@ const schema = object().shape({
 function OrderMutation() {
   const [regions, setRegions] = useState(null);
   const [districts, setDistricts] = useState(null);
+  const [regionId, setRegionId] = useState(null);
   const { id } = useParams();
 
   const isUpdate = id !== "new";
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
   useEffect(() => {
     getAllRegions();
-    getAllDistrict();
-    append({
+
+    regionId&&getAllDistrict(regionId);
+    if (isUpdate) {
+      getById();
+    }
+   !isUpdate&&!regionId&& append({
       recipient: "",
       note: "",
       recipientPhoneNumber: "",
@@ -48,9 +60,8 @@ function OrderMutation() {
       districtId: "",
       orderItems: [],
     });
-  }, []);
+  }, [regionId]);
   const formSubmit = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/orders/${id}` : "/orders",
@@ -65,12 +76,18 @@ function OrderMutation() {
       toast.error(error.response.data.message);
     }
   };
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  
+
+  const getById = async () => {
+    const res = await http({
+      url: `/orders/${id}`,
+    });
+    console.log(res);
+    // const user = res.data.data.userById;
+   
+    // reset(user);
+  };
+ 
   const getAllRegions = async () => {
     const res = await http({
       url: "/regions",
@@ -78,12 +95,13 @@ function OrderMutation() {
     });
     setRegions(res.data.data.allRegions);
   };
-  const getAllDistrict = async () => {
+  const getAllDistrict = async (id) => {
     const res = await http({
-      url: "/districts",
+      url:  `regions/${id}/districts`,
       method: "GET",
     });
-    setDistricts(res.data.data.allDistricts);
+    console.log(res);
+    setDistricts(res.data.data.getDistrictByRegion);
   };
   const { fields, append, remove } = useFieldArray({
     control,
@@ -115,7 +133,9 @@ function OrderMutation() {
               {errors?.orders?.[index] && (
                 <>{errors?.orders?.[index]?.recipientPhoneNumber?.message}</>
               )}
-              <select {...register(`orders.${index}.regionId`)}>
+              <select  {...register(`orders.${index}.regionId`)}
+               onChange={e=>setRegionId(e.target.value)}
+              >
                 <option value={null}></option>
                 {regions &&
                   regions.map((c) => (
@@ -127,7 +147,7 @@ function OrderMutation() {
               {errors?.orders?.[index] && (
                 <>{errors?.orders?.[index]?.regionId?.message}</>
               )}
-              <select {...register(`orders.${index}.districtId`)}>
+            { regionId&& <select {...register(`orders.${index}.districtId`)}>
                 <option value={null}></option>
                 {districts &&
                   districts.map((c) => (
@@ -135,7 +155,7 @@ function OrderMutation() {
                       {c.districtName}
                     </option>
                   ))}
-              </select>
+              </select>}
               {errors?.orders?.[index] && (
                 <>{errors?.orders?.[index]?.districtId?.message}</>
               )}
@@ -166,7 +186,7 @@ function OrderMutation() {
         >
           Add Order
         </button>
-        <input type="submit" />
+      <button type="submit">{isUpdate?"Update Order":"Create Order"}</button> 
       </form>
     </Layout>
   );

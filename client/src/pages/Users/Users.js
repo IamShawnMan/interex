@@ -5,7 +5,6 @@ import { useState } from "react";
 import { BasicTable } from "../../components/Table/BasicTable";
 import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
-import styles from "./Users.module.css";
 import Switch from "../../components/UI/Switch/Switch";
 function Users() {
   const [value, setValue] = useState([]);
