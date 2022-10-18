@@ -53,7 +53,7 @@ function Home() {
   return (
     <Layout>
       <div>
-        <Link to="/users">Users</Link>
+      {user.userRole === "SUPER_ADMIN" &&<Link to="/users">Users</Link>}
         <br />
         <br />
         {/* <form
@@ -91,7 +91,7 @@ function Home() {
         <br />
         {updatePassword && <UpdatePassword id={user.id} />}
 
-        {user.userRole === "STORE_ADMIN" && <Link to="/orders">Orders</Link>}
+        {(user.userRole === "STORE_OWNER"||user.userRole === "ADMIN")&& <Link to="/orders">Orders</Link>}
         {user.userRole === "ADMIN" && <Link to="/packages">Packages</Link>}
         <h1 className={styles.h1}>Welcome to the Interex.uz portal</h1>
         <h2 onClick={logoutHandle} className={styles.logout}>
