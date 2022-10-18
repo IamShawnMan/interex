@@ -9,10 +9,14 @@ exports.createValidator = [
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
 	body("phoneNumber")
 		.notEmpty()
-		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas"),
+		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
+		.matches(/^[+]998[0-9]{9}$/)
+		.withMessage("Telefon raqam xato kiritildi"),
 	body("passportNumber")
 		.notEmpty()
-		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas"),
+		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas")
+		.matches(/^[A-Z]{2}[0-9]{7}$/)
+		.withMessage("Passport raqami xato kiritildi"),
 	body("username")
 		.notEmpty()
 		.withMessage("Username bo'sh bo'lishi mumkin emas")
@@ -37,10 +41,14 @@ exports.updateValidator = [
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
 	body("phoneNumber")
 		.notEmpty()
-		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas"),
+		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
+		.matches(/^[+]998[0-9]{9}$/)
+		.withMessage("Telefon raqam xato kiritildi"),
 	body("passportNumber")
 		.notEmpty()
-		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas"),
+		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas")
+		.matches(/^[A-Z]{2}[0-9]{7}$/)
+		.withMessage("Passport raqami xato kiritildi"),
 	body("username")
 		.notEmpty()
 		.withMessage("Username bo'sh bo'lishi mumkin emas")

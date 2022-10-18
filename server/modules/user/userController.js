@@ -86,13 +86,6 @@ exports.createUsers = catchAsync(async (req, res, next) => {
 			new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin")
 		);
 	}
-	const { phoneNumber, passportNumber } = req.body;
-	if (!phoneNumber.match(/^[+]998[0-9]{9}$/)) {
-		return next(new AppError("Telefon raqam xato kiritildi"));
-	}
-	if (!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
-		return next(new AppError("Passport raqami xato kiritildi"));
-	}
 	const newUser = await User.create(req.body);
 	res.json({
 		status: "success",
@@ -116,12 +109,6 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
 	}
 	const { phoneNumber, passportNumber } = req.body;
-	if (!phoneNumber.match(/^[+]998[0-9]{9}$/)) {
-		return next(new AppError("Telefon raqam xato kiritildi"));
-	}
-	if (!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
-		return next(new AppError("Passport raqami xato kiritildi"));
-	}
 	const updateUser = await userById.update(req.body);
 	res.json({
 		status: "success",
