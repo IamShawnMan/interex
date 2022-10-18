@@ -1,7 +1,7 @@
 const OrderModel = require("./Order");
 const OrderItemModel = require("../orderitem/OrderItem");
 const PackageModel = require("../package/Package")
-const { Op } = require("sequelize");
+ const { Op} = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult} = require("express-validator");
 const AppError = require("../../core/utils/appError");
@@ -63,7 +63,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     });
     setTimeout(async() => {
       await newOrder.save()
-    }, 12);
+    }, 1000);
   });
 
   res.status(201).json({
@@ -72,7 +72,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     errrors: null,
     data: null
   });
-  //
 });
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
@@ -106,8 +105,8 @@ exports.changeOrderStatus = catchAsync(async(req,res,next)=>{
   const orderStatusVariables = Object.values(statusOrder).slice(1,3)
   if(userRole === "ADMIN"){
     let deliverySum = deliveryPrice || 45000
-    const changeOrderStatus = orderStatusVariables.find(e=>e === orderStatus)
-    await orderById.update({orderStatus: changeOrderStatus, deliveryPrice: deliverySum})
+    const changedOrderStatus = orderStatusVariables.find(e=>e === orderStatus)
+    await orderById.update({orderStatus: changedOrderStatus, deliveryPrice: deliverySum})
    
   }
    res.send(orderById)
@@ -116,5 +115,27 @@ exports.changeOrderStatus = catchAsync(async(req,res,next)=>{
 exports.adminOrderStatus = catchAsync(async(req,res,next)=>{
   const orderStatusVariables = Object.values(statusOrder).slice(1,3)
   res.json(orderStatusVariables)
+})
+
+exports.updateOrder = catchAsync(async(req,res,next)=>{
+  const {id} = req.params;
+  
+  const {recipient, recipientPhoneNumber, regionId, districtId, items} = req.body
+  
+  const orderById = await OrderModel.findByPk(id, {include: {model: OrderItemModel, as: "item"}})
+
+  await OrderItemModel.destroy({where: {orderId: {[Op.eq]: orderById.id}}})
+
+  await orderById.update({recipient, recipientPhoneNumber, regionId, districtId})
+  items?.forEach(async (item) => {
+    await OrderItemModel.create({
+      productName: item.productName, 
+      quantity: item.quantity, 
+      price: item.price, 
+      orderItemTotalPrice: +item.quantity * +item.price,
+      orderId: orderById.id
+  })})
+
+  res.json("salom")
 })
 

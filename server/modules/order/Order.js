@@ -27,11 +27,7 @@ const Order = sequelize.define(
 			defaultValue: orderStatus.STATUS_NEW,
 			allowNull: false,
 		},
-		deliveryPrice: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-			defaultValue: 45000,
-		},
+		deliveryPrice: DataTypes.INTEGER,
 		totalPrice: DataTypes.INTEGER,
 	},
 	{ underscored: true }
