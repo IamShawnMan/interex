@@ -7,6 +7,7 @@ const { validationResult} = require("express-validator");
 const AppError = require("../../core/utils/appError");
 const QueryBuilder = require("../../core/utils/QueryBuilder")
 const statusOrder = require("../../core/constants/orderStatus")
+const priceDelivery = require("../../core/constants/deliveryPrice")
 
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
@@ -104,12 +105,18 @@ exports.changeOrderStatus = catchAsync(async(req,res,next)=>{
   const orderById = await OrderModel.findByPk(id)
   const orderStatusVariables = Object.values(statusOrder).slice(1,3)
   if(userRole === "ADMIN"){
-    let deliverySum = deliveryPrice || 45000
-    const changedOrderStatus = orderStatusVariables.find(e=>e === orderStatus)
-    await orderById.update({orderStatus: changedOrderStatus, deliveryPrice: deliverySum})
+    const deliverySum = deliveryPrice || 45000
+    const changeOrderStatus = orderStatusVariables.find(e=>e === orderStatus)
+    
+    await orderById.update({orderStatus: changeOrderStatus, deliveryPrice: deliverySum})
    
   }
-   res.send(orderById)
+   res.status(203).json({
+    status: "success",
+    message: "order statusi o`zgardi",
+    error: null,
+    data: null
+   })
 })
 
 exports.adminOrderStatus = catchAsync(async(req,res,next)=>{
@@ -149,3 +156,8 @@ setTimeout(async()=>{
   })
 })
 
+exports.getAllDeliveryPrice = (req,res,next)=>{
+  const allPrice = Object.values(priceDelivery)
+
+  res.json(allPrice)
+}
