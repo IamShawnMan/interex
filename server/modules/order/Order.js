@@ -33,13 +33,13 @@ const Order = sequelize.define(
 	{ underscored: true }
 );
 
-RegiomModel.hasMany(Order, { as: "order", foreignKey: "regionId" });
+RegiomModel.hasMany(Order, { as: "orders", foreignKey: "regionId" });
 Order.belongsTo(RegiomModel, { as: "region" });
 
-DistrictModel.hasMany(Order, {as: "order", foreignKey: "districtId"})
+DistrictModel.hasMany(Order, {as: "orders", foreignKey: "districtId"})
 DistrictModel.belongsTo(DistrictModel, {as: "district"})
 
-PackageModel.hasMany(Order, { as: "order", foreignKey: "packageId" });
+PackageModel.hasMany(Order, { as: "orders", foreignKey: "packageId" });
 Order.belongsTo(PackageModel, { as: "package" });
 
 module.exports = Order;

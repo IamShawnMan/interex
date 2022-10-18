@@ -91,7 +91,7 @@ function Home() {
         <br />
         {updatePassword && <UpdatePassword id={user.id} />}
 
-        {user.userRole === "STORE_ADMIN" && <Link to="/orders">Orders</Link>}
+        {user.userRole === "STORE_OWNER" && <Link to="/orders">Orders</Link>}
         {user.userRole === "ADMIN" && <Link to="/packages">Packages</Link>}
         <h1 className={styles.h1}>Welcome to the Interex.uz portal</h1>
         <h2 onClick={logoutHandle} className={styles.logout}>

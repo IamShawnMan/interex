@@ -1,7 +1,7 @@
 const OrderModel = require("./Order");
 const OrderItemModel = require("../orderitem/OrderItem");
 const PackageModel = require("../package/Package")
- const { Op} = require("sequelize");
+const {Op} = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult} = require("express-validator");
 const AppError = require("../../core/utils/appError");
@@ -82,7 +82,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
   queryBuilder.limitFields()
 
   const orderById = await OrderModel.findByPk(id, {...queryBuilder.queryOptions,
-    include: { model: OrderItemModel, as: "item" },
+    include: { model: OrderItemModel, as: "items" },
   });
 
   if(!orderById){
@@ -122,20 +122,30 @@ exports.updateOrder = catchAsync(async(req,res,next)=>{
   
   const {recipient, recipientPhoneNumber, regionId, districtId, items} = req.body
   
-  const orderById = await OrderModel.findByPk(id, {include: {model: OrderItemModel, as: "item"}})
+  let orderById = await OrderModel.findByPk(id, {include: {model: OrderItemModel, as: "items"}})
 
   await OrderItemModel.destroy({where: {orderId: {[Op.eq]: orderById.id}}})
 
   await orderById.update({recipient, recipientPhoneNumber, regionId, districtId})
+  orderById.totalPrice = 0
   items?.forEach(async (item) => {
-    await OrderItemModel.create({
+    const newItem = await OrderItemModel.create({
       productName: item.productName, 
       quantity: item.quantity, 
       price: item.price, 
       orderItemTotalPrice: +item.quantity * +item.price,
       orderId: orderById.id
-  })})
-
-  res.json("salom")
+  })
+  orderById.totalPrice += newItem.orderItemTotalPrice
+})
+setTimeout(async()=>{
+  await orderById.save()
+}, 1000)
+  res.status(203).json({
+    status: "success",
+    message: "buyurtma taxrirlandi",
+    error: null,
+    data: null
+  })
 })
 
