@@ -1,7 +1,7 @@
 const Region = require("./Region");
 const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 const District = require("../district/District");
 
 exports.getAllRegions = catchAsync(async (req, res, next) => {

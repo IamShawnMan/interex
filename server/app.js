@@ -1,6 +1,6 @@
 const express = require("express");
 const errorController = require("./modules/error/errorController");
-const AppError = require("./core/utils/appError");
+const AppError = require("./core/utils/AppError");
 const userRouter = require("./modules/user/userRouter");
 const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");

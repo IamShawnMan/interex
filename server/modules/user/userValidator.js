@@ -1,4 +1,5 @@
 const { body } = require("express-validator");
+const AppError = require("../../core/utils/AppError");
 
 exports.createValidator = [
 	body("firstName")
@@ -29,7 +30,7 @@ exports.createValidator = [
 		.notEmpty()
 		.withMessage("Parol bo'sh bo'lishi mumkin emas")
 		.isLength({ min: 6 })
-		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak"),
+		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak")
 ];
 
 exports.updateValidator = [
@@ -74,3 +75,10 @@ exports.passwordChangeValidator = [
 		.isLength({ min: 6 })
 		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak"),
 ]
+
+exports.storeNameValidator = async(req, res, next) => {
+	if((req.body.userRole === "STORE_OWNER") && req.body.storeName === undefined || req.body.storeName === "") {
+		return next(new AppError("Do'kon nomi bo'sh bo'lmasligi kerak"))
+	}
+	next()
+}

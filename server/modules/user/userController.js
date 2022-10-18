@@ -1,6 +1,6 @@
 const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 const userRole = require("../../core/constants/userRole");
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
@@ -25,7 +25,7 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 		.filter()
 		.paginate()
 		.order()
-		.search(["phoneNumber", "firstName"]);
+		.search(["phoneNumber", "firstName", "lastName", "storeName"]);
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {
@@ -108,8 +108,15 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 	if (!userById) {
 		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
 	}
-	const { phoneNumber, passportNumber } = req.body;
-	const updateUser = await userById.update(req.body);
+	let updateUser 
+	if(!req.body.password) {
+		updateUser = await userById.update(req.body);
+	}
+	if (req.body.userRole === userRole.SUPER_ADMIN) {
+		return next(
+			new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin")
+		);
+	}
 	res.json({
 		status: "success",
 		message: "Foydalanuvchi ma'lumotlari yangilandi",

@@ -4,7 +4,7 @@ const PackageModel = require("../package/Package")
 const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult} = require("express-validator");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder")
 const statusOrder = require("../../core/constants/orderStatus")
 
@@ -12,7 +12,12 @@ const statusOrder = require("../../core/constants/orderStatus")
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 
   const queryBuilder = new QueryBuilder(req.query)
-  queryBuilder.paginate().limitFields()
+  queryBuilder
+    .limitFields()
+    .filter()
+    .paginate()
+    .order()
+    .search(["recipientPhoneNumber", "recepient"]);
 
   let allOrders = await OrderModel.findAndCountAll({...queryBuilder.queryOptions});
   allOrders = queryBuilder.createPagination(allOrders)

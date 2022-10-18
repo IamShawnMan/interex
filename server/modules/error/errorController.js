@@ -1,4 +1,4 @@
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -44,7 +44,7 @@ const errorController = (err, req, res, next) => {
 
       if (error.name === "SequelizeUniqueConstraintError") {
         if (err.original.code === "23505") {
-          error = new AppError("Ushbu foydalanuvchi allaqachon mavjud", 400);
+          error = new AppError("Ushbu username allaqachon mavjud", 400);
         }
       }
 

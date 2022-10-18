@@ -3,7 +3,7 @@ const {Op} = require("sequelize")
 const QueryBuilder = require("../../core/utils/QueryBuilder")
 const PackageModel = require("./Package")
 const OrderModel = require("../order/Order")
-const AppError = require("../../core/utils/appError")
+const AppError = require("../../core/utils/AppError")
 
 exports.getAllPackage = catchAsync(async(req,res,next)=>{
     
