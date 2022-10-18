@@ -7,7 +7,6 @@ import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
 import styles from "./Users.module.css";
 import Switch from "../../components/UI/Switch/Switch";
-import Input from "../../components/Form/FormComponents/Input/Input";
 function Users() {
   const [value, setValue] = useState([]);
   const getAllUser = async () => {
@@ -31,7 +30,7 @@ function Users() {
         data: { status },
         method: "PUT",
       });
-      
+
       getAllUser();
     } catch (error) {
       toast.error(error.response.data.message);
@@ -89,8 +88,6 @@ function Users() {
       ) : (
         <p>Malumotlar yoq</p>
       )}
-
-      <Input />
     </Layout>
   );
 }
