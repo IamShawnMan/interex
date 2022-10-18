@@ -25,7 +25,7 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 		.filter()
 		.paginate()
 		.order()
-		.search(["phoneNumber", "firstName"]);
+		.search(["phoneNumber", "firstName", "lastName"]);
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {
@@ -174,12 +174,11 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
 	}
 	if (id === +req.params.id) {
-		if(byIdUser.username === req.body.username) {
+		if (byIdUser.username === req.body.username) {
 			const newPassword = await hash(req.body.password, 8);
 			await byIdUser.update({ password: newPassword });
-		} 
-		else {
-			return next(new AppError("Username to'g'ri kiritilmadi"))
+		} else {
+			return next(new AppError("Username to'g'ri kiritilmadi"));
 		}
 	} else {
 		return next(
