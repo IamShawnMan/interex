@@ -26,7 +26,7 @@ exports.getAllPackage = catchAsync(async(req,res,next)=>{
 exports.getByidPackage = catchAsync(async(req,res,next)=>{
     const {id} = req.params
 
-    const byIdPackage = await PackageModel.findByPk(id, {include: {model: OrderModel, as: "order"}})
+    const byIdPackage = await PackageModel.findByPk(id, {include: {model: OrderModel, as: "orders"}})
 
     if(!byIdPackage){
         return next(new AppError("Bunday package tizimda yo`q", 403))
@@ -44,7 +44,7 @@ exports.getByidPackage = catchAsync(async(req,res,next)=>{
 
 exports.getMyOrders = catchAsync(async(req,res,next)=>{
     const {id} = req.user
-    const myOrdersByPackage = await PackageModel.findAll({where: {storeOwnerId: {[Op.eq]: id}}, include: {model: OrderModel, as: "order"}}) 
+    const myOrdersByPackage = await PackageModel.findAll({where: {storeOwnerId: {[Op.eq]: id}}, include: {model: OrderModel, as: "orders"}}) 
     res.json(myOrdersByPackage)
 })
 
