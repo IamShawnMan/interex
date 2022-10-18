@@ -72,7 +72,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     errrors: null,
     data: null
   });
-  //
 });
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
@@ -104,12 +103,11 @@ exports.changeOrderStatus = catchAsync(async(req,res,next)=>{
   const {orderStatus, deliveryPrice} = req.body
   console.log(orderStatus);
   const orderById = await OrderModel.findByPk(id)
-  const orderStatusVariables = Object.values(statusOrder)
+  const orderStatusVariables = Object.values(statusOrder).slice(1,3)
   if(userRole === "ADMIN"){
     let deliverySum = deliveryPrice || 45000
     console.log(orderStatusVariables);
     const changeOrderStatus = orderStatusVariables.find(e=>e === orderStatus)
-    console.log(changeOrderStatus,"sfsdfsfsdfs");
     await orderById.update({orderStatus: changeOrderStatus, deliveryPrice: deliverySum})
    
   }
