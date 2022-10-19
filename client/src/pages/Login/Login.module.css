@@ -1,6 +1,6 @@
-*{
+/* *{
   overflow: hidden;
-}
+} */
 .container {
   display: flex;
   width: 100%;
@@ -17,9 +17,9 @@
   color: #ffffff;
 }
 .login-icon {
-display: flex;
-width: 100%;
-height: 100%;
+  display: flex;
+  width: 100%;
+  height: 100%;
   padding: 27px;
   border-radius: 0px;
 }
@@ -37,7 +37,7 @@ height: 100%;
 }
 .right-page {
   width: 60%;
- height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,7 +89,7 @@ height: 100%;
   align-items: flex-start;
   padding: 20px 20px;
   border: none;
-  width:100%;
+  width: 100%;
   height: 60px;
   background: #7d41ed;
   border-radius: 10px;
@@ -112,23 +112,20 @@ height: 100%;
 @media (max-width: 75rem) {
   .container {
     display: block;
-    margin:0 auto
+    margin: 0 auto;
   }
-  .left-page h1{
+  .left-page h1 {
     font-size: 22px;
   }
-  .left-page{
+  .left-page {
     display: none;
- width: 100%;
- height:100%
-  }
-  .right-page{
-    display: block;
-    min-width:50%;
+    width: 100%;
     height: 100%;
-    margin:100px auto;
   }
-
-
+  .right-page {
+    display: block;
+    min-width: 50%;
+    height: 100%;
+    margin: 100px auto;
+  }
 }
-
