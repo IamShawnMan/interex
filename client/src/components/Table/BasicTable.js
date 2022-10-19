@@ -1,5 +1,6 @@
 import React from "react";
 import { useTable } from "react-table";
+import styles from "./BasicTable.module.css";
 
 export const BasicTable = ({ columns, data }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -13,10 +14,11 @@ export const BasicTable = ({ columns, data }) => {
       <thead>
         {headerGroups.map((headerGroup, i, arr) => {
           return (
-            <tr key={i + arr[i + 2]} {...headerGroup.getHeaderGroupProps()}>
+            <tr className={styles.tr} key={i + arr[i + 2]} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => {
                 return (
                   <th
+                  className={styles.th} 
                     key={column.id ? column.id : column.Header}
                     {...column.getHeaderProps(column.getSortByToggleProps)}
                   >
@@ -39,10 +41,10 @@ export const BasicTable = ({ columns, data }) => {
         {rows.map((row, i, arr) => {
           prepareRow(row);
           return (
-            <tr key={row.id ? row.id : i + arr[i + 2]} {...row.getRowProps()}>
+            <tr  className={styles.tr}  key={row.id ? row.id : i + arr[i + 2]} {...row.getRowProps()}>
               {row.cells.map((cell) => {
                 return (
-                  <td key={cell.column.id} {...cell.getCellProps()}>
+                  <td className={styles.td} key={cell.column.id} {...cell.getCellProps()}>
                     {cell.render("Cell")}
                   </td>
                 );
