@@ -1,17 +1,23 @@
 const { body } = require("express-validator");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 
 exports.createValidator = [
-	body("firstName").notEmpty().withMessage("Ism bo'sh bo'lishi mumkin emas"),
+	body("firstName")
+	.notEmpty()
+	.withMessage("Ism bo'sh bo'lishi mumkin emas"),
 	body("lastName")
 		.notEmpty()
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
 	body("phoneNumber")
 		.notEmpty()
-		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas"),
+		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
+		.matches(/^[+]998[0-9]{9}$/)
+		.withMessage("Telefon raqam xato kiritildi"),
 	body("passportNumber")
 		.notEmpty()
-		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas"),
+		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas")
+		.matches(/^[A-Z]{2}[0-9]{7}$/)
+		.withMessage("Passport raqami xato kiritildi"),
 	body("username")
 		.notEmpty()
 		.withMessage("Username bo'sh bo'lishi mumkin emas")
@@ -24,7 +30,7 @@ exports.createValidator = [
 		.notEmpty()
 		.withMessage("Parol bo'sh bo'lishi mumkin emas")
 		.isLength({ min: 6 })
-		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak"),
+		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak")
 ];
 
 exports.updateValidator = [
@@ -34,10 +40,14 @@ exports.updateValidator = [
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
 	body("phoneNumber")
 		.notEmpty()
-		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas"),
+		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
+		.matches(/^[+]998[0-9]{9}$/)
+		.withMessage("Telefon raqam xato kiritildi"),
 	body("passportNumber")
 		.notEmpty()
-		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas"),
+		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas")
+		.matches(/^[A-Z]{2}[0-9]{7}$/)
+		.withMessage("Passport raqami xato kiritildi"),
 	body("username")
 		.notEmpty()
 		.withMessage("Username bo'sh bo'lishi mumkin emas")
@@ -62,4 +72,11 @@ exports.passwordChangeValidator = [
 		.withMessage("Parol bo'sh bo'lishi mumkin emas")
 		.isLength({ min: 6 })
 		.withMessage("Parol 6 ta belgidan kam bo'lmasligi kerak"),
-];
+]
+
+exports.storeNameValidator = async(req, res, next) => {
+	if((req.body.userRole === "STORE_OWNER") && req.body.storeName === undefined || req.body.storeName === "") {
+		return next(new AppError("Do'kon nomi bo'sh bo'lmasligi kerak"))
+	}
+	next()
+}

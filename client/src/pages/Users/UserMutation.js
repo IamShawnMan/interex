@@ -134,7 +134,7 @@ const UserMutation = () => {
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
-      toast.error(error.response.data.message);
+      return error.response.data.errors.map((error) => toast.error(error.msg))
     }
   };
 

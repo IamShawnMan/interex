@@ -4,14 +4,19 @@ const PackageModel = require("../package/Package");
 const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult } = require("express-validator");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const statusOrder = require("../../core/constants/orderStatus");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.paginate().limitFields();
+	queryBuilder
+		.limitFields()
+		.filter()
+		.paginate()
+		.order()
+		.search(["recipientPhoneNumber", "recipient"]);
 
 	let allOrders = await OrderModel.findAndCountAll({
 		...queryBuilder.queryOptions,
@@ -29,11 +34,11 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
-	const validationError = validationResult(req);
-	if (!validationError.isEmpty()) {
-		let err = new AppError("Validation error", 403);
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		let err = new AppError("Validatsiya xatosi", 403);
 		err.isOperational = false;
-		err.errors = validationError.errors;
+		err.errors = validationErrors.errors;
 		return next(err);
 	}
 	let existedPackage = await PackageModel.findOne({
@@ -80,13 +85,16 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 
-	const queryBuilder = new QueryBuilder(req.query);
+	// const queryBuilder = new QueryBuilder(req.query);
 
-	queryBuilder.limitFields();
+	// queryBuilder.limitFields();
 
 	const orderById = await OrderModel.findByPk(id, {
-		...queryBuilder.queryOptions,
-		include: { model: OrderItemModel, as: "items" },
+		include: {
+			model: OrderItemModel,
+			as: "item",
+			attributes: ["productName", "quantity", "price"],
+		},
 	});
 
 	if (!orderById) {

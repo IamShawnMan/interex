@@ -1,7 +1,7 @@
 const { compare } = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const User = require("../user/User")
-const AppError = require("../../core/utils/appError")
+const AppError = require("../../core/utils/AppError")
 const catchAsync = require("../../core/utils/catchAsync")
 const {Op} = require("sequelize")
 

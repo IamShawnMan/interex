@@ -1,6 +1,6 @@
 const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 const userRole = require("../../core/constants/userRole");
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
@@ -25,7 +25,7 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 		.filter()
 		.paginate()
 		.order()
-		.search(["phoneNumber", "firstName", "lastName"]);
+		.search(["phoneNumber", "firstName", "lastName", "storeName"]);
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {
@@ -86,13 +86,6 @@ exports.createUsers = catchAsync(async (req, res, next) => {
 			new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin")
 		);
 	}
-	const { phoneNumber, passportNumber } = req.body;
-	if (!phoneNumber.match(/^[+]998[0-9]{9}$/)) {
-		return next(new AppError("Telefon raqam xato kiritildi"));
-	}
-	if (!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
-		return next(new AppError("Passport raqami xato kiritildi"));
-	}
 	const newUser = await User.create(req.body);
 	res.json({
 		status: "success",
@@ -115,14 +108,15 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 	if (!userById) {
 		return next(new AppError(`Bunday foydalanuvchi topilmadi`));
 	}
-	const { phoneNumber, passportNumber } = req.body;
-	if (!phoneNumber.match(/^[+]998[0-9]{9}$/)) {
-		return next(new AppError("Telefon raqam xato kiritildi"));
+	let updateUser 
+	if(!req.body.password) {
+		updateUser = await userById.update(req.body);
 	}
-	if (!passportNumber.match(/^[A-Z]{2}[0-9]{7}$/)) {
-		return next(new AppError("Passport raqami xato kiritildi"));
+	if (req.body.userRole === userRole.SUPER_ADMIN) {
+		return next(
+			new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin")
+		);
 	}
-	const updateUser = await userById.update(req.body);
 	res.json({
 		status: "success",
 		message: "Foydalanuvchi ma'lumotlari yangilandi",
@@ -192,3 +186,31 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 		data: null,
 	});
 });
+
+exports.getAdmins = catchAsync(async (req, res, next) => {
+	const queryBuilder = new QueryBuilder(req.query);
+	queryBuilder
+		.limitFields()
+		.filter()
+		.paginate()
+		.order()
+		.search(["phoneNumber", "firstName", "lastName"]);
+	
+	queryBuilder.queryOptions.where.userRole = { [Op.eq]: "ADMIN" };
+	queryBuilder.queryOptions.attributes = ["firstName", "lastName", "phoneNumber"]
+
+	let allAdmins = await User.findAndCountAll(queryBuilder.queryOptions)
+
+	if (!allAdmins) {
+		return next(new AppError("Foydalanuvchilar mavjud emas", 404));
+	}
+	allAdmins = queryBuilder.createPagination(allAdmins);
+	res.json({
+		status: "success",
+		message: "All admins",
+		error: null,
+		data: {
+			allAdmins
+		}
+	})
+}) 

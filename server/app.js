@@ -1,6 +1,6 @@
 const express = require("express");
 const errorController = require("./modules/error/errorController");
-const AppError = require("./core/utils/appError");
+const AppError = require("./core/utils/AppError");
 const userRouter = require("./modules/user/userRouter");
 const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
@@ -10,8 +10,7 @@ const cors = require("cors");
 const orderRoutes = require("./modules/order/orderRoutes");
 const authMiddleware = require("./core/middlewares/authMiddleware");
 const districtRouter = require("./modules/district/districtRouter");
-const packageRoutes = require("./modules/package/packageRoutes");
-const postRouter = require("./modules/post/postRouter");
+const packageRoutes = require("./modules/package/packageRoutes")
 require("./modules/user/User");
 
 const app = express();
@@ -22,9 +21,8 @@ app.use("/api/v1/users", authMiddleware, userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/regions", regionRouter);
 app.use("/api/v1/orders", authMiddleware, orderRoutes);
-app.use("/api/v1/packages", authMiddleware, packageRoutes);
+app.use("/api/v1/packages", authMiddleware, packageRoutes)
 app.use("/api/v1/districts", districtRouter);
-app.use("/api/v1/posts", postRouter);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {

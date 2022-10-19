@@ -126,7 +126,7 @@ function OrderMutation() {
                 <>{errors?.orders?.[index]?.note?.message}</>
               )}
               <input
-                type="number"
+                type="text"
                 placeholder="phoneNumber"
                 {...register(`orders.${index}.recipientPhoneNumber`)}
               />
@@ -152,7 +152,7 @@ function OrderMutation() {
                 {districts &&
                   districts.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.districtName}
+                      {c.name}
                     </option>
                   ))}
               </select>}

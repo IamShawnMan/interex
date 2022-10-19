@@ -1,6 +1,6 @@
 const District = require("./District");
 const catchAsync = require("../../core/utils/catchAsync");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 
 exports.getAllDistricts = catchAsync(async (req, res, next) => {
 	const allDistricts = await District.findAll();

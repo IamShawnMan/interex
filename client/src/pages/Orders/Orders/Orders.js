@@ -12,10 +12,10 @@ function Orders() {
   const [value, setValue] = useState(null);
   const getAllUser = async () => {
     const res = await http({
-      url: "/orders",
-    });
-    setValue(res.data.data.allOrders.content);
-    console.log(res);
+      url: "/packages/myorders",
+    }); console.log(res);
+    setValue(res.data[0].orders);
+   
   };
   useEffect(() => {
     getAllUser();
