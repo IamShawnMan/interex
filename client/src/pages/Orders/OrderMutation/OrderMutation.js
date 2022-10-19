@@ -152,7 +152,7 @@ function OrderMutation() {
                 {districts &&
                   districts.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.districtName}
+                      {c.name}
                     </option>
                   ))}
               </select>}

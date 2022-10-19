@@ -16,7 +16,7 @@
   background-color: #7d41ed;
   color: #ffffff;
 }
-.left-page img {
+.login-icon {
 display: flex;
 width: 100%;
 height: 100%;
@@ -44,8 +44,6 @@ height: 100%;
   justify-content: center;
 }
 .right-page-main-content {
-  /* width: 100%; */
-  /* height:100vh; */
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -84,7 +82,6 @@ height: 100%;
   color: #0e1427;
 }
 .input-icon img {
-  /* vertical-align: middle; */
   width: 1.875rem;
   height: 1.875rem;
 }
@@ -108,22 +105,25 @@ height: 100%;
 @media (max-width: 75rem) {
   .container {
     display: block;
+    margin:0 auto
   }
   .left-page h1{
     font-size: 22px;
   }
   .left-page{
-    display: block;
+    display: none;
  width: 100%;
  height:100%
   }
   .right-page{
     display: block;
-    width:100%;
-    height: 100%
+    min-width:50%;
+    height: 100%;
+    margin:100px auto;
   }
   .right-page-main-content{
-    display: block;
+  
   }
 
 }
+
