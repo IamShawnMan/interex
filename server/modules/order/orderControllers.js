@@ -10,15 +10,15 @@ const statusOrder = require("../../core/constants/orderStatus");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
-  const queryBuilder = new QueryBuilder(req.query)
-  queryBuilder
-    .limitFields()
-    .filter()
-    .paginate()
-    .order()
-    .search(["recipientPhoneNumber", "recipient"]);
-	
-    let allOrders = await OrderModel.findAndCountAll({
+	const queryBuilder = new QueryBuilder(req.query);
+	queryBuilder
+		.limitFields()
+		.filter()
+		.paginate()
+		.order()
+		.search(["recipientPhoneNumber", "recipient"]);
+
+	let allOrders = await OrderModel.findAndCountAll({
 		...queryBuilder.queryOptions,
 	});
 	allOrders = queryBuilder.createPagination(allOrders);
@@ -85,13 +85,16 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 
-	const queryBuilder = new QueryBuilder(req.query);
+	// const queryBuilder = new QueryBuilder(req.query);
 
-	queryBuilder.limitFields();
+	// queryBuilder.limitFields();
 
 	const orderById = await OrderModel.findByPk(id, {
-		...queryBuilder.queryOptions,
-		include: { model: OrderItemModel, as: "items" },
+		include: {
+			model: OrderItemModel,
+			as: "item",
+			attributes: ["productName", "quantity", "price"],
+		},
 	});
 
 	if (!orderById) {
