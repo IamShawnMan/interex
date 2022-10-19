@@ -18,9 +18,6 @@ const sendErrorProd = (err, res) => {
 };
 
 const errorController = (err, req, res, next) => {
-  console.log(err)
-  console.log(err.stack)
-
 
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
@@ -44,16 +41,12 @@ const errorController = (err, req, res, next) => {
 
       if (error.name === "SequelizeUniqueConstraintError") {
         if (err.original.code === "23505") {
-          error = new AppError("Ushbu username allaqachon mavjud", 400);
+          error = new AppError("Ushbu Login tizimda mavjud, iltimos boshqa Login o'ylab toping", 400);
         }
       }
 
       if (error.name === "ValidationError") {
         error.errors = error.errors.map((er) => er.msg);
-      }
-
-      if (error.name === "TokenExpiredError") {
-        error = new AppError("Tokeningizning vaqti tugagan", 401);
       }
 
       sendErrorProd(error, res);
