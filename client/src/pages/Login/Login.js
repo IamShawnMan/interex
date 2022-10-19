@@ -7,9 +7,9 @@ import { toast } from "react-toastify";
 import http from "../../utils/axios-instance";
 import UserContext from "../../context/AppContext";
 import styles from "./Login.module.css";
-import img from "./img.png";
 import passwordimg from "./password.png";
 import userimg from "./user.png";
+import LoginIcon from "../../assets/icons/LoginIcon"
 const schema = yup.object().shape({
   username: yup
     .string()
@@ -63,7 +63,7 @@ function Login() {
     <div className={styles.container}>
       <div className={styles["left-page"]}>
         <h1>“InterEX Uz poskal service”</h1>
-        <img src={img} alt="img" />
+        <LoginIcon classname={styles["login-icon"]}/>
       </div>
       <div className={styles["right-page"]}>
         <div className={styles["right-page-main-content"]}>
