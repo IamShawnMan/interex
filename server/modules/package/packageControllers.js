@@ -5,12 +5,12 @@ const PackageModel = require("./Package")
 const OrderModel = require("../order/Order")
 const AppError = require("../../core/utils/AppError")
 
-exports.getAllPackage = catchAsync(async(req,res,next)=>{
+exports.getAllPackages = catchAsync(async(req,res,next)=>{
     
     const queryBuilder = new QueryBuilder(req.body)
     queryBuilder.paginate().limitFields()
     
-    let allPackage = await PackageModel.findAndCountAll({...queryBuilder.queryOptions})
+    let allPackages = await PackageModel.findAndCountAll({...queryBuilder.queryOptions})
     allPackage = queryBuilder.createPagination(allPackage)
 
     res.status(200).json({
@@ -18,25 +18,22 @@ exports.getAllPackage = catchAsync(async(req,res,next)=>{
         message: "Barcha packagelarni ro`yhati",
         errors: null,
         data: {
-            allPackage
+            allPackages
         }
     })
 })
 
-exports.getByidPackage = catchAsync(async(req,res,next)=>{
+exports.getOrdersByPackage = catchAsync(async(req,res,next)=>{
     const {id} = req.params
 
-    const byIdPackage = await PackageModel.findByPk(id, {include: {model: OrderModel, as: "orders"}})
+    const ordersbyPackage = await OrderModel.findAll({where: {packageId: {[Op.eq]: id}}})
 
-    if(!byIdPackage){
-        return next(new AppError("Bunday package tizimda yo`q", 403))
-    }
     res.status(200).json({
         status: "success",
         message: 'id bo`yicha package ma`lumotlari',
         errors: null,
         data: {
-            byIdPackage
+           ordersbyPackage 
         }
     })
 
