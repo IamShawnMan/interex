@@ -4,31 +4,46 @@ const QueryBuilder = require("../../core/utils/QueryBuilder");
 const PackageModel = require("./Package");
 const OrderModel = require("../order/Order");
 const AppError = require("../../core/utils/appError");
+const User = require("../user/User");
 
-exports.getAllPackage = catchAsync(async (req, res, next) => {
+exports.getAllPackages = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.body);
 	queryBuilder.paginate().limitFields();
 
-	let allPackage = await PackageModel.findAndCountAll({
+	let allPackages = await PackageModel.findAndCountAll({
 		...queryBuilder.queryOptions,
+		include: {
+			model: User,
+			as: "storeOwner",
+			attributes: ["firstName", "lastName"],
+		},
 	});
-	allPackage = queryBuilder.createPagination(allPackage);
+	allPackages = queryBuilder.createPagination(allPackages);
 
 	res.status(200).json({
 		status: "success",
 		message: "Barcha packagelarni ro`yhati",
 		errors: null,
 		data: {
-			allPackage,
+			allPackages,
 		},
 	});
 });
 
-exports.getByidPackage = catchAsync(async (req, res, next) => {
+exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 
-	const byIdPackage = await PackageModel.findByPk(id, {
-		include: { model: OrderModel, as: "orders" },
+	const ordersbyPackage = await OrderModel.findAll({
+		where: { packageId: { [Op.eq]: id } },
+	});
+
+	res.status(200).json({
+		status: "success",
+		message: "id bo`yicha package ma`lumotlari",
+		errors: null,
+		data: {
+			ordersbyPackage,
+		},
 	});
 
 	if (!byIdPackage) {
