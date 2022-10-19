@@ -1,11 +1,13 @@
 .formControl {
   padding-left: 4rem;
+  width: 100%;
 }
 
 .inputContainer {
   display: flex;
   align-items: center;
   gap: 3rem;
+  width: 100%;
 }
 
 .label {
@@ -15,14 +17,16 @@
   letter-spacing: -0.01em;
   color: #4b5563;
   margin-bottom: 1.6rem;
+  width: 100%;
 }
 
 .input {
-  padding: 0.8rem 1rem 0.8rem 1.6rem;
+  padding: 1rem 1rem 1rem 1.6rem;
   background: #ffffff;
   border: 0.1rem solid #a7abb6;
   border-radius: 0.7rem;
   outline: none;
+  width: 100%;
 }
 
 .input::placeholder {
