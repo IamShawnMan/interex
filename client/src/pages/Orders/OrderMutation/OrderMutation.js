@@ -126,7 +126,7 @@ function OrderMutation() {
                 <>{errors?.orders?.[index]?.note?.message}</>
               )}
               <input
-                type="number"
+                type="text"
                 placeholder="phoneNumber"
                 {...register(`orders.${index}.recipientPhoneNumber`)}
               />

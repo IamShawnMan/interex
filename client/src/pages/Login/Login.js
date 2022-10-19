@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -7,9 +7,9 @@ import { toast } from "react-toastify";
 import http from "../../utils/axios-instance";
 import UserContext from "../../context/AppContext";
 import styles from "./Login.module.css";
-import passwordimg from "./password.png";
-import userimg from "./user.png";
-import LoginIcon from "../../assets/icons/LoginIcon"
+import UsernameIcon from "../../assets/icons/UsernameIcon";
+import LoginIcon from "../../assets/icons/LoginIcon";
+import PasswordIcon from "../../assets/icons/PasswordIcon";
 const schema = yup.object().shape({
   username: yup
     .string()
@@ -35,7 +35,10 @@ function Login() {
   });
   const ctx = useContext(UserContext);
   const navigate = useNavigate();
-
+  const [typeState, setTypeState] = useState(null);
+  const typeChangeHandler = () => {
+    setTypeState(!typeState);
+  };
   const login = async (data) => {
     try {
       const res = await http({
@@ -62,8 +65,8 @@ function Login() {
   return (
     <div className={styles.container}>
       <div className={styles["left-page"]}>
-        <h1>“InterEX Uz poskal service”</h1>
-        <LoginIcon classname={styles["login-icon"]}/>
+        <h1>“InterEX Uz”</h1>
+        <LoginIcon classname={styles["login-icon"]} />
       </div>
       <div className={styles["right-page"]}>
         <div className={styles["right-page-main-content"]}>
@@ -74,44 +77,51 @@ function Login() {
               <label htmlFor="username">
                 <div className={styles.spandiv}>
                   <span className={styles["input-name"]}>Username </span>
-                  <span className={styles["input-icon"]}>
-                    <img src={userimg} alt="userimg" />
-                  </span>
+                  <div className={styles.changeType}>
+                    <UsernameIcon />
+                  </div>
                 </div>
                 <input
-				style={{borderBottom: errors.username&&"1px solid red"}}
-				size="42"
+                  style={{ borderBottom: errors.username && "1px solid red" }}
+                  size="42"
                   type="text"
                   id="username"
                   name="username"
-                  {...register("username")}		
+                  {...register("username")}
                 />
-                <i></i>
               </label>
-              {errors.username && <p style={{color:"red"}}>{errors.username.message}</p>}
+              {errors.username && (
+                <p style={{ color: "red" }}>{errors.username.message}</p>
+              )}
             </div>
-            <div>
+            <div className={styles.password}>
               <label htmlFor="password">
                 <div className={styles.spandiv}>
-                  <span className={styles["input-name"]}>Parol </span>
-                  <span className={styles["input-icon"]}>
-                    <img src={passwordimg} alt="passwordimg" />
-                  </span>
+                  <span className={styles["input-name"]}>Parol</span>
+                  <div className={styles.changeType}>
+                    <div onClick={typeChangeHandler}>
+                      <PasswordIcon />
+                    </div>
+                  </div>
                 </div>
 
                 <input
-				style={{borderBottom: errors.password&&"1px solid red"}}
-				size="42"
-                  type="password"
+                  style={{ borderBottom: errors.password && "1px solid red" }}
+                  type={typeState ? "text" : "password"}
+                  size="42"
                   name="password"
                   id="password"
                   {...register("password")}
                 />
               </label>
-              {errors.password && <p style={{color:"red"}}>{errors.password.message}</p>}
+              {errors.password && (
+                <p style={{ color: "red" }}>{errors.password.message}</p>
+              )}
             </div>
             <div>
-              <button type="submit" className={styles.signin}>Kirish</button>
+              <button type="submit" className={styles.signin}>
+                Kirish
+              </button>
             </div>
           </form>
         </div>
