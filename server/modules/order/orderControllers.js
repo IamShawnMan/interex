@@ -4,16 +4,21 @@ const PackageModel = require("../package/Package");
 const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult } = require("express-validator");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const statusOrder = require("../../core/constants/orderStatus");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
-	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.paginate().limitFields();
-
-	let allOrders = await OrderModel.findAndCountAll({
+  const queryBuilder = new QueryBuilder(req.query)
+  queryBuilder
+    .limitFields()
+    .filter()
+    .paginate()
+    .order()
+    .search(["recipientPhoneNumber", "recipient"]);
+	
+    let allOrders = await OrderModel.findAndCountAll({
 		...queryBuilder.queryOptions,
 	});
 	allOrders = queryBuilder.createPagination(allOrders);
@@ -29,11 +34,11 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
-	const validationError = validationResult(req);
-	if (!validationError.isEmpty()) {
-		let err = new AppError("Validation error", 403);
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		let err = new AppError("Validatsiya xatosi", 403);
 		err.isOperational = false;
-		err.errors = validationError.errors;
+		err.errors = validationErrors.errors;
 		return next(err);
 	}
 	let existedPackage = await PackageModel.findOne({

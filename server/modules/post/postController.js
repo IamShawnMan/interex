@@ -1,7 +1,7 @@
 const Post = require("./Post");
 const { Op, where } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
-const AppError = require("../../core/utils/appError");
+const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const Order = require("../order/Order");
 const Region = require("../region/Region");
