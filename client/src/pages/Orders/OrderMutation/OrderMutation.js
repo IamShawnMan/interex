@@ -34,6 +34,7 @@ function OrderMutation() {
   const [regions, setRegions] = useState(null);
   const [districts, setDistricts] = useState(null);
   const [regionId, setRegionId] = useState(null);
+  const [updateData, setUpdateData] = useState(null);
   const { id } = useParams();
 
   const isUpdate = id !== "new";
@@ -47,11 +48,17 @@ function OrderMutation() {
   } = useForm({ resolver: yupResolver(schema) });
   useEffect(() => {
     getAllRegions();
-
-    regionId&&getAllDistrict(regionId);
     if (isUpdate) {
-      getById();
+      (async()=>{
+       await getById();
+       regionId&&getAllDistrict(regionId);
+      updateData&&append({...updateData,orderItems: updateData.item})
+      })()
+      
     }
+    regionId&&!isUpdate&&getAllDistrict(regionId);
+   
+ 
    !isUpdate&&!regionId&& append({
       recipient: "",
       note: "",
@@ -83,9 +90,9 @@ function OrderMutation() {
       url: `/orders/${id}`,
     });
     console.log(res);
-    // const user = res.data.data.userById;
-   
-    // reset(user);
+    const orderById = res.data.data.orderById;
+    setRegionId(orderById.regionId)
+     setUpdateData(orderById);
   };
  
   const getAllRegions = async () => {
@@ -171,7 +178,7 @@ function OrderMutation() {
             </li>
           ))}
         </ul>
-        <button
+       {!isUpdate&& <button
           type="button"
           onClick={() =>
             append({
@@ -185,7 +192,7 @@ function OrderMutation() {
           }
         >
           Add Order
-        </button>
+        </button>}
       <button type="submit">{isUpdate?"Update Order":"Create Order"}</button> 
       </form>
     </Layout>
