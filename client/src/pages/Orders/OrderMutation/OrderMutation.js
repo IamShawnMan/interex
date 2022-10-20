@@ -69,11 +69,12 @@ function OrderMutation() {
     });
   }, [regionId]);
   const formSubmit = async (data) => {
+    console.log( data.orders[0]);
     try {
       const res = await http({
         url: isUpdate ? `/orders/${id}` : "/orders",
         method: isUpdate ? "PUT" : "POST",
-        data,
+        data:isUpdate ? data.orders[0]:data,
       });
       console.log(res);
       toast.success(res.data.message);
