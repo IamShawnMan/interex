@@ -76,9 +76,9 @@ function Login() {
             <div>
               <label htmlFor="username">
                 <div className={styles.spandiv}>
-                  <span className={styles["input-name"]}>Username </span>
+                  {/* <span className={styles["input-name"]}>Username </span> */}
                   <div className={styles.changeType}>
-                    <UsernameIcon />
+                  <div><UsernameIcon /></div>
                   </div>
                 </div>
                 <input
@@ -86,6 +86,7 @@ function Login() {
                   type="text"
                   id="username"
                   name="username"
+                  placeholder="Login"
                   {...register("username")}
                 />
               </label>
@@ -96,7 +97,7 @@ function Login() {
             <div className={styles.password}>
               <label htmlFor="password">
                 <div className={styles.spandiv}>
-                  <span className={styles["input-name"]}>Parol</span>
+                  {/* <span className={styles["input-name"]}>Parol</span> */}
                   <div className={styles.changeType}>
                     <div onClick={typeChangeHandler}>
                       <PasswordIcon />
@@ -109,6 +110,7 @@ function Login() {
                   type={typeState ? "text" : "password"}
                   name="password"
                   id="password"
+                  placeholder="Parol"
                   {...register("password")}
                 />
               </label>

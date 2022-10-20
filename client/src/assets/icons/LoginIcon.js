@@ -1,5 +1,6 @@
 const LoginIcon = ({classname}) => {
     return ( 
+        
         <svg width="650" height="650" viewBox="0 0 650 650" fill="none" xmlns="http://www.w3.org/2000/svg" className={classname||""}>
 <path d="M650 497.12H0V497.445H650V497.12Z" fill="#EBEBEB"/>
 <path d="M584.87 518.037H541.814V518.362H584.87V518.037Z" fill="#EBEBEB"/>
