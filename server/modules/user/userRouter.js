@@ -7,7 +7,7 @@ const router = express.Router();
 
 router
 	.get("/", roleMiddleware(["SUPER_ADMIN", "ADMIN"]), userController.getUsers)
-	.post(
+	.post( 
 		"/",
 		roleMiddleware("SUPER_ADMIN"),
 		createValidator,

@@ -7,10 +7,8 @@ const roleMiddleware = roles => {
   return (req, res, next) => {
     if (typeof roles === "string") {
       selectedRoles = [roles];
-      console.log(selectedRoles);
     } else {
       selectedRoles = roles;
-     
     }
 
 		if (!selectedRoles.includes(req.user.userRole)) {

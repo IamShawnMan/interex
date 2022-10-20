@@ -11,6 +11,7 @@ import UserMutation from "./pages/Users/UserMutation";
 import Orders from "./pages/Orders/Orders/Orders";
 import OrderMutation from "./pages/Orders/OrderMutation/OrderMutation";
 import Packages from "./pages/Packages/Packages";
+import IncomingOrders from "./pages/IncomingOrders/IncomingOrders";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -42,6 +43,7 @@ function App() {
         {isAuth && <Route path="/orders" element={<Orders />} />}
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
+        {isAuth && <Route path="/packages/:id/orders" element={<IncomingOrders />} />}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>

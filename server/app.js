@@ -19,10 +19,10 @@ app.use(cors());
 
 app.use("/api/v1/users", authMiddleware, userRouter);
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/regions", regionRouter);
+app.use("/api/v1/regions", authMiddleware, regionRouter);
 app.use("/api/v1/orders", authMiddleware, orderRoutes);
 app.use("/api/v1/packages", authMiddleware, packageRoutes)
-app.use("/api/v1/districts", districtRouter);
+app.use("/api/v1/districts", authMiddleware, districtRouter);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
