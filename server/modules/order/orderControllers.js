@@ -142,12 +142,10 @@ exports.adminOrderStatus = catchAsync(async (req, res, next) => {
 exports.updateOrder = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 
-	const { recipient, recipientPhoneNumber, regionId, districtId, items } =
+	const { recipient, recipientPhoneNumber, regionId, districtId, orderItems, note } =
 		req.body;
 
-	let orderById = await OrderModel.findByPk(id, {
-		include: { model: OrderItemModel, as: "items" },
-	});
+	let orderById = await OrderModel.findByPk(id);
 
 	await OrderItemModel.destroy({
 		where: { orderId: { [Op.eq]: orderById.id } },
@@ -158,9 +156,10 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		recipientPhoneNumber,
 		regionId,
 		districtId,
+		note
 	});
 	orderById.totalPrice = 0;
-	items?.forEach(async (item) => {
+	orderItems?.forEach(async (item) => {
 		const newItem = await OrderItemModel.create({
 			productName: item.productName,
 			quantity: item.quantity,
