@@ -8,14 +8,13 @@ import AppContext from "../../../context/AppContext";
 import { toast } from "react-toastify";
 function Orders() {
   const { user } = useContext(AppContext);
-
   const [value, setValue] = useState(null);
   const getAllUser = async () => {
     const res = await http({
       url: "/packages/myorders",
     }); console.log(res);
     setValue(res.data[0].orders);
-   
+
   };
   useEffect(() => {
     getAllUser();

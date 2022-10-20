@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import http from "../../../utils/axios-instance";
 import { string, array, object } from "yup";
-import OrderItems from "./nestedFieldArray";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Layout from "../../../components/Layout/Layout";
+import OrderFieldArray from "./OrderFieldArray";
 const schema = object().shape({
   orders: array()
     .of(
@@ -44,22 +44,17 @@ function OrderMutation() {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
+
   useEffect(() => {
     getAllRegions();
-    if (isUpdate) {
-      (async()=>{
-       await getById();
-       regionId&&getAllDistrict(regionId);
-      updateData&&append({...updateData,orderItems: updateData.item})
-      })()
-      
+     if (isUpdate&&!updateData) {
+      getById();
     }
-    regionId&&!isUpdate&&getAllDistrict(regionId);
    
- 
-   !isUpdate&&!regionId&& append({
+    !isUpdate&&!regionId&&!updateData&& append({
       recipient: "",
       note: "",
       recipientPhoneNumber: "",
@@ -68,6 +63,9 @@ function OrderMutation() {
       orderItems: [],
     });
   }, [regionId]);
+  useEffect(() =>{
+ isUpdate&&updateData&&append(updateData)
+  },updateData);
   const formSubmit = async (data) => {
     console.log( data.orders[0]);
     try {
@@ -88,11 +86,11 @@ function OrderMutation() {
 
   const getById = async () => {
     const res = await http({
-      url: `/orders/${id}`,
+      url: `/orders/${id}/edit`,
     });
     console.log(res);
-    const orderById = res.data.data.orderById;
-    setRegionId(orderById.regionId)
+    const orderById = res.data.data;
+    console.log(orderById);
      setUpdateData(orderById);
   };
  
@@ -102,14 +100,6 @@ function OrderMutation() {
       method: "GET",
     });
     setRegions(res.data.data.allRegions);
-  };
-  const getAllDistrict = async (id) => {
-    const res = await http({
-      url:  `regions/${id}/districts`,
-      method: "GET",
-    });
-    console.log(res);
-    setDistricts(res.data.data.getDistrictByRegion);
   };
   const { fields, append, remove } = useFieldArray({
     control,
@@ -121,62 +111,7 @@ function OrderMutation() {
         <ul>
           {errors.orders?.type === "min" && errors.orders.message}
           {fields.map((item, index) => (
-            <li style={{ border: "1px solid black" }} key={item.id}>
-              <input
-                placeholder="recipient"
-                {...register(`orders.${index}.recipient`)}
-              />
-              {errors?.orders?.[index] && (
-                <>{errors?.orders?.[index]?.recipient?.message}</>
-              )}
-              <input placeholder="note" {...register(`orders.${index}.note`)} />
-              {errors?.orders?.[index] && (
-                <>{errors?.orders?.[index]?.note?.message}</>
-              )}
-              <input
-                type="text"
-                placeholder="phoneNumber"
-                {...register(`orders.${index}.recipientPhoneNumber`)}
-              />
-              {errors?.orders?.[index] && (
-                <>{errors?.orders?.[index]?.recipientPhoneNumber?.message}</>
-              )}
-              <select  {...register(`orders.${index}.regionId`)}
-               onChange={e=>setRegionId(e.target.value)}
-              >
-                <option value={null}></option>
-                {regions &&
-                  regions.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-              </select>
-              {errors?.orders?.[index] && (
-                <>{errors?.orders?.[index]?.regionId?.message}</>
-              )}
-            { regionId&& <select {...register(`orders.${index}.districtId`)}>
-                <option value={null}></option>
-                {districts &&
-                  districts.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-              </select>}
-              {errors?.orders?.[index] && (
-                <>{errors?.orders?.[index]?.districtId?.message}</>
-              )}
-              <OrderItems
-                orderIndex={index}
-                control={control}
-                errors={errors}
-                register={register}
-              />
-              <button type="button" onClick={() => remove(index)}>
-                Delete
-              </button>
-            </li>
+        <OrderFieldArray item={item} register={register} index={index} errors={errors} watch={watch} regions={regions} control={control}remove={remove}/>
           ))}
         </ul>
        {!isUpdate&& <button
