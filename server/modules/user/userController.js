@@ -78,7 +78,7 @@ exports.createUsers = catchAsync(async (req, res, next) => {
 	if (!validationErrors.isEmpty()) {
 		const err = new AppError("Validatsiya xatosi", 400);
 		err.isOperational = false;
-		err.errors = validationErrors.errors;
+		err.errors = validationErrors;
 		return next(err);
 	}
 	if (req.body.userRole === userRole.SUPER_ADMIN) {
