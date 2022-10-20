@@ -83,7 +83,6 @@ function Login() {
                 </div>
                 <input
                   style={{ borderBottom: errors.username && "1px solid red" }}
-                  size="42"
                   type="text"
                   id="username"
                   name="username"
@@ -108,7 +107,6 @@ function Login() {
                 <input
                   style={{ borderBottom: errors.password && "1px solid red" }}
                   type={typeState ? "text" : "password"}
-                  size="42"
                   name="password"
                   id="password"
                   {...register("password")}
