@@ -46,20 +46,15 @@ function OrderMutation() {
     reset,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
+
   useEffect(() => {
     getAllRegions();
-    if (isUpdate) {
-      (async()=>{
-       await getById();
-       regionId&&getAllDistrict(regionId);
-      updateData&&append({...updateData,orderItems: updateData.item})
-      })()
-      
+     if (isUpdate&&!updateData) {
+      getById();
     }
-    regionId&&!isUpdate&&getAllDistrict(regionId);
+    regionId&&getAllDistrict(regionId); 
    
- 
-   !isUpdate&&!regionId&& append({
+    !isUpdate&&!regionId&&!updateData&& append({
       recipient: "",
       note: "",
       recipientPhoneNumber: "",
@@ -68,6 +63,9 @@ function OrderMutation() {
       orderItems: [],
     });
   }, [regionId]);
+  useEffect(() =>{
+ isUpdate&&updateData&&append(updateData)
+  },updateData);
   const formSubmit = async (data) => {
     console.log( data.orders[0]);
     try {
@@ -88,11 +86,11 @@ function OrderMutation() {
 
   const getById = async () => {
     const res = await http({
-      url: `/orders/${id}`,
+      url: `/orders/${id}/edit`,
     });
     console.log(res);
-    const orderById = res.data.data.orderById;
-    setRegionId(orderById.regionId)
+    const orderById = res.data.data;
+    console.log(orderById);
      setUpdateData(orderById);
   };
  
