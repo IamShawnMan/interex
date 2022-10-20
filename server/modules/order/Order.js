@@ -37,7 +37,7 @@ RegiomModel.hasMany(Order, { as: "orders", foreignKey: "regionId" });
 Order.belongsTo(RegiomModel, { as: "region" });
 
 DistrictModel.hasMany(Order, {as: "orders", foreignKey: "districtId"})
-DistrictModel.belongsTo(DistrictModel, {as: "district"})
+Order.belongsTo(DistrictModel, {as: "district"})
 
 PackageModel.hasMany(Order, { as: "orders", foreignKey: "packageId" });
 Order.belongsTo(PackageModel, { as: "package" });
