@@ -40,15 +40,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 .right-page-main-content {
-  flex:1;
+  flex: 1;
   display: flex;
   align-items: center;
   flex-direction: column;
-  /* border: 1px solid #000; */
-  max-width:450px;
+  max-width: 450px;
 }
 .right-page-main-content h1 {
   max-width: 212px;
@@ -62,14 +60,20 @@
   text-align: center;
   margin-bottom: 20px;
 }
-form{
+form {
   width: 100%;
 }
 .right-page-main-content input {
   outline: none;
   border: none;
   border-bottom: 1px solid #7d41ed;
+  font-size: 18px;
+  line-height: 24px;
   width: 100%;
+}
+p{
+  font-size: 16px;
+  line-height: 24px;
 }
 .spandiv {
   display: flex;
