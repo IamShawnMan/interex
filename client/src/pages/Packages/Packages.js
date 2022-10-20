@@ -13,7 +13,7 @@ function Package() {
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url: `packages`
+        url: `packages`,
       });
       setPackages(res.data.data.allPackage.content);
     } catch (error) {
