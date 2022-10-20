@@ -7,7 +7,7 @@ const AppError = require("../../core/utils/appError");
 const User = require("../user/User");
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
-	const queryBuilder = new QueryBuilder(req.body);
+	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.paginate().limitFields();
 
 	let allPackages = await PackageModel.findAndCountAll({

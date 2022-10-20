@@ -15,7 +15,7 @@ function Package() {
       const res = await http({
         url: `packages`
       });
-      setPackages(res.data.data.allPackage.content);
+      setPackages(res.data.data.allPackages.content);
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error.response.data);

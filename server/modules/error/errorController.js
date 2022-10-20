@@ -48,7 +48,6 @@ const errorController = (err, req, res, next) => {
       if (error.name === "ValidationError") {
         error.errors = error.errors.map((er) => er.msg);
       }
-
       sendErrorProd(error, res);
     }
   }
