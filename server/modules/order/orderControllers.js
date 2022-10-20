@@ -44,11 +44,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	let existedPackage = await PackageModel.findOne({
 		where: { storeOwnerId: { [Op.eq]: req.user.id } },
 	});
-
+	
 	if (!existedPackage) {
 		existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
 	}
-
+	
 	const orders = req.body.orders;
 	orders?.forEach(async (order) => {
 		const newOrder = await OrderModel.create({
@@ -66,13 +66,14 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 				orderItemTotalPrice: item.quantity * item.price,
 				...item,
 			});
-
+			
 			newOrder.totalPrice += +newItem.orderItemTotalPrice;
 		});
 		setTimeout(async () => {
 			await newOrder.save();
 		}, 1000);
 	});
+
 
 	res.status(201).json({
 		status: "success",
@@ -84,15 +85,15 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
-
+	
 	// const queryBuilder = new QueryBuilder(req.query);
-
+	
 	// queryBuilder.limitFields();
-
+	
 	const orderById = await OrderModel.findByPk(id, {
 		include: {
 			model: OrderItemModel,
-			as: "item",
+			as: "items",
 			attributes: ["productName", "quantity", "price"],
 		},
 	});
@@ -139,15 +140,24 @@ exports.adminOrderStatus = catchAsync(async (req, res, next) => {
 	res.json(orderStatusVariables);
 });
 
+exports.editOrder = catchAsync(async(req,res,next)=>{
+	const {id} = req.params
+	const editOrderbyId = await OrderModel.findOne({where: {id: {[Op.eq]: id}},attributes: {exclude: ["createdAt", "updatedAt", "orderStatus", "deliveryPrice", "totalPrice", "packageId"]}})
+	if(!editOrderbyId){
+		return next(new AppError("bunday buyurtma topilmadi", 404))
+	}
+	res.json({
+		data: editOrderbyId
+	})
+})
+
 exports.updateOrder = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
-
-	const { recipient, recipientPhoneNumber, regionId, districtId, items } =
+	
+	const { recipient, recipientPhoneNumber, regionId, districtId, items, note } =
 		req.body;
-
-	let orderById = await OrderModel.findByPk(id, {
-		include: { model: OrderItemModel, as: "items" },
-	});
+	
+	const orderById = await OrderModel.findByPk(id);
 
 	await OrderItemModel.destroy({
 		where: { orderId: { [Op.eq]: orderById.id } },
@@ -158,6 +168,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		recipientPhoneNumber,
 		regionId,
 		districtId,
+		note
 	});
 	orderById.totalPrice = 0;
 	items?.forEach(async (item) => {

@@ -17,11 +17,16 @@ router
 router
 	.route("/:id")
 	.get(orderControllers.getOrderById)
-	.put(orderValidator.updatedOrderValidator, orderControllers.updateOrder)
+	.put(roleMiddleware(["STORE_OWNER"]),
+		orderValidator.updatedOrderValidator, orderControllers.updateOrder)
 	.patch(
 		roleMiddleware(["ADMIN", "COURER"]),
 		orderControllers.changeOrderStatus
 	);
+router
+	.route("/:id/edit")
+	.get(orderControllers.editOrder)
+
 
 router.route("/devprice").get(orderControllers.getAllDeliveryPrice);
 
