@@ -32,8 +32,10 @@ exports.getAllPackages = catchAsync(async (req, res, next) => {
 
 exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
-
+	const queryBuilder = new QueryBuilder(req.query);
+	queryBuilder.paginate().limitFields().order();
 	const ordersbyPackage = await OrderModel.findAll({
+		...queryBuilder.queryOptions,
 		where: { packageId: { [Op.eq]: id } },
 	});
 

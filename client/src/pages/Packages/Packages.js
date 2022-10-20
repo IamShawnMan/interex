@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
+import { Link } from "react-router-dom";
+
+import styles from "./Packages.module.css";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 function Package() {
-  const [packages, setPackages] = useState([]);
+  const [packages, setPackages] = useState(null);
+
   useEffect(() => {
     getAllPackages();
   }, []);
@@ -13,24 +18,41 @@ function Package() {
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url: `packages`
+        url: "/packages",
       });
+
       setPackages(res.data.data.allPackages.content);
-    } catch (error) {
-      toast.error(error.response.data.message);
-      console.log(error.response.data);
-    }
+    } catch (error) {}
   };
+
   const packageCols = [
-    { Header: "id", accessor: "id" },
-    { Header: "Note", accessor: "note" },
-    { Header: "packageTotalPrice", accessor: "packageTotalPrice" },
-    { Header: "storeOwnerId", accessor: "storeOwnerId" },
-    { Header: "createdAt", accessor: "createdAt" },
+    {
+      id: "No",
+      Header: "No",
+      accessor: (pack, i) => {
+        return `${i + 1}`;
+      },
+    },
+    {
+      id: "storeOwner",
+      Header: "Package",
+      accessor: (pack) => {
+        return (
+          <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
+            {`${pack.storeOwner.firstName} ${pack.storeOwner.lastName}`}
+          </Link>
+        );
+      },
+    },
   ];
+
   return (
     <Layout>
-      <BasicTable columns={packageCols} data={packages} />
+      {packages?.length > 0 ? (
+        <BasicTable columns={packageCols} data={packages} />
+      ) : (
+        <p>Malumotlar yoq</p>
+      )}
     </Layout>
   );
 }
