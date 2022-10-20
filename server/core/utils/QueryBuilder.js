@@ -57,7 +57,7 @@ class QueryBuilder {
 				else  return [field, "asc"]
             })
         } else {
-			this.queryOptions.order = [["createdAt", "desc"]]  
+			this.queryOptions.order = [["createdAt", "asc"]]  
 		}
         return this
     }
