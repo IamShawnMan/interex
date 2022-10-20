@@ -1,0 +1,64 @@
+.sidebar {
+  position: absolute;
+  width: 20%;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  padding: 4rem 3.2rem 4rem 5rem;
+  transition: all 600ms;
+  background-color: white;
+  /* transform: translateX(-100%); */
+}
+
+.exit {
+  transform: translateX(-100%);
+}
+
+.headerLink {
+  text-decoration: none;
+}
+
+.sidebarTitle {
+  font-family: RobotoBold;
+  color: #7d41ed;
+  text-align: center;
+}
+
+.mainMenu {
+  margin: 7rem 0 3rem 0;
+}
+
+.subtitle {
+  font-family: RobotoMedium;
+  line-height: 1.8rem;
+  font-feature-settings: "salt" on, "liga" off;
+  color: #7a7a7a;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+  padding: 0 2rem;
+}
+
+.sidebarLinkSvg {
+  fill: #7a7a7a;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0 1rem 2rem;
+  gap: 2.4rem;
+  border-radius: 1rem;
+  text-decoration: none;
+  color: #7a7a7a;
+}
+.sidebarLink:hover .sidebarLinkSvg {
+  fill: #fff;
+}
+.sidebarLink:hover {
+  background: #7d41ed;
+  color: #fff;
+}
+.sidebarLinkActive {
+  background: #7d41ed;
+  color: #fff;
+}

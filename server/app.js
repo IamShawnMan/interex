@@ -5,8 +5,6 @@ const userRouter = require("./modules/user/userRouter");
 const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
 const cors = require("cors");
-// const swaggerJsDoc = require("swagger-jsdoc")
-// const swaggerUI = require("swagger-ui-express")
 
 // ROUTES
 const orderRoutes = require("./modules/order/orderRoutes");
@@ -18,29 +16,6 @@ require("./modules/user/User");
 const app = express();
 app.use(express.json());
 app.use(cors());
-// const options = {
-//     definition: {
-//         openapi: "3.0.0",
-//         info: {
-//             title: "InterEX Uz",
-//             version: "1.0.0"
-//         }
-//     },
-//     apis: ["app.js"]
-// }
-// const swaggerDocs = swaggerJsDoc(options)
-// app.use("/api/v1/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs))
-
-// /**
-//  * @swagger
-//  * /api/v1/users:
-//  *  get:
-//  *   description: Get all users
-//  *   responses:
-//  *      200:
-//  *       description: Success
-//  * 
-//  */
 
 app.use("/api/v1/users", authMiddleware, userRouter);
 app.use("/api/v1/auth", authRouter);

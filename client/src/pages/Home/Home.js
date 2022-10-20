@@ -25,16 +25,6 @@ function Home() {
   const ctx = useContext(AppContext);
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
-  const logoutHandle = () => {
-    localStorage.clear();
-    ctx.onReset();
-    http({
-      headers: {
-        authorization: "",
-      },
-    });
-    navigate("/");
-  };
 
   const updateSelfPassword = () => {
     setUpdatePassword(!updatePassword);
@@ -53,32 +43,6 @@ function Home() {
   return (
     <Layout>
       <div>
-      {user.userRole === "SUPER_ADMIN" &&<Link to="/users">Users</Link>}
-        <br />
-        <br />
-        {/* <form
-          onSubmit={handleSubmit((data) => {
-            console.log(data);
-          })}
-        >
-          <Input
-            register={register.bind(null, "firstName")}
-            type="text"
-            plascholder="First Name"
-            id="firstName"
-            error={errors.firstName?.message || ""}
-          />
-          <Input
-            register={register.bind(null, "lastName")}
-            type="file"
-            plascholder="Last Name"
-            id="lastName"
-            error={errors.lastName?.message || ""}
-          />
-          <Button title={"Save"} />
-        </form> */}
-        <br />
-
         <p
           onClick={updateSelfPassword}
           style={{
@@ -87,15 +51,7 @@ function Home() {
         >
           {!updatePassword ? "UpdatePassword" : "Paroldan chiqish"}
         </p>
-        <br />
-        <br />
         {updatePassword && <UpdatePassword id={user.id} />}
-        {(user.userRole === "STORE_OWNER"||user.userRole === "ADMIN")&& <Link to="/orders">Orders</Link>}
-        {user.userRole === "ADMIN" && <Link to="/packages">Packages</Link>}
-        <h1 className={styles.h1}>Welcome to the Interex.uz portal</h1>
-        <h2 onClick={logoutHandle} className={styles.logout}>
-          Log Out
-        </h2>
       </div>
     </Layout>
   );
