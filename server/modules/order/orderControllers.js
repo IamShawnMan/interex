@@ -38,7 +38,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	if (!validationErrors.isEmpty()) {
 		let err = new AppError("Validatsiya xatosi", 403);
 		err.isOperational = false;
-		err.errors = validationErrors.errors;
+		err.errors = validationErrors;
 		return next(err);
 	}
 	let existedPackage = await PackageModel.findOne({

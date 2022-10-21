@@ -27,6 +27,7 @@ class QueryBuilder {
 				filteredObj[k] = { [Op.eq]: filterItem };
 			}
 		});
+		console.log(filteredObj);
 		if (this.queryOptions.where) {
 			this.queryOptions.where = { ...filteredObj, ...this.queryOptions.where };
 		} else {
