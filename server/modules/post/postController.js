@@ -80,7 +80,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		regionId: regionId,
 	});
 
-	await Order.update(
+	const orderInPost = await Order.update(
 		{
 			postId: newPost.id,
 			orderStatus: orderStatuses.STATUS_DELIVERING,
@@ -101,18 +101,18 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Post created",
 		error: null,
-		data: null,
+		data: {orderInPost},
 	});
 });
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { regionId, ordersArr } = req.body;
-
+	
 	const newPost = await Post.create({
 		regionId: regionId,
 	});
 
-	await Order.update(
+	const ordersInPost = await Order.update(
 		{
 			postId: newPost.id,
 			orderStatus: orderStatuses.STATUS_DELIVERING,
@@ -133,7 +133,7 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Customized Post created",
 		error: null,
-		data: null,
+		data: {ordersInPost},
 	});
 });
 
