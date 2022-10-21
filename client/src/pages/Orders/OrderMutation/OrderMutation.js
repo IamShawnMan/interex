@@ -7,6 +7,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Layout from "../../../components/Layout/Layout";
 import OrderFieldArray from "./OrderFieldArray";
+import Button from "../../../components/Form/FormComponents/Button/Button"
+import styles from "./OrderMutation.module.css";
+
 const schema = object().shape({
   orders: array()
     .of(
@@ -15,7 +18,7 @@ const schema = object().shape({
         note: string().required("note kriting"),
         recipientPhoneNumber: string().required("phoneNumber kriting"),
         regionId: string().required("regionId kriting"),
-        // districtId: string().required("districtId kriting"),
+        districtId: string().required("districtId kriting"),
         orderItems: array()
           .of(
             object().shape({
@@ -64,7 +67,7 @@ function OrderMutation() {
     });
   }, [regionId]);
   useEffect(() =>{
- isUpdate&&updateData&&append(updateData)
+     isUpdate&&updateData&&append({...updateData,districtId:""})
   },updateData);
   const formSubmit = async (data) => {
     console.log( data.orders[0]);
@@ -108,15 +111,13 @@ function OrderMutation() {
   return (
     <Layout>
       <form onSubmit={handleSubmit((data) => formSubmit(data))}>
-        <ul>
-          {errors.orders?.type === "min" && errors.orders.message}
+        <ul style={{overflowY: 'scroll'}}>
+          {errors.orders?.type === "min" &&<p style={{color: "red"}}>{ errors.orders.message}</p>}
           {fields.map((item, index) => (
         <OrderFieldArray item={item} register={register} index={index} errors={errors} watch={watch} regions={regions} control={control}remove={remove}/>
           ))}
         </ul>
-       {!isUpdate&& <button
-          type="button"
-          onClick={() =>
+        <div className={styles.btnIconTextContainer}  onClick={() =>
             append({
               recipient: "",
               note: "",
@@ -125,11 +126,20 @@ function OrderMutation() {
               districtId: "",
               orderItems: [],
             })
-          }
+          }>
+           {!isUpdate&& 
+           <Button
+       size="small"
+       name="iconText"
+       iconName="plus"
+          type="button"
         >
-          Add Order
-        </button>}
-      <button type="submit">{isUpdate?"Update Order":"Create Order"}</button> 
+          Order
+        </Button>}
+        </div>
+      
+      <Button size="small"
+       name="btn" type="submit">{isUpdate?"Update Order":"Create Order"}</Button> 
       </form>
     </Layout>
   );
