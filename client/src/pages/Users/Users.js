@@ -80,7 +80,7 @@ function Users() {
   ];
 
   return (
-    <Layout>
+    <Layout pageName="Foydalanuvchilar">
       <Link to="/users/new">Add User</Link>
       {value?.length > 0 ? (
         <BasicTable columns={usersCols} data={value} />

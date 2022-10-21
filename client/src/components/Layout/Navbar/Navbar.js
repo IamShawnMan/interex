@@ -20,11 +20,6 @@ function Navbar(props) {
   const logoutHandle = () => {
     localStorage.clear();
     onReset();
-    http({
-      headers: {
-        authorization: "",
-      },
-    });
     navigate("/");
   };
 
@@ -35,7 +30,6 @@ function Navbar(props) {
   return (
     <div className={styles.navbar}>
       <div className={styles.left}>
-        {" "}
         <div onClick={activeAndNotActiveHandler} className={styles.burgerSvg}>
           <Burger classname={styles.burgerSvg} />
         </div>

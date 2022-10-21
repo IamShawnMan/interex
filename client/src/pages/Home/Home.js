@@ -5,6 +5,7 @@ import Layout from "../../components/Layout/Layout";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 import styles from "./Home.module.css";
+import Button from "../../components/Form/FormComponents/Button/Button";
 // import { useForm } from "react-hook-form";
 // import * as yup from "yup";
 // import { yupResolver } from "@hookform/resolvers/yup";
@@ -30,18 +31,8 @@ function Home() {
     setUpdatePassword(!updatePassword);
   };
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  //   reset,
-  // } = useForm({
-  //   mode: "onBlur",
-  //   resolver: yupResolver(schema),
-  // });
-
   return (
-    <Layout>
+    <Layout pageName={"Bosh Sahifa"}>
       <div>
         <p
           onClick={updateSelfPassword}
@@ -53,6 +44,11 @@ function Home() {
         </p>
         {updatePassword && <UpdatePassword id={user.id} />}
       </div>
+      <span className={styles.button}>
+        <Button disabled={false} name="icon" size="iconSmall" iconName="trash">
+          Save
+        </Button>
+      </span>
     </Layout>
   );
 }
