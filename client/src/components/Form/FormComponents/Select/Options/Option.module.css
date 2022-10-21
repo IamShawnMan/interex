@@ -1,0 +1,10 @@
+.option {
+}
+
+.option:hover {
+  background: rgba(125, 65, 237, 0.1);
+}
+
+.option:focus {
+  background: rgba(125, 65, 237, 0.1);
+}

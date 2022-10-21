@@ -8,14 +8,17 @@ import RoundNotifications from "../../../assets/icons/RoundNotifications";
 import SmsIcon from "../../../assets/icons/SmsIcon";
 import Arrow from "../../../assets/icons/Arrow";
 import AppContext from "../../../context/AppContext";
+import ArrowForBtn from "../../../assets/icons/ArrowForBtn";
 import http from "../../../utils/axios-instance";
 
 function Navbar(props) {
   const { user, onReset } = useContext(AppContext);
   const [show, setShow] = useState(false);
+  const [arrowChange, setArrowChange] = useState(true);
   const navigate = useNavigate();
   const activeAndNotActiveHandler = () => {
     props.sidebarActiveHandle();
+    setArrowChange(!arrowChange);
   };
   const logoutHandle = () => {
     localStorage.clear();
@@ -29,15 +32,18 @@ function Navbar(props) {
 
   return (
     <div className={styles.navbar}>
-      <div className={styles.left}>
-        <div onClick={activeAndNotActiveHandler} className={styles.burgerSvg}>
-          <Burger classname={styles.burgerSvg} />
-        </div>
-        <div className={styles.formControl}>
-          <Input plascholder={"Search"} />
-          <div className={styles.searchSvg}>
-            <SearchIcon classname={styles.searchSvg} />
-          </div>
+      <div
+        onClick={activeAndNotActiveHandler}
+        className={`${styles.arrowForBtn} ${
+          !arrowChange ? styles.arrowRight : ""
+        }`}
+      >
+        <ArrowForBtn />
+      </div>
+      <div className={styles.formControl}>
+        <Input plascholder={"Search"} />
+        <div className={styles.searchSvg}>
+          <SearchIcon classname={styles.searchSvg} />
         </div>
       </div>
       <div className={styles.userInfo}>
