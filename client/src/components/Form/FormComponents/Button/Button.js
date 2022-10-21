@@ -36,7 +36,6 @@ function Button({ children, type, name, iconName, size, disabled }) {
   }
 
   return (
-    <div>
       <button
         disabled={disabled}
         className={`${styles[buttonSize]} ${styles[name]} ${
@@ -54,9 +53,8 @@ function Button({ children, type, name, iconName, size, disabled }) {
           <Pen />
         )}
         {name === "dots" && <Dots classname={styles.dotsIcon} />}
-        {name === "btn" || (name === "iconText" && { children })}
+        {(name === "btn" || name === "iconText" )&& children }
       </button>
-    </div>
   );
 }
 

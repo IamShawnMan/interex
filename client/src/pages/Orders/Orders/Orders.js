@@ -6,6 +6,7 @@ import { BasicTable } from "../../../components/Table/BasicTable";
 import Layout from "../../../components/Layout/Layout";
 import AppContext from "../../../context/AppContext";
 import { toast } from "react-toastify";
+import Button from "../../../components/Form/FormComponents/Button/Button";
 function Orders() {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState(null);
@@ -45,22 +46,29 @@ function Orders() {
         return (
           <div>
             {user.userRole === "STORE_OWNER" && (
-              <Link to={`/orders/${order.id}`}>Update</Link>
+             
+                <Link style={{textDecoration: "none",color: "white"}} to={`/orders/${order.id}`}> <Button size="small" name="btn">Update</Button></Link>
+           
+              
             )}
             {user.userRole === "ADMIN" && (
               <>
-                <button
+                <Button
+                size="small"
+                name="btn"
                   style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
                   onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
                 >
                   <>ACCEPTED</>
-                </button>
-                <button
+                </Button>
+                <Button
+                size="small"
+                name="btn"
                   style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
                   onClick={() => changeOrderStatus(order.id, "NOT_EXIST")}
                 >
                   <>NOT EXIST</>
-                </button>
+                </Button>
               </>
             )}
           </div>
@@ -72,7 +80,7 @@ function Orders() {
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
       {user.userRole === "STORE_OWNER" && (
-        <Link to="/orders/new">Add Order</Link>
+        <Link style={{display: "block",width: "12rem"}} to="/orders/new"><Button size="small" name="btn">Add Order</Button></Link>
       )}
       {value?.length > 0 ? (
         <BasicTable columns={ordersCols} data={value} />
