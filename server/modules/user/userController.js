@@ -99,7 +99,7 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 	if (!validationErrors.isEmpty()) {
 		const err = new AppError("Validatsiya xatosi", 400);
 		err.isOperational = false;
-		err.errors = validationErrors.errors;
+		err.errors = validationErrors;
 		return next(err);
 	}
 
@@ -159,7 +159,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 	if (!validationErrors.isEmpty()) {
 		const err = new AppError("Validatsiya xatosi", 400);
 		err.isOperational = false;
-		err.errors = validationErrors.errors;
+		err.errors = validationErrors;
 		return next(err);
 	}
 	const { id } = req.user;
