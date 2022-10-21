@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import Sidebar from "./Sidebar/Sidebar";
 import Navbar from "./Navbar/Navbar";
-
+import ArrrowForBtn from "../../assets/icons/ArrowForBtn";
 import styles from "./Layout.module.css";
 
 function Layout(props) {
-  const [burger, setBurger] = useState(false);
+  const [arrowChange, setArrowChange] = useState(true);
 
   const sidebarActiveHandle = () => {
-    setBurger(!burger);
+    setArrowChange(!arrowChange);
   };
   return (
     <div>
-      <Sidebar active={burger} />
+      <Sidebar hasActive={arrowChange} />
       <div
-        className={`${styles.container} ${!burger ? styles.containerFull : ""}`}
+        className={`${styles.container} ${
+          !arrowChange ? styles.containerFull : ""
+        }`}
       >
         <Navbar sidebarActiveHandle={sidebarActiveHandle} />
         <div className={styles.layoutBox}>

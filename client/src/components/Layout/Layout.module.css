@@ -16,18 +16,15 @@
   position: absolute;
   top: 0;
   left: 20%;
-  transition: all 500ms;
+  transition: all 300ms;
 }
 
 .containerFull {
-  width: 100%;
-  left: 0;
+  width: 91%;
+  left: 9%;
 }
 
 .pageName {
   font-family: RobotoMedium, sans-serif;
   margin-bottom: 2.4rem;
-}
-
-.pathRoad {
 }

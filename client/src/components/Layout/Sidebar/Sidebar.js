@@ -7,7 +7,7 @@ import http from "../../../utils/axios-instance";
 import SettingIcon from "../../../assets/icons/SettingIcon";
 
 function Sidebar(props) {
-  const exit = !props.active;
+  const open = props.hasActive;
   const ctx = useContext(AppContext);
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
@@ -22,55 +22,97 @@ function Sidebar(props) {
     navigate("/");
   };
   return (
-    <div className={`${styles.sidebar} ${exit ? styles.exit : ""}`}>
+    <div className={`${styles.sidebar} ${!open ? styles.exit : ""}`}>
       <Link to={"/"} className={styles.headerLink}>
-        <h1 className={`h1 ${styles.sidebarTitle}`}>InterEX Uz</h1>
+        <h1 className={`h1 ${styles.sidebarTitle}`}>
+          {open ? "InterEX Uz" : "IEX Uz"}
+        </h1>
       </Link>
       <div className={styles.mainMenu}>
         <p className={`subtitle ${styles.subtitle}`}>MAIN MENU</p>
-        <Link to={"/users"} className={styles.sidebarLink}>
+        <Link
+          to={"/users"}
+          className={`${styles.sidebarLink} ${
+            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+          }`}
+        >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          <p className="h6">Users</p>
+          {open && <p className="h6">Users</p>}
         </Link>
         {user.userRole === "ADMIN" && (
-          <Link to={"/packages"} className={styles.sidebarLink}>
+          <Link
+            to={"/packages"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
             <UsersIcon classname={styles.sidebarLinkSvg} />
-            <p className="h6">Packages</p>
+            {open && <p className="h6">Packages</p>}
           </Link>
         )}
         {user.userRole === "STORE_OWNER" ||
           (user.userRole === "ADMIN" && (
-            <Link to={"/orders"} className={styles.sidebarLink}>
+            <Link
+              to={"/orders"}
+              className={`${styles.sidebarLink} ${
+                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+              }`}
+            >
               <UsersIcon classname={styles.sidebarLinkSvg} />
-              <p className="h6">Orders</p>
+              {open && <p className="h6">Orders</p>}
             </Link>
           ))}
-        <Link className={styles.sidebarLink}>
+        <Link
+          className={`${styles.sidebarLink} ${
+            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+          }`}
+        >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          <p className="h6">Recruitment</p>
+          {open && <p className="h6">Recruitment</p>}
         </Link>
-        <Link className={styles.sidebarLink}>
+        <Link
+          className={`${styles.sidebarLink} ${
+            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+          }`}
+        >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          <p className="h6">Schedule</p>
+          {open && <p className="h6">Schedule</p>}
         </Link>
-        <Link className={styles.sidebarLink}>
+        <Link
+          className={`${styles.sidebarLink} ${
+            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+          }`}
+        >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          <p className="h6">Department</p>
+          {open && <p className="h6">Department</p>}
         </Link>
       </div>
       <div className={styles.other}>
         <p className={`subtitle ${styles.subtitle}`}>OTHER</p>
-        <Link className={styles.sidebarLink}>
+        <Link
+          className={`${styles.sidebarLink} ${
+            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+          }`}
+        >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          <p className="h6">Support</p>
+          {open && <p className="h6">Support</p>}
         </Link>
-        <Link className={styles.sidebarLink}>
+        <Link
+          className={`${styles.sidebarLink} ${
+            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+          }`}
+        >
           <SettingIcon classname={styles.sidebarLinkSvg} />
-          <p className="h6">Settings</p>
+          {open && <p className="h6">Settings</p>}
         </Link>
-        <Link onClick={logoutHandle} className={styles.sidebarLink}>
+        <Link
+          onClick={logoutHandle}
+          className={`${styles.sidebarLink} ${
+            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+          }`}
+        >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          <p className="h6">Log Out</p>
+          {open && <p className="h6">Log Out</p>}
         </Link>
       </div>
     </div>
