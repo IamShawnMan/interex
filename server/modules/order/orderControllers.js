@@ -12,11 +12,11 @@ const priceDelivery = require("../../core/constants/deliveryPrice");
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
-		.limitFields()
 		.filter()
 		.paginate()
-		.order()
-		.search(["recipientPhoneNumber", "recipient"]);
+		.limitFields()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
 
 	let allOrders = await OrderModel.findAndCountAll({
 		...queryBuilder.queryOptions,
@@ -197,3 +197,11 @@ exports.getAllDeliveryPrice = (req, res, next) => {
 
 	res.json(allPrice);
 };
+
+exports.getOrdersbyRegion = catchAsync(async(req,res,next)=>{
+	const {id} = req.params
+
+	const allOrdersbyRegion = OrderModel.findAndCountAll({where: {regionId: {[Op.eq]: id}}})
+
+	res.send(allOrdersbyRegion)
+})

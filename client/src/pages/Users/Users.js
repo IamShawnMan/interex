@@ -6,6 +6,7 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
 import Switch from "../../components/Form/FormComponents/Switch/Switch";
+import Button from "../../components/Form/FormComponents/Button/Button";
 function Users() {
   const [value, setValue] = useState([]);
   const getAllUser = async () => {
@@ -57,7 +58,13 @@ function Users() {
       id: "actions",
       Header: "actions",
       accessor: (user) => {
-        return <Link to={`/users/${user.id}`}>Update</Link>;
+        return (
+          <Link to={`/users/${user.id}`}>
+            <Button size="small" name="btn">
+              Update
+            </Button>
+          </Link>
+        );
       },
     },
     {
@@ -81,7 +88,11 @@ function Users() {
 
   return (
     <Layout pageName="Foydalanuvchilar">
-      <Link to="/users/new">Add User</Link>
+      <Link style={{ width: "10rem", display: "block" }} to="/users/new">
+        <Button size="small" name="btn">
+          Add User
+        </Button>
+      </Link>
       {value?.length > 0 ? (
         <BasicTable columns={usersCols} data={value} />
       ) : (

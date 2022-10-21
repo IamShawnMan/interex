@@ -3,18 +3,18 @@ import AttentionError from "../../../../assets/icons/AttentionError";
 import CircleCheck from "../../../../assets/icons/CircleCheck";
 import styles from "./Input.module.css";
 
-function Input({ type, register, plascholder, id, error, children }) {
+function Input({ type, register, placeholder, id, error, children }) {
   const [success, setSuccess] = useState(false);
 
   return (
     <div className={styles.formControl}>
-      <label className={styles.label} htmlFor={id ? id : ""}>
-        {children ? children : ""}
-      </label>
+     {children&& <label className={styles.label} htmlFor={id ? id : ""}>
+        {children}
+      </label>}
       <div className={styles.inputContainer}>
         <input
           type={type ? type : "text"}
-          placeholder={plascholder ? plascholder : ""}
+          placeholder={placeholder ? placeholder : ""}
           id={id ? id : ""}
           {...(register ? register() : "")}
           className={`${styles.input} ${error ? styles.error : ""}`}
