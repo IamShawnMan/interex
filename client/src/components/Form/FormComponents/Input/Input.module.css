@@ -11,7 +11,7 @@
 }
 
 .label {
-  font-family: RobotoMedium;
+  font-weight: 500;
   font-size: 1.8rem;
   line-height: 2.2rem;
   letter-spacing: -0.01em;
@@ -30,7 +30,7 @@
 }
 
 .input::placeholder {
-  font-family: RobotoRegular;
+  font-weight: 400;
   font-size: 1.6rem;
   line-height: 2.4rem;
   align-items: center;

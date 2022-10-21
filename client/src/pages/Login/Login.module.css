@@ -23,9 +23,7 @@
   border-radius: 0px;
 }
 .left-page h1 {
-  font-family: RoboBold;
-  font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 32px;
   line-height: 39px;
   color: #ffffff;
@@ -51,8 +49,6 @@
 .right-page-main-content h1 {
   max-width: 212px;
   max-height: 39px;
-  font-family: RobotoMedium;
-  font-style: normal;
   font-weight: 500;
   font-size: 28px;
   line-height: 39px;
@@ -69,23 +65,21 @@ form {
   border-bottom: 1px solid #7d41ed;
   font-size: 18px;
   line-height: 24px;
-  padding:10px ;
+  padding: 10px;
   padding-bottom: 0px;
   width: 100%;
 }
-p{
+p {
   font-size: 16px;
   line-height: 24px;
 }
 .spandiv {
   display: flex;
-  justify-content:end;
+  justify-content: end;
 }
 .input-name {
   max-width: 85px;
   max-height: 24px;
-  font-family: RobotoRegular;
-  font-style: normal;
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;
@@ -96,7 +90,6 @@ p{
   padding: 20px 30px 20px 30px;
   margin-top: 15px;
   display: flex;
-  /* flex-direction: row; */
   justify-content: center;
   align-items: center;
   padding: 20px 20px;
@@ -121,6 +114,9 @@ p{
   transform: translate(-90%, 20%);
   display: inline-block;
 }
+
+/* MEDIA QUERY  */
+
 @media (max-width: 75rem) {
   .container {
     display: block;

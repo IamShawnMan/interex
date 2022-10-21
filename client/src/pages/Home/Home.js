@@ -28,25 +28,6 @@ function Home() {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const viloyatlar = [
-    {
-      id: 1,
-      name: "Do'stlik",
-    },
-    {
-      id: 2,
-      name: "Paxtakor",
-    },
-    {
-      id: 3,
-      name: "Mirzacho'l",
-    },
-    {
-      id: 4,
-      name: "Forish",
-    },
-  ];
-
   const updateSelfPassword = () => {
     setUpdatePassword(!updatePassword);
   };
@@ -65,9 +46,10 @@ function Home() {
         {updatePassword && <UpdatePassword id={user.id} />}
       </div>
 
-      <span className={styles.select}>
-        <Select value={viloyatlar}>Viloyatlar</Select>
-      </span>
+      {/* Selectning ishlatilishi */}
+      {/* <div className={styles.select}>
+        <Select data={viloyatlar}>Tumanlar</Select>
+      </div> */}
 
       {/* Button componentining ishlatilishi */}
       {/* <span className={styles.button}>

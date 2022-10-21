@@ -11,7 +11,7 @@ function Layout(props) {
     setArrowChange(!arrowChange);
   };
   return (
-    <div>
+    <div className={styles.layout}>
       <Sidebar hasActive={arrowChange} />
       <div
         className={`${styles.container} ${

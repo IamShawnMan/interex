@@ -5,7 +5,7 @@ import { useState } from "react";
 import { BasicTable } from "../../components/Table/BasicTable";
 import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
-import Switch from "../../components/UI/Switch/Switch";
+import Switch from "../../components/Form/FormComponents/Switch/Switch";
 function Users() {
   const [value, setValue] = useState([]);
   const getAllUser = async () => {
@@ -15,7 +15,7 @@ function Users() {
       });
       setValue(res.data.data.allUsers.content);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response.data.message);
     }
   };
   useEffect(() => {

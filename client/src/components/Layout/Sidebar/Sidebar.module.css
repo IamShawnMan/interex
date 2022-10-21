@@ -19,7 +19,7 @@
 }
 
 .sidebarTitle {
-  font-family: RobotoMedium;
+  font-weight: 500;
   color: #7d41ed;
   text-align: center;
 }
@@ -30,7 +30,7 @@
 }
 
 .subtitle {
-  font-family: RobotoMedium;
+  font-weight: 500;
   line-height: 1.8rem;
   font-feature-settings: "salt" on, "liga" off;
   color: #7a7a7a;
@@ -48,6 +48,8 @@
   text-align: center;
   padding: 1rem 1.5rem;
   display: block;
+  width: 60%;
+  margin: 0 auto;
 }
 .sidebarLinkOpen {
   display: flex;
