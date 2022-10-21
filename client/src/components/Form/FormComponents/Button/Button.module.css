@@ -6,7 +6,7 @@
   border: none;
   color: white;
   cursor: pointer;
-  font-family: RobotoRegular, sans-serif;
+  font-weight: 400;
   letter-spacing: -0.01em;
 }
 .dots {
