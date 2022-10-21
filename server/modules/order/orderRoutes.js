@@ -29,5 +29,6 @@ router
 
 
 router.route("/devprice").get(orderControllers.getAllDeliveryPrice);
+router.route("/region/:id").get(orderControllers.getOrdersbyRegion)
 
 module.exports = router;

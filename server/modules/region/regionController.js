@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const District = require("../district/District");
+const OrderModel = require("../order/Order")
 
 exports.getAllRegions = catchAsync(async (req, res, next) => {
 	const allRegions = await Region.findAll();
