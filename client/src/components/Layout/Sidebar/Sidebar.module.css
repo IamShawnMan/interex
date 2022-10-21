@@ -5,12 +5,13 @@
   left: 0;
   top: 0;
   padding: 4rem 3.2rem 4rem 5rem;
-  transition: all 600ms;
+  transition: all 300ms;
   background-color: white;
 }
 
 .exit {
-  transform: translateX(-100%);
+  width: 9%;
+  padding: 4rem 0 0 0;
 }
 
 .headerLink {
@@ -18,13 +19,14 @@
 }
 
 .sidebarTitle {
-  font-family: RobotoBold;
+  font-family: RobotoMedium;
   color: #7d41ed;
   text-align: center;
 }
 
 .mainMenu {
-  margin: 7rem 0 3rem 0;
+  margin: 5rem 0 2.5rem 0;
+  width: 100%;
 }
 
 .subtitle {
@@ -34,18 +36,28 @@
   color: #7a7a7a;
   opacity: 0.5;
   margin-bottom: 1rem;
-  padding: 0 2rem;
+  width: 100%;
+  text-align: center;
 }
 
 .sidebarLinkSvg {
   fill: #7a7a7a;
 }
 
-.sidebarLink {
+.sidebarLinkClouse {
+  text-align: center;
+  padding: 1rem 1.5rem;
+  display: block;
+}
+.sidebarLinkOpen {
   display: flex;
   align-items: center;
-  padding: 1rem 0 1rem 2rem;
+  padding: 2rem;
   gap: 2.4rem;
+  padding: 1;
+}
+
+.sidebarLink {
   border-radius: 1rem;
   text-decoration: none;
   color: #7a7a7a;
@@ -57,7 +69,11 @@
   background: #7d41ed;
   color: #fff;
 }
-.sidebarLinkActive {
+
+.sidebarLink:focus {
   background: #7d41ed;
   color: #fff;
+}
+.sidebarLink:focus .sidebarLinkSvg {
+  fill: #fff;
 }

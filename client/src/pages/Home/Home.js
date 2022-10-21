@@ -6,6 +6,7 @@ import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 import styles from "./Home.module.css";
 import Button from "../../components/Form/FormComponents/Button/Button";
+import Select from "../../components/Form/FormComponents/Select/Select";
 // import { useForm } from "react-hook-form";
 // import * as yup from "yup";
 // import { yupResolver } from "@hookform/resolvers/yup";
@@ -27,6 +28,25 @@ function Home() {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
 
+  const viloyatlar = [
+    {
+      id: 1,
+      name: "Do'stlik",
+    },
+    {
+      id: 2,
+      name: "Paxtakor",
+    },
+    {
+      id: 3,
+      name: "Mirzacho'l",
+    },
+    {
+      id: 4,
+      name: "Forish",
+    },
+  ];
+
   const updateSelfPassword = () => {
     setUpdatePassword(!updatePassword);
   };
@@ -44,11 +64,17 @@ function Home() {
         </p>
         {updatePassword && <UpdatePassword id={user.id} />}
       </div>
-      <span className={styles.button}>
+
+      <span className={styles.select}>
+        <Select value={viloyatlar}>Viloyatlar</Select>
+      </span>
+
+      {/* Button componentining ishlatilishi */}
+      {/* <span className={styles.button}>
         <Button disabled={false} name="icon" size="iconSmall" iconName="trash">
           Save
         </Button>
-      </span>
+      </span> */}
     </Layout>
   );
 }
