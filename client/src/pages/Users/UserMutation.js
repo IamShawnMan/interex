@@ -6,6 +6,8 @@ import * as yup from "yup";
 import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
 import Layout from "../../components/Layout/Layout";
+import Input from "../../components/Form/FormComponents/Input/Input";
+import Button from "../../components/Form/FormComponents/Button/Button";
 
 const registerSchema = yup.object().shape({
   firstName: yup
@@ -156,63 +158,59 @@ const UserMutation = () => {
           </select>
 
           <label htmlFor="text"></label>
-          <input
+          <Input
             id="text"
-            className="input"
             type="text"
             placeholder="firstName"
-            {...register("firstName")}
+            register={register.bind(null,"firstName")}
+            error={errors.firstName?.message}
           />
-          {errors.firstName && <p>{errors.firstName.message}</p>}
           <label htmlFor="text"></label>
-          <input
+          <Input
             id="text"
-            className="input"
             type="text"
             placeholder="lastName"
-            {...register("lastName")}
+            register={register.bind(null,"lastName")}
+            error={errors.lastName?.message}
           />
-          {errors.lastName && <p>{errors.lastName.message}</p>}
           <label htmlFor="text"></label>
-          <input
+          <Input
             id="text"
-            className="input"
             type="text"
             placeholder="username"
-            {...register("username")}
+            register={register.bind(null,"username")}
+            error={errors.username?.message}
           />
-          {errors.username && <p>{errors.username.message}</p>}
           {!isUpdate && (
             <>
               <label htmlFor="password"></label>
-              <input
+              <Input
                 id="password"
-                className="input"
                 type="password"
                 placeholder="password"
-                {...register("password")}
+                register={register.bind(null,"password")}
+                error={errors.password?.message}
               />
-              {errors.password && <p>{errors.password.message}</p>}
             </>
           )}
           <label htmlFor="passportNumber"></label>
-          <input
+          <Input
             id="passportNumber"
             className="input"
             type="text"
             placeholder="PassportNumber"
-            {...register("passportNumber")}
+            register={register.bind(null,"passportNumber")}
+            error={errors.passportNumber?.message}
           />
-          {errors.passportNumber && <p>{errors.passportNumber.message}</p>}
           <label htmlFor="phoneNumber"></label>
-          <input
+          <Input
             id="phoneNumber"
             className="input"
             type="text"
             placeholder="PhoneNumber"
-            {...register("phoneNumber")}
+            register={register.bind(null,"phoneNumber")}
+            error={errors.phoneNumber?.message}
           />
-          {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
 
           {role === "COURIER" && (
             <>
@@ -229,21 +227,10 @@ const UserMutation = () => {
               {errors.regionId && <p>{errors.regionId.message}</p>}
             </>
           )}
-          <button className="btnLogin">
+          <Button size="small" name="btn" className="btnLogin">
             {!isUpdate ? "Create Accaunt" : "Update User"}
-          </button>
+          </Button>
         </form>
-        <button
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "blue",
-            border: "none",
-            color: "white",
-          }}
-          onClick={() => navigate(-1)}
-        >
-          ◀
-        </button>
       </Layout>
     </>
   );

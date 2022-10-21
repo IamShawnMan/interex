@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import OrderItems from "./nestedFieldArray";
 import http from "../../../utils/axios-instance";
+import Input from "../../../components/Form/FormComponents/Input/Input"
+import Button from "../../../components/Form/FormComponents/Button/Button"
+import styles from "./OrderMutation.module.css";
 
 const OrderFieldArray = ({item,register,index,errors,watch,regions,control,remove}) => {
     const [districts, setDistricts] = useState(null);
@@ -16,29 +19,20 @@ const OrderFieldArray = ({item,register,index,errors,watch,regions,control,remov
       regionId&&  getAllDistrict();
       },[regionId])
     return (
-        <li style={{ border: "1px solid black" }} key={item.id}>
-        <input
+        <li style={{ borderBottom: "1px solid black" }} key={item.id}>
+        <Input
           placeholder="recipient"
-          {...register(`orders.${index}.recipient`)}
+          register={register.bind(null,`orders.${index}.recipient`)}
+          error={errors?.orders?.[index]?.recipient?.message}
         />
-        {errors?.orders?.[index] && (
-          <>{errors?.orders?.[index]?.recipient?.message}</>
-        )}
-        <input placeholder="note" {...register(`orders.${index}.note`)} />
-        {errors?.orders?.[index] && (
-          <>{errors?.orders?.[index]?.note?.message}</>
-        )}
-        <input
+        <Input placeholder="note" register={register.bind(null,`orders.${index}.note`)} error={errors?.orders?.[index]?.note?.message} />
+        <Input
           type="text"
           placeholder="phoneNumber"
-          {...register(`orders.${index}.recipientPhoneNumber`)}
+          register={register.bind(null,`orders.${index}.recipientPhoneNumber`)}
+          error={errors?.orders?.[index]?.recipientPhoneNumber?.message}
         />
-        {errors?.orders?.[index] && (
-          <>{errors?.orders?.[index]?.recipientPhoneNumber?.message}</>
-        )}
-        <select  {...register(`orders.${index}.regionId`)}
-        //  onChange={e=>setRegionId(e.target.value)}
-        >
+        <select  {...register(`orders.${index}.regionId`)}>
           <option value={null}></option>
           {regions &&
             regions.map((c) => (
@@ -62,15 +56,17 @@ const OrderFieldArray = ({item,register,index,errors,watch,regions,control,remov
         {errors?.orders?.[index] && (
           <>{errors?.orders?.[index]?.districtId?.message}</>
         )}
+        
         <OrderItems
           orderIndex={index}
           control={control}
           errors={errors}
           register={register}
         />
-        <button type="button" onClick={() => remove(index)}>
+         <div className={styles.btnIconTextContainer}  onClick={() => remove(index)}>
+        <Button type="button" size="small" name="iconText" iconName="trash" >
           Delete
-        </button>
+        </Button></div>
       </li>
       );
 }
