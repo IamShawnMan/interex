@@ -5,14 +5,14 @@ const sendErrorDev = (err, res) => {
     status: err.status,
     message: err.message,
     stack: err.stack,
-    error: err,
+    error: err.errors,
   });
 };
 
 const sendErrorProd = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
-    errors: err.errors,
+    error: err.errors,
     message: err.message,
   });
 };
