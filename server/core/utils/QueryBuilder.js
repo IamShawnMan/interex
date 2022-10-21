@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 
-const excludeParams = ["page", "size", "fields", "search", "order"];
+const excludeParams = ["page", "size", "fields", "search", "sort"];
 const operators = ["gt", "lt", "gte", "lte", "in"];
 
 class QueryBuilder {
@@ -37,46 +37,28 @@ class QueryBuilder {
 	}
 
 	limitFields() {
-		if (this.queryParams.hasOwnProperty("fields")) {
+		if (this.queryParams.fields) {
 			const attributes = this.queryParams.fields.split(",");
 			this.queryOptions.attributes = attributes;
 		}
 		return this;
 	}
 
-	order() {
-        if(this.queryParams.hasOwnProperty("order")) {
-            const order = this.queryParams.order.split(",")
-            this.queryOptions.order = order.map((field) => {
-				console.log(field);
-                if(field.startsWith("-")) {
-                    return (
-                        [field.slice(1), "desc"]
-                    )
-                } 
-				else  return [field, "asc"]
-            })
-        } else {
-			this.queryOptions.order = [["createdAt", "asc"]]  
-		}
-        return this
-    }
-
 	paginate() {
-		const page = (this.queryParams.page = +this.queryParams.page || 1);
-		const limit = (this.queryParams.size = +this.queryParams.size || 50);
+		const page = this.queryParams.page ||= 1;
+		const limit = this.queryParams.size||= 50;
 
 		this.queryOptions.limit = +limit;
 		this.queryOptions.offset = +(page - 1) * limit;
 		return this;
 	}
 
-	search(searchFielsd) {
+	search(searchFields) {
 		if (!this.queryParams.search) return this;
 
 		const searchObj = {
-			[Op.or]: searchFielsd.map((field) => ({
-				[field]: { [Op.iLike]: `%${this.queryParams.search}%` },
+			[Op.or]: searchFields.map((field) => ({
+				[field]: { [Op.iLike]: `%${this.queryParams.search}%` }
 			})),
 		};
 
@@ -89,26 +71,23 @@ class QueryBuilder {
 	}
 
 	createPagination(queryResult) {
-		if (
-			queryResult.hasOwnProperty("count") &&
-			queryResult.hasOwnProperty("rows")
-		) {
-			const allPages = Math.ceil(queryResult.count / this.queryOptions.limit);
-			const page = this.queryParams.page;
-			const isLastPage = allPages === page;
+		if(!queryResult.count&&!queryResult.rows) return queryResult
+
+			const allPagesCount = Math.ceil(queryResult.count / this.queryOptions.limit);
+			const page = +this.queryParams.page;
+			const isLastPage = allPagesCount === page;
 
 			return {
 				content: queryResult.rows,
 				pagination: {
 					allItemsCount: queryResult.count,
 					page,
-					allPages,
+					allPagesCount,
 					isFirstPage: page === 1,
 					isLastPage,
 					pageSize: this.queryOptions.size,
 				},
 			};
-		}
 	}
 
 	order() {
@@ -123,6 +102,29 @@ class QueryBuilder {
 			this.queryOptions.order = [["createdAt", "desc"]];
 		}
 		return this;
+	}
+
+	#createOrderArray() {
+		const orderArr = this.queryParams.sort.split(",").map((i) => {
+			const orderItem = [];
+			const isDesc = i.startsWith("-")
+
+			orderItem[0] = isDesc ? i.slice(1) : i
+			orderItem[1] = isDesc ? "desc" : "asc"
+
+			return orderItem
+		})
+		return orderArr
+	}
+	
+	sort(){
+		if(this.queryParams.sort) {
+			this.queryOptions.order = this.#createOrderArray()
+		}
+		else {
+			this.queryOptions.order = [["createdAt", "desc"]]
+		}
+		return this
 	}
 }
 
