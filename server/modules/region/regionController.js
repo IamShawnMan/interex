@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const District = require("../district/District");
+const OrderModel = require("../order/Order")
 
 exports.getAllRegions = catchAsync(async (req, res, next) => {
 	const allRegions = await Region.findAll();
@@ -57,3 +58,11 @@ exports.getDistrictByRegionId = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
+exports.getOrdersbyRegion = catchAsync(async(req,res,next)=>{
+	const {id} = req.params
+
+	const allOrdersbyRegion = OrderModel.findAndCountAll({where: {regionId: {[Op.eq]: id}}})
+
+	res.send(allOrdersbyRegion)
+})
