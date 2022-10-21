@@ -18,7 +18,7 @@ function PostInnerOrders() {
   const getOrdersByPackageId = async () => {
     try {
       const res = await http({
-        url: `/packages/${id}/orders`,
+        url: `/posts/new/${id}/orders`,
       });
       console.log(res.data.data);
       setOrders(res.data.data.ordersbyPackage);
