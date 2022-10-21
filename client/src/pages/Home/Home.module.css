@@ -6,3 +6,8 @@
 .logout {
   cursor: pointer;
 }
+
+.button {
+  /* width: 4.6rem; */
+  display: inline-block;
+}

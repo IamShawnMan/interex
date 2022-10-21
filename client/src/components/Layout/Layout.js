@@ -17,8 +17,12 @@ function Layout(props) {
         className={`${styles.container} ${!burger ? styles.containerFull : ""}`}
       >
         <Navbar sidebarActiveHandle={sidebarActiveHandle} />
-
-        <div className={styles.contents}>{props.children}</div>
+        <div className={styles.layoutBox}>
+          <div className={styles.pathRoad}>
+            <h1 className={`h2 ${styles.pageName}`}>{props.pageName}</h1>
+          </div>
+          <div className={styles.contents}>{props.children}</div>
+        </div>
       </div>
     </div>
   );

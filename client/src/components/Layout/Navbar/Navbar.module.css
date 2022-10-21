@@ -3,18 +3,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #fff;
 }
 
 .left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 3.2rem;
+  width: 45rem;
 }
 
 .formControl {
   position: relative;
-  width: 41.7rem;
-  margin: 0 3rem;
+  width: 80%;
+  /* margin: 0 3rem; */
 }
 
 .searchSvg {
