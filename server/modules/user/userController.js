@@ -21,11 +21,11 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 	const { id } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
-		.limitFields()
 		.filter()
 		.paginate()
-		.order()
-		.search(["phoneNumber", "firstName", "lastName", "storeName"]);
+		.limitFields()
+		.search(["phoneNumber", "firstName", "lastName", "storeName"])
+		.sort();
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {
@@ -190,11 +190,11 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 exports.getAdmins = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
-		.limitFields()
 		.filter()
+		.limitFields()
 		.paginate()
-		.order()
-		.search(["phoneNumber", "firstName", "lastName"]);
+		.search(["phoneNumber", "firstName", "lastName"])
+		.sort()
 	
 	queryBuilder.queryOptions.where.userRole = { [Op.eq]: "ADMIN" };
 	queryBuilder.queryOptions.attributes = ["firstName", "lastName", "phoneNumber"]
