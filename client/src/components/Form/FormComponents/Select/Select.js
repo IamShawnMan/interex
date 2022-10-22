@@ -1,22 +1,27 @@
 import React from "react";
-import Option from "./Options/Option";
 import styles from "./Select.module.css";
 import Arrow from "../../../../assets/icons/Arrow";
 
-function Select({ value, children }) {
+function Select({ data, children }) {
   return (
-    <select className={styles.select}>
-      <option value={null}>{children}</option>
-      {value ? (
-        value.map((e) => (
-          <option key={e.id} value={e.id}>
-            {e.name}
+    <>
+      <select className={styles.select}>
+        <option className={styles.option} value={null}>
+          {children}
+        </option>
+        {data ? (
+          data.map((e) => (
+            <option className={styles.option} key={e.id} value={e.id}>
+              {e.name}
+            </option>
+          ))
+        ) : (
+          <option className={styles.option} value={null}>
+            Ma'lumotlar yo'q
           </option>
-        ))
-      ) : (
-        <option value={null}>Ma'lumotlar yo'q</option>
-      )}
-    </select>
+        )}
+      </select>
+    </>
   );
 }
 

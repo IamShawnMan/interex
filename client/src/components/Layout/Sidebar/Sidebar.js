@@ -30,15 +30,17 @@ function Sidebar(props) {
       </Link>
       <div className={styles.mainMenu}>
         <p className={`subtitle ${styles.subtitle}`}>MAIN MENU</p>
-        <Link
-          to={"/users"}
-          className={`${styles.sidebarLink} ${
-            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-          }`}
-        >
-          <UsersIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Users</p>}
-        </Link>
+        {(user.userRole === "SUPER_ADMIN" || user.userRole === "ADMIN") && (
+          <Link
+            to={"/users"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
+            <UsersIcon classname={styles.sidebarLinkSvg} />
+            {open && <p className="h6">Users</p>}
+          </Link>
+        )}
         {user.userRole === "ADMIN" && (
           <Link
             to={"/packages"}
@@ -50,18 +52,17 @@ function Sidebar(props) {
             {open && <p className="h6">Packages</p>}
           </Link>
         )}
-        {user.userRole === "STORE_OWNER" ||
-          (user.userRole === "ADMIN" && (
-            <Link
-              to={"/orders"}
-              className={`${styles.sidebarLink} ${
-                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
-            >
-              <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Orders</p>}
-            </Link>
-          ))}
+        {(user.userRole === "STORE_OWNER" || user.userRole === "ADMIN") && (
+          <Link
+            to={"/orders"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
+            <UsersIcon classname={styles.sidebarLinkSvg} />
+            {open && <p className="h6">Orders</p>}
+          </Link>
+        )}
         <Link
           className={`${styles.sidebarLink} ${
             open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse

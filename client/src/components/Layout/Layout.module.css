@@ -1,3 +1,6 @@
+.layout {
+  overflow: hidden;
+}
 .layoutBox {
   background-color: rgb(228, 228, 228);
   flex-grow: 1;
@@ -5,7 +8,6 @@
 }
 .contents {
   width: 100%;
-  background-color: white;
 }
 
 .container {
@@ -25,6 +27,6 @@
 }
 
 .pageName {
-  font-family: RobotoMedium, sans-serif;
+  font-weight: 500;
   margin-bottom: 2.4rem;
 }
