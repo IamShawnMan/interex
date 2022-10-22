@@ -46,7 +46,6 @@ function Login() {
         method: "POST",
         data,
       });
-      console.log(res);
       localStorage.setItem("token", res.data.data.jwt);
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
       ctx.setAppData({
@@ -57,7 +56,6 @@ function Login() {
       toast.success(res.data.message);
       navigate("/home");
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -78,7 +76,9 @@ function Login() {
                 <div className={styles.spandiv}>
                   {/* <span className={styles["input-name"]}>Username </span> */}
                   <div className={styles.changeType}>
-                  <div><UsernameIcon /></div>
+                    <div>
+                      <UsernameIcon />
+                    </div>
                   </div>
                 </div>
                 <input
