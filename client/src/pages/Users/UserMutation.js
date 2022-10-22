@@ -85,7 +85,6 @@ const UserMutation = () => {
   const [regions, setRegions] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
-  console.log(id);
   const {
     register,
     handleSubmit,
@@ -108,12 +107,14 @@ const UserMutation = () => {
       url: "/users/roles",
     });
     setRoles(res.data.data.roles);
+    console.log(res);
   };
   const getAllRegions = async () => {
     const res = await http({
       url: "/regions",
     });
     setRegions(res.data.data.allRegions);
+    console.log(res.data.data.allRegions);
   };
 
   const getById = async () => {
@@ -133,6 +134,7 @@ const UserMutation = () => {
         method: isUpdate ? "PUT" : "POST",
         data,
       });
+      console.log(res)
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {

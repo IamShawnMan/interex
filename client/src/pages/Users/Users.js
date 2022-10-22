@@ -15,6 +15,7 @@ function Users() {
         url: "/users",
       });
       setValue(res.data.data.allUsers.content);
+      console.log(res);
     } catch (error) {
       toast.error(error.response.data.message);
     }
