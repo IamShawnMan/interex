@@ -74,8 +74,8 @@ exports.getPostByRegionId = catchAsync(async (req, res, next) => {
 });
 
 exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
-	const { regionId } = req.params;
-
+	const { regionId } = req.body;
+console.log(regionId);
 	const newPost = await Post.create({
 		regionId: regionId,
 	});
