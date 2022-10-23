@@ -1,4 +1,7 @@
-
+.table {
+  width: 100%;
+  overflow: scroll;
+}
 table,
 table th,
 table td {
@@ -6,7 +9,8 @@ table td {
   border-collapse: collapse;
 }
 .td,
-.th {  border-collapse: collapse;
+.th {
+  border-collapse: collapse;
   padding: 8px;
   border: none;
 }
