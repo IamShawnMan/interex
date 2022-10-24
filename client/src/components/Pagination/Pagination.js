@@ -1,40 +1,71 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Pagination.module.css";
 import PaginationArrow from "../../assets/icons/PaginationArrow";
 import PaginationDots from "../../assets/icons/PaginationDots";
 
 function Pagination(props) {
-  const { allPagesCount, page, isFirstPage, isLastPage } = props.pagination;
+  const { allPagesCount, isFirstPage, isLastPage } = props.pagination;
   const url = props.url;
-  const [pagesArray, setPagesArray] = useState(6);
-  const offset = pagesArray - 6;
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [pagesCount, setPagesCount] = useState(6);
+  const offset = pagesCount - 6;
+
+  const page = searchParams.get("page") || 1;
   const sixPageChange = (num) => {
     if (num === 1) {
-      setPagesArray(pagesArray + 6);
+      setPagesCount(pagesCount + 6);
+      navigate(`/${url}?page=${+offset + 7}`);
     } else {
-      setPagesArray(pagesArray - 6);
+      setPagesCount(pagesCount - 6);
+      navigate(`/${url}?page=${+offset - 5}`);
+    }
+  };
+
+  const arrowHandler = (num) => {
+    if (num === 1) {
+      if (+page === pagesCount) {
+        setPagesCount(pagesCount + 6);
+        navigate(`/${url}?page=${+page + 1}&size=2`);
+      } else {
+        navigate(`/${url}?page=${+page + 1}&size=2`);
+      }
+    } else {
+      if (+page === offset) {
+        setPagesCount(pagesCount - 6);
+        navigate(`/${url}?page=${+page - 1}&size=2`);
+      } else {
+        navigate(`/${url}?page=${+page - 1}&size=2`);
+      }
     }
   };
 
   return (
     <div className={styles.paginationContainer}>
-      <Link
-        to={`/${url}?page=${+page - 1}&size=3`}
+      <button
+        onClick={arrowHandler}
         className={`${styles.pageLinks} ${
           isFirstPage ? styles.disabledTrue : ""
         } ${styles.arrowLeft}`}
       >
         <PaginationArrow classname={`${styles.arrow}`} />
-      </Link>
-      {pagesArray > 7 && (
-        <Link to={`/${url}?page=${+offset - 5}`} onClick={sixPageChange}>
-          <PaginationDots />
+      </button>
+
+      {/* {offset > 5 && (
+        <Link to={`/${url}?page=1&size=2`} className={styles.pageLinks}>
+          1
         </Link>
+      )} */}
+
+      {pagesCount > 7 && (
+        <button className={styles.dots} onClick={sixPageChange}>
+          <PaginationDots />
+        </button>
       )}
       {allPagesCount &&
         Array.from({ length: allPagesCount }).map((_, i) => {
-          if (i + 1 > offset && i + 1 <= pagesArray) {
+          if (i + 1 > offset && i + 1 <= pagesCount) {
             return (
               <Link
                 className={`${styles.pageLinks}  ${
@@ -50,23 +81,28 @@ function Pagination(props) {
           }
         })}
 
-      {allPagesCount > pagesArray && (
-        <Link
-          to={`/${url}?page=${+offset + 7}`}
-          onClick={sixPageChange.bind(null, 1)}
-        >
+      {allPagesCount > pagesCount && (
+        <button className={styles.dots} onClick={sixPageChange.bind(null, 1)}>
           <PaginationDots />
-        </Link>
+        </button>
       )}
 
-      <Link
-        to={`/${url}?page=${+page + 1}&size=2`}
+      {/* {pagesCount < allPagesCount - 5 && (
+        <Link
+          to={`/${url}?page=${allPagesCount}&size=2`}
+          className={styles.pageLinks}
+        >
+          {allPagesCount}
+        </Link>
+      )} */}
+      <button
+        onClick={arrowHandler.bind(null, 1)}
         className={`${styles.pageLinks} ${
           isLastPage ? styles.disabledTrue : ""
         }`}
       >
         <PaginationArrow classname={`${styles.arrow}`} />
-      </Link>
+      </button>
     </div>
   );
 }
