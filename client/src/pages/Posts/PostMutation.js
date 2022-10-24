@@ -4,37 +4,33 @@ import { toast } from "react-toastify";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
-
 const PostMutation = () => {
     const [value, setValue] = useState([]);
     const [pagination, setPagination] = useState({});
-
     const getAllUser = async () => {
-      try {
+      try{
         const res = await http({
           url: "/regions",
         });
         setValue(res.data.data.allRegions.content);
         setPagination(res.data.data.allRegions.pagination);
-
-      } catch (error) {
+      }catch (error) {
         toast.error(error.response.data.message);
-      }
-    };
+      }   
+    };   
     useEffect(() => {
       getAllUser();
     }, []);
-  
     const regionCols = [
-      {
+      {  
         id: "name",
         Header: "Viloyat",
         accessor: (region) => {
           return <Link to={`/posts/new/${region.id}`}>{region.name}</Link>;
         },
-      }
-    ];
-  
+      }  
+    ];   
+         
     return (
       <Layout pageName="Add Post">
         {value?.length > 0 ? (
@@ -45,5 +41,4 @@ const PostMutation = () => {
       </Layout>
     );
 }
- 
 export default PostMutation;
