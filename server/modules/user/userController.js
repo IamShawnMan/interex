@@ -21,11 +21,11 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 	const { id } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
-		.filter()
 		.paginate()
 		.limitFields()
 		.search(["phoneNumber", "firstName", "lastName", "storeName"])
-		.sort();
+		.sort()
+		.filter();
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {
@@ -175,9 +175,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 			return next(new AppError("Username to'g'ri kiritilmadi"));
 		}
 	} else {
-		return next(
-			new AppError("Siz bu foydalanuvchi parolini o'zgartira olmaysiz", 400)
-		);
+		return next(new AppError("Siz bu foydalanuvchi parolini o'zgartira olmaysiz", 400));
 	}
 	res.status(203).json({
 		status: "success",

@@ -131,18 +131,19 @@ const UserMutation = () => {
     reset(user);
   };
   const formSubmit = async (data) => {
+    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/users/${id}` : "/users",
         method: isUpdate ? "PUT" : "POST",
         data,
       });
+      console.log(res)
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
-      return error.response.data.error.errors.map((error) =>
-        toast.error(error.msg)
-      );
+      console.log(error.response.data.message);
+      return error.response.data.message.map((error) => toast.error(error));
     }
   };
   return (
