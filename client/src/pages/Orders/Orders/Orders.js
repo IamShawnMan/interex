@@ -10,12 +10,15 @@ import Button from "../../../components/Form/FormComponents/Button/Button";
 function Orders() {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState(null);
+  const [pagination, setPagination] = useState({});
   const getAllUser = async () => {
     const res = await http({
       url: "/packages/myorders",
     });
     console.log(res);
     setValue(res.data[0].orders);
+    setPagination(res.data[0].orders.pagination);
+
   };
   useEffect(() => {
     getAllUser();
@@ -84,7 +87,7 @@ function Orders() {
         <Link style={{display: "block",width: "12rem"}} to="/orders/new"><Button size="small" name="btn">Add Order</Button></Link>
       )}
       {value?.length > 0 ? (
-        <BasicTable columns={ordersCols} data={value} />
+        <BasicTable columns={ordersCols} data={value} pagination={pagination} />
       ) : (
         <p>Malumotlar yoq</p>
       )}

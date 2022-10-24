@@ -8,6 +8,8 @@ import http from "../../utils/axios-instance";
 
 const Posts = () => {
     const [value, setValue] = useState([]);
+  const [pagination, setPagination] = useState({});
+
     const getAllUser = async () => {
       try {
         const res = await http({
@@ -15,6 +17,8 @@ const Posts = () => {
         });
         console.log(res);
         setValue(res.data.data.allPosts.content);
+      setPagination(res.data.data.allPosts.pagination);
+
       } catch (error) {
         toast.error(error.response.data.message);
       }
@@ -55,7 +59,7 @@ const Posts = () => {
       <Layout pageName="Postlar">
         <Link style={{width:"12rem",display: "block"}} to="./new"><Button size="small" name="btn">Add Post</Button></Link>
         {value?.length > 0 ? (
-          <BasicTable columns={regionCols} data={value} />
+          <BasicTable columns={regionCols} data={value} pagination={pagination} />
         ) : (
           <p>Malumotlar yoq</p>
         )}

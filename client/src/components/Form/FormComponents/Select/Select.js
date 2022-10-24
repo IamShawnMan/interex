@@ -5,6 +5,7 @@ import AttentionError from "../../../../assets/icons/AttentionError";
 function Select({ data, children, onChange, error, register }) {
   return (
     <div className={styles.formControl}>
+      {console.log(error)}
       <div className={styles.selectContainer}>
         <select
           className={styles.select}

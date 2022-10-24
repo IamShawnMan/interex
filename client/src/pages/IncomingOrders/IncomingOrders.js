@@ -9,6 +9,8 @@ function IncomingOrders() {
   const [orders, setOrders] = useState(null);
   const [regions, setRegions] = useState(null);
   const [districts, setDistricts] = useState(null);
+  const [pagination, setPagination] = useState({});
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -22,7 +24,9 @@ function IncomingOrders() {
         url: `/packages/${id}/orders`,
       });
       console.log(res.data.data);
-      setOrders(res.data.data.ordersbyPackage);
+      setOrders(res.data.data.ordersbyPackage.content);
+      setPagination(res.data.data.ordersbyPackage.pagination);
+
     } catch (error) {
       console.log(error);
     }
@@ -142,7 +146,7 @@ function IncomingOrders() {
     <Layout pageName="Jo'natmalar Ro'yxati">
     <div>
       {orders?.length > 0 ? (
-        <BasicTable columns={ordersCols} data={orders} />
+        <BasicTable columns={ordersCols} data={orders} pagination={pagination} />
       ) : (
         <p>Malumotlar yoq</p>
       )}
