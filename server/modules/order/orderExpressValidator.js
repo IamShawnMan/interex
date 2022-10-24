@@ -62,7 +62,8 @@ exports.updatedOrderValidator = [
   body("recipientPhoneNumber")
     .notEmpty()
     .withMessage("telefon raqam bo'sh bo'lishi mumkin emas")
-    .matches(/^[+]998[0-9]{9}$/).withMessage("telefon raqam noto`gri kiritilgan"), 
+    .matches(/^[+]998[0-9]{9}$/)
+    .withMessage("telefon raqam xato kiritildi"), 
   body("orderItems.*.productName")
     .trim()
     .notEmpty()
