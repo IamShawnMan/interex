@@ -18,6 +18,7 @@ function Users() {
       const res = await http({
         url: `/users?page=${page}&size=${size}`,
       });
+      console.log(res);
       setValue(res.data.data.allUsers.content);
       setPagination(res.data.data.allUsers.pagination);
     } catch (error) {

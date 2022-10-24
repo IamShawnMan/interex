@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import Layout from "../../../components/Layout/Layout";
 import { BasicTable } from "../../../components/Table/BasicTable";
 import http from "../../../utils/axios-instance";
@@ -9,7 +10,8 @@ function PostInnerOrders() {
   const [regions, setRegions] = useState(null);
   const [districts, setDistricts] = useState(null);
   const { id } = useParams();
-
+  const navigate=useNavigate();
+  console.log(id,"PostInnerOrders");
   useEffect(() => {
     getOrdersByPackageId();
     getRegions();
@@ -18,10 +20,13 @@ function PostInnerOrders() {
   const getOrdersByPackageId = async () => {
     try {
       const res = await http({
-        url: `/posts/new/${id}/orders`,
+        url: `/posts/new`,
+        method: "POST",
+        data:{regionId:id}
       });
-      console.log(res.data.data);
       setOrders(res.data.data.ordersbyPackage);
+        toast.success("Post Yaratildi")
+        navigate("/posts")
     } catch (error) {
       console.log(error);
     }

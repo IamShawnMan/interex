@@ -55,18 +55,6 @@ const OrderFieldArray = ({
             : ""
         }
       ></Select>
-      {/* <select  {...register(`orders.${index}.regionId`)}>
-          <option value={null}></option>
-          {regions &&
-            regions.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-        </select>
-        {errors?.orders?.[index] && (
-          <>{errors?.orders?.[index]?.regionId?.message}</>
-        )} */}
       {regionId && (
         <Select
           register={register.bind(null, `orders.${index}.districtI`)}
@@ -78,21 +66,7 @@ const OrderFieldArray = ({
           }
         ></Select>
       )}
-      {/* {regionId && (
-        <select {...register(`orders.${index}.districtId`)}>
-          <option value={null}></option>
-          {districts &&
-            districts.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-        </select>
-      )}
-      {errors?.orders?.[index] && (
-        <>{errors?.orders?.[index]?.districtId?.message}</>
-      )} */}
-
+     
       <OrderItems
         orderIndex={index}
         control={control}

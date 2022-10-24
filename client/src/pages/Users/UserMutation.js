@@ -219,7 +219,8 @@ const UserMutation = () => {
               Viloyatlar
             </Select>
           )}
-          <Button size="small" name="btn">
+
+          <Button type="submit" size="small" name="btn" className="btnLogin">
             {!isUpdate ? "Create Accaunt" : "Update User"}
           </Button>
         </form>
