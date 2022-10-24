@@ -219,6 +219,7 @@ const UserMutation = () => {
                 <option value={null}></option>
                 {regions &&
                   regions.map((c) => (
+                   
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
@@ -227,7 +228,7 @@ const UserMutation = () => {
               {errors.regionId && <p>{errors.regionId.message}</p>}
             </>
           )}
-          <Button size="small" name="btn" className="btnLogin">
+          <Button type="submit" size="small" name="btn" className="btnLogin">
             {!isUpdate ? "Create Accaunt" : "Update User"}
           </Button>
         </form>

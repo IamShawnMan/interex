@@ -14,6 +14,7 @@ import Packages from "./pages/Packages/Packages";
 import Posts from "./pages/Posts/Posts";
 import IncomingOrders from "./pages/IncomingOrders/IncomingOrders";
 import PostInnerOrders from "./pages/Posts/PostInnerOrders/PostInnerOrders";
+import PostMutation from "./pages/Posts/PostMutation";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -46,7 +47,8 @@ function App() {
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
         {isAuth && <Route path="/posts" element={<Posts/>} />}
-        {isAuth && <Route path="/posts/:id" element={<PostInnerOrders/>} />}
+        {isAuth && <Route path="/posts/new" element={<PostMutation/>} />}
+        {isAuth && <Route path="/posts/new/:id" element={<PostInnerOrders/>} />}
         {isAuth && <Route path="/packages/:id/orders" element={<IncomingOrders />} />}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>

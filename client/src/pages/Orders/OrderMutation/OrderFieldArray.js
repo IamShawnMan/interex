@@ -10,16 +10,20 @@ const OrderFieldArray = ({item,register,index,errors,watch,regions,control,remov
     const regionId=watch(`orders.${index}.regionId`)
     const getAllDistrict = async () => {
         const res = await http({
-          url:  `regions/${regionId}/districts`,
+          url:  `/regions/${regionId}/districts`,
           method: "GET",
         });
+        // console.log(res);
+
         setDistricts(res.data.data.getDistrictByRegion);
+        // console.log(res);
       };
       useEffect(() => {
       regionId&&  getAllDistrict();
       },[regionId])
     return (
         <li style={{ borderBottom: "1px solid black" }} key={item.id}>
+         {console.log(districts)}
         <Input
           placeholder="recipient"
           register={register.bind(null,`orders.${index}.recipient`)}

@@ -11,6 +11,7 @@ const orderRoutes = require("./modules/order/orderRoutes");
 const authMiddleware = require("./core/middlewares/authMiddleware");
 const districtRouter = require("./modules/district/districtRouter");
 const packageRoutes = require("./modules/package/packageRoutes")
+const postsRoutes = require("./modules/post/postRouter");
 require("./modules/user/User");
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/v1/regions", authMiddleware, regionRouter);
 app.use("/api/v1/orders", authMiddleware, orderRoutes);
 app.use("/api/v1/packages", authMiddleware, packageRoutes)
 app.use("/api/v1/districts", authMiddleware, districtRouter);
+app.use("/api/v1/posts", authMiddleware, postsRoutes);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
