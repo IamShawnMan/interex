@@ -101,7 +101,7 @@ function OrderMutation() {
       url: "/regions",
       method: "GET",
     });
-    setRegions(res.data.data.allRegions);
+    setRegions(res.data.data.allRegions.content);
   };
   const { fields, append, remove } = useFieldArray({
     control,

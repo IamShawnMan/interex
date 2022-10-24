@@ -10,6 +10,7 @@ import styles from "./Login.module.css";
 import UsernameIcon from "../../assets/icons/UsernameIcon";
 import LoginIcon from "../../assets/icons/LoginIcon";
 import PasswordIcon from "../../assets/icons/PasswordIcon";
+import Button from "../../components/Form/FormComponents/Button/Button";
 const schema = yup.object().shape({
   username: yup
     .string()
@@ -118,10 +119,12 @@ function Login() {
                 <p style={{ color: "red" }}>{errors.password.message}</p>
               )}
             </div>
-            <div>
-              <button type="submit" className={styles.signin}>
+            <div style={{marginTop:"1rem"}}>
+         
+              <Button size="medium" name="btn" type="submit" >
                 Kirish
-              </button>
+              </Button>
+         
             </div>
           </form>
         </div>
