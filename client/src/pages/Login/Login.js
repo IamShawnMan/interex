@@ -56,10 +56,6 @@ function Login() {
       toast.success(res.data.message);
       navigate("/home");
     } catch (error) {
-<<<<<<< HEAD
-      console.log(error.response);
-=======
->>>>>>> 1df59a1719f7829c3a80acb15547ed8d521c4cd2
       toast.error(error.response.data.message);
     }
   };
