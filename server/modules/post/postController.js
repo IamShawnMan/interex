@@ -1,5 +1,5 @@
 const Post = require("./Post");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
@@ -13,11 +13,15 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.limitFields().filter().paginate().search(["note"]);
 
-	let allPosts = await Post.findAndCountAll(queryBuilder.queryOptions);
+	let allPosts = await Post.findAndCountAll({
+		...queryBuilder.queryOptions,
+		include: {
+			model: Region,
+			as: "region",
+			attributes: ["name"],
+		},
+	});
 	allPosts = queryBuilder.createPagination(allPosts);
-
-	if (Order.status === "ACCEPTED") {
-	}
 
 	res.json({
 		status: "success",
@@ -75,39 +79,127 @@ exports.getPostByRegionId = catchAsync(async (req, res, next) => {
 
 exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.body;
-console.log(regionId);
-	const newPost = await Post.create({
-		regionId: regionId,
+
+	const specialDistrictOrders = await Order.findAll({
+		where: {
+			[Op.and]: [
+				{
+					orderStatus: orderStatuses.STATUS_ACCEPTED,
+				},
+				{
+					districtId: {
+						[Op.in]: [36, 39],
+					},
+				},
+			],
+		},
 	});
 
-	const orderInPost = await Order.update(
-		{
-			postId: newPost.id,
-			orderStatus: orderStatuses.STATUS_DELIVERING,
-		},
-		{
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_ACCEPTED,
-				},
-				regionId: {
-					[Op.eq]: regionId,
-				},
+	let specialPost = await Post.findOne({
+		where: {
+			postStatus: {
+				[Op.eq]: postStatuses.POST_NEW,
 			},
+			regionId: {
+				[Op.eq]: 1,
+			},
+		},
+	});
+
+	if (specialDistrictOrders.length >= 1) {
+		console.log("There are special orders");
+		if (!specialPost) {
+			specialPost = await Post.create({
+				regionId: 1,
+			});
+
+			await Order.update(
+				{
+					postId: specialPost.id,
+					orderStatus: orderStatuses.STATUS_DELIVERING,
+				},
+				{
+					where: {
+						districtId: {
+							[Op.in]: [36, 39],
+						},
+					},
+				}
+			);
+		} else {
+			console.log("There is a special POST");
+			await Order.update(
+				{
+					postId: specialPost.id,
+					orderStatus: orderStatuses.STATUS_DELIVERING,
+				},
+				{
+					where: {
+						districtId: {
+							[Op.in]: [36, 39],
+						},
+					},
+				}
+			);
 		}
-	);
+	}
+
+	let newPost = await Post.findOne({
+		regionId: regionId,
+		postStatus: postStatuses.POST_NEW,
+	});
+
+	if (newPost) {
+		await Order.update(
+			{
+				postId: newPost.id,
+				orderStatus: orderStatuses.STATUS_DELIVERING,
+			},
+			{
+				where: {
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					},
+					regionId: {
+						[Op.eq]: regionId,
+					},
+				},
+			}
+		);
+	} else {
+		newPost = await Post.create({
+			regionId: regionId,
+		});
+
+		await Order.update(
+			{
+				postId: newPost.id,
+				orderStatus: orderStatuses.STATUS_DELIVERING,
+			},
+			{
+				where: {
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					},
+					regionId: {
+						[Op.eq]: regionId,
+					},
+				},
+			}
+		);
+	}
 
 	res.json({
 		status: "success",
 		message: "Post created",
 		error: null,
-		data: {orderInPost},
+		data: null,
 	});
 });
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { regionId, ordersArr } = req.body;
-	
+
 	const newPost = await Post.create({
 		regionId: regionId,
 	});
@@ -133,7 +225,7 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Customized Post created",
 		error: null,
-		data: {ordersInPost},
+		data: { ordersInPost },
 	});
 });
 
