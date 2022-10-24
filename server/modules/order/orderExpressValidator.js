@@ -6,21 +6,11 @@ exports.creatingOrderValidator = [
     .notEmpty()
     .withMessage("Buyurtma egasi bo'sh bo'lishi mumkin emas"),
   body("orders.*.regionId")
-    .custom(async(value, {req}) => {
-      if(req.body.userRole === "COURIER") {
-        if(value === undefined || value === "") {
-          throw new Error("Viloyat tanlanmadi")
-        }
-      } 
-    }),
+    .notEmpty()
+    .withMessage("Viloyat tanlanmadi"),
   body("orders.*.districtId")
-    .custom(async(value, {req}) => {
-      if(req.body.userRole === "COURIER") {
-        if(value === undefined || value === "") {
-          throw new Error("Tuman tanlanmadi")
-        }
-      } 
-    }),
+    .notEmpty()
+    .withMessage("Tuman tanlanmadi"),
   body("orders.*.recipientPhoneNumber")
     .notEmpty()
     .withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
@@ -44,21 +34,11 @@ exports.updatedOrderValidator = [
     .notEmpty()
     .withMessage("Buyurtma egasi bo'sh bo'lishi mumkin emas"),
   body("orders.*.regionId")
-    .custom(async(value, {req}) => {
-      if(req.body.userRole === "COURIER") {
-        if(value === undefined || value === "") {
-          throw new Error("Viloyat tanlanmadi")
-        }
-      } 
-    }),
+    .notEmpty()
+    .withMessage("Viloyat tanlanmadi"),
   body("orders.*.districtId")
-    .custom(async(value, {req}) => {
-      if(req.body.userRole === "COURIER") {
-        if(value === undefined || value === "") {
-          throw new Error("Tuman tanlanmadi")
-        }
-      } 
-    }),
+    .notEmpty()
+    .withMessage("Tuman tanlanmadi"),
   body("recipientPhoneNumber")
     .notEmpty()
     .withMessage("telefon raqam bo'sh bo'lishi mumkin emas")
