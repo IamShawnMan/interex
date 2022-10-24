@@ -21,7 +21,7 @@ exports.getById = catchAsync(async (req, res, next) => {
 
 	if (!districtById) {
 		return next(new AppError("Bundat tuman mavjud emas", 404));
-	}
+	} 
 
 	res.json({
 		status: "Success",
