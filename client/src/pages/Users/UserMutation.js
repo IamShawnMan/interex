@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Layout from "../../components/Layout/Layout";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Button from "../../components/Form/FormComponents/Button/Button";
+import Select from "../../components/Form/FormComponents/Select/Select";
 
 const registerSchema = yup.object().shape({
   firstName: yup
@@ -45,7 +46,6 @@ const registerSchema = yup.object().shape({
     )
     .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
-
 
 const updateSchema = yup.object().shape({
   firstName: yup
@@ -85,7 +85,11 @@ const UserMutation = () => {
   const [regions, setRegions] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
-  console.log(id);
+  const userRoles = roles
+    ? roles.map((e) => {
+        return { id: e, name: e };
+      })
+    : [];
   const {
     register,
     handleSubmit,
@@ -136,49 +140,45 @@ const UserMutation = () => {
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
-      return error.response.data.error.errors.map((error) => toast.error(error.msg));
+      return error.response.data.error.errors.map((error) =>
+        toast.error(error.msg)
+      );
     }
   };
-
   return (
     <>
       <Layout>
         <form onSubmit={handleSubmit(formSubmit)} className="form">
-          <select
-            {...register("userRole")}
+          <Select
+            register={register.bind(null, "userRole")}
+            data={userRoles}
             onChange={(e) => setRole(e.target.value)}
+            error={errors.userRole?.message}
           >
-            <option value={null}>Foydalanuvchi mansabi</option>
-            {roles &&
-              roles.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-          </select>
+            Foydalanuvchi mansabi
+          </Select>
 
-          <label htmlFor="text"></label>
           <Input
             id="text"
             type="text"
             placeholder="firstName"
-            register={register.bind(null,"firstName")}
+            register={register.bind(null, "firstName")}
             error={errors.firstName?.message}
           />
-          <label htmlFor="text"></label>
+
           <Input
             id="text"
             type="text"
             placeholder="lastName"
-            register={register.bind(null,"lastName")}
+            register={register.bind(null, "lastName")}
             error={errors.lastName?.message}
           />
-          <label htmlFor="text"></label>
+
           <Input
             id="text"
             type="text"
             placeholder="username"
-            register={register.bind(null,"username")}
+            register={register.bind(null, "username")}
             error={errors.username?.message}
           />
           {!isUpdate && (
@@ -188,46 +188,38 @@ const UserMutation = () => {
                 id="password"
                 type="password"
                 placeholder="password"
-                register={register.bind(null,"password")}
+                register={register.bind(null, "password")}
                 error={errors.password?.message}
               />
             </>
           )}
-          <label htmlFor="passportNumber"></label>
+
           <Input
             id="passportNumber"
-            className="input"
             type="text"
             placeholder="PassportNumber"
-            register={register.bind(null,"passportNumber")}
+            register={register.bind(null, "passportNumber")}
             error={errors.passportNumber?.message}
           />
-          <label htmlFor="phoneNumber"></label>
+
           <Input
             id="phoneNumber"
-            className="input"
             type="text"
             placeholder="PhoneNumber"
-            register={register.bind(null,"phoneNumber")}
+            register={register.bind(null, "phoneNumber")}
             error={errors.phoneNumber?.message}
           />
 
           {role === "COURIER" && (
-            <>
-              <label htmlFor="regionId"></label>
-              <select name="func" {...register(`regionId`)}>
-                <option value={null}></option>
-                {regions &&
-                  regions.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-              </select>
-              {errors.regionId && <p>{errors.regionId.message}</p>}
-            </>
+            <Select
+              register={register.bind(null, "regionId")}
+              data={regions}
+              error={errors.regionId?.message}
+            >
+              Viloyatlar
+            </Select>
           )}
-          <Button size="small" name="btn" className="btnLogin">
+          <Button size="small" name="btn">
             {!isUpdate ? "Create Accaunt" : "Update User"}
           </Button>
         </form>

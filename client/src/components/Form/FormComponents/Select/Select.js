@@ -1,27 +1,35 @@
 import React from "react";
 import styles from "./Select.module.css";
-import Arrow from "../../../../assets/icons/Arrow";
+import AttentionError from "../../../../assets/icons/AttentionError";
 
-function Select({ data, children }) {
+function Select({ data, children, onChange, error, register }) {
   return (
-    <>
-      <select className={styles.select}>
-        <option className={styles.option} value={null}>
-          {children}
-        </option>
-        {data ? (
-          data.map((e) => (
-            <option className={styles.option} key={e.id} value={e.id}>
-              {e.name}
-            </option>
-          ))
-        ) : (
+    <div className={styles.formControl}>
+      <div className={styles.selectContainer}>
+        <select
+          className={styles.select}
+          {...(register ? register() : "")}
+          onChange={onChange}
+        >
           <option className={styles.option} value={null}>
-            Ma'lumotlar yo'q
+            {children}
           </option>
-        )}
-      </select>
-    </>
+          {data ? (
+            data.map((e) => (
+              <option className={styles.option} key={e.id} value={e.id}>
+                {e.name}
+              </option>
+            ))
+          ) : (
+            <option className={styles.option} value={null}>
+              Ma'lumotlar yo'q
+            </option>
+          )}
+        </select>
+        {error && <AttentionError className={""} />}
+      </div>
+      {error && <p className={styles.errorText}>{error}</p>}
+    </div>
   );
 }
 
