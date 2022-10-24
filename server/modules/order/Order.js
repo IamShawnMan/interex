@@ -42,4 +42,6 @@ Order.belongsTo(DistrictModel, {as: "district"})
 PackageModel.hasMany(Order, { as: "orders", foreignKey: "packageId" });
 Order.belongsTo(PackageModel, { as: "package" });
 
+
+
 module.exports = Order;
