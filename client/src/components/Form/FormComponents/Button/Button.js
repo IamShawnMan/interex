@@ -36,6 +36,7 @@ function Button({ children, type, name, iconName, size, disabled }) {
   }
 
   return (
+<<<<<<< HEAD
       <button
         disabled={disabled}
         className={`${styles[buttonSize]} ${styles[name]} ${
@@ -55,6 +56,27 @@ function Button({ children, type, name, iconName, size, disabled }) {
         {name === "dots" && <Dots classname={styles.dotsIcon} />}
         {(name === "btn" || name === "iconText" )&& children }
       </button>
+=======
+    <button
+      disabled={disabled}
+      className={`${styles[buttonSize]} ${styles[name]} ${
+        name !== "dots" ? styles.btn : styles.dots
+      }`}
+      type={type || "submit"}
+    >
+      {(name === "icon" || name === "iconText") && iconName === "trash" && (
+        <Trash />
+      )}
+      {(name === "icon" || name === "iconText") && iconName === "plus" && (
+        <Plus />
+      )}
+      {(name === "icon" || name === "iconText") && iconName === "pen" && (
+        <Pen />
+      )}
+      {name === "dots" && <Dots classname={styles.dotsIcon} />}
+      {(name === "btn" || name === "iconText") && children}
+    </button>
+>>>>>>> 1df59a1719f7829c3a80acb15547ed8d521c4cd2
   );
 }
 

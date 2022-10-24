@@ -220,6 +220,7 @@ const UserMutation = () => {
                 <option value={null}></option>
                 {regions &&
                   regions.map((c) => (
+                   
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>

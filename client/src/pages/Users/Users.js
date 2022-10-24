@@ -14,6 +14,7 @@ function Users() {
       const res = await http({
         url: "/users",
       });
+      console.log(res);
       setValue(res.data.data.allUsers.content);
       console.log(res);
     } catch (error) {
