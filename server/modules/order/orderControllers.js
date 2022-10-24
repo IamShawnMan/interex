@@ -85,11 +85,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
-	
-	// const queryBuilder = new QueryBuilder(req.query);
-	
-	// queryBuilder.limitFields();
-	
 	const orderById = await OrderModel.findByPk(id, {
 		include: {
 			model: OrderItemModel,
