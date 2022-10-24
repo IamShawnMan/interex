@@ -41,7 +41,7 @@ function Button({ children, type, name, iconName, size, disabled }) {
         className={`${styles[buttonSize]} ${styles[name]} ${
           name !== "dots" ? styles.btn : styles.dots
         }`}
-        type={type || "button"}
+        type={type || "submit"}
       >
         {(name === "icon" || name === "iconText") && iconName === "trash" && (
           <Trash />

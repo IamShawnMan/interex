@@ -107,14 +107,12 @@ const UserMutation = () => {
       url: "/users/roles",
     });
     setRoles(res.data.data.roles);
-    console.log(res);
   };
   const getAllRegions = async () => {
     const res = await http({
       url: "/regions",
     });
     setRegions(res.data.data.allRegions);
-    console.log(res.data.data.allRegions);
   };
 
   const getById = async () => {
@@ -138,7 +136,8 @@ const UserMutation = () => {
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
-      return error.response.data.error.errors.map((error) => toast.error(error.msg));
+      console.log(error.response.data.message);
+      return error.response.data.message.map((error) => toast.error(error));
     }
   };
 
@@ -229,7 +228,7 @@ const UserMutation = () => {
               {errors.regionId && <p>{errors.regionId.message}</p>}
             </>
           )}
-          <Button size="small" name="btn" className="btnLogin">
+          <Button type="submit" size="small" name="btn" className="btnLogin">
             {!isUpdate ? "Create Accaunt" : "Update User"}
           </Button>
         </form>
