@@ -1,6 +1,5 @@
 const { body} = require("express-validator");
 
-
 exports.creatingOrderValidator = [
   body("orders.*.recipient")
     .trim()
@@ -8,11 +7,11 @@ exports.creatingOrderValidator = [
     .withMessage("Buyurtma egasi bo'sh bo'lishi mumkin emas"),
   body("orders.*.regionId")
     .notEmpty()
-    .withMessage("ID si bo'sh bo'lishi mumkin emas"),
+    .withMessage("Viloyat tanlanmadi"),
   body("orders.*.districtId")
     .notEmpty()
-    .withMessage("Tumanlar Id topilmadi"),
-    body("orders.*.recipientPhoneNumber")
+    .withMessage("Tuman tanlanmadi"),
+  body("orders.*.recipientPhoneNumber")
     .notEmpty()
     .withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
     .matches(/^[+]998[0-9]{9}$/)
@@ -34,16 +33,17 @@ exports.updatedOrderValidator = [
     .trim()
     .notEmpty()
     .withMessage("Buyurtma egasi bo'sh bo'lishi mumkin emas"),
-  body("regionId")
+  body("orders.*.regionId")
     .notEmpty()
-    .withMessage("ID si bo`sh bo'sh bo'lishi mumkin emas"),
-  body("districtId")
+    .withMessage("Viloyat tanlanmadi"),
+  body("orders.*.districtId")
     .notEmpty()
-    .withMessage("Tumanlar Id topilmadi"),
-    body("recipientPhoneNumber")
+    .withMessage("Tuman tanlanmadi"),
+  body("recipientPhoneNumber")
     .notEmpty()
     .withMessage("telefon raqam bo'sh bo'lishi mumkin emas")
-    .matches(/^[+]998[0-9]{9}$/).withMessage("telefon raqam noto`gri kiritilgan"), 
+    .matches(/^[+]998[0-9]{9}$/)
+    .withMessage("telefon raqam xato kiritildi"), 
   body("orderItems.*.productName")
     .trim()
     .notEmpty()
