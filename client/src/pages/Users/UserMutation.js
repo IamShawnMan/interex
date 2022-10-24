@@ -252,7 +252,7 @@ const UserMutation = () => {
           {role === "COURIER" && (
             <Select
               register={register.bind(null, "regionId")}
-              data={regions}
+              data={regions.content}
               error={errors.regionId?.message}
             >
               Viloyatlar

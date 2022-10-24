@@ -11,6 +11,7 @@ function Select({ data, children, onChange, error, register }) {
           className={styles.select}
           {...(register ? register() : "")}
           onChange={onChange}
+          
         >
           <option className={styles.option} value={null}>
             {children}
