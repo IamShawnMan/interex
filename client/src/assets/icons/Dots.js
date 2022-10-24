@@ -1,6 +1,6 @@
 import React from "react";
 
-function Dots({classname}) {
+function Dots({ classname }) {
   return (
     <svg
       width="20"

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import http from "../../utils/axios-instance";
 import { useState } from "react";
 import { BasicTable } from "../../components/Table/BasicTable";
@@ -9,21 +9,24 @@ import Switch from "../../components/Form/FormComponents/Switch/Switch";
 import Button from "../../components/Form/FormComponents/Button/Button";
 function Users() {
   const [value, setValue] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
   const getAllUser = async () => {
     try {
       const res = await http({
-        url: "/users",
+        url: `/users?page=${page}&size=${size}`,
       });
-      console.log(res);
       setValue(res.data.data.allUsers.content);
-      console.log(res);
+      setPagination(res.data.data.allUsers.pagination);
     } catch (error) {
       toast.error(error?.response.data.message);
     }
   };
   useEffect(() => {
     getAllUser();
-  }, []);
+  }, [page]);
 
   const userStatusChangeHandler = async ({ id, status }) => {
     try {
@@ -36,7 +39,6 @@ function Users() {
       getAllUser();
     } catch (error) {
       toast.error(error.response.data.message);
-      console.log(error.response.data);
     }
   };
 
@@ -62,9 +64,7 @@ function Users() {
       accessor: (user) => {
         return (
           <Link to={`/users/${user.id}`}>
-            <Button size="small" name="btn">
-              Update
-            </Button>
+            <Button size="iconSmall" name="icon" iconName="pen"/>
           </Link>
         );
       },
@@ -74,7 +74,6 @@ function Users() {
       Header: "Status",
       accessor: (user) => {
         const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
-
         return (
           <Switch
             onSwitch={userStatusChangeHandler.bind(null, {
@@ -96,7 +95,12 @@ function Users() {
         </Button>
       </Link>
       {value?.length > 0 ? (
-        <BasicTable columns={usersCols} data={value} />
+        <BasicTable
+          columns={usersCols}
+          data={value}
+          pagination={pagination}
+          url="users"
+        />
       ) : (
         <p>Malumotlar yoq</p>
       )}
