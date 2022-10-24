@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Button from "../../components/Form/FormComponents/Button/Button";
+import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 
@@ -109,26 +111,35 @@ function IncomingOrders() {
     },
     { Header:"Action", accessor: (order)=>{ return (
       <div>
-        <button
+        <span style={{ width: "12rem",paddingBottom:"5px", display:"block"}}  onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}>
+          <Button
+        // size="medium"
+        name="btn"
         disabled={order.orderStatus==="NEW"?false:true}
-          style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
-          onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}
+          // btnStyle={{width: "40%" }}
+         
         >
           <>ACCEPTED</> 
-        </button>
-        <button
+        </Button>
+        </span>
+        <span style={{ width: "12rem", display:"block" }}  onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}>
+        
+        <Button
         disabled={order.orderStatus==="NEW"?false:true}
-
-          style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
-          onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}
+        size="small"
+        name="btn"
+          // btnStyle={{width: "40%" }}
+         
         >
          <>NOT EXIST</> 
-        </button>
+        </Button>
+        </span>
               </div>
     );}}
 
   ];
   return (
+    <Layout pageName="Jo'natmalar Ro'yxati">
     <div>
       {orders?.length > 0 ? (
         <BasicTable columns={ordersCols} data={orders} />
@@ -136,6 +147,7 @@ function IncomingOrders() {
         <p>Malumotlar yoq</p>
       )}
     </div>
+    </Layout>
   );
 }
 

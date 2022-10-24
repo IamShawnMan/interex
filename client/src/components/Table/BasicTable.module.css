@@ -11,7 +11,7 @@ table td {
 .td,
 .th {
   border-collapse: collapse;
-  padding: 8px;
+  padding: .8rem;
   border: none;
 }
 .tr:nth-child(even) {
@@ -25,12 +25,20 @@ table td {
   color: #7a7a7a;
 }
 .td {
+font-style: normal;
+font-weight: 400;
+font-size: 1.4rem;
+line-height: 2.1rem;
   color: #7a7a7a;
   border: none;
 }
 .th {
-  padding-top: 12px;
-  padding-bottom: 12px;
+font-style: normal;
+font-weight: 500;
+font-size: 1.6rem;
+line-height: 135%;
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
   text-align: left;
   background: #dfcffb;
   color: black;

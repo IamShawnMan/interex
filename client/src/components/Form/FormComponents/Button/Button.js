@@ -5,7 +5,7 @@ import Plus from "../../../../assets/icons/Plus";
 import Dots from "../../../../assets/icons/Dots";
 import Trash from "../../../../assets/icons/Trash";
 
-function Button({ children, type, name, iconName, size, disabled }) {
+function Button({ children, type, name, iconName, size, disabled ,btnStyle}) {
   // NAME 1-"btn" 2-"icon" 3-"iconText" 4-"dots"
   // ICON NAME 1-"pen" 2-"plus" 3-"trash"
   // SIZE 1-"iconSmall" 2-"iconNormal" 3-"iconMedium" 4-"small" 5-"normal" 6-"medium"
@@ -37,6 +37,7 @@ function Button({ children, type, name, iconName, size, disabled }) {
 
   return (
     <button
+    style={btnStyle}
       disabled={disabled}
       className={`${styles[buttonSize]} ${styles[name]} ${
         name !== "dots" ? styles.btn : styles.dots

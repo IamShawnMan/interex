@@ -14,7 +14,6 @@ function Users() {
       const res = await http({
         url: "/users",
       });
-      console.log(res);
       setValue(res.data.data.allUsers.content);
     } catch (error) {
       toast.error(error?.response.data.message);
@@ -61,9 +60,7 @@ function Users() {
       accessor: (user) => {
         return (
           <Link to={`/users/${user.id}`}>
-            <Button size="small" name="btn">
-              Update
-            </Button>
+            <Button size="iconSmall" name="icon" iconName="pen"/>
           </Link>
         );
       },
@@ -73,7 +70,6 @@ function Users() {
       Header: "Status",
       accessor: (user) => {
         const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
-
         return (
           <Switch
             onSwitch={userStatusChangeHandler.bind(null, {
