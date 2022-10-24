@@ -3,11 +3,13 @@ const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const District = require("../district/District");
-const OrderModel = require("../order/Order")
+const QueryBuilder = require("../../core/utils/QueryBuilder");
 
 exports.getAllRegions = catchAsync(async (req, res, next) => {
-	const allRegions = await Region.findAll();
-
+	const queryBuilder = new QueryBuilder(req.query)
+	queryBuilder.paginate().filter().limitFields().sort().search(["name"])
+	let allRegions = await Region.findAndCountAll(queryBuilder.queryOptions);
+	allRegions = queryBuilder.createPagination(allRegions)
 	res.json({
 		status: "success",
 		message: "Barcha Viloyatlar",
