@@ -40,7 +40,7 @@ exports.createValidator = [
 	body("regionId")
 		.custom(async(value, {req}) => {
 			if(req.body.userRole === "COURIER") {
-				if(value === undefined || value === "") {
+				if(value === undefined || value === "Viloyatlar") {
 					throw new Error("Viloyat tanlanmadi")
 				}
 			} 
@@ -80,7 +80,7 @@ exports.updateValidator = [
 	body("regionId")
 		.custom(async(value, {req}) => {
 			if(req.body.userRole === "COURIER") {
-				if(value === undefined || value === "") {
+				if(value === undefined || value === "Viloyatlar") {
 					throw new Error("Viloyat tanlanmadi")
 				}
 			} 

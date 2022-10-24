@@ -92,7 +92,7 @@ class QueryBuilder {
 
         const allPagesCount = Math.ceil(queryResult.count / this.queryOptions.limit)
         const page = +this.queryParams.page;
-        const isLastPage =allPagesCount === page;
+        const isLastPage = allPagesCount === page;
         return {
             content:  queryResult.rows,
             pagination: {
