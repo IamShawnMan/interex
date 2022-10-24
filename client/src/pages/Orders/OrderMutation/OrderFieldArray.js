@@ -17,7 +17,7 @@ const OrderFieldArray = ({
   remove,
 }) => {
   const [districts, setDistricts] = useState(null);
-  const regionId = watch(`orders.${index}.regionId`);
+  const [regionId, setRegionId] = useState(null)
   const getAllDistrict = async () => {
     const res = await http({
       url: `regions/${regionId}/districts`,
@@ -53,7 +53,9 @@ const OrderFieldArray = ({
           errors?.orders?.[index]
             ? errors?.orders?.[index]?.regionId?.message
             : ""
+          
         }
+        onChange={(e)=>{setRegionId(e.target.value)}}
       ></Select>
       {regionId && (
         <Select
