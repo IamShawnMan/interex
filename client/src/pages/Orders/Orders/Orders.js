@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import http from "../../../utils/axios-instance";
 import { useState } from "react";
 import { BasicTable } from "../../../components/Table/BasicTable";
@@ -11,18 +11,22 @@ function Orders() {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState(null);
   const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
+
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
   const getAllUser = async () => {
     const res = await http({
-      url: "/packages/myorders",
+      url: `/packages/myorders?page=${page}&size=${size}`,
     });
     console.log(res);
-    setValue(res.data[0].orders);
-    setPagination(res.data[0].orders.pagination);
+    setValue(res.data.data.myOrders.content);
+    setPagination(res.data.data.myOrders.pagination);
 
   };
   useEffect(() => {
     getAllUser();
-  }, []);
+  }, [page]);
   const changeOrderStatus = async (id, status) => {
     const res = await http({
       url: `/orders/${id}`,
@@ -87,7 +91,8 @@ function Orders() {
         <Link style={{display: "block",width: "12rem"}} to="/orders/new"><Button size="small" name="btn">Add Order</Button></Link>
       )}
       {value?.length > 0 ? (
-        <BasicTable columns={ordersCols} data={value} pagination={pagination} />
+        <BasicTable columns={ordersCols} data={value} pagination={pagination}           url="orders"
+        />
       ) : (
         <p>Malumotlar yoq</p>
       )}

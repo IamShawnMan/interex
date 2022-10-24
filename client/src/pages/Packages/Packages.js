@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import styles from "./Packages.module.css";
 import { useForm } from "react-hook-form";
@@ -10,18 +10,24 @@ import { toast } from "react-toastify";
 
 function Package() {
   const [packages, setPackages] = useState(null);
+  const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
 
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
   useEffect(() => {
     getAllPackages();
-  }, []);
+  }, [page]);
 
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url: "/packages",
+        url: `/packages?page=${page}&size=${size}`,
       });
-
+console.log(res);
       setPackages(res.data.data.allPackages.content);
+      setPagination(res.data.data.ordersbyPackage.pagination);
+
     } catch (error) {}
   };
 
@@ -49,7 +55,9 @@ function Package() {
   return (
     <Layout>
       {packages?.length > 0 ? (
-        <BasicTable columns={packageCols} data={packages} />
+        <BasicTable columns={packageCols} data={packages}      
+             url="packages"
+        pagination={pagination} />
       ) : (
         <p>Malumotlar yoq</p>
       )}

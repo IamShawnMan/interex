@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
@@ -10,20 +10,22 @@ function IncomingOrders() {
   const [regions, setRegions] = useState(null);
   const [districts, setDistricts] = useState(null);
   const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
 
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
   const { id } = useParams();
 
   useEffect(() => {
     getOrdersByPackageId();
     getRegions();
     getDistricts();
-  }, []);
+  }, [page]);
   const getOrdersByPackageId = async () => {
     try {
       const res = await http({
-        url: `/packages/${id}/orders`,
+        url: `/packages/${id}/orders?page=${page}&size=${size}`,
       });
-      console.log(res.data.data);
       setOrders(res.data.data.ordersbyPackage.content);
       setPagination(res.data.data.ordersbyPackage.pagination);
 
@@ -51,6 +53,7 @@ function IncomingOrders() {
     } catch (error) {}
   };
   const extractById = (mainValue, returnArray) => {
+    console.log(mainValue,returnArray);
     let returnValue;
     if (returnArray) {
       returnArray.filter((e) => {
@@ -88,7 +91,8 @@ function IncomingOrders() {
       id: "region",
       Header: "Viloyat",
       accessor: (order) => {
-        return extractById(order.regionId, regions);
+        console.log(order);
+        return extractById(order.regionId, regions?.content);
       },
     },
     {
@@ -146,7 +150,9 @@ function IncomingOrders() {
     <Layout pageName="Jo'natmalar Ro'yxati">
     <div>
       {orders?.length > 0 ? (
-        <BasicTable columns={ordersCols} data={orders} pagination={pagination} />
+        <BasicTable columns={ordersCols} data={orders}
+        url={`packages/${id}/orders`}
+        pagination={pagination} />
       ) : (
         <p>Malumotlar yoq</p>
       )}

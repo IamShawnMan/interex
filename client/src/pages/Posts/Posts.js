@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react"
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
@@ -9,11 +9,14 @@ import http from "../../utils/axios-instance";
 const Posts = () => {
     const [value, setValue] = useState([]);
   const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
 
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
     const getAllUser = async () => {
       try {
         const res = await http({
-          url: "/posts",
+          url: `/posts?page=${page}&size=${size}`,
         });
         console.log(res);
         setValue(res.data.data.allPosts.content);
@@ -25,7 +28,7 @@ const Posts = () => {
     };
     useEffect(() => {
       getAllUser();
-    }, []);
+    }, [page]);
   
     const regionCols = [
       {
@@ -59,7 +62,8 @@ const Posts = () => {
       <Layout pageName="Postlar">
         <Link style={{width:"12rem",display: "block"}} to="./new"><Button size="small" name="btn">Add Post</Button></Link>
         {value?.length > 0 ? (
-          <BasicTable columns={regionCols} data={value} pagination={pagination} />
+          <BasicTable columns={regionCols} data={value} pagination={pagination} url="posts"
+          />
         ) : (
           <p>Malumotlar yoq</p>
         )}

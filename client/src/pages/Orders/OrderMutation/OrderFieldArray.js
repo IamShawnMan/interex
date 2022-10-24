@@ -57,7 +57,7 @@ const OrderFieldArray = ({
       ></Select>
       {regionId && (
         <Select
-          register={register.bind(null, `orders.${index}.districtI`)}
+          register={register.bind(null, `orders.${index}.districtId`)}
           data={districts}
           error={
             errors?.orders?.[index]
