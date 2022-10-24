@@ -26,6 +26,7 @@ function Users() {
   };
   useEffect(() => {
     getAllUser();
+   
   }, [page]);
 
   const userStatusChangeHandler = async ({ id, status }) => {
@@ -93,7 +94,8 @@ function Users() {
         <Button size="small" name="btn">
           Add User
         </Button>
-      </Link>
+      </Link> 
+
       {value?.length > 0 ? (
         <BasicTable
           columns={usersCols}
