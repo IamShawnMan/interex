@@ -36,9 +36,12 @@ body {
   box-sizing: border-box;
   font-family: Roboto, sans-serif;
 }
-
 html {
   font-size: 62.5%;
+}
+a{
+text-decoration: none;
+color:inherit
 }
 
 .h1 {

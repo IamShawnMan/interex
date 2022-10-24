@@ -5,47 +5,35 @@
   gap: 0.5rem;
 }
 
-.prev {
-  cursor: pointer;
-}
-
-.next {
-  cursor: pointer;
-}
-
-.next > svg:hover {
-  stroke: black;
-}
-
-.prev > svg:hover {
-  stroke: black;
-}
-
-.linkPages {
-  display: block;
+.pageLinks {
   text-decoration: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0.7rem;
+  line-height: 2.4rem;
   font-weight: 700;
   font-size: 1.6rem;
   color: #aaaaaa;
-  line-height: 2.4rem;
-  padding: 0.8rem 1.5rem;
-  background-color: #7d41ed;
-  border-radius: 0.7rem;
 }
 
-.linkPages:hover {
-  color: black;
+.arrowLeft {
+  transform: rotateY(180deg);
+}
+
+.pageLinks:hover .arrow {
+  background-color: #7d41ed;
+  stroke: #fff;
+}
+
+.pageLinks:hover {
+  background-color: #7d41ed;
+  color: white;
 }
 
 .active {
+  background-color: #7d41ed;
   color: white;
-  font-size: 2.2rem;
-  pointer-events: none;
 }
 
 .disabledTrue {
   pointer-events: none;
-}
-.disabledTrue > svg {
-  fill: rgb(187, 175, 175);
 }

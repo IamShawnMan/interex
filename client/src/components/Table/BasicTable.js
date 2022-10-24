@@ -3,7 +3,7 @@ import { useTable } from "react-table";
 import styles from "./BasicTable.module.css";
 import Pagination from "../Pagination/Pagination";
 
-export const BasicTable = ({ columns, data }) => {
+export const BasicTable = ({ columns, data, pagination, url }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
@@ -11,7 +11,7 @@ export const BasicTable = ({ columns, data }) => {
     });
 
   return data.length > 0 ? (
-    <div>
+    <div className={styles.basicTable}>
       <table className={styles.table} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup, i, arr) => {
@@ -68,7 +68,7 @@ export const BasicTable = ({ columns, data }) => {
           })}
         </tbody>
       </table>
-      <Pagination />
+      <Pagination pagination={pagination} url={url} />
     </div>
   ) : (
     <p>Malumotlar yoq</p>

@@ -53,13 +53,14 @@ function Orders() {
             )}
             {user.userRole === "ADMIN" && (
               <>
+              
                 <Button
                 size="small"
                 name="btn"
-                  style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
+                  // style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
                   onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
                 >
-                  <>ACCEPTED</>
+                  ACCEPTED
                 </Button>
                 <Button
                 size="small"
