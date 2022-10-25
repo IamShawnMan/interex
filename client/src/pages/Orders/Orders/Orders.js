@@ -45,8 +45,8 @@ function Orders() {
     { Header: "packageId", accessor: "packageId" },
     { Header: "Note", accessor: "note" },
     { Header: "recipientPhoneNumber", accessor: "recipientPhoneNumber" },
-    { Header: "RegionID", accessor: "regionId" },
-    { Header: "DistrictId", accessor: "districtId" },
+    { Header: "Region", accessor: "region.name" },
+    { Header: "District", accessor: "district.name" },
     {
       Header: "Action",
       accessor: (order) => {

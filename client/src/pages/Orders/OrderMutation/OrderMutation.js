@@ -35,7 +35,7 @@ const schema = object().shape({
 
 function OrderMutation() {
   const [regions, setRegions] = useState(null);
-  const [districts, setDistricts] = useState(null);
+  const [rId, setRId] = useState(null);
   const [regionId, setRegionId] = useState(null);
   const [updateData, setUpdateData] = useState(null);
   const { id } = useParams();
@@ -67,10 +67,10 @@ function OrderMutation() {
     });
   }, [regionId]);
   useEffect(() =>{
-     isUpdate&&updateData&&append({...updateData,districtId:""})
+     isUpdate&&updateData&&append({...updateData,districtId:updateData.districtId})
   },updateData);
   const formSubmit = async (data) => {
-    console.log( data.orders[0]);
+    console.log( data);
     try {
       const res = await http({
         url: isUpdate ? `/orders/${id}` : "/orders",
@@ -92,7 +92,7 @@ function OrderMutation() {
     });
     console.log(res);
     const orderById = res.data.data;
-    console.log(orderById);
+    setRId(orderById.regionId);
      setUpdateData(orderById);
   };
  
@@ -113,7 +113,7 @@ function OrderMutation() {
         <ul style={{overflowY: 'scroll'}}>
           {errors.orders?.type === "min" &&<p style={{color: "red"}}>{ errors.orders.message}</p>}
           {fields.map((item, index) => (
-        <OrderFieldArray item={item} register={register} index={index} errors={errors} watch={watch} regions={regions} control={control}remove={remove}/>
+        <OrderFieldArray rId={rId} item={item} register={register} index={index} errors={errors} watch={watch} regions={regions} control={control}remove={remove}/>
           ))}
         </ul>
         <div className={styles.btnIconTextContainer}  onClick={() =>
