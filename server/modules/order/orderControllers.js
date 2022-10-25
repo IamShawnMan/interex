@@ -9,7 +9,8 @@ const QueryBuilder = require("../../core/utils/QueryBuilder");
 const statusOrder = require("../../core/constants/orderStatus");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 const RegionModel = require("../region/Region")
-const districtModel = require("../district/District")
+const DistrictModel = require("../district/District")
+const UserModel = require("../user/User")
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -22,8 +23,9 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 
 	let allOrders = await OrderModel.findAndCountAll({
 		include: [
+			{model: PackageModel, as: "package", attributes: ["storeOwnerId"] , include: [{model: UserModel, as: 'storeOwner', attributes: ["firstName", "lastName"]}]},
 			{model: RegionModel, as: "region", attributes: ["name"] }, 
-			{model: districtModel, as: "district", attributes: ["name"]}
+			{model: DistrictModel, as: "district", attributes: ["name"]}
 		],
 		...queryBuilder.queryOptions,
 	});
@@ -40,6 +42,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
+	console.log(req.user)
 	const validationErrors = validationResult(req);
 	if (!validationErrors.isEmpty()) {
 		let err = new AppError("Validatsiya xatosi", 403);
@@ -56,6 +59,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	}
 	
 	const orders = req.body.orders;
+	console.log(req.body)
 	orders?.forEach(async (order) => {
 		const newOrder = await OrderModel.create({
 			recipient: order.recipient,
@@ -65,19 +69,27 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 			districtId: order.districtId,
 			packageId: existedPackage.id,
 		});
-		newOrder.totalPrice = 0;
-		order?.items?.forEach(async (item) => {
-			const newItem = await OrderItemModel.create({
-				orderId: newOrder.id,
+		let items = []
+		let sum = 0
+		order?.orderItems?.forEach(item => {
+			items.push({
+				productName: item.productName,
+				quantity: item.quantity,
+				price: item.price,
 				orderItemTotalPrice: item.quantity * item.price,
-				...item,
-			});
-			
-			newOrder.totalPrice += +newItem.orderItemTotalPrice;
+				orderId: newOrder.id
+			})	
 		});
-		setTimeout(async () => {
-			await newOrder.save();
-		}, 1000);
+		items?.forEach(item=>{
+			sum +=item.orderItemTotalPrice
+		})
+
+		await OrderItemModel.bulkCreate(items)
+		newOrder.totalPrice = sum
+		newOrder.packageId = existedPackage.id
+		await newOrder.save()
+		console.log(newOrder)
+		
 	});
 
 
@@ -92,11 +104,15 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const orderById = await OrderModel.findByPk(id, {
-		include: {
+		include: [{
+			model: DistrictModel, as: "district", attributes: ["name"]
+		},
+		{model: RegionModel, as: "region", attributes: ["name"]},
+		{
 			model: OrderItemModel,
 			as: "items",
 			attributes: ["productName", "quantity", "price"],
-		},
+		}],
 	});
 
 	if (!orderById) {
@@ -143,10 +159,14 @@ exports.adminOrderStatus = catchAsync(async (req, res, next) => {
 
 exports.editOrder = catchAsync(async(req,res,next)=>{
 	const {id} = req.params
-	const editOrderbyId = await OrderModel.findOne({where: {id: {[Op.eq]: id}},attributes: {exclude: ["createdAt", "updatedAt", "orderStatus", "deliveryPrice", "totalPrice", "packageId"]}})
-	if(!editOrderbyId){
+	const editOrderbyId = await OrderModel.findOne({
+		where: {id: {[Op.eq]: id}},
+		attributes: {exclude: ["createdAt", "updatedAt", "orderStatus", "deliveryPrice", "totalPrice", "packageId"]}})
+	
+		if(!editOrderbyId){
 		return next(new AppError("bunday buyurtma topilmadi", 404))
 	}
+
 	res.json({
 		data: editOrderbyId
 	})
@@ -155,8 +175,13 @@ exports.editOrder = catchAsync(async(req,res,next)=>{
 exports.updateOrder = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	
-	const { recipient, recipientPhoneNumber, regionId, districtId, items, note } =
-		req.body;
+	const { 
+		recipient, 
+		recipientPhoneNumber, 
+		regionId, 
+		districtId, 
+		orderItems, 
+		note } =req.body;
 	
 	const orderById = await OrderModel.findByPk(id);
 
@@ -171,20 +196,26 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		districtId,
 		note
 	});
-	orderById.totalPrice = 0;
-	items?.forEach(async (item) => {
-		const newItem = await OrderItemModel.create({
+	let items = []
+	let sum = 0;
+	orderItems?.forEach(item => {
+		items.push({
 			productName: item.productName,
 			quantity: item.quantity,
 			price: item.price,
 			orderItemTotalPrice: +item.quantity * +item.price,
 			orderId: orderById.id,
 		});
-		orderById.totalPrice += newItem.orderItemTotalPrice;
-	});
-	setTimeout(async () => {
-		await orderById.save();
-	}, 1000);
+});
+	items.forEach(item=>{
+		sum +=item.orderItemTotalPrice
+	})
+
+	await OrderItemModel.bulkCreate(items)
+
+	orderById.totalPrice = sum;
+	await orderById.save()
+
 	res.status(203).json({
 		status: "success",
 		message: "buyurtma taxrirlandi",
@@ -206,3 +237,15 @@ exports.getOrdersbyRegion = catchAsync(async(req,res,next)=>{
 
 	res.send(allOrdersbyRegion)
 })
+
+exports.getAllOrderStatus = catchAsync(async(req, res, next) => {
+	const allOrderStatus = Object.values(statusOrder)
+	res.json({
+		status: "success",
+		message: "All order status",
+		data: {
+			allOrderStatus
+		}
+	})
+})
+

@@ -15,6 +15,9 @@ router
 	.route("/")
 	.get(roleMiddleware(["ADMIN"]), orderControllers.adminOrderStatus);
 router
+	.route("/status")
+	.get(orderControllers.getAllOrderStatus)
+router
 	.route("/:id")
 	.get(orderControllers.getOrderById)
 	.put(roleMiddleware(["STORE_OWNER"]),

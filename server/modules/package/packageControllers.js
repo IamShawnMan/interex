@@ -5,6 +5,8 @@ const PackageModel = require("./Package");
 const OrderModel = require("../order/Order");
 const AppError = require("../../core/utils/appError");
 const User = require("../user/User");
+const DistrictModel = require("../district/District")
+const RegionModel = require("../region/Region")
 
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
@@ -62,7 +64,13 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 		return next(new AppError("Package mavjud emas", 404))
 	}
 
-	let myOrders = await OrderModel.findAndCountAll({...queryBuilder.queryOptions , where: {packageId: {[Op.eq]: myPackage.id}}})
+	let myOrders = await OrderModel.findAndCountAll({
+		...queryBuilder.queryOptions, 
+		include: [
+			{model: RegionModel, as: "region", attributes: ["name"] }, 
+			{model: DistrictModel, as: "district", attributes: ["name"]}
+		], 
+	where: {packageId: {[Op.eq]: myPackage.id}}})
 	myOrders = queryBuilder.createPagination(myOrders)
 	res.json({
 		status: "success",

@@ -49,11 +49,10 @@ class QueryBuilder {
     limitFields(){
        if(this.queryParams.fields?.length>0){ 
         const attributes = this.queryParams.fields?.split(",")
-         const newATTRIBUTE =attributes.filter(field => field!=="")
-        if(newATTRIBUTE.length>0){
-        this.queryOptions.attributes = newATTRIBUTE
+         const newAttribute = attributes.filter(field => field!=="")
+        if(newAttribute.length>0){
+        this.queryOptions.attributes = newAttribute
        }
-        
     }else{
         console.error("There is no fields property")
     }
@@ -70,15 +69,12 @@ class QueryBuilder {
 
     search(searchFields){
         if(!this.queryParams.search)return this;
-
         const searchObj = { 
                 [Op.or]: 
                      searchFields.map(field=> ({[field]:{[Op.iLike]:`%${this.queryParams.search}%`}}))
                }
-
         if(this.queryOptions.where){
             this.queryOptions.where = {...searchObj, ...this.queryOptions.where}
-
         }else{
             this.queryOptions.where = searchObj
         }   
@@ -87,8 +83,7 @@ class QueryBuilder {
 
 
     createPagination(queryResult){
-        if(!queryResult.count&&!queryResult.rows)return queryResult;
-
+        if(!queryResult.count&&!queryResult.rows) return queryResult;
 
         const allPagesCount = Math.ceil(queryResult.count / this.queryOptions.limit)
         const page = +this.queryParams.page;
@@ -104,20 +99,15 @@ class QueryBuilder {
                 pageSize: this.queryOptions.size
             }
         }
-    
-
     }
 
     #createOrderArray(){
         const orderArr = this.queryParams.sort.split(",").map((i)=>{
             const orderItem = [];
             const isDesc = i.startsWith("-")
-
             orderItem[0] = isDesc ? i.slice(1) : i
             orderItem[1] = isDesc ? "desc" : "asc"
-
             return orderItem
-
         })
         return orderArr
     }
