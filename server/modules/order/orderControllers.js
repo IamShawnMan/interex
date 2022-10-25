@@ -42,6 +42,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
+	console.log(req.user)
 	const validationErrors = validationResult(req);
 	if (!validationErrors.isEmpty()) {
 		let err = new AppError("Validatsiya xatosi", 403);
@@ -58,6 +59,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	}
 	
 	const orders = req.body.orders;
+	console.log(req.body)
 	orders?.forEach(async (order) => {
 		const newOrder = await OrderModel.create({
 			recipient: order.recipient,
@@ -69,7 +71,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		});
 		let items = []
 		let sum = 0
-		order?.items?.forEach(item => {
+		order?.orderItems?.forEach(item => {
 			items.push({
 				productName: item.productName,
 				quantity: item.quantity,
@@ -86,6 +88,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		newOrder.totalPrice = sum
 		newOrder.packageId = existedPackage.id
 		await newOrder.save()
+		console.log(newOrder)
+		
 	});
 
 
@@ -176,7 +180,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		recipientPhoneNumber, 
 		regionId, 
 		districtId, 
-		items, 
+		orderItems, 
 		note } =req.body;
 	
 	const orderById = await OrderModel.findByPk(id);
@@ -192,10 +196,10 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		districtId,
 		note
 	});
-	let orderItems = []
+	let items = []
 	let sum = 0;
-	items?.forEach(item => {
-		orderItems.push({
+	orderItems?.forEach(item => {
+		items.push({
 			productName: item.productName,
 			quantity: item.quantity,
 			price: item.price,
@@ -203,11 +207,11 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 			orderId: orderById.id,
 		});
 });
-	orderItems.forEach(item=>{
+	items.forEach(item=>{
 		sum +=item.orderItemTotalPrice
 	})
 
-	await OrderItemModel.bulkCreate(orderItems)
+	await OrderItemModel.bulkCreate(items)
 
 	orderById.totalPrice = sum;
 	await orderById.save()
@@ -233,3 +237,15 @@ exports.getOrdersbyRegion = catchAsync(async(req,res,next)=>{
 
 	res.send(allOrdersbyRegion)
 })
+
+exports.getAllOrderStatus = catchAsync(async(req, res, next) => {
+	const allOrderStatus = Object.values(statusOrder)
+	res.json({
+		status: "success",
+		message: "All order status",
+		data: {
+			allOrderStatus
+		}
+	})
+})
+
