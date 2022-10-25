@@ -9,7 +9,8 @@ const QueryBuilder = require("../../core/utils/QueryBuilder");
 const statusOrder = require("../../core/constants/orderStatus");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 const RegionModel = require("../region/Region")
-const districtModel = require("../district/District")
+const DistrictModel = require("../district/District")
+const UserModel = require("../user/User")
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -22,8 +23,9 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 
 	let allOrders = await OrderModel.findAndCountAll({
 		include: [
+			{model: PackageModel, as: "package", attributes: ["storeOwnerId"] , include: [{model: UserModel, as: 'storeOwner', attributes: ["firstName", "lastName"]}]},
 			{model: RegionModel, as: "region", attributes: ["name"] }, 
-			{model: districtModel, as: "district", attributes: ["name"]}
+			{model: DistrictModel, as: "district", attributes: ["name"]}
 		],
 		...queryBuilder.queryOptions,
 	});
@@ -65,19 +67,23 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 			districtId: order.districtId,
 			packageId: existedPackage.id,
 		});
-		newOrder.totalPrice = 0;
-		order?.items?.forEach(async (item) => {
-			const newItem = await OrderItemModel.create({
-				orderId: newOrder.id,
+		let items = []
+		let sum = 0
+		order?.items?.forEach(item => {
+			items.push({
+				productName: item.productName,
+				quantity: item.quantity,
+				price: item.price,
 				orderItemTotalPrice: item.quantity * item.price,
-				...item,
-			});
-			
-			newOrder.totalPrice += +newItem.orderItemTotalPrice;
+				orderId: newOrder.id
+			})	
 		});
-		setTimeout(async () => {
-			await newOrder.save();
-		}, 1000);
+		items?.forEach(item=>{
+			sum +=item.orderItemTotalPrice
+		})
+		newOrder.totalPrice = sum
+		newOrder.packageId = existedPackage.id
+		await newOrder.save()
 	});
 
 
