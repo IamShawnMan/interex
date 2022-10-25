@@ -9,7 +9,9 @@ const QueryBuilder = require("../../core/utils/QueryBuilder");
 const statusOrder = require("../../core/constants/orderStatus");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 const RegionModel = require("../region/Region")
-const districtModel = require("../district/District")
+const districtModel = require("../district/District");
+const User = require("../user/User");
+const Package = require("../package/Package");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -22,8 +24,9 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 
 	let allOrders = await OrderModel.findAndCountAll({
 		include: [
-			{model: RegionModel, as: "region", attributes: ["name"] }, 
-			{model: districtModel, as: "district", attributes: ["name"]}
+			{model: RegionModel, as: "region", attributes: ["name", "id"] }, 
+			{model: districtModel, as: "district", attributes: ["name", "id"]},
+			{model: Package, as: "package", attributes: ["store_owner_id"]}
 		],
 		...queryBuilder.queryOptions,
 	});
@@ -206,3 +209,15 @@ exports.getOrdersbyRegion = catchAsync(async(req,res,next)=>{
 
 	res.send(allOrdersbyRegion)
 })
+
+exports.getAllOrderStatus = catchAsync(async(req, res, next) => {
+	const allOrderStatus = Object.values(statusOrder)
+	res.json({
+		status: "success",
+		message: "All order status",
+		data: {
+			allOrderStatus
+		}
+	})
+})
+
