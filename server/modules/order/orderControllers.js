@@ -81,6 +81,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		items?.forEach(item=>{
 			sum +=item.orderItemTotalPrice
 		})
+
+		await OrderItemModel.bulkCreate(items)
 		newOrder.totalPrice = sum
 		newOrder.packageId = existedPackage.id
 		await newOrder.save()
@@ -98,11 +100,15 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const orderById = await OrderModel.findByPk(id, {
-		include: {
+		include: [{
+			model: DistrictModel, as: "district", attributes: ["name"]
+		},
+		{model: RegionModel, as: "region", attributes: ["name"]},
+		{
 			model: OrderItemModel,
 			as: "items",
 			attributes: ["productName", "quantity", "price"],
-		},
+		}],
 	});
 
 	if (!orderById) {
@@ -149,10 +155,14 @@ exports.adminOrderStatus = catchAsync(async (req, res, next) => {
 
 exports.editOrder = catchAsync(async(req,res,next)=>{
 	const {id} = req.params
-	const editOrderbyId = await OrderModel.findOne({where: {id: {[Op.eq]: id}},attributes: {exclude: ["createdAt", "updatedAt", "orderStatus", "deliveryPrice", "totalPrice", "packageId"]}})
-	if(!editOrderbyId){
+	const editOrderbyId = await OrderModel.findOne({
+		where: {id: {[Op.eq]: id}},
+		attributes: {exclude: ["createdAt", "updatedAt", "orderStatus", "deliveryPrice", "totalPrice", "packageId"]}})
+	
+		if(!editOrderbyId){
 		return next(new AppError("bunday buyurtma topilmadi", 404))
 	}
+
 	res.json({
 		data: editOrderbyId
 	})
@@ -161,8 +171,13 @@ exports.editOrder = catchAsync(async(req,res,next)=>{
 exports.updateOrder = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	
-	const { recipient, recipientPhoneNumber, regionId, districtId, items, note } =
-		req.body;
+	const { 
+		recipient, 
+		recipientPhoneNumber, 
+		regionId, 
+		districtId, 
+		items, 
+		note } =req.body;
 	
 	const orderById = await OrderModel.findByPk(id);
 
@@ -177,20 +192,26 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		districtId,
 		note
 	});
-	orderById.totalPrice = 0;
-	items?.forEach(async (item) => {
-		const newItem = await OrderItemModel.create({
+	let orderItems = []
+	let sum = 0;
+	items?.forEach(item => {
+		orderItems.push({
 			productName: item.productName,
 			quantity: item.quantity,
 			price: item.price,
 			orderItemTotalPrice: +item.quantity * +item.price,
 			orderId: orderById.id,
 		});
-		orderById.totalPrice += newItem.orderItemTotalPrice;
-	});
-	setTimeout(async () => {
-		await orderById.save();
-	}, 1000);
+});
+	orderItems.forEach(item=>{
+		sum +=item.orderItemTotalPrice
+	})
+
+	await OrderItemModel.bulkCreate(orderItems)
+
+	orderById.totalPrice = sum;
+	await orderById.save()
+
 	res.status(203).json({
 		status: "success",
 		message: "buyurtma taxrirlandi",

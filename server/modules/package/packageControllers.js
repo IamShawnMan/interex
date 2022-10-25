@@ -5,6 +5,8 @@ const PackageModel = require("./Package");
 const OrderModel = require("../order/Order");
 const AppError = require("../../core/utils/appError");
 const User = require("../user/User");
+const DistrictModel = require("../district/District")
+const RegionModel = require("../region/Region")
 
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
