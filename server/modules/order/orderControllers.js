@@ -8,6 +8,8 @@ const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const statusOrder = require("../../core/constants/orderStatus");
 const priceDelivery = require("../../core/constants/deliveryPrice");
+const RegionModel = require("../region/Region")
+const districtModel = require("../district/District")
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -19,6 +21,10 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 		.sort();
 
 	let allOrders = await OrderModel.findAndCountAll({
+		include: [
+			{model: RegionModel, as: "region", attributes: ["name"] }, 
+			{model: districtModel, as: "district", attributes: ["name"]}
+		],
 		...queryBuilder.queryOptions,
 	});
 	allOrders = queryBuilder.createPagination(allOrders);
@@ -85,11 +91,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
-	
-	// const queryBuilder = new QueryBuilder(req.query);
-	
-	// queryBuilder.limitFields();
-	
 	const orderById = await OrderModel.findByPk(id, {
 		include: {
 			model: OrderItemModel,

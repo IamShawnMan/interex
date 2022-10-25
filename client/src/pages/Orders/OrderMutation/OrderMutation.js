@@ -81,7 +81,7 @@ function OrderMutation() {
       toast.success(res.data.message);
       navigate("/orders");
     } catch (error) {
-      return error.response.data.error.errors.map((error) => toast.error(error.msg));
+      toast.error(error.response.data.message)
     }
   };
   
@@ -101,7 +101,7 @@ function OrderMutation() {
       url: "/regions",
       method: "GET",
     });
-    setRegions(res.data.data.allRegions);
+    setRegions(res.data.data.allRegions.content);
   };
   const { fields, append, remove } = useFieldArray({
     control,

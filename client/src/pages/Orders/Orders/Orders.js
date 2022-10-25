@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import http from "../../../utils/axios-instance";
 import { useState } from "react";
 import { BasicTable } from "../../../components/Table/BasicTable";
@@ -7,19 +7,35 @@ import Layout from "../../../components/Layout/Layout";
 import AppContext from "../../../context/AppContext";
 import { toast } from "react-toastify";
 import Button from "../../../components/Form/FormComponents/Button/Button";
+import { formatDate } from "../../../utils/dateFormatter";
 function Orders() {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState(null);
-  const getAllUser = async () => {
+  const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
+
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
+  const getAllMyOrders = async () => {
     const res = await http({
-      url: "/packages/myorders",
+      url: `/packages/myorders?page=${page}&size=${size}`,
+    });
+    setValue(res.data.data.myOrders.content);
+    setPagination(res.data.data.myOrders.pagination);
+  };
+
+  const getAllOrders = async () => {
+    const res = await http({
+      url: "/orders",
     });
     console.log(res);
-    setValue(res.data[0].orders);
   };
   useEffect(() => {
-    getAllUser();
-  }, []);
+    if (user.userRole === "STORE_OWNER") {
+      getAllMyOrders();
+    } else if (user.userRole === "ADMIN" || user.userRole === "SUPER_ADMIN") {
+    }
+  }, [page]);
   const changeOrderStatus = async (id, status) => {
     const res = await http({
       url: `/orders/${id}`,
@@ -27,9 +43,9 @@ function Orders() {
       data: { orderStatus: status },
     });
     toast.success("Order Status Updated");
-    getAllUser();
+    getAllMyOrders();
   };
-  const ordersCols = [
+  const ordersColsStoreOwner = [
     { Header: "id", accessor: "id" },
     { Header: "DeliveryPrice", accessor: "deliveryPrice" },
     { Header: "OrderStatus", accessor: "orderStatus" },
@@ -41,29 +57,39 @@ function Orders() {
     { Header: "RegionID", accessor: "regionId" },
     { Header: "DistrictId", accessor: "districtId" },
     {
+      Header: "Created At",
+      accessor: (o) => {
+        return formatDate(o.createdAt);
+      },
+    },
+    {
       Header: "Action",
       accessor: (order) => {
         return (
           <div>
             {user.userRole === "STORE_OWNER" && (
-             
-                <Link style={{textDecoration: "none",color: "white"}} to={`/orders/${order.id}`}> <Button size="small" name="btn">Update</Button></Link>
-           
-              
+              <Link
+                style={{ textDecoration: "none", color: "white" }}
+                to={`/orders/${order.id}`}
+              >
+                {" "}
+                <Button size="small" name="btn">
+                  Update
+                </Button>
+              </Link>
             )}
             {user.userRole === "ADMIN" && (
               <>
                 <Button
-                size="small"
-                name="btn"
-                  style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
+                  size="small"
+                  name="btn"
                   onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
                 >
-                  <>ACCEPTED</>
+                  ACCEPTED
                 </Button>
                 <Button
-                size="small"
-                name="btn"
+                  size="small"
+                  name="btn"
                   style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
                   onClick={() => changeOrderStatus(order.id, "NOT_EXIST")}
                 >
@@ -80,10 +106,19 @@ function Orders() {
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
       {user.userRole === "STORE_OWNER" && (
-        <Link style={{display: "block",width: "12rem"}} to="/orders/new"><Button size="small" name="btn">Add Order</Button></Link>
+        <Link style={{ display: "block", width: "12rem" }} to="/orders/new">
+          <Button size="small" name="btn">
+            Add Order
+          </Button>
+        </Link>
       )}
       {value?.length > 0 ? (
-        <BasicTable columns={ordersCols} data={value} />
+        <BasicTable
+          columns={[]}
+          data={value}
+          pagination={pagination}
+          url="orders"
+        />
       ) : (
         <p>Malumotlar yoq</p>
       )}

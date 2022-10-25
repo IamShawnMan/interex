@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+import Button from "../../components/Form/FormComponents/Button/Button";
+import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 
@@ -7,20 +9,26 @@ function IncomingOrders() {
   const [orders, setOrders] = useState(null);
   const [regions, setRegions] = useState(null);
   const [districts, setDistricts] = useState(null);
+  const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
+
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
   const { id } = useParams();
 
   useEffect(() => {
     getOrdersByPackageId();
     getRegions();
     getDistricts();
-  }, []);
+  }, [page]);
   const getOrdersByPackageId = async () => {
     try {
       const res = await http({
-        url: `/packages/${id}/orders`,
+        url: `/packages/${id}/orders?page=${page}&size=${size}`,
       });
-      console.log(res.data.data);
-      setOrders(res.data.data.ordersbyPackage);
+      setOrders(res.data.data.ordersbyPackage.content);
+      setPagination(res.data.data.ordersbyPackage.pagination);
+
     } catch (error) {
       console.log(error);
     }
@@ -45,6 +53,7 @@ function IncomingOrders() {
     } catch (error) {}
   };
   const extractById = (mainValue, returnArray) => {
+    console.log(mainValue,returnArray);
     let returnValue;
     if (returnArray) {
       returnArray.filter((e) => {
@@ -82,7 +91,8 @@ function IncomingOrders() {
       id: "region",
       Header: "Viloyat",
       accessor: (order) => {
-        return extractById(order.regionId, regions);
+        console.log(order);
+        return extractById(order.regionId, regions?.content);
       },
     },
     {
@@ -109,33 +119,45 @@ function IncomingOrders() {
     },
     { Header:"Action", accessor: (order)=>{ return (
       <div>
-        <button
+        <span style={{ width: "12rem",paddingBottom:"5px", display:"block"}}  onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}>
+          <Button
+        // size="medium"
+        name="btn"
         disabled={order.orderStatus==="NEW"?false:true}
-          style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
-          onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}
+          // btnStyle={{width: "40%" }}
+         
         >
           <>ACCEPTED</> 
-        </button>
-        <button
+        </Button>
+        </span>
+        <span style={{ width: "12rem", display:"block" }}  onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}>
+        
+        <Button
         disabled={order.orderStatus==="NEW"?false:true}
-
-          style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
-          onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}
+        size="small"
+        name="btn"
+          // btnStyle={{width: "40%" }}
+         
         >
          <>NOT EXIST</> 
-        </button>
+        </Button>
+        </span>
               </div>
     );}}
 
   ];
   return (
+    <Layout pageName="Jo'natmalar Ro'yxati">
     <div>
       {orders?.length > 0 ? (
-        <BasicTable columns={ordersCols} data={orders} />
+        <BasicTable columns={ordersCols} data={orders}
+        url={`packages/${id}/orders`}
+        pagination={pagination} />
       ) : (
         <p>Malumotlar yoq</p>
       )}
     </div>
+    </Layout>
   );
 }
 

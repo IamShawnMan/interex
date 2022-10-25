@@ -36,11 +36,24 @@ body {
   box-sizing: border-box;
   font-family: Roboto, sans-serif;
 }
-
 html {
   font-size: 62.5%;
 }
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
+/* ::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-slider-thumb {
+  background-color: var(--blueViolet);
+}
+::-webkit-scrollbar-track {
+  background-color: var(--grey);
+} */
 .h1 {
   font-size: 3.2rem;
   line-height: 130%;

@@ -18,7 +18,6 @@ function Users() {
       const res = await http({
         url: `/users?page=${page}&size=${size}`,
       });
-      console.log(res);
       setValue(res.data.data.allUsers.content);
       setPagination(res.data.data.allUsers.pagination);
     } catch (error) {
@@ -27,6 +26,7 @@ function Users() {
   };
   useEffect(() => {
     getAllUser();
+   
   }, [page]);
 
   const userStatusChangeHandler = async ({ id, status }) => {
@@ -65,9 +65,7 @@ function Users() {
       accessor: (user) => {
         return (
           <Link to={`/users/${user.id}`}>
-            <Button size="small" name="btn">
-              Update
-            </Button>
+            <Button size="iconSmall" name="icon" iconName="pen"/>
           </Link>
         );
       },
@@ -77,7 +75,6 @@ function Users() {
       Header: "Status",
       accessor: (user) => {
         const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
-
         return (
           <Switch
             onSwitch={userStatusChangeHandler.bind(null, {
@@ -97,7 +94,8 @@ function Users() {
         <Button size="small" name="btn">
           Add User
         </Button>
-      </Link>
+      </Link> 
+
       {value?.length > 0 ? (
         <BasicTable
           columns={usersCols}

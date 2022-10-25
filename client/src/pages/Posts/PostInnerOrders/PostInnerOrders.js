@@ -128,11 +128,11 @@ function PostInnerOrders() {
   return (
     <Layout pageName="Postlar">
     <div>
-      {orders?.length > 0 ? (
+      {/* {orders?.length > 0 ? (
         <BasicTable columns={ordersCols} data={orders} />
       ) : (
         <p>Malumotlar yoq</p>
-      )}
+      )} */}
     </div> </Layout>
   );
 }
