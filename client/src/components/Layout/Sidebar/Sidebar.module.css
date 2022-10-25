@@ -2,6 +2,7 @@
   position: absolute;
   width: 20%;
   height: 100vh;
+  overflow: scroll;
   left: 0;
   top: 0;
   padding: 4rem 3.2rem 4rem 5rem;

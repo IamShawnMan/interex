@@ -2,6 +2,7 @@ import React from "react";
 import { useTable } from "react-table";
 import styles from "./BasicTable.module.css";
 import Pagination from "../Pagination/Pagination";
+import Filter from "../../components/Filter/Filter"
 
 export const BasicTable = ({ columns, data, pagination, url }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -12,6 +13,7 @@ export const BasicTable = ({ columns, data, pagination, url }) => {
 
   return data.length > 0 ? (
     <div className={styles.basicTable}>
+      <Filter />
       <table className={styles.table} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup, i, arr) => {

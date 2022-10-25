@@ -11,7 +11,6 @@ function PostInnerOrders() {
   const [districts, setDistricts] = useState(null);
   const { id } = useParams();
   const navigate=useNavigate();
-  console.log(id,"PostInnerOrders");
   useEffect(() => {
     getOrdersByPackageId();
     getRegions();
