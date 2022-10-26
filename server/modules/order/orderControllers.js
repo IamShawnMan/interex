@@ -36,7 +36,8 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 		message: "Barcha buyurtmalar",
 		error: null,
 		data: {
-			allOrders,
+			...allOrders,
+			storeOwnerId: allOrders.package.storeOwnerId
 		},
 	});
 });
