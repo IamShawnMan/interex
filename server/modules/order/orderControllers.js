@@ -30,14 +30,12 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 		...queryBuilder.queryOptions,
 	});
 	allOrders = queryBuilder.createPagination(allOrders);
-
 	res.json({
 		status: "success",
 		message: "Barcha buyurtmalar",
 		error: null,
 		data: {
-			...allOrders,
-			storeOwnerId: allOrders.package.storeOwnerId
+			allOrders
 		},
 	});
 });
