@@ -11,7 +11,7 @@ const PostMutation = () => {
 
     const page = searchParams.get("page") || 1;
     const size = searchParams.get("size") || 2;
-    const getAllUser = async () => {
+    const getAllRegions = async () => {
       try{
         const res = await http({
           url: `/regions?page=${page}&size=${size}`,
@@ -23,7 +23,7 @@ const PostMutation = () => {
       }   
     };   
     useEffect(() => {
-      getAllUser();
+      getAllRegions();
     }, [page]);
     const regionCols = [
       {  
