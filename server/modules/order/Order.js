@@ -4,6 +4,7 @@ const orderStatus = require("../../core/constants/orderStatus");
 const RegiomModel = require("../region/Region");
 const PackageModel = require("../package/Package");
 const DistrictModel = require("../district/District");
+const UserModel = require("../user/User")
 
 const Order = sequelize.define(
 	"order",
@@ -41,6 +42,10 @@ Order.belongsTo(DistrictModel, {as: "district"})
 
 PackageModel.hasMany(Order, { as: "orders", foreignKey: "packageId" });
 Order.belongsTo(PackageModel, { as: "package" });
+
+UserModel.hasMany(Order, {as: "order", foreignKey: "storeOwnerId"})
+Order.belongsTo(UserModel, {as: "storeOwner"})
+
 
 
 
