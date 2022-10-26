@@ -55,7 +55,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	if (!existedPackage) {
 		existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
 	}
-	
+	const storeOwnerId = req.user.id
 	const orders = req.body.orders;
 	orders?.forEach(async (order) => {
 		const newOrder = await OrderModel.create({
@@ -65,6 +65,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 			recipientPhoneNumber: order.recipientPhoneNumber,
 			districtId: order.districtId,
 			packageId: existedPackage.id,
+			storeOwnerId
 		});
 		let items = []
 		let sum = 0
@@ -108,8 +109,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 		{model: RegionModel, as: "region", attributes: ["name"]},
 		{
 			model: OrderItemModel,
-			as: "items",
-			attributes: ["productName", "quantity", "price"],
+			as: "items"
 		}],
 	});
 
