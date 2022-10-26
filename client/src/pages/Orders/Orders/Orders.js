@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import http from "../../../utils/axios-instance";
 import { useState } from "react";
 import { BasicTable } from "../../../components/Table/BasicTable";
@@ -8,15 +8,19 @@ import AppContext from "../../../context/AppContext";
 import { toast } from "react-toastify";
 import Button from "../../../components/Form/FormComponents/Button/Button";
 import { formatDate } from "../../../utils/dateFormatter";
+import Filter from "../../../components/Filter/Filter";
 function Orders() {
-  const { user } = useContext(AppContext);
-  const [value, setValue] = useState(null);
-  const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
-
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 2;
-  const getAllMyOrders = async () => {
+  const { user } = useContext(AppContext);
+  const superAdmin = user.userRole === "SUPER_ADMIN";
+  const admin = user.userRole === "ADMIN";
+  const storeOwner = user.userRole === "STORE_OWNER";
+  const courier = user.userRole === "COURIER";
+  const [value, setValue] = useState(null);
+  const [pagination, setPagination] = useState({});
+  const getAllMyOrders = async (data) => {
     const res = await http({
       url: `/packages/myorders?page=${page}&size=${size}`,
     });
@@ -24,84 +28,72 @@ function Orders() {
     setPagination(res.data.data.myOrders.pagination);
   };
 
-  const getAllOrders = async () => {
+  const getAllOrders = async (data) => {
     const res = await http({
       url: "/orders",
     });
-    console.log(res);
+    setValue(res.data.data.allOrders.content);
+    setPagination(res.data.data.allOrders.pagination);
   };
   useEffect(() => {
-    if (user.userRole === "STORE_OWNER") {
+    if (storeOwner) {
       getAllMyOrders();
-    } else if (user.userRole === "ADMIN" || user.userRole === "SUPER_ADMIN") {
+    } else if (admin || superAdmin) {
+      getAllOrders();
     }
   }, [page]);
-  const changeOrderStatus = async (id, status) => {
-    const res = await http({
-      url: `/orders/${id}`,
-      method: "PATCH",
-      data: { orderStatus: status },
-    });
-    toast.success("Order Status Updated");
-    getAllMyOrders();
-  };
-  const ordersColsStoreOwner = [
-    { Header: "id", accessor: "id" },
-    { Header: "DeliveryPrice", accessor: "deliveryPrice" },
-    { Header: "OrderStatus", accessor: "orderStatus" },
-    { Header: "Recipient", accessor: "recipient" },
-    { Header: "TotalPrice", accessor: "totalPrice" },
-    { Header: "packageId", accessor: "packageId" },
-    { Header: "Note", accessor: "note" },
-    { Header: "recipientPhoneNumber", accessor: "recipientPhoneNumber" },
-    { Header: "RegionID", accessor: "regionId" },
-    { Header: "DistrictId", accessor: "districtId" },
+
+  const cols = [
+    { id: "id", Header: "ID", accessor: "id" },
+    { id: "recipient", Header: "Haridor", accessor: "recipient" },
+    { id: "phoneNumber", Header: "Telefon", accessor: "recipientPhoneNumber" },
+    { id: "note", Header: "Eslatma", accessor: "note" },
+    { id: "status", Header: "Holati", accessor: "orderStatus" },
+    { id: "region", Header: "Viloyat", accessor: "regionId" },
+    { id: "district", Header: "Tum/Shah", accessor: "districtId" },
     {
-      Header: "Created At",
+      id: "packageId",
+      Header: "Do'kon nomi",
+      accessor: (o) => {
+        return `${o.package.storeOwner.firstName} ${o.package.storeOwner.lastName}`;
+      },
+    },
+    {
+      id: "deliveryPrice",
+      Header: "Yetkazish narxi",
+      accessor: "deliveryPrice",
+    },
+    { id: "totalPrice", Header: "Malhulotning narxi", accessor: "totalPrice" },
+    {
+      Header: "Sanasi",
       accessor: (o) => {
         return formatDate(o.createdAt);
       },
     },
-    {
-      Header: "Action",
-      accessor: (order) => {
-        return (
-          <div>
-            {user.userRole === "STORE_OWNER" && (
-              <Link
-                style={{ textDecoration: "none", color: "white" }}
-                to={`/orders/${order.id}`}
-              >
-                {" "}
-                <Button size="small" name="btn">
-                  Update
-                </Button>
-              </Link>
-            )}
-            {user.userRole === "ADMIN" && (
-              <>
-                <Button
-                  size="small"
-                  name="btn"
-                  onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
-                >
-                  ACCEPTED
-                </Button>
-                <Button
-                  size="small"
-                  name="btn"
-                  style={{ padding: "5px", margin: "2px", fontSize: "20px" }}
-                  onClick={() => changeOrderStatus(order.id, "NOT_EXIST")}
-                >
-                  <>NOT EXIST</>
-                </Button>
-              </>
-            )}
-          </div>
-        );
-      },
-    },
   ];
+
+  const action = {
+    Header: "Action",
+    accessor: (order) => {
+      return (
+        <div>
+          {storeOwner && (
+            <Link
+              style={{ textDecoration: "none", color: "white" }}
+              to={`/orders/${order.id}`}
+            >
+              {" "}
+              <Button size="small" name="btn">
+                Update
+              </Button>
+            </Link>
+          )}
+        </div>
+      );
+    },
+  };
+
+  const ordersCols = storeOwner ? cols.push(action) : cols;
 
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
@@ -112,9 +104,19 @@ function Orders() {
           </Button>
         </Link>
       )}
+      <Filter
+        url={
+          ((admin || superAdmin) && `orders?page=${page}&size=${size}`) ||
+          (storeOwner && `packages/myorders?page=${page}&size=${size}`)
+        }
+        filterFn={
+          ((admin || superAdmin) && getAllOrders) ||
+          (storeOwner && getAllMyOrders)
+        }
+      />
       {value?.length > 0 ? (
         <BasicTable
-          columns={[]}
+          columns={ordersCols}
           data={value}
           pagination={pagination}
           url="orders"

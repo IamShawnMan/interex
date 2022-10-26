@@ -28,7 +28,6 @@ function IncomingOrders() {
       });
       setOrders(res.data.data.ordersbyPackage.content);
       setPagination(res.data.data.ordersbyPackage.pagination);
-
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +52,6 @@ function IncomingOrders() {
     } catch (error) {}
   };
   const extractById = (mainValue, returnArray) => {
-    console.log(mainValue,returnArray);
     let returnValue;
     if (returnArray) {
       returnArray.filter((e) => {
@@ -63,17 +61,17 @@ function IncomingOrders() {
     return returnValue;
   };
 
-  const changeOrderStatus = async (id,status) => {
+  const changeOrderStatus = async (id, status) => {
     console.log(status);
     try {
       const res = await http({
         url: `/orders/${id}`,
         method: "PATCH",
         data: {
-          orderStatus: status
+          orderStatus: status,
         },
       });
-      getOrdersByPackageId()
+      getOrdersByPackageId();
     } catch (error) {
       console.log(error);
     }
@@ -91,7 +89,6 @@ function IncomingOrders() {
       id: "region",
       Header: "Viloyat",
       accessor: (order) => {
-        console.log(order);
         return extractById(order.regionId, regions?.content);
       },
     },
@@ -117,46 +114,54 @@ function IncomingOrders() {
       Header: "Jo'natmaning holati",
       accessor: "orderStatus",
     },
-    { Header:"Action", accessor: (order)=>{ return (
-      <div>
-        <span style={{ width: "12rem",paddingBottom:"5px", display:"block"}}  onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}>
-          <Button
-        // size="medium"
-        name="btn"
-        disabled={order.orderStatus==="NEW"?false:true}
-          // btnStyle={{width: "40%" }}
-         
-        >
-          <>ACCEPTED</> 
-        </Button>
-        </span>
-        <span style={{ width: "12rem", display:"block" }}  onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}>
-        
-        <Button
-        disabled={order.orderStatus==="NEW"?false:true}
-        size="small"
-        name="btn"
-          // btnStyle={{width: "40%" }}
-         
-        >
-         <>NOT EXIST</> 
-        </Button>
-        </span>
-              </div>
-    );}}
-
+    {
+      Header: "Action",
+      accessor: (order) => {
+        return (
+          <div>
+            <span
+              style={{ width: "12rem", paddingBottom: "5px", display: "block" }}
+              onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
+            >
+              <Button
+                size="small"
+                name="btn"
+                disabled={order.orderStatus === "NEW" ? false : true}
+              >
+                <>ACCEPTED</>
+              </Button>
+            </span>
+            <span
+              style={{ width: "12rem", display: "block" }}
+              onClick={() => changeOrderStatus(order.id, "NOT_EXIST")}
+            >
+              <Button
+                disabled={order.orderStatus === "NEW" ? false : true}
+                size="small"
+                name="btn"
+              >
+                <>NOT EXIST</>
+              </Button>
+            </span>
+          </div>
+        );
+      },
+    },
   ];
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
-    <div>
-      {orders?.length > 0 ? (
-        <BasicTable columns={ordersCols} data={orders}
-        url={`packages/${id}/orders`}
-        pagination={pagination} />
-      ) : (
-        <p>Malumotlar yoq</p>
-      )}
-    </div>
+      <div>
+        {orders?.length > 0 ? (
+          <BasicTable
+            columns={ordersCols}
+            data={orders}
+            url={`packages/${id}/orders`}
+            pagination={pagination}
+          />
+        ) : (
+          <p>Malumotlar yoq</p>
+        )}
+      </div>
     </Layout>
   );
 }

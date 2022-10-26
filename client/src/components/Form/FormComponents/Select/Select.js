@@ -11,7 +11,7 @@ function Select({ data, children, onChange, error, register }) {
           {...(register ? register() : "")}
           onChange={onChange}
         >
-          <option className={styles.option} value={null}>
+          <option className={styles.option} value={""}>
             {children}
           </option>
           {data ? (
@@ -21,7 +21,7 @@ function Select({ data, children, onChange, error, register }) {
               </option>
             ))
           ) : (
-            <option className={styles.option} value={null}>
+            <option className={styles.option} value={""}>
               Ma'lumotlar yo'q
             </option>
           )}

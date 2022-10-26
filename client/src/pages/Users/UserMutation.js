@@ -2,118 +2,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import * as yup from "yup";
 import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
 import Layout from "../../components/Layout/Layout";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Select from "../../components/Form/FormComponents/Select/Select";
-
-const registerSchema = yup.object().shape({
-  firstName: yup
-    .string()
-    .trim()
-    .required("FirstName bo'sh bo'lishi mumkin emas"),
-  phoneNumber: yup
-    .string()
-    .trim()
-    .required("Telefon raqami bo'sh bo'lishi mumkin emas"),
-  passportNumber: yup
-    .string()
-    .trim()
-    .required("Pasport raqami bo'sh bo'lishi mumkin emas"),
-  lastName: yup.string().trim().required("LastName bo'sh bo'lishi mumkin emas"),
-  username: yup
-    .string()
-    .trim()
-    .required("Username bo'sh bo'lishi mumkin emas")
-    .min(5, "Username 5 ta belgidan kop bolishi kerak")
-    .max(20, "Username 20 ta belgidan kam bolishi kerak"),
-  password: yup
-    .string()
-    .trim()
-    .required("Parol bo'sh bo'lishi mumkin emas")
-    .min(6, "Parol 6 ta belgidan kop bolishi kerak")
-    .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
-  userRole: yup
-    .string()
-    .trim()
-    .required("Foydalanuvchi mansabi bo'sh bo'lishi mumkin emas!")
-    .min(
-      5,
-      "Foydalanavchi mansabi eng kamida 5 ta belgidan iborat bo'lishi kerak!"
-    )
-    .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
-});
-const userRoleCOURIER = yup.object().shape({
-  firstName: yup
-    .string()
-    .trim()
-    .required("FirstName bo'sh bo'lishi mumkin emas"),
-  phoneNumber: yup
-    .string()
-    .trim()
-    .required("Telefon raqami bo'sh bo'lishi mumkin emas"),
-  passportNumber: yup
-    .string()
-    .trim()
-    .required("Pasport raqami bo'sh bo'lishi mumkin emas"),
-  lastName: yup.string().trim().required("LastName bo'sh bo'lishi mumkin emas"),
-  username: yup
-    .string()
-    .trim()
-    .required("Username bo'sh bo'lishi mumkin emas")
-    .min(5, "Username 5 ta belgidan kop bolishi kerak")
-    .max(20, "Username 20 ta belgidan kam bolishi kerak"),
-  password: yup
-    .string()
-    .trim()
-    .required("Parol bo'sh bo'lishi mumkin emas")
-    .min(6, "Parol 6 ta belgidan kop bolishi kerak")
-    .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
-  regionId: yup.string().trim().required("Region bo'sh bo'lishi mumkin emas"),
-  userRole: yup
-    .string()
-    .trim()
-    .required("Foydalanuvchi mansabi bo'sh bo'lishi mumkin emas!")
-    .min(
-      5,
-      "Foydalanavchi mansabi eng kamida 5 ta belgidan iborat bo'lishi kerak!"
-    )
-    .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
-});
-
-const updateSchema = yup.object().shape({
-  firstName: yup
-    .string()
-    .trim()
-    .required("FirstName bo'sh bo'lishi mumkin emas"),
-  phoneNumber: yup
-    .string()
-    .trim()
-    .required("Telefon raqami bo'sh bo'lishi mumkin emas"),
-  passportNumber: yup
-    .string()
-    .trim()
-    .required("Pasport raqami bo'sh bo'lishi mumkin emas"),
-  lastName: yup.string().trim().required("LastName bo'sh bo'lishi mumkin emas"),
-  username: yup
-    .string()
-    .trim()
-    .required("Username bo'sh bo'lishi mumkin emas")
-    .min(5, "Username 5 ta belgidan kop bolishi kerak")
-    .max(20, "Username 20 ta belgidan kam bolishi kerak"),
-  userRole: yup
-    .string()
-    .trim()
-    .required("Foydalanuvchi mansabi bo'sh bo'lishi mumkin emas!")
-    .min(
-      5,
-      "Foydalanavchi mansabi eng kamida 5 ta belgidan iborat bo'lishi kerak!"
-    )
-    .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
-});
+import {
+  adminSchema,
+  storeOwnerSchema,
+  courierSchema,
+  courierSchemaUpdate,
+  adminSchemaUpdate,
+  storeOwnerSchemaUpdate,
+} from "../../utils/yupSchemas";
 
 const UserMutation = () => {
   const navigate = useNavigate();
@@ -122,19 +24,36 @@ const UserMutation = () => {
   const [regions, setRegions] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
-  let scheme = isUpdate ? updateSchema : registerSchema;
+  const admin = role === "ADMIN";
+  const storeOwner = role === "STORE_OWNER";
+  const courier = role === "COURIER";
   const userRoles = roles
     ? roles.map((e) => {
         return { id: e, name: e };
       })
     : [];
+  const yupResolverObject = () => {
+    if (isUpdate) {
+      return (
+        (admin && adminSchemaUpdate) ||
+        (storeOwner && storeOwnerSchemaUpdate) ||
+        (courier && courierSchemaUpdate)
+      );
+    } else {
+      return (
+        (admin && adminSchema) ||
+        (storeOwner && storeOwnerSchema) ||
+        (courier && courierSchema)
+      );
+    }
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm({
-    resolver: yupResolver(role === "COURIER" ? userRoleCOURIER : scheme),
+    resolver: yupResolver(yupResolverObject()),
   });
 
   useEffect(() => {
@@ -176,12 +95,13 @@ const UserMutation = () => {
         method: isUpdate ? "PUT" : "POST",
         data,
       });
-      console.log(res);
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
       console.log(error.response.data.message);
-      return error.response.data.message.map((error) => toast.error(error));
+      // return await error.response.data.message.map((error) =>
+      //   toast.error(error)
+      // );
     }
   };
   return (
@@ -247,6 +167,15 @@ const UserMutation = () => {
             register={register.bind(null, "phoneNumber")}
             error={errors.phoneNumber?.message}
           />
+          {role === "STORE_OWNER" && (
+            <Input
+              id="storeName"
+              type="text"
+              placeholder="Magazin nomi"
+              register={register.bind(null, "storeName")}
+              error={errors.storeName?.message}
+            />
+          )}
 
           {role === "COURIER" && (
             <Select
