@@ -39,6 +39,10 @@ exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 	queryBuilder.paginate().limitFields().sort().filter().search(["recipient", "recipientPhoneNumber"]);
 	let ordersbyPackage = await OrderModel.findAndCountAll({
 		...queryBuilder.queryOptions,
+		include: [
+			{model: DistrictModel, as: "district", attributes: ["name"]},
+			{model: RegionModel, as: "region", attributes: ["name"]}
+		],
 		where: { packageId: { [Op.eq]: id } },
 	});
 	ordersbyPackage = queryBuilder.createPagination(ordersbyPackage)
@@ -71,6 +75,7 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 			{model: DistrictModel, as: "district", attributes: ["name"]}
 		], 
 	where: {packageId: {[Op.eq]: myPackage.id}}})
+	
 	myOrders = queryBuilder.createPagination(myOrders)
 	res.json({
 		status: "success",
