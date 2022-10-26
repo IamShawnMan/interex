@@ -15,7 +15,7 @@ function Orders() {
 
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 2;
-  const getAllUser = async () => {
+  const getAllOrders = async () => {
     const res = await http({
       url: `/packages/myorders?page=${page}&size=${size}`,
     });
@@ -25,7 +25,7 @@ function Orders() {
 
   };
   useEffect(() => {
-    getAllUser();
+    getAllOrders();
   }, [page]);
   const changeOrderStatus = async (id, status) => {
     const res = await http({
@@ -34,7 +34,7 @@ function Orders() {
       data: { orderStatus: status },
     });
     toast.success("Order Status Updated");
-    getAllUser();
+    getAllOrders();
   };
   const ordersCols = [
     { Header: "id", accessor: "id" },
@@ -45,8 +45,8 @@ function Orders() {
     { Header: "packageId", accessor: "packageId" },
     { Header: "Note", accessor: "note" },
     { Header: "recipientPhoneNumber", accessor: "recipientPhoneNumber" },
-    { Header: "RegionID", accessor: "regionId" },
-    { Header: "DistrictId", accessor: "districtId" },
+    { Header: "Region", accessor: "region.name" },
+    { Header: "District", accessor: "district.name" },
     {
       Header: "Action",
       accessor: (order) => {

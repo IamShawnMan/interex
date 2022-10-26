@@ -1,7 +1,7 @@
 const OrderModel = require("./Order");
 const OrderItemModel = require("../orderitem/OrderItem");
 const PackageModel = require("../package/Package");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult } = require("express-validator");
 const AppError = require("../../core/utils/AppError");
@@ -43,7 +43,6 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
-	console.log(req.user)
 	const validationErrors = validationResult(req);
 	if (!validationErrors.isEmpty()) {
 		let err = new AppError("Validatsiya xatosi", 403);
@@ -60,7 +59,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	}
 	
 	const orders = req.body.orders;
-	console.log(req.body)
 	orders?.forEach(async (order) => {
 		const newOrder = await OrderModel.create({
 			recipient: order.recipient,
@@ -84,16 +82,17 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		items?.forEach(item=>{
 			sum +=item.orderItemTotalPrice
 		})
-
+		
 		await OrderItemModel.bulkCreate(items)
 		newOrder.totalPrice = sum
 		newOrder.packageId = existedPackage.id
 		await newOrder.save()
-		console.log(newOrder)
+		existedPackage.packageTotalPrice +=newOrder.totalPrice
+		await existedPackage.save()
 		
 	});
-
-
+	
+	
 	res.status(201).json({
 		status: "success",
 		message: "yangi orderlar qo`shildi",
@@ -174,6 +173,7 @@ exports.editOrder = catchAsync(async(req,res,next)=>{
 })
 
 exports.updateOrder = catchAsync(async (req, res, next) => {
+	const userId = req.user.id
 	const { id } = req.params;
 	
 	const { 
@@ -184,11 +184,15 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		orderItems, 
 		note } =req.body;
 	
+	const myPackage = await PackageModel.findOne({where: {storeOwnerId: {[Op.eq]: userId}}})
+	
 	const orderById = await OrderModel.findByPk(id);
-
+	
 	await OrderItemModel.destroy({
 		where: { orderId: { [Op.eq]: orderById.id } },
 	});
+	myPackage.packageTotalPrice -= orderById.totalPrice
+	await myPackage.save()
 
 	await orderById.update({
 		recipient,
@@ -216,7 +220,8 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 
 	orderById.totalPrice = sum;
 	await orderById.save()
-
+	myPackage.packageTotalPrice +=orderById.totalPrice
+	await myPackage.save()
 	res.status(203).json({
 		status: "success",
 		message: "buyurtma taxrirlandi",
