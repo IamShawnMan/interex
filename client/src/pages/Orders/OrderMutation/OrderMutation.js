@@ -35,7 +35,7 @@ const schema = object().shape({
 
 function OrderMutation() {
   const [regions, setRegions] = useState(null);
-  const [districts, setDistricts] = useState(null);
+  const [rId, setRId] = useState(null);
   const [regionId, setRegionId] = useState(null);
   const [updateData, setUpdateData] = useState(null);
   const { id } = useParams();
@@ -70,17 +70,17 @@ function OrderMutation() {
       });
   }, [regionId]);
   useEffect(() => {
-    isUpdate && updateData && append({ ...updateData, districtId: "" });
+    isUpdate &&
+      updateData &&
+      append({ ...updateData, districtId: updateData.districtId });
   }, updateData);
   const formSubmit = async (data) => {
-    console.log(data.orders[0]);
     try {
       const res = await http({
         url: isUpdate ? `/orders/${id}` : "/orders",
         method: isUpdate ? "PUT" : "POST",
         data: isUpdate ? data.orders[0] : data,
       });
-      console.log(res);
       toast.success(res.data.message);
       navigate("/orders");
     } catch (error) {
@@ -94,7 +94,7 @@ function OrderMutation() {
     });
     console.log(res);
     const orderById = res.data.data;
-    console.log(orderById);
+    setRId(orderById.regionId);
     setUpdateData(orderById);
   };
 
@@ -118,7 +118,8 @@ function OrderMutation() {
           )}
           {fields.map((item, index) => (
             <OrderFieldArray
-              key={index + item}
+              key={item.id}
+              rId={rId}
               item={item}
               register={register}
               index={index}

@@ -13,20 +13,21 @@ const Posts = () => {
 
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 2;
-  const getAllUser = async () => {
+  const getAllPosts = async () => {
     try {
       const res = await http({
         url: `/posts?page=${page}&size=${size}`,
       });
-      console.log(res);
+      // console.log(res);
       setValue(res.data.data.allPosts.content);
       setPagination(res.data.data.allPosts.pagination);
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
+
   useEffect(() => {
-    getAllUser();
+    getAllPosts();
   }, [page]);
 
   const regionCols = [
@@ -49,6 +50,11 @@ const Posts = () => {
       id: "postTotalPrice",
       Header: "postTotalPrice",
       accessor: "postTotalPrice",
+    },
+    {
+      id: "regionName",
+      Header: "regionName",
+      accessor: "region.name",
     },
     {
       id: "regionId",

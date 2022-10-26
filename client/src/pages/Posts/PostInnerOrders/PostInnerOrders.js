@@ -23,8 +23,8 @@ function PostInnerOrders() {
         method: "POST",
         data:{regionId:id}
       });
-      setOrders(res.data.data.ordersbyPackage);
-        toast.success("Post Yaratildi")
+      // console.log(res);
+        toast.success(res.data.message);
         navigate("/posts")
     } catch (error) {
       console.log(error);

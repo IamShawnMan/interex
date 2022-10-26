@@ -19,3 +19,4 @@ Region.hasMany(District, { as: "districts", foreignKey: "regionId" });
 District.belongsTo(Region, { as: "region" });
 
 module.exports = Region;
+ 

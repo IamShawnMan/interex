@@ -6,24 +6,30 @@ import Button from "../Form/FormComponents/Button/Button";
 import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import AppContext from "../../context/AppContext";
+import { useSearchParams } from "react-router-dom";
 
 function Filter({ url, filterFn }) {
   const { user } = useContext(AppContext);
-  const admin = user.userRole === "ADMIN";
-  const superAdmin = user.userRole === "SUPER_ADMIN";
-  const storeOwner = user.userRole === "STORE_OWNER";
+  const isAdmin = user.userRole === "ADMIN";
+  const isSuperAdmin = user.userRole === "SUPER_ADMIN";
+  const isStoreOwner = user.userRole === "STORE_OWNER";
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 2;
   const { register, handleSubmit } = useForm();
   const [statuses, setStatuses] = useState(null);
   const [regions, setRegions] = useState(null);
   const [region, setRegion] = useState(null);
   const [districts, setDistricts] = useState(null);
+  const [allQueries, setQueries] = useState(null);
   const [storeOwnerIds, setStoreOwner] = useState(null);
   useEffect(() => {
     getAllRegions();
     getAllStatuses();
     region && getAllDistricts();
-    (admin || superAdmin) && getAllStoreOwner();
-  }, []);
+    (isAdmin || isSuperAdmin) && getAllStoreOwner();
+    getAllOrders(allQueries);
+  }, [page]);
 
   const getAllStatuses = async () => {
     const res = await http({
@@ -42,39 +48,59 @@ function Filter({ url, filterFn }) {
     setRegions(res.data.data.allRegions.content);
   };
 
-  const getAllDistricts = async () => {
+  const getAllDistricts = async (id) => {
     const res = await http({
-      url: `/regions/${region}/districts`,
+      url: `/regions/${id}/districts`,
     });
     setDistricts(res.data.data.getDistrictByRegion);
   };
 
   const getAllStoreOwner = async () => {
     const res = await http({
-      url: "/packages",
+      url: "/users?userRole=STORE_OWNER",
     });
+
+    setStoreOwner(
+      res.data.data.allUsers.content.map((s) => {
+        return { id: s.id, name: s.storeName };
+      })
+    );
+  };
+
+  const getAllOrders = async (data) => {
+    try {
+      if (isAdmin || isSuperAdmin) {
+        const res = await http(
+          `/${url}?page=${page}&size=${size}${
+            data.status ? `&orderStatus=${data.status}` : ""
+          }${data.regionId ? `&regionId=${data.regionId}` : ""}${
+            data.districtId ? `&districtId=${data.districtId}` : ""
+          }${data.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
+            data.createdAt ? `&createdAt=${data.createdAt}` : ""
+          }`
+        );
+        filterFn(res.data.data);
+      } else if (isStoreOwner) {
+        const res = await http(
+          `/${url}?page=${page}&size=${size}${
+            data.status ? `&orderStatus=${data.status}` : ""
+          }${data.regionId ? `&regionId=${data.regionId}` : ""}${
+            data.districtId ? `&districtId=${data.districtId}` : ""
+          }&${data.createdAt ? `&createdAt=${data.createdAt}` : ""}`
+        );
+        console.log(res.data.data);
+        filterFn(res.data.data);
+      }
+    } catch (error) {}
   };
 
   const filterHandler = async (data) => {
-    try {
-      if (admin || superAdmin) {
-        const res = await http(
-          `/${url}&orderStatus=${data.status}&regionId=${data.regionId}&districtId=${data.district}`
-        );
-        await filterFn(res.data.data.allOrders);
-      } else if (storeOwner) {
-        const res = await http(
-          `/${url}&orderStatus=${data.status}&regionId=${data.regionId}&districtId=${data.district}`
-        );
-        await filterFn(res.data.data.myOrders);
-      }
-    } catch (error) {
-      error.response.data.data;
-    }
+    getAllOrders(data);
+    setQueries(data);
   };
 
   const regionHandler = (e) => {
-    setRegion(e.target.value);
+    getAllDistricts(e.target.value);
   };
 
   return (
@@ -85,8 +111,11 @@ function Filter({ url, filterFn }) {
       <Select register={register.bind(null, "status")} data={statuses}>
         Holati
       </Select>
-      {(admin || superAdmin) && (
-        <Select register={register.bind(null, "storeOwner")}>
+      {(isAdmin || isSuperAdmin) && (
+        <Select
+          register={register.bind(null, "storeOwnerId")}
+          data={storeOwnerIds}
+        >
           Magazin nomi
         </Select>
       )}
@@ -97,7 +126,7 @@ function Filter({ url, filterFn }) {
       >
         Viloyatlar
       </Select>
-      <Select register={register.bind(null, "district")} data={districts}>
+      <Select register={register.bind(null, "districtId")} data={districts}>
         Tumanlar
       </Select>
       <Input type="date" register={register.bind(null, "createdAt")} />
