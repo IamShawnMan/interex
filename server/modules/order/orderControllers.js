@@ -21,25 +21,6 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
     .search(["recipientPhoneNumber", "recipient"])
     .sort();
 
-<<<<<<< HEAD
-	let allOrders = await OrderModel.findAndCountAll({
-		include: [
-			{model: PackageModel, as: "package", attributes: ["storeOwnerId"] , include: [{model: UserModel, as: 'storeOwner', attributes: ["firstName", "lastName"]}]},
-			{model: RegionModel, as: "region", attributes: ["name"] }, 
-			{model: DistrictModel, as: "district", attributes: ["name"]}
-		],
-		...queryBuilder.queryOptions,
-	});
-	allOrders = queryBuilder.createPagination(allOrders);
-	res.json({
-		status: "success",
-		message: "Barcha buyurtmalar",
-		error: null,
-		data: {
-			allOrders
-		},
-	});
-=======
   let allOrders = await OrderModel.findAndCountAll({
     include: [
       {
@@ -69,7 +50,6 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
       allOrders,
     },
   });
->>>>>>> c9546a0cd40a9b27a16e74bf42716c9eb93ef8eb
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
