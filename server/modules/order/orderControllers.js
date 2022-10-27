@@ -104,14 +104,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const orderById = await OrderModel.findByPk(id, {
-		include: [{
-			model: DistrictModel, as: "district", attributes: ["name"]
-		},
-		{model: RegionModel, as: "region", attributes: ["name"]},
-		{
-			model: OrderItemModel,
-			as: "items"
-		}],
+		include: [
+			{model: DistrictModel, as: "district", attributes: ["name"]},
+			{model: RegionModel, as: "region", attributes: ["name"]},
+			{model: OrderItemModel, as: "items"}
+		],
 	});
 
 	if (!orderById) {
@@ -133,7 +130,7 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 	const orderById = await OrderModel.findByPk(id);
 	const orderStatusVariables = Object.values(statusOrder).slice(1, 3);
 	if (userRole === "ADMIN") {
-		const deliverySum = deliveryPrice || 45000;
+		const deliverySum = deliveryPrice || 50000;
 		const changeOrderStatus = orderStatusVariables.find(
 			(e) => e === orderStatus
 		);
@@ -259,13 +256,14 @@ exports.getMyOrders = catchAsync(async(req,res,next)=>{
 
 	const queryBuilder = new QueryBuilder(req.query)
 	queryBuilder.filter().paginate().sort().search(["recipient", "recipientPhoneNumber"]).limitFields()
-	let myOrders = await OrderModel.findAndCountAll({...queryBuilder.queryOptions
-		,include: [
+	let myOrders = await OrderModel.findAndCountAll({
+	include: [
 			{model: DistrictModel, as: "district", attributes: ["name"]},
 			{model: RegionModel, as: "region", attributes: ["name"]}
-		]
-		
-		,where: {storeOwnerId: {[Op.eq]: userId}}})
+		],
+	where: {storeOwnerId: {[Op.eq]: userId}}, 
+	...queryBuilder.queryOptions
+	})
 	myOrders = queryBuilder.createPagination(myOrders)
 
 	res.json({

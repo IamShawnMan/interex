@@ -22,10 +22,13 @@ exports.creatingOrderValidator = [
     .withMessage("Tovar nomi bo'sh bo'lishi mumkin emas"),
   body("orders.*.orderItems.*.quantity")
     .notEmpty()
-    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas"),
+    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas")
+    .isInt({min: 1, max: 1000}).withMessage("tovar soni kamida 1 tadan ko`pi bilan 1 ming ta bo`lishi kerak"),
   body("orders.*.orderItems.*.price")
     .notEmpty()
-    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas"),
+    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas")
+    .isInt({min: 0, max: 50000000}).withMessage("tovar qiymati kamida 0 dan ko`pi bilan 50 mln gacha bo`lishi kerak"),
+    
 ];
 
 exports.updatedOrderValidator = [
@@ -50,8 +53,10 @@ exports.updatedOrderValidator = [
     .withMessage("Tovar nomi bo'sh bo'lishi mumkin emas"),
   body("orderItems.*.quantity")
     .notEmpty()
-    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas"),
+    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas")
+    .isInt({min: 1, max: 1000}).withMessage("tovar soni kamida 1 tadan ko`pi bilan 1 ming ta bo`lishi kerak"),
   body("orderItems.*.price")
     .notEmpty()
-    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas"),
+    .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas")
+    .isInt({min: 0, max: 50000000}).withMessage("tovar qiymati kamida 0 dan ko`pi bilan 50 mln gacha bo`lishi kerak"),
 ];
