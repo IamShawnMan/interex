@@ -1,5 +1,5 @@
 const Post = require("./Post");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
@@ -106,88 +106,80 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 
-	if (specialDistrictOrders.length >= 1) {
-		console.log("There are special orders");
+	if (specialDistrictOrders) {
 		if (!specialPost) {
 			specialPost = await Post.create({
 				regionId: 1,
 			});
-
-			await Order.update(
-				{
-					postId: specialPost.id,
-					orderStatus: orderStatuses.STATUS_DELIVERING,
-				},
-				{
-					where: {
-						districtId: {
-							[Op.in]: [36, 39],
-						},
-					},
-				}
-			);
-		} else {
-			console.log("There is a special POST");
-			await Order.update(
-				{
-					postId: specialPost.id,
-					orderStatus: orderStatuses.STATUS_DELIVERING,
-				},
-				{
-					where: {
-						districtId: {
-							[Op.in]: [36, 39],
-						},
-					},
-				}
-			);
 		}
+
+		await Order.update(
+			{
+				postId: specialPost.id,
+				orderStatus: orderStatuses.STATUS_DELIVERING,
+			},
+			{
+				where: {
+					districtId: {
+						[Op.in]: [39, 36],
+					},
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					},
+				},
+			}
+		);
 	}
 
 	let newPost = await Post.findOne({
-		regionId: regionId,
-		postStatus: postStatuses.POST_NEW,
+		where: {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+			postStatus: {
+				[Op.eq]: postStatuses.POST_NEW,
+			},
+		},
 	});
 
-	if (newPost) {
-		await Order.update(
-			{
-				postId: newPost.id,
-				orderStatus: orderStatuses.STATUS_DELIVERING,
-			},
-			{
-				where: {
-					orderStatus: {
-						[Op.eq]: orderStatuses.STATUS_ACCEPTED,
-					},
-					regionId: {
-						[Op.eq]: regionId,
-					},
-				},
-			}
-		);
-	} else {
+	if (!newPost) {
 		newPost = await Post.create({
 			regionId: regionId,
 		});
-
-		await Order.update(
-			{
-				postId: newPost.id,
-				orderStatus: orderStatuses.STATUS_DELIVERING,
-			},
-			{
-				where: {
-					orderStatus: {
-						[Op.eq]: orderStatuses.STATUS_ACCEPTED,
-					},
-					regionId: {
-						[Op.eq]: regionId,
-					},
-				},
-			}
-		);
 	}
+
+	const ordersInSelectedRegion = await Order.findAll({
+		where: {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+		},
+	});
+
+	if (!ordersInSelectedRegion) {
+		res.json({
+			status: "fail",
+			message:
+				"Bu viloyatga tegishli bugungi pochtaga qo'shilmagan buyurtmalar mavjud emas",
+		});
+	}
+
+	await Order.update(
+		{
+			postId: newPost.id,
+			orderStatus: orderStatuses.STATUS_DELIVERING,
+		},
+		{
+			where: {
+				orderStatus: {
+					[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+				},
+				regionId: {
+					[Op.eq]: regionId,
+				},
+			},
+		}
+	);
 
 	res.json({
 		status: "success",
