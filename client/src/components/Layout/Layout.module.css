@@ -14,11 +14,11 @@
 .container {
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 84%;
   height: 100vh;
   position: absolute;
   top: 0;
-  left: 20%;
+  left: 16%;
   transition: all 600ms ease-in-out;
 }
 

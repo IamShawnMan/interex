@@ -5,6 +5,8 @@ import UsersIcon from "../../../assets/icons/UsersIcon";
 import AppContext from "../../../context/AppContext";
 import http from "../../../utils/axios-instance";
 import SettingIcon from "../../../assets/icons/SettingIcon";
+import Recruitment from "../../../assets/icons/Recruitment";
+import DashboardIcon from "../../../assets/icons/DashboardIcon";
 
 function Sidebar(props) {
   const open = props.hasActive;
@@ -28,7 +30,7 @@ function Sidebar(props) {
           {open ? "InterEX Uz" : "IEX Uz"}
         </h1>
       </Link>
-      <div className={styles.mainMenu}>
+      <div className={`${styles.mainMenu} ${styles.linksContainer}`}>
         <p className={`subtitle ${styles.subtitle}`}>MAIN MENU</p>
         {(user.userRole === "SUPER_ADMIN" || user.userRole === "ADMIN") && (
           <Link
@@ -37,7 +39,7 @@ function Sidebar(props) {
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
           >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
+            <Recruitment classname={styles.sidebarLinkSvg} />
             {open && <p className="h6">Users</p>}
           </Link>
         )}
@@ -48,29 +50,31 @@ function Sidebar(props) {
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
           >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
+            <DashboardIcon classname={styles.sidebarLinkSvg} />
             {open && <p className="h6">Packages</p>}
           </Link>
         )}
-        {(user.userRole === "STORE_OWNER" || user.userRole === "ADMIN") && (
-          <Link
-            to={"/orders"}
-            className={`${styles.sidebarLink} ${
-              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
-          >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Orders</p>}
-          </Link>
-        )}
         <Link
+          to={"/orders"}
           className={`${styles.sidebarLink} ${
             open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
           }`}
         >
-          <UsersIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Recruitment</p>}
+          <DashboardIcon classname={styles.sidebarLinkSvg} />
+          {open && <p className="h6">Orders</p>}
         </Link>
+
+        {user.userRole === "ADMIN" && (
+          <Link
+            to={"/posts"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
+            <DashboardIcon classname={styles.sidebarLinkSvg} />
+            {open && <p className="h6">Posts</p>}
+          </Link>
+        )}
         <Link
           className={`${styles.sidebarLink} ${
             open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
@@ -88,7 +92,7 @@ function Sidebar(props) {
           {open && <p className="h6">Department</p>}
         </Link>
       </div>
-      <div className={styles.other}>
+      <div className={`${styles.other} ${styles.linksContainer}`}>
         <p className={`subtitle ${styles.subtitle}`}>OTHER</p>
         <Link
           className={`${styles.sidebarLink} ${

@@ -5,11 +5,27 @@ import Plus from "../../../../assets/icons/Plus";
 import Dots from "../../../../assets/icons/Dots";
 import Trash from "../../../../assets/icons/Trash";
 
-function Button({ children, type, name, iconName, size, disabled ,btnStyle}) {
+function Button({
+  children,
+  type,
+  name,
+  iconName,
+  size,
+  disabled,
+  btnStyle,
+  onClick,
+  style,
+}) {
   // NAME 1-"btn" 2-"icon" 3-"iconText" 4-"dots"
   // ICON NAME 1-"pen" 2-"plus" 3-"trash"
   // SIZE 1-"iconSmall" 2-"iconNormal" 3-"iconMedium" 4-"small" 5-"normal" 6-"medium"
   // DISABLED true||false
+  // Function --> onClick={somethingFunction}
+  // btnStyle
+
+  const customFunction = () => {
+    onClick?.();
+  };
 
   let buttonSize;
   switch (size) {
@@ -37,12 +53,13 @@ function Button({ children, type, name, iconName, size, disabled ,btnStyle}) {
 
   return (
     <button
-    style={btnStyle}
+      style={btnStyle}
       disabled={disabled}
       className={`${styles[buttonSize]} ${styles[name]} ${
         name !== "dots" ? styles.btn : styles.dots
       }`}
       type={type || "submit"}
+      onClick={customFunction}
     >
       {(name === "icon" || name === "iconText") && iconName === "trash" && (
         <Trash />

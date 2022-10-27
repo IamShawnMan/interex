@@ -1,5 +1,11 @@
 import { useContext, useEffect } from "react";
-import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import http from "../../../utils/axios-instance";
 import { useState } from "react";
 import { BasicTable } from "../../../components/Table/BasicTable";
@@ -9,6 +15,7 @@ import { toast } from "react-toastify";
 import Button from "../../../components/Form/FormComponents/Button/Button";
 import { formatDate } from "../../../utils/dateFormatter";
 import Filter from "../../../components/Filter/Filter";
+import styles from "./Orders.module.css";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -21,9 +28,13 @@ function Orders() {
   const size = searchParams.get("size") || 2;
   const [allQueries, setQueries] = useState(null);
   const { id } = useParams();
-  const  url=
-    ((isAdmin || isSuperAdmin) &&id&& `packages/${id}/orders`) ||((isAdmin || isSuperAdmin) && `orders`)||
-    (isStoreOwner && `orders/myorders`)
+  const navigate = useNavigate();
+
+  const url =
+    (isStoreOwner && `orders/myorders`) ||
+    (isAdmin && id && `packages/${id}/orders`) ||
+    ((isAdmin || isSuperAdmin) && `orders`);
+
   const getAllMyOrders = async (data) => {
     setValue(data?.myOrders?.content);
     setPagination(data?.myOrders?.pagination);
@@ -35,19 +46,19 @@ function Orders() {
   };
 
   const getOrdersByPackageId = async (data) => {
-      setValue(data?.ordersbyPackage?.content);
-      setPagination(data?.ordersbyPackage?.pagination);
+    setValue(data?.ordersbyPackage?.content);
+    setPagination(data?.ordersbyPackage?.pagination);
   };
-  const changeOrderStatus = async (id,status) => {
+  const changeOrderStatus = async (id, status) => {
     try {
       const res = await http({
         url: `/orders/${id}`,
         method: "PATCH",
         data: {
-          orderStatus: status
+          orderStatus: status,
         },
       });
-      getOrdersByPackageId(allQueries)
+      getOrdersByPackageId(allQueries);
     } catch (error) {
       console.log(error);
     }
@@ -78,91 +89,101 @@ function Orders() {
         return (
           <div>
             {user.userRole === "STORE_OWNER" && (
-             <>
-                <Link style={{textDecoration: "none",color: "white",marginBottom: ".5rem",display: "inline-block",pointerEvents:order.orderStatus!=="NEW"&& "none"}} to={`/orders/${order.id}`}> <Button size="small" disabled={order.orderStatus!=="NEW"?true:false} name="btn">Update</Button></Link>
-              </>
+              <Button
+                size="small"
+                disabled={order.orderStatus !== "NEW" ? true : false}
+                name="btn"
+                onClick={() => {
+                  navigate(`/orders/${order.id}`);
+                }}
+              >
+                Update
+              </Button>
             )}
-            {user.userRole === "ADMIN" && (
-             <div>
-             <span style={{ width: "12rem",paddingBottom:"5px", display:"block"}}  onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}>
-               <Button
-             name="btn"
-             disabled={order.orderStatus==="NEW"?false:true}
-             >
-               <>ACCEPTED</> 
-             </Button>
-             </span>
-             <span style={{ width: "12rem", display:"block" }}  onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}>
-             <Button
-             disabled={order.orderStatus==="NEW"?false:true}
-             size="small"
-             name="btn"
-             >
-              <>NOT EXIST</> 
-             </Button>
-             </span>
-                   </div>
-            )} 
-                <Link style={{textDecoration: "none",color: "white",display: "block",marginTop: ".5rem"}} to={`/orders/info/${order.id}`}><Button size="small" name="btn">Info</Button></Link>
+            {user.userRole === "ADMIN" && id && (
+              <div className={styles.actionContainer}>
+                <Button
+                  name="btn"
+                  disabled={order.orderStatus === "NEW" ? false : true}
+                  onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
+                >
+                  <>ACCEPTED</>
+                </Button>
+
+                <Button
+                  disabled={order.orderStatus === "NEW" ? false : true}
+                  size="small"
+                  name="btn"
+                  onClick={() => changeOrderStatus(order.id, "NOT_EXIST")}
+                >
+                  <>NOT EXIST</>
+                </Button>
+                <Button
+                  size="small"
+                  name="btn"
+                  onClick={() => {
+                    navigate(`/orders/info/${order.id}`);
+                  }}
+                >
+                  Info
+                </Button>
+              </div>
+            )}
           </div>
         );
       },
-    }
+    },
   ];
 
-  
+  const filterFn = async (data) => {
+    setQueries(data);
+    const dateCreatedAt = new Date(data?.createdAt);
 
-const filterFn=async(data)=>{
- setQueries(data)
-  const dateCreatedAt = new Date(data?.createdAt);
-
-  try {
-    if (isAdmin || isSuperAdmin) {
-      const res = await http({
-        url: `/${url}?page=${page}&size=${size}${
-          data?.status ? `&orderStatus=${data.status}` : ""
-        }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-          data?.districtId ? `&districtId=${data.districtId}` : ""
-        }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
-          data?.createdAt
-            ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
-            : ""
-        }`,
-      });
-      id&&getOrdersByPackageId(res.data.data)
-      !id&&getAllOrders(res.data.data);
-    } else if (isStoreOwner) {
-      const res = await http(
-        `/${url}?page=${page}&size=${size}${
-          data?.status ? `&orderStatus=${data.status}` : ""
-        }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-          data?.districtId ? `&districtId=${data.districtId}` : ""
-        }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
-      );
-      getAllMyOrders(res.data.data);
+    try {
+      if (isAdmin || isSuperAdmin) {
+        const res = await http({
+          url: `/${url}?page=${page}&size=${size}${
+            data?.status ? `&orderStatus=${data.status}` : ""
+          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+            data?.districtId ? `&districtId=${data.districtId}` : ""
+          }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
+            data?.createdAt
+              ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
+              : ""
+          }`,
+        });
+        id && getOrdersByPackageId(res.data.data);
+        !id && getAllOrders(res.data.data);
+      } else if (isStoreOwner) {
+        const res = await http(
+          `/${url}?page=${page}&size=${size}${
+            data?.status ? `&orderStatus=${data.status}` : ""
+          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+            data?.districtId ? `&districtId=${data.districtId}` : ""
+          }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
+        );
+        getAllMyOrders(res.data.data);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
     }
-  } catch (error) {
-    toast.error(error?.response?.data?.message);
-  }
-
-}
-
-  
-
+  };
 
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
       {isStoreOwner && (
-        <Link style={{ display: "block", width: "12rem" }} to="/orders/new">
-          <Button size="small" name="btn">
-            Add Order
-          </Button>
-        </Link>
+        <Button
+          size="small"
+          name="btn"
+          onClick={() => {
+            navigate("/orders/new");
+          }}
+          btnStyle={{ display: "inline-block", width: "12rem" }}
+        >
+          Add Order
+        </Button>
       )}
-      <Filter
-       
-        filterFn={filterFn}
-      />
+      <Filter filterFn={filterFn} />
       {value?.length > 0 ? (
         <BasicTable
           columns={cols}
