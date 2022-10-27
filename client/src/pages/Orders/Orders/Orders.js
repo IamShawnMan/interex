@@ -82,7 +82,7 @@ function Orders() {
           <div>
             {user.userRole === "STORE_OWNER" && (
              <>
-                <Link style={{textDecoration: "none",color: "white",marginBottom: ".5rem",display: "inline-block"}} to={`/orders/${order.id}`}> <Button size="small" name="btn">Update</Button></Link>
+                <Link style={{textDecoration: "none",color: "white",marginBottom: ".5rem",display: "inline-block",pointerEvents:order.orderStatus!=="NEW"&& "none"}} to={`/orders/${order.id}`}> <Button size="small" disabled={order.orderStatus!=="NEW"?true:false} name="btn">Update</Button></Link>
               </>
             )}
             {user.userRole === "ADMIN" && (
