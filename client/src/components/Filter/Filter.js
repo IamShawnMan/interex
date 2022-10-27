@@ -6,31 +6,24 @@ import Button from "../Form/FormComponents/Button/Button";
 import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import AppContext from "../../context/AppContext";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
-
 function Filter({ url, filterFn }) {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
   const isSuperAdmin = user.userRole === "SUPER_ADMIN";
-  const isStoreOwner = user.userRole === "STORE_OWNER";
-  const [searchParams] = useSearchParams();
-  const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 2;
   const { register, handleSubmit } = useForm();
   const [statuses, setStatuses] = useState(null);
   const [regions, setRegions] = useState(null);
   const [region, setRegion] = useState(null);
   const [districts, setDistricts] = useState(null);
-  const [allQueries, setQueries] = useState(null);
   const [storeOwnerIds, setStoreOwner] = useState(null);
+  const [allQueries, setAllQueries] = useState(null)
   useEffect(() => {
-    getAllOrders(allQueries);
+    filterFn(allQueries)
     getAllRegions();
     getAllStatuses();
     region && getAllDistricts(region);
     (isAdmin || isSuperAdmin) && getAllStoreOwner();
-  }, [page]);
+  }, []);
 
   const getAllStatuses = async () => {
     const res = await http({
@@ -50,13 +43,11 @@ function Filter({ url, filterFn }) {
   };
 
   const getAllDistricts = async (id) => {
-    console.log(id);
-    const res = await http({
+  const res =id&& await http({
       url: `/regions/${id}/districts`,
     });
-    setDistricts(res.data.data.getDistrictByRegion);
+    id&& setDistricts(res.data.data.getDistrictByRegion);
   };
-
   const getAllStoreOwner = async () => {
     const res = await http({
       url: "/users?userRole=STORE_OWNER",
@@ -68,42 +59,9 @@ function Filter({ url, filterFn }) {
       })
     );
   };
-
-  const getAllOrders = async (data) => {
-    const dateCreatedAt = new Date(data?.createdAt);
-
-    try {
-      if (isAdmin || isSuperAdmin) {
-        const res = await http({
-          url: `/${url}?page=${page}&size=${size}${
-            data?.status ? `&orderStatus=${data.status}` : ""
-          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-            data?.districtId ? `&districtId=${data.districtId}` : ""
-          }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
-            data?.createdAt
-              ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
-              : ""
-          }`,
-        });
-        filterFn(res.data.data);
-      } else if (isStoreOwner) {
-        const res = await http(
-          `/${url}?page=${page}&size=${size}${
-            data?.status ? `&orderStatus=${data.status}` : ""
-          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-            data?.districtId ? `&districtId=${data.districtId}` : ""
-          }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
-        );
-        filterFn(res.data.data);
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
-    }
-  };
-
   const filterHandler = async (data) => {
-    getAllOrders(data);
-    setQueries(data);
+    setAllQueries(data)
+    filterFn(data)
   };
 
   const regionHandler = (e) => {
