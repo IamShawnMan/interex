@@ -23,18 +23,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 
   let allOrders = await OrderModel.findAndCountAll({
     include: [
-      {
-        model: PackageModel,
-        as: "package",
-        attributes: ["storeOwnerId"],
-        include: [
-          {
-            model: UserModel,
-            as: "storeOwner",
-            attributes: ["firstName", "lastName"],
-          },
-        ],
-      },
+      {model: PackageModel,as: "package",attributes: ["storeOwnerId"],include: [{model: UserModel,nas: "storeOwner",attributes: ["firstName", "lastName"]}]},
       { model: RegionModel, as: "region", attributes: ["name"] },
       { model: DistrictModel, as: "district", attributes: ["name"] },
     ],
@@ -114,16 +103,9 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const orderById = await OrderModel.findByPk(id, {
     include: [
-      {
-        model: DistrictModel,
-        as: "district",
-        attributes: ["name"],
-      },
+      {model: DistrictModel,as: "district",attributes: ["name"],},
       { model: RegionModel, as: "region", attributes: ["name"] },
-      {
-        model: OrderItemModel,
-        as: "items",
-      },
+      {model: OrderItemModel,as: "items"}
     ],
   });
 
