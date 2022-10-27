@@ -9,7 +9,10 @@ const Package = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    packageTotalPrice: DataTypes.INTEGER,
+    packageTotalPrice: {
+      type: DataTypes.INTEGER,
+      validate: {len: {args: [0, 200000000], msg: "qiymati 0 dan 2 mlrd dan kam bo`lmasligi kerak"}}
+    }
   },
   { underscored: true }
 );
