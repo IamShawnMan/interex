@@ -23,13 +23,13 @@ function Orders() {
 
   const getAllMyOrders = async (data) => {
     console.log(data);
-    setValue(data.myOrders.content);
-    setPagination(data.myOrders.pagination);
+    setValue(data?.myOrders.content);
+    setPagination(data?.myOrders.pagination);
   };
 
   const getAllOrders = async (data) => {
-    setValue(data.allOrders.content);
-    setPagination(data.allOrders.pagination);
+    setValue(data?.allOrders.content);
+    setPagination(data?.allOrders.pagination);
   };
 
   const cols = [

@@ -24,11 +24,12 @@ function Filter({ url, filterFn }) {
   const [allQueries, setQueries] = useState(null);
   const [storeOwnerIds, setStoreOwner] = useState(null);
   useEffect(() => {
+    getAllOrders(allQueries);
     getAllRegions();
     getAllStatuses();
+    console.log(region);
     region && getAllDistricts();
     (isAdmin || isSuperAdmin) && getAllStoreOwner();
-    getAllOrders(allQueries);
   }, [page]);
 
   const getAllStatuses = async () => {
@@ -68,30 +69,36 @@ function Filter({ url, filterFn }) {
   };
 
   const getAllOrders = async (data) => {
+    const dateCreatedAt = new Date(data?.createdAt);
+
     try {
       if (isAdmin || isSuperAdmin) {
-        const res = await http(
-          `/${url}?page=${page}&size=${size}${
-            data.status ? `&orderStatus=${data.status}` : ""
-          }${data.regionId ? `&regionId=${data.regionId}` : ""}${
-            data.districtId ? `&districtId=${data.districtId}` : ""
-          }${data.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
-            data.createdAt ? `&createdAt=${data.createdAt}` : ""
-          }`
-        );
+        const res = await http({
+          url: `/${url}?page=${page}&size=${size}${
+            data?.status ? `&orderStatus=${data.status}` : ""
+          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+            data?.districtId ? `&districtId=${data.districtId}` : ""
+          }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
+            data?.createdAt
+              ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
+              : ""
+          }`,
+        });
         filterFn(res.data.data);
       } else if (isStoreOwner) {
         const res = await http(
           `/${url}?page=${page}&size=${size}${
-            data.status ? `&orderStatus=${data.status}` : ""
-          }${data.regionId ? `&regionId=${data.regionId}` : ""}${
-            data.districtId ? `&districtId=${data.districtId}` : ""
-          }&${data.createdAt ? `&createdAt=${data.createdAt}` : ""}`
+            data?.status ? `&orderStatus=${data.status}` : ""
+          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+            data?.districtId ? `&districtId=${data.districtId}` : ""
+          }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
         );
-        console.log(res.data.data);
+        console.log(res);
         filterFn(res.data.data);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const filterHandler = async (data) => {
