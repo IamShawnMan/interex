@@ -68,7 +68,7 @@ export const BasicTable = ({ columns, data, pagination, url }) => {
           })}
         </tbody>
       </table>
-      <Pagination pagination={pagination} url={url} />
+    {pagination&&<Pagination pagination={pagination} url={url} />}
     </div>
   ) : (
     <p>Malumotlar yoq</p>

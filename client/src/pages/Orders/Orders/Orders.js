@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
 import http from "../../../utils/axios-instance";
 import { useState } from "react";
 import { BasicTable } from "../../../components/Table/BasicTable";
@@ -19,19 +19,42 @@ function Orders() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 2;
-  let filterFn;
+  const [allQueries, setQueries] = useState(null);
+  const { id } = useParams();
+  const  url=
+    ((isAdmin || isSuperAdmin) &&id&& `packages/${id}/orders`) ||((isAdmin || isSuperAdmin) && `orders`)||
+    (isStoreOwner && `orders/myorders`)
+  
+
 
   const getAllMyOrders = async (data) => {
-    console.log(data);
-    setValue(data?.myOrders.content);
-    setPagination(data?.myOrders.pagination);
+    setValue(data?.myOrders?.content);
+    setPagination(data?.myOrders?.pagination);
   };
 
   const getAllOrders = async (data) => {
-    setValue(data?.allOrders.content);
-    setPagination(data?.allOrders.pagination);
+    setValue(data?.allOrders?.content);
+    setPagination(data?.allOrders?.pagination);
   };
 
+  const getOrdersByPackageId = async (data) => {
+      setValue(data?.ordersbyPackage?.content);
+      setPagination(data?.ordersbyPackage?.pagination);
+  };
+  const changeOrderStatus = async (id,status) => {
+    try {
+      const res = await http({
+        url: `/orders/${id}`,
+        method: "PATCH",
+        data: {
+          orderStatus: status
+        },
+      });
+      getOrdersByPackageId(allQueries)
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const cols = [
     { Header: "id", accessor: "id" },
     { Header: "Haridor", accessor: "recipient" },
@@ -52,33 +75,90 @@ function Orders() {
         return formatDate(order.createdAt);
       },
     },
+    {
+      Header: "Action",
+      accessor: (order) => {
+        return (
+          <div>
+            {user.userRole === "STORE_OWNER" && (
+             <>
+                <Link style={{textDecoration: "none",color: "white",marginBottom: ".5rem",display: "inline-block"}} to={`/orders/${order.id}`}> <Button size="small" name="btn">Update</Button></Link>
+              </>
+            )}
+            {user.userRole === "ADMIN" && (
+             <div>
+           
+           
+
+             <span style={{ width: "12rem",paddingBottom:"5px", display:"block"}}  onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}>
+               <Button
+             name="btn"
+             disabled={order.orderStatus==="NEW"?false:true}
+              
+             >
+               <>ACCEPTED</> 
+             </Button>
+             </span>
+             <span style={{ width: "12rem", display:"block" }}  onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}>
+             
+             <Button
+             disabled={order.orderStatus==="NEW"?false:true}
+             size="small"
+             name="btn"
+              
+             >
+              <>NOT EXIST</> 
+             </Button>
+             </span>
+             
+                   </div>
+            )} 
+                <Link style={{textDecoration: "none",color: "white",display: "block",marginTop: ".5rem"}} to={`/orders/info/${order.id}`}><Button size="small" name="btn">Info</Button></Link>
+          </div>
+        );
+      },
+    }
   ];
 
-  const action = {
-    Header: "Action",
-    accessor: (order) => {
-      return (
-        <div>
-          <Link
-            style={{ textDecoration: "none", color: "white" }}
-            to={`/orders/${order.id}`}
-          >
-            <Button size="small" name="btn">
-              Update
-            </Button>
-          </Link>
-        </div>
-      );
-    },
-  };
+  
 
-  if (isStoreOwner) {
-    filterFn = getAllMyOrders;
-  } else if (isAdmin || isSuperAdmin) {
-    filterFn = getAllOrders;
+const filterFn=async(data)=>{
+ setQueries(data)
+  const dateCreatedAt = new Date(data?.createdAt);
+
+  try {
+    if (isAdmin || isSuperAdmin) {
+      const res = await http({
+        url: `/${url}?page=${page}&size=${size}${
+          data?.status ? `&orderStatus=${data.status}` : ""
+        }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+          data?.districtId ? `&districtId=${data.districtId}` : ""
+        }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
+          data?.createdAt
+            ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
+            : ""
+        }`,
+      });
+      id&&getOrdersByPackageId(res.data.data)
+      !id&&getAllOrders(res.data.data);
+    } else if (isStoreOwner) {
+      const res = await http(
+        `/${url}?page=${page}&size=${size}${
+          data?.status ? `&orderStatus=${data.status}` : ""
+        }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+          data?.districtId ? `&districtId=${data.districtId}` : ""
+        }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
+      );
+      getAllMyOrders(res.data.data);
+    }
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
   }
 
-  const ordersCols = isStoreOwner ? cols.push(action) : cols;
+}
+
+  
+
 
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
@@ -90,10 +170,7 @@ function Orders() {
         </Link>
       )}
       <Filter
-        url={
-          ((isAdmin || isSuperAdmin) && `orders`) ||
-          (isStoreOwner && `orders/myorders`)
-        }
+       
         filterFn={filterFn}
       />
       {value?.length > 0 ? (
