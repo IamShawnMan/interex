@@ -20,7 +20,6 @@ router
 	.route("/status")
 	.get(orderControllers.getAllOrderStatus)
 router.route("/devprice").get(orderControllers.getAllDeliveryPrice);
-router.route("/region/:id").get(orderControllers.getOrdersbyRegion)
 router
 	.route("/:id")
 	.get(orderControllers.getOrderById)

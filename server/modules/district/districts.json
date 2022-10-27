@@ -2,206 +2,349 @@
     {
         "id": "12",
         "regionId": "1",
-        "name": "Konimex tumani"
+        "name": "Konimex tumani",
+        "regId": "nav"
     },
     {
         "id": "13",
         "regionId": "1",
-        "name": "Karmana tumani"
+        "name": "Karmana tumani",
+        "regId": "nav"
     },
     {
         "id": "14",
         "regionId": "1",
-        "name": "Qiziltepa tumani"
+        "name": "Qiziltepa tumani",
+        "regId": "nav"
     },
     {
         "id": "15",
         "regionId": "1",
-        "name": "Xatirchi tumani"
+        "name": "Xatirchi tumani",
+        "regId": "nav"
     },
     {
         "id": "16",
         "regionId": "1",
-        "name": "Navbahor tumani"
+        "name": "Navbahor tumani",
+        "regId": "nav"
     },
     {
         "id": "17",
         "regionId": "1",
-        "name": "Nurota tumani"
+        "name": "Nurota tumani",
+        "regId": "nav"
     },
     {
         "id": "18",
         "regionId": "1",
-        "name": "Tomdi tumani"
+        "name": "Tomdi tumani",
+        "regId": "nav"
     },
     {
         "id": "19",
         "regionId": "1",
-        "name": "Uchquduq tumani"
+        "name": "Uchquduq tumani",
+        "regId": "nav"
     },
     {
         "id": "20",
         "regionId": "2",
-        "name": "Bektemir tumani"
+        "name": "Bektemir tumani",
+        "regId": "tosh"
     },
     {
         "id": "21",
         "regionId": "2",
-        "name": "Mirobod tumani"
+        "name": "Mirobod tumani",
+        "regId": "tosh"
     },
     {
         "id": "22",
         "regionId": "2",
-        "name": "Mirzo Ulug'bek tumani"
+        "name": "Mirzo Ulug'bek tumani",
+        "regId": "tosh"
     },
     {
         "id": "23",
         "regionId": "2",
-        "name": "Sergeli tumani"
+        "name": "Sergeli tumani",
+        "regId": "tosh"
     },
     {
         "id": "24",
         "regionId": "2",
-        "name": "Olmazor tumani"
+        "name": "Olmazor tumani",
+        "regId": "tosh"
     },
     {
         "id": "25",
         "regionId": "2",
-        "name": "Uchtepa tumani"
+        "name": "Uchtepa tumani",
+        "regId": "tosh"
     },
     {
         "id": "26",
         "regionId": "2",
-        "name": "Shayxontoxur tumani"
+        "name": "Shayxontoxur tumani",
+        "regId": "tosh"
     },
     {
         "id": "27",
         "regionId": "2",
-        "name": "Yashnobod tumani"
+        "name": "Yashnobod tumani",
+        "regId": "tosh"
     },
     {
         "id": "28",
         "regionId": "2",
-        "name": "Chilonzor tumani"
+        "name": "Chilonzor tumani",
+        "regId": "tosh"
     },
     {
         "id": "29",
         "regionId": "2",
-        "name": "Yunusobod tumani"
+        "name": "Yunusobod tumani",
+        "regId": "tosh"
     },
     {
         "id": "30",
         "regionId": "2",
-        "name": "Yakkasaroy tumani"
+        "name": "Yakkasaroy tumani",
+        "regId": "tosh"
     },
     {
         "id": "31",
         "regionId": "3",
-        "name": "Bulung'ur tumani"
+        "name": "Bulung'ur tumani",
+        "regId": "sam"
     },
     {
         "id": "32",
         "regionId": "3",
-        "name": "Ishtixon tumani"
+        "name": "Ishtixon tumani",
+        "regId": "sam"
     },
     {
         "id": "33",
         "regionId": "3",
-        "name": "Jomboy tumani"
+        "name": "Jomboy tumani",
+        "regId": "sam"
     },
     {
         "id": "34",
         "regionId": "3",
-        "name": "Kattaqo'rg'on tumani"
+        "name": "Kattaqo'rg'on tumani",
+        "regId": "sam"
     },
     {
         "id": "35",
         "regionId": "3",
-        "name": "Qo'shrabot tumani"
+        "name": "Qo'shrabot tumani",
+        "regId": "sam"
     },
     {
         "id": "36",
         "regionId": "3",
-        "name": "Narpay tumani"
+        "name": "Narpay tumani",
+        "regId": "nav"
     },
     {
         "id": "37",
         "regionId": "3",
-        "name": "Nurobod tumani"
+        "name": "Nurobod tumani",
+        "regId": "sam"
     },
     {
         "id": "38",
         "regionId": "3",
-        "name": "Oqdaro tumani"
+        "name": "Oqdaro tumani",
+        "regId": "sam"
     },
     {
         "id": "39",
         "regionId": "3",
-        "name": "Paxtachi tumani"
+        "name": "Paxtachi tumani",
+        "regId": "nav"
     },
     {
         "id": "40",
         "regionId": "3",
-        "name": "Payariq tumani"
+        "name": "Payariq tumani",
+        "regId": "sam"
     },
     {
         "id": "41",
         "regionId": "3",
-        "name": "Pasdarg'om tumani"
+        "name": "Pasdarg'om tumani",
+        "regId": "sam"
     },
     {
         "id": "42",
         "regionId": "3",
-        "name": "Samarqand tumani"
+        "name": "Samarqand tumani",
+        "regId": "sam"
     },
     {
         "id": "43",
         "regionId": "3",
-        "name": "Toyloq tumani"
+        "name": "Toyloq tumani",
+        "regId": "sam"
     },
     {
         "id": "44",
         "regionId": "3",
-        "name": "Urgut tumani"
+        "name": "Urgut tumani",
+        "regId": "sam"
     },
     {
         "id": "45",
         "regionId": "4",
-        "name": "Boyovut tumani"
+        "name": "Boyovut tumani",
+        "regId": "sir"
     },
     {
         "id": "46",
         "regionId": "4",
-        "name": "Oqoltin tumani"
+        "name": "Oqoltin tumani",
+        "regId": "sir"
     },
     {
         "id": "47",
         "regionId": "4",
-        "name": "Guliston tumani"
+        "name": "Guliston tumani",
+        "regId": "sir"
     },
     {
         "id": "48",
         "regionId": "4",
-        "name": "Xovos tumani"
+        "name": "Xovos tumani",
+        "regId": "sir"
     },
     {
         "id": "49",
         "regionId": "4",
-        "name": "Mirzaobod tumani"
+        "name": "Mirzaobod tumani",
+        "regId": "sir"
     },
     {
         "id": "50",
         "regionId": "4",
-        "name": "Sardoba tumani"
+        "name": "Sardoba tumani",
+        "regId": "sir"
     },
     {
         "id": "51",
         "regionId": "4",
-        "name": "Sayxunobod tumani"
+        "name": "Sayxunobod tumani",
+        "regId": "sir"
     },
     {
         "id": "52",
         "regionId": "4",
-        "name": "Sirdaryo tumani"
+        "name": "Sirdaryo tumani",
+        "regId": "sir"
+    },
+    {
+        "id": "53",
+        "regionId": "5",
+        "name": "Termiz shahri",
+        "regId": "srx"
+    },
+    {
+        "id": "54",
+        "regionId": "5",
+        "name": "Termiz tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "55",
+        "regionId": "5",
+        "name": "Angor tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "56",
+        "regionId": "5",
+        "name": "Sherabod tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "57",
+        "regionId": "5",
+        "name": "Boysun tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "58",
+        "regionId": "5",
+        "name": "Boysun tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "59",
+        "regionId": "5",
+        "name": "Denov tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "60",
+        "regionId": "5",
+        "name": "Uzun tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "61",
+        "regionId": "5",
+        "name": "Sariosiyo tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "62",
+        "regionId": "5",
+        "name": "Denov tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "63",
+        "regionId": "5",
+        "name": "Oltinsoy tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "64",
+        "regionId": "5",
+        "name": "Bandixon tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "65",
+        "regionId": "5",
+        "name": "Jarqo`rg`on tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "66",
+        "regionId": "5",
+        "name": "Sho`rchi tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "67",
+        "regionId": "5",
+        "name": "Qumqo`rg`on tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "68",
+        "regionId": "5",
+        "name": "Muzrabod tumani",
+        "regId": "srx"
+    },
+    {
+        "id": "69",
+        "regionId": "5",
+        "name": "Qiziriq tumani",
+        "regId": "srx"
     }
 ]
