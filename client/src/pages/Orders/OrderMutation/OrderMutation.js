@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Layout from "../../../components/Layout/Layout";
 import OrderFieldArray from "./OrderFieldArray";
-import Button from "../../../components/Form/FormComponents/Button/Button"
+import Button from "../../../components/Form/FormComponents/Button/Button";
 import styles from "./OrderMutation.module.css";
 
 const schema = object().shape({
@@ -41,7 +41,7 @@ function OrderMutation() {
   const { id } = useParams();
 
   const isUpdate = id !== "new";
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const {
     register,
     control,
@@ -53,38 +53,40 @@ function OrderMutation() {
 
   useEffect(() => {
     getAllRegions();
-     if (isUpdate&&!updateData) {
+    if (isUpdate && !updateData) {
       getById();
     }
-   
-    !isUpdate&&!regionId&&!updateData&& append({
-      recipient: "",
-      note: "",
-      recipientPhoneNumber: "",
-      regionId: "",
-      districtId: "",
-      orderItems: [],
-    });
+
+    !isUpdate &&
+      !regionId &&
+      !updateData &&
+      append({
+        recipient: "",
+        note: "",
+        recipientPhoneNumber: "",
+        regionId: "",
+        districtId: "",
+        orderItems: [],
+      });
   }, [regionId]);
-  useEffect(() =>{
-     isUpdate&&updateData&&append({...updateData,districtId:updateData.districtId})
-  },updateData);
+  useEffect(() => {
+    isUpdate &&
+      updateData &&
+      append({ ...updateData, districtId: updateData.districtId });
+  }, updateData);
   const formSubmit = async (data) => {
-    console.log( data);
     try {
       const res = await http({
         url: isUpdate ? `/orders/${id}` : "/orders",
         method: isUpdate ? "PUT" : "POST",
-        data:isUpdate ? data.orders[0]:data,
+        data: isUpdate ? data.orders[0] : data,
       });
-      console.log(res);
       toast.success(res.data.message);
       navigate("/orders");
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
     }
   };
-  
 
   const getById = async () => {
     const res = await http({
@@ -93,9 +95,9 @@ function OrderMutation() {
     console.log(res);
     const orderById = res.data.data;
     setRId(orderById.regionId);
-     setUpdateData(orderById);
+    setUpdateData(orderById);
   };
- 
+
   const getAllRegions = async () => {
     const res = await http({
       url: "/regions",
@@ -110,13 +112,28 @@ function OrderMutation() {
   return (
     <Layout>
       <form onSubmit={handleSubmit((data) => formSubmit(data))}>
-        <ul style={{overflowY: 'scroll'}}>
-          {errors.orders?.type === "min" &&<p style={{color: "red"}}>{ errors.orders.message}</p>}
+        <ul style={{ overflowY: "scroll" }}>
+          {errors.orders?.type === "min" && (
+            <p style={{ color: "red" }}>{errors.orders.message}</p>
+          )}
           {fields.map((item, index) => (
-        <OrderFieldArray rId={rId} item={item} register={register} index={index} errors={errors} watch={watch} regions={regions} control={control}remove={remove}/>
+            <OrderFieldArray
+              key={item.id}
+              rId={rId}
+              item={item}
+              register={register}
+              index={index}
+              errors={errors}
+              watch={watch}
+              regions={regions}
+              control={control}
+              remove={remove}
+            />
           ))}
         </ul>
-        <div className={styles.btnIconTextContainer}  onClick={() =>
+        <div
+          className={styles.btnIconTextContainer}
+          onClick={() =>
             append({
               recipient: "",
               note: "",
@@ -125,20 +142,18 @@ function OrderMutation() {
               districtId: "",
               orderItems: [],
             })
-          }>
-           {!isUpdate&& 
-           <Button
-       size="small"
-       name="iconText"
-       iconName="plus"
-          type="button"
+          }
         >
-          Order
-        </Button>}
+          {!isUpdate && (
+            <Button size="small" name="iconText" iconName="plus" type="button">
+              Order
+            </Button>
+          )}
         </div>
-      
-      <Button size="small"
-       name="btn" type="submit">{isUpdate?"Update Order":"Create Order"}</Button> 
+
+        <Button size="small" name="btn" type="submit">
+          {isUpdate ? "Update Order" : "Create Order"}
+        </Button>
       </form>
     </Layout>
   );

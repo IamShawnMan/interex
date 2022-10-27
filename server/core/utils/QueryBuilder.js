@@ -116,7 +116,7 @@ class QueryBuilder {
         if(this.queryParams.sort)
             this.queryOptions.order = this.#createOrderArray()
         else{
-            this.queryOptions.order = [["createdAt", "desc"]]
+            this.queryOptions.order = [["createdAt", "asc"]]
         }
         return this;
     }

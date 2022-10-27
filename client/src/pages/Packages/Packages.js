@@ -24,10 +24,8 @@ function Package() {
       const res = await http({
         url: `/packages?page=${page}&size=${size}`,
       });
-console.log(res);
       setPackages(res.data.data.allPackages.content);
       setPagination(res.data.data.ordersbyPackage.pagination);
-
     } catch (error) {}
   };
 
@@ -55,9 +53,12 @@ console.log(res);
   return (
     <Layout>
       {packages?.length > 0 ? (
-        <BasicTable columns={packageCols} data={packages}      
-             url="packages"
-        pagination={pagination} />
+        <BasicTable
+          columns={packageCols}
+          data={packages}
+          url="packages"
+          pagination={pagination}
+        />
       ) : (
         <p>Malumotlar yoq</p>
       )}

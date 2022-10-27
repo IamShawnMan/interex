@@ -8,9 +8,11 @@ function Input({ type, register, placeholder, id, error, children }) {
 
   return (
     <div className={styles.formControl}>
-     {children&& <label className={styles.label} htmlFor={id ? id : ""}>
-        {children}
-      </label>}
+      {children && (
+        <label className={styles.label} htmlFor={id ? id : ""}>
+          {children}
+        </label>
+      )}
       <div className={styles.inputContainer}>
         <input
           type={type ? type : "text"}
@@ -20,7 +22,6 @@ function Input({ type, register, placeholder, id, error, children }) {
           className={`${styles.input} ${error ? styles.error : ""}`}
         />
         {error && <AttentionError className={""} />}
-        {/* {<CircleCheck className={""} />} */}
       </div>
       {error && <p className={styles.errorText}>{error}</p>}
     </div>

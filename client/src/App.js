@@ -39,17 +39,19 @@ function App() {
         <Route path="/login" element={<Login />} />
         {isAuth && <Route path="/home" element={<Home />} />}
         {isAuth && <Route path="*" element={<Navigate to={"home"} />} />}
-
         {isAuth && <Route path="/users" element={<Users />} />}
         {isAuth && <Route path="/users/:id" element={<UserMutation />} />}
-
         {isAuth && <Route path="/orders" element={<Orders />} />}
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
-        {isAuth && <Route path="/posts" element={<Posts/>} />}
-        {isAuth && <Route path="/posts/new" element={<PostMutation/>} />}
-        {isAuth && <Route path="/posts/new/:id" element={<PostInnerOrders/>} />}
-        {isAuth && <Route path="/packages/:id/orders" element={<IncomingOrders />} />}
+        {isAuth && <Route path="/posts" element={<Posts />} />}
+        {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
+        {isAuth && (
+          <Route path="/posts/new/:id" element={<PostInnerOrders />} />
+        )}
+        {isAuth && (
+          <Route path="/packages/:id/orders" element={<IncomingOrders />} />
+        )}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>
