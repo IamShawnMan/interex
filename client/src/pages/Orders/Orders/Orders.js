@@ -68,7 +68,7 @@ function Orders() {
       Header: "Yetkazish narxi",
       accessor: "deliveryPrice",
     },
-    { id: "totalPrice", Header: "Malhulotning narxi", accessor: "totalPrice" },
+    { id: "totalPrice", Header: "Malhsulotning narxi", accessor: "totalPrice" },
     {
       Header: "Sanasi",
       accessor: (order) => {
