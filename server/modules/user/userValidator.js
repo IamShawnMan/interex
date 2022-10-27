@@ -44,6 +44,14 @@ exports.createValidator = [
 					throw new Error("Viloyat tanlanmadi")
 				}
 			} 
+		}),
+	body("storeName")
+		.custom(async(value, {req}) => {
+			if(req.body.userRole === "STORE_OWNER") {
+				if(value === undefined || value.trim() === "") {
+					throw new Error("Do'kon nomi kiritilmadi")
+				}
+			} 
 		})
 ];
 
@@ -82,6 +90,14 @@ exports.updateValidator = [
 			if(req.body.userRole === "COURIER") {
 				if(value === undefined || value === "Viloyatlar") {
 					throw new Error("Viloyat tanlanmadi")
+				}
+			} 
+		}),
+	body("storeName")
+		.custom(async(value, {req}) => {
+			if(req.body.userRole === "STORE_OWNER") {
+				if(value === undefined || value.trim() === "") {
+					throw new Error("Do'kon nomi kiritilmadi")
 				}
 			} 
 		})
