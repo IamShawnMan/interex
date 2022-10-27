@@ -7,6 +7,7 @@ import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import AppContext from "../../context/AppContext";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Filter({ url, filterFn }) {
   const { user } = useContext(AppContext);
@@ -24,11 +25,11 @@ function Filter({ url, filterFn }) {
   const [allQueries, setQueries] = useState(null);
   const [storeOwnerIds, setStoreOwner] = useState(null);
   useEffect(() => {
+    getAllOrders(allQueries);
     getAllRegions();
     getAllStatuses();
-    region && getAllDistricts();
+    region && getAllDistricts(region);
     (isAdmin || isSuperAdmin) && getAllStoreOwner();
-    getAllOrders(allQueries);
   }, [page]);
 
   const getAllStatuses = async () => {
@@ -49,6 +50,7 @@ function Filter({ url, filterFn }) {
   };
 
   const getAllDistricts = async (id) => {
+    console.log(id);
     const res = await http({
       url: `/regions/${id}/districts`,
     });
@@ -68,30 +70,35 @@ function Filter({ url, filterFn }) {
   };
 
   const getAllOrders = async (data) => {
+    const dateCreatedAt = new Date(data?.createdAt);
+
     try {
       if (isAdmin || isSuperAdmin) {
-        const res = await http(
-          `/${url}?page=${page}&size=${size}${
-            data.status ? `&orderStatus=${data.status}` : ""
-          }${data.regionId ? `&regionId=${data.regionId}` : ""}${
-            data.districtId ? `&districtId=${data.districtId}` : ""
-          }${data.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
-            data.createdAt ? `&createdAt=${data.createdAt}` : ""
-          }`
-        );
+        const res = await http({
+          url: `/${url}?page=${page}&size=${size}${
+            data?.status ? `&orderStatus=${data.status}` : ""
+          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+            data?.districtId ? `&districtId=${data.districtId}` : ""
+          }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
+            data?.createdAt
+              ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
+              : ""
+          }`,
+        });
         filterFn(res.data.data);
       } else if (isStoreOwner) {
         const res = await http(
           `/${url}?page=${page}&size=${size}${
-            data.status ? `&orderStatus=${data.status}` : ""
-          }${data.regionId ? `&regionId=${data.regionId}` : ""}${
-            data.districtId ? `&districtId=${data.districtId}` : ""
-          }&${data.createdAt ? `&createdAt=${data.createdAt}` : ""}`
+            data?.status ? `&orderStatus=${data.status}` : ""
+          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+            data?.districtId ? `&districtId=${data.districtId}` : ""
+          }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
         );
-        console.log(res.data.data);
         filterFn(res.data.data);
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
   };
 
   const filterHandler = async (data) => {
@@ -100,6 +107,7 @@ function Filter({ url, filterFn }) {
   };
 
   const regionHandler = (e) => {
+    setRegion(e.target.value);
     getAllDistricts(e.target.value);
   };
 
