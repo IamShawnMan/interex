@@ -24,9 +24,6 @@ function Orders() {
   const  url=
     ((isAdmin || isSuperAdmin) &&id&& `packages/${id}/orders`) ||((isAdmin || isSuperAdmin) && `orders`)||
     (isStoreOwner && `orders/myorders`)
-  
-
-
   const getAllMyOrders = async (data) => {
     setValue(data?.myOrders?.content);
     setPagination(data?.myOrders?.pagination);
@@ -87,30 +84,23 @@ function Orders() {
             )}
             {user.userRole === "ADMIN" && (
              <div>
-           
-           
-
              <span style={{ width: "12rem",paddingBottom:"5px", display:"block"}}  onClick={()=>changeOrderStatus(order.id,"ACCEPTED")}>
                <Button
              name="btn"
              disabled={order.orderStatus==="NEW"?false:true}
-              
              >
                <>ACCEPTED</> 
              </Button>
              </span>
              <span style={{ width: "12rem", display:"block" }}  onClick={()=>changeOrderStatus(order.id,"NOT_EXIST")}>
-             
              <Button
              disabled={order.orderStatus==="NEW"?false:true}
              size="small"
              name="btn"
-              
              >
               <>NOT EXIST</> 
              </Button>
              </span>
-             
                    </div>
             )} 
                 <Link style={{textDecoration: "none",color: "white",display: "block",marginTop: ".5rem"}} to={`/orders/info/${order.id}`}><Button size="small" name="btn">Info</Button></Link>
