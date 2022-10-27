@@ -1,7 +1,7 @@
 const OrderModel = require("./Order");
 const OrderItemModel = require("../orderitem/OrderItem");
 const PackageModel = require("../package/Package");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult } = require("express-validator");
 const AppError = require("../../core/utils/AppError");
@@ -252,5 +252,28 @@ exports.getAllOrderStatus = catchAsync(async(req, res, next) => {
 			allOrderStatus
 		}
 	})
+})
+
+exports.getMyOrders = catchAsync(async(req,res,next)=>{
+	const userId = req.user.id
+
+	const queryBuilder = new QueryBuilder(req.query)
+	queryBuilder.filter().paginate().sort().search(["recipient", "recipientPhoneNumber"]).limitFields()
+	let myOrders = await OrderModel.findAndCountAll({...queryBuilder.queryOptions
+		,include: [
+			{model: DistrictModel, as: "district", attributes: ["name"]},
+			{model: RegionModel, as: "region", attributes: ["name"]}
+		]
+		
+		,where: {storeOwnerId: {[Op.eq]: userId}}})
+	myOrders = queryBuilder.createPagination(myOrders)
+
+	res.json({
+		status: "success",
+		message: `${req.user.firstName} - ${req.user.userRole} ning ro\`yhatdan o\`tkazgan barcha buyurtmalari`,
+		error: null,
+		data: {myOrders}
+	})
+
 })
 

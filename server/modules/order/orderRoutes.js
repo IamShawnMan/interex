@@ -12,11 +12,16 @@ router
 		orderControllers.createOrder
 	);
 router
+	.route("/myOrders")
+	.get(roleMiddleware(["STORE_OWNER"]), orderControllers.getMyOrders)
+router
 	.route("/")
 	.get(roleMiddleware(["ADMIN"]), orderControllers.adminOrderStatus);
 router
 	.route("/status")
 	.get(orderControllers.getAllOrderStatus)
+router.route("/devprice").get(orderControllers.getAllDeliveryPrice);
+router.route("/region/:id").get(orderControllers.getOrdersbyRegion)
 router
 	.route("/:id")
 	.get(orderControllers.getOrderById)
@@ -31,7 +36,5 @@ router
 	.get(orderControllers.editOrder)
 
 
-router.route("/devprice").get(orderControllers.getAllDeliveryPrice);
-router.route("/region/:id").get(orderControllers.getOrdersbyRegion)
 
 module.exports = router;
