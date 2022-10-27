@@ -7,6 +7,7 @@ import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import AppContext from "../../context/AppContext";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Filter({ url, filterFn }) {
   const { user } = useContext(AppContext);
@@ -27,8 +28,7 @@ function Filter({ url, filterFn }) {
     getAllOrders(allQueries);
     getAllRegions();
     getAllStatuses();
-    console.log(region);
-    region && getAllDistricts();
+    region && getAllDistricts(region);
     (isAdmin || isSuperAdmin) && getAllStoreOwner();
   }, [page]);
 
@@ -50,6 +50,7 @@ function Filter({ url, filterFn }) {
   };
 
   const getAllDistricts = async (id) => {
+    console.log(id);
     const res = await http({
       url: `/regions/${id}/districts`,
     });
@@ -93,11 +94,10 @@ function Filter({ url, filterFn }) {
             data?.districtId ? `&districtId=${data.districtId}` : ""
           }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
         );
-        console.log(res);
         filterFn(res.data.data);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -107,6 +107,7 @@ function Filter({ url, filterFn }) {
   };
 
   const regionHandler = (e) => {
+    setRegion(e.target.value);
     getAllDistricts(e.target.value);
   };
 

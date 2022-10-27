@@ -92,7 +92,7 @@ function Orders() {
       <Filter
         url={
           ((isAdmin || isSuperAdmin) && `orders`) ||
-          (isStoreOwner && `packages/myorders`)
+          (isStoreOwner && `orders/myorders`)
         }
         filterFn={filterFn}
       />
