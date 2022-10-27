@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import http from "../../utils/axios-instance";
 import { useState } from "react";
@@ -7,12 +7,14 @@ import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
 import Switch from "../../components/Form/FormComponents/Switch/Switch";
 import Button from "../../components/Form/FormComponents/Button/Button";
+import AppContext from "../../context/AppContext";
 function Users() {
   const [value, setValue] = useState([]);
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 2;
+  const { user } = useContext(AppContext);
   const getAllUser = async () => {
     try {
       const res = await http({
@@ -59,42 +61,45 @@ function Users() {
       accessor: "passportNumber",
     },
     { id: "status", Header: "Mansabi", accessor: "userRole" },
-    {
-      id: "actions",
-      Header: "actions",
-      accessor: (user) => {
-        return (
-          <Link to={`/users/${user.id}`}>
-            <Button size="iconSmall" name="icon" iconName="pen"/>
-          </Link>
-        );
-      },
-    },
-    {
-      id: "userStatus",
-      Header: "Status",
-      accessor: (user) => {
-        const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
-        return (
-          <Switch
-            onSwitch={userStatusChangeHandler.bind(null, {
-              id: user.id,
-              status,
-            })}
-            enabled={user.status === "ACTIVE"}
-          />
-        );
-      },
-    },
+    
   ];
-
+  const superAdminAction=[{
+    id: "actions",
+    Header: "actions",
+    accessor: (user) => {
+      return (
+        <Link to={`/users/${user.id}`}>
+          <Button size="iconSmall" name="icon" iconName="pen"/>
+        </Link>
+      );
+    },
+  },
+  {
+    id: "userStatus",
+    Header: "Status",
+    accessor: (user) => {
+      const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
+      return (
+        <Switch
+          onSwitch={userStatusChangeHandler.bind(null, {
+            id: user.id,
+            status,
+          })}
+          enabled={user.status === "ACTIVE"}
+        />
+      );
+    }
+  }]
+  if(user.userRole==="SUPER_ADMIN"){
+    usersCols.push(...superAdminAction)
+  }
   return (
     <Layout pageName="Foydalanuvchilar">
-      <Link style={{ width: "10rem", display: "block" }} to="/users/new">
+     {user.userRole==="SUPER_ADMIN"&& <Link style={{ width: "10rem", display: "block" }} to="/users/new">
         <Button size="small" name="btn">
           Add User
         </Button>
-      </Link> 
+      </Link> }
 
       {value?.length > 0 ? (
         <BasicTable

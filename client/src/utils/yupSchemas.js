@@ -100,7 +100,6 @@ export const courierSchema = yup.object().shape({
     .min(6, "Parol 6 ta belgidan kop bolishi kerak")
     .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
   regionId: yup.string().trim().required("Region bo'sh bo'lishi mumkin emas"),
-  districtId: yup.string().trim().required("Region bo'sh bo'lishi mumkin emas"),
   userRole: yup
     .string()
     .trim()

@@ -77,45 +77,45 @@ const UserMutation = () => {
 		setRegions(res.data.data.allRegions);
 	};
 
-	const getById = async () => {
-		const res = await http({
-			url: `/users/${id}`,
-		});
-		const user = res.data.data.userById;
-		if (user.userRole === "COURIER") {
-			setRole("COURIER");
-		}
-		reset(user);
-	};
-	const formSubmit = async (data) => {
-		console.log(data);
-		try {
-			const res = await http({
-				url: isUpdate ? `/users/${id}` : "/users",
-				method: isUpdate ? "PUT" : "POST",
-				data,
-			});
-			toast.success(res.data.message);
-			navigate("/users");
-		} catch (error) {
-			console.log(error.response.data.message);
-			return await error.response.data.message.map((error) =>
-				toast.error(error)
-			);
-		}
-	};
-	return (
-		<>
-			<Layout>
-				<form onSubmit={handleSubmit(formSubmit)} className="form">
-					<Select
-						register={register.bind(null, "userRole")}
-						data={userRoles}
-						onChange={(e) => setRole(e.target.value)}
-						error={errors.userRole?.message}
-					>
-						Foydalanuvchi mansabi
-					</Select>
+  const getById = async () => {
+    const res = await http({
+      url: `/users/${id}`,
+    });
+    const user = res.data.data.userById;
+    if (user.userRole === "COURIER") {
+      setRole("COURIER");
+    }
+    reset(user);
+  };
+  const formSubmit = async (data) => {
+    console.log(data);
+    try {
+      const res = await http({
+        url: isUpdate ? `/users/${id}` : "/users",
+        method: isUpdate ? "PUT" : "POST",
+        data,
+      });
+      toast.success(res.data.message);
+      navigate("/users");
+    } catch (error) {
+      console.log(error.response.data.message);
+      return  error.response.data.message.map((error) =>
+        toast.error(error)
+      );
+    }
+  };
+  return (
+    <>
+      <Layout>
+        <form onSubmit={handleSubmit(formSubmit)} className="form">
+          <Select
+            register={register.bind(null, "userRole")}
+            data={userRoles}
+            onChange={(e) => setRole(e.target.value)}
+            error={errors.userRole?.message}
+          >
+            Foydalanuvchi mansabi
+          </Select>
 
 					<Input
 						id="text"
