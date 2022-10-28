@@ -3,6 +3,12 @@ const AppError = require("../../core/utils/AppError");
 const User = require("./User");
 const {Op} = require("sequelize")
 exports.createValidator = [
+	body("userRole")
+    .custom(async(value) => {
+      if(value === "Foydalanuvchi mansabi" || value === ""){
+        throw new Error("Foydalanuvchi mansabi kiritilmadi")
+      }
+    }),
 	body("firstName")
 		.notEmpty()
 		.withMessage("Ism bo'sh bo'lishi mumkin emas"),
@@ -56,6 +62,12 @@ exports.createValidator = [
 ];
 
 exports.updateValidator = [
+	body("userRole")
+    .custom(async(value) => {
+      if(value === "Foydalanuvchi mansabi" || value === ""){
+        throw new Error("Foydalanuvchi mansabi kiritilmadi")
+      }
+    }),
 	body("firstName")
 		.notEmpty()
 		.withMessage("Ism bo'sh bo'lishi mumkin emas"),
