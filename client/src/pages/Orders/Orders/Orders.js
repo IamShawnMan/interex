@@ -25,18 +25,18 @@ function Orders() {
   const [value, setValue] = useState(null);
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 2;
+  const size = searchParams.get("size") || 10;
   const [allQueries, setQueries] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
-console.log(isAdmin,id);
+  console.log(isAdmin, id);
   const url =
     (isStoreOwner && `orders/myorders`) ||
     (isAdmin && id && `packages/${id}/orders`) ||
     ((isAdmin || isSuperAdmin) && `orders`);
   useEffect(() => {
-    filterFn()
-  },[page])
+    filterFn(allQueries);
+  }, [page]);
   const getAllMyOrders = async (data) => {
     setValue(data?.myOrders?.content);
     setPagination(data?.myOrders?.pagination);
@@ -155,17 +155,6 @@ console.log(isAdmin,id);
               : ""
           }`,
         });
-        console.log({
-          url: `/${url}?page=${page}&size=${size}${
-            data?.status ? `&orderStatus=${data.status}` : ""
-          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-            data?.districtId ? `&districtId=${data.districtId}` : ""
-          }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
-            data?.createdAt
-              ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
-              : ""
-          }`,
-        });
         id && getOrdersByPackageId(res.data.data);
         !id && getAllOrders(res.data.data);
       } else if (isStoreOwner) {
@@ -182,8 +171,6 @@ console.log(isAdmin,id);
       toast.error(error?.response?.data?.message);
     }
   };
-
-
 
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">

@@ -9,73 +9,77 @@ import Input from "../../components/Form/FormComponents/Input/Input";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Select from "../../components/Form/FormComponents/Select/Select";
 import {
-	adminSchema,
-	storeOwnerSchema,
-	courierSchema,
-	courierSchemaUpdate,
-	adminSchemaUpdate,
-	storeOwnerSchemaUpdate,
+  adminSchema,
+  storeOwnerSchema,
+  courierSchema,
+  courierSchemaUpdate,
+  adminSchemaUpdate,
+  storeOwnerSchemaUpdate,
 } from "../../utils/yupSchemas";
 
 const UserMutation = () => {
-	const navigate = useNavigate();
-	const [role, setRole] = useState(null);
-	const [roles, setRoles] = useState(null);
-	const [regions, setRegions] = useState(null);
-	const { id } = useParams();
-	const isUpdate = id !== "new";
-	const admin = role === "ADMIN";
-	const storeOwner = role === "STORE_OWNER";
-	const courier = role === "COURIER";
-	const userRoles = roles
-		? roles.map((e) => {
-				return { id: e, name: e };
-		  })
-		: [];
-	const yupResolverObject = () => {
-		if (isUpdate) {
-			return (
-				(admin && adminSchemaUpdate) ||
-				(storeOwner && storeOwnerSchemaUpdate) ||
-				(courier && courierSchemaUpdate)
-			);
-		} else {
-			return (
-				(admin && adminSchema) ||
-				(storeOwner && storeOwnerSchema) ||
-				(courier && courierSchema)
-			);
-		}
-	};
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm({
-		resolver: yupResolver(yupResolverObject()),
-	});
+  const navigate = useNavigate();
+  const [role, setRole] = useState(null);
+  const [roles, setRoles] = useState(null);
+  const [regions, setRegions] = useState(null);
+  const { id } = useParams();
+  const isUpdate = id !== "new";
+  const admin = role === "ADMIN";
+  const storeOwner = role === "STORE_OWNER";
+  const courier = role === "COURIER";
+  const userRoles = roles
+    ? roles.map((e) => {
+        return { id: e, name: e };
+      })
+    : [];
+  const yupResolverObject = () => {
+    if (role) {
+      if (isUpdate) {
+        return (
+          (admin && adminSchemaUpdate) ||
+          (storeOwner && storeOwnerSchemaUpdate) ||
+          (courier && courierSchemaUpdate)
+        );
+      } else {
+        return (
+          (admin && adminSchema) ||
+          (storeOwner && storeOwnerSchema) ||
+          (courier && courierSchema)
+        );
+      }
+    } else {
+      return adminSchema;
+    }
+  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(yupResolverObject()),
+  });
 
-	useEffect(() => {
-		getAllUserRoles();
-		getAllRegions();
-		if (isUpdate) {
-			getById();
-		}
-	}, []);
+  useEffect(() => {
+    getAllUserRoles();
+    getAllRegions();
+    if (isUpdate) {
+      getById();
+    }
+  }, []);
 
-	const getAllUserRoles = async () => {
-		const res = await http({
-			url: "/users/roles",
-		});
-		setRoles(res.data.data.roles);
-	};
-	const getAllRegions = async () => {
-		const res = await http({
-			url: "/regions",
-		});
-		setRegions(res.data.data.allRegions);
-	};
+  const getAllUserRoles = async () => {
+    const res = await http({
+      url: "/users/roles",
+    });
+    setRoles(res.data.data.roles);
+  };
+  const getAllRegions = async () => {
+    const res = await http({
+      url: "/regions",
+    });
+    setRegions(res.data.data.allRegions);
+  };
 
   const getById = async () => {
     const res = await http({
@@ -99,9 +103,7 @@ const UserMutation = () => {
       navigate("/users");
     } catch (error) {
       console.log(error.response.data.message);
-      return  error.response.data.message.map((error) =>
-        toast.error(error)
-      );
+      return error.response.data.message.map((error) => toast.error(error));
     }
   };
   return (
@@ -117,83 +119,83 @@ const UserMutation = () => {
             Foydalanuvchi mansabi
           </Select>
 
-					<Input
-						id="text"
-						type="text"
-						placeholder="firstName"
-						register={register.bind(null, "firstName")}
-						error={errors.firstName?.message}
-					/>
+          <Input
+            id="text"
+            type="text"
+            placeholder="firstName"
+            register={register.bind(null, "firstName")}
+            error={errors.firstName?.message}
+          />
 
-					<Input
-						id="text"
-						type="text"
-						placeholder="lastName"
-						register={register.bind(null, "lastName")}
-						error={errors.lastName?.message}
-					/>
+          <Input
+            id="text"
+            type="text"
+            placeholder="lastName"
+            register={register.bind(null, "lastName")}
+            error={errors.lastName?.message}
+          />
 
-					<Input
-						id="text"
-						type="text"
-						placeholder="username"
-						register={register.bind(null, "username")}
-						error={errors.username?.message}
-					/>
-					{!isUpdate && (
-						<>
-							<Input
-								id="password"
-								type="password"
-								placeholder="password"
-								register={register.bind(null, "password")}
-								error={errors.password?.message}
-							/>
-						</>
-					)}
+          <Input
+            id="text"
+            type="text"
+            placeholder="username"
+            register={register.bind(null, "username")}
+            error={errors.username?.message}
+          />
+          {!isUpdate && (
+            <>
+              <Input
+                id="password"
+                type="password"
+                placeholder="password"
+                register={register.bind(null, "password")}
+                error={errors.password?.message}
+              />
+            </>
+          )}
 
-					<Input
-						id="passportNumber"
-						type="text"
-						placeholder="PassportNumber"
-						register={register.bind(null, "passportNumber")}
-						error={errors.passportNumber?.message}
-					/>
+          <Input
+            id="passportNumber"
+            type="text"
+            placeholder="PassportNumber"
+            register={register.bind(null, "passportNumber")}
+            error={errors.passportNumber?.message}
+          />
 
-					<Input
-						id="phoneNumber"
-						type="text"
-						placeholder="PhoneNumber"
-						register={register.bind(null, "phoneNumber")}
-						error={errors.phoneNumber?.message}
-					/>
-					{role === "STORE_OWNER" && (
-						<Input
-							id="storeName"
-							type="text"
-							placeholder="Magazin nomi"
-							register={register.bind(null, "storeName")}
-							error={errors.storeName?.message}
-						/>
-					)}
+          <Input
+            id="phoneNumber"
+            type="text"
+            placeholder="PhoneNumber"
+            register={register.bind(null, "phoneNumber")}
+            error={errors.phoneNumber?.message}
+          />
+          {role === "STORE_OWNER" && (
+            <Input
+              id="storeName"
+              type="text"
+              placeholder="Magazin nomi"
+              register={register.bind(null, "storeName")}
+              error={errors.storeName?.message}
+            />
+          )}
 
-					{role === "COURIER" && (
-						<Select
-							register={register.bind(null, "regionId")}
-							data={regions.content}
-							error={errors.regionId?.message}
-						>
-							Viloyatlar
-						</Select>
-					)}
+          {role === "COURIER" && (
+            <Select
+              register={register.bind(null, "regionId")}
+              data={regions.content}
+              error={errors.regionId?.message}
+            >
+              Viloyatlar
+            </Select>
+          )}
 
-					<Button type="submit" size="small" name="btn" className="btnLogin">
-						{!isUpdate ? "Create Accaunt" : "Update User"}
-					</Button>
-				</form>
-			</Layout>
-		</>
-	);
+          <Button type="submit" size="small" name="btn" className="btnLogin">
+            {!isUpdate ? "Create Accaunt" : "Update User"}
+          </Button>
+        </form>
+      </Layout>
+    </>
+  );
 };
 
 export default UserMutation;
