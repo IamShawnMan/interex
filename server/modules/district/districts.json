@@ -57,20 +57,17 @@
     {
         "id": "23",
         "regionId": "2",
-        "name": "Sergeli tumani",
-        "regId": "tosh"
+        "name": "Sergeli tumani"
     },
     {
         "id": "24",
         "regionId": "2",
-        "name": "Olmazor tumani",
-        "regId": "tosh"
+        "name": "Olmazor tumani"
     },
     {
         "id": "25",
         "regionId": "2",
-        "name": "Uchtepa tumani",
-        "regId": "tosh"
+        "name": "Uchtepa tumani"
     },
     {
         "id": "26",
