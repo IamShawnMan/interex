@@ -57,17 +57,20 @@
     {
         "id": "23",
         "regionId": "2",
-        "name": "Sergeli tumani"
+        "name": "Sergeli tumani",
+        "regId": "tosh"
     },
     {
         "id": "24",
         "regionId": "2",
-        "name": "Olmazor tumani"
+        "name": "Olmazor tumani",
+        "regId": "tosh"
     },
     {
         "id": "25",
         "regionId": "2",
-        "name": "Uchtepa tumani"
+        "name": "Uchtepa tumani",
+        "regId": "tosh"
     },
     {
         "id": "26",
@@ -203,5 +206,80 @@
         "id": "52",
         "regionId": "4",
         "name": "Sirdaryo tumani"
+    },
+    {
+        "id": "53",
+        "regionId": "5",
+        "name": "Termiz shahri"
+    },
+    {
+        "id": "54",
+        "regionId": "5",
+        "name": "Termiz tumani"
+    },
+    {
+        "id": "55",
+        "regionId": "5",
+        "name": "Angor tumani"
+    },
+    {
+        "id": "56",
+        "regionId": "5",
+        "name": "Sherabod tumani"
+    },
+    {
+        "id": "57",
+        "regionId": "5",
+        "name": "Boysun tumani"
+    },
+    {
+        "id": "58",
+        "regionId": "5",
+        "name": "Denov tumani"
+    },
+    {
+        "id": "59",
+        "regionId": "5",
+        "name": "Uzun tumani"
+    },
+    {
+        "id": "60",
+        "regionId": "5",
+        "name": "Sariosiyo tumani"
+    },
+    {
+        "id": "61",
+        "regionId": "5",
+        "name": "Oltinsoy tumani"
+    },
+    {
+        "id": "62",
+        "regionId": "5",
+        "name": "Bandixon tumani"
+    },
+    {
+        "id": "63",
+        "regionId": "5",
+        "name": "Jarqo`rg`on tumani"
+    },
+    {
+        "id": "64",
+        "regionId": "5",
+        "name": "Sho`rchi tumani"
+    },
+    {
+        "id": "65",
+        "regionId": "5",
+        "name": "Qumqo`rg`on tumani"
+    },
+    {
+        "id": "66",
+        "regionId": "5",
+        "name": "Muzrabod tumani"
+    },
+    {
+        "id": "67",
+        "regionId": "5",
+        "name": "Qiziriq tumani"
     }
 ]

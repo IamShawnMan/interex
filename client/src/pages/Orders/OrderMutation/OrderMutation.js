@@ -84,7 +84,9 @@ function OrderMutation() {
       toast.success(res.data.message);
       navigate("/orders");
     } catch (error) {
-      return error.response.data.message.map((error) => toast.error(error));
+      return  error.response.data.message.map((error) =>
+      toast.error(error)
+    );
     }
   };
 

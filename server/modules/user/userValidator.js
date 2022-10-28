@@ -1,5 +1,4 @@
 const { body } = require("express-validator");
-const AppError = require("../../core/utils/AppError");
 const User = require("./User");
 const {Op} = require("sequelize")
 exports.createValidator = [
@@ -37,6 +36,12 @@ exports.createValidator = [
 		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
 		.matches(/^[+]998[0-9]{9}$/)
 		.withMessage("Telefon raqam xato kiritildi"),
+	body("userRole")
+		.custom(async(value) => {
+			if(value === "Foydalanuvchi mansabi" || value === "" || value === undefined){
+				throw new Error("Foydalanuvchi mansabi kiritilmadi")
+			}
+		}),
 	body("regionId")
 		.custom(async(value, {req}) => {
 			if(req.body.userRole === "COURIER") {
@@ -85,6 +90,12 @@ exports.updateValidator = [
 		.withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
 		.matches(/^[+]998[0-9]{9}$/)
 		.withMessage("Telefon raqam xato kiritildi"),
+	body("userRole")
+		.custom((value) => {
+			if(value === "Foydalanuvchi mansabi" || value === ""){
+				throw new Error("Foydalanuvchi mansabi kiritilmadi")
+			}
+		}),
 	body("regionId")
 		.custom(async(value, {req}) => {
 			if(req.body.userRole === "COURIER") {

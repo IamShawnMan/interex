@@ -242,17 +242,6 @@ exports.getAllDeliveryPrice = (req, res, next) => {
 
   res.json(allPrice);
 };
-
-exports.getOrdersbyRegion = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-
-  const allOrdersbyRegion = OrderModel.findAndCountAll({
-    where: { regionId: { [Op.eq]: id } },
-  });
-
-  res.send(allOrdersbyRegion);
-});
-
 exports.getAllOrderStatus = catchAsync(async (req, res, next) => {
   const allOrderStatus = Object.values(statusOrder);
   res.json({
