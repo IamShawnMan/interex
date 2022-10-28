@@ -14,7 +14,7 @@ function Package() {
   const [searchParams] = useSearchParams();
 
   const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 2;
+  const size = searchParams.get("size") || 10;
   useEffect(() => {
     getAllPackages();
   }, [page]);
@@ -50,8 +50,10 @@ function Package() {
       },
     },
     {
-      id:"totalPrice", Header: "Package Total Price",accessor:"packageTotalPrice"
-    }
+      id: "totalPrice",
+      Header: "Package Total Price",
+      accessor: "packageTotalPrice",
+    },
   ];
 
   return (
