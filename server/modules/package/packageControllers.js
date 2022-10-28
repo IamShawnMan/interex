@@ -11,16 +11,15 @@ const RegionModel = require("../region/Region")
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.paginate().limitFields().sort().filter();
+	queryBuilder.paginate().limitFields();
 
 	let allPackages = await PackageModel.findAndCountAll({
-		
 		include: {
 			model: User,
 			as: "storeOwner",
-			attributes: ["storeName"],
+			attributes: ["firstName", "lastName"],
 		},
-		...queryBuilder.queryOptions,
+		...queryBuilder.queryOptions
 	});
 	allPackages = queryBuilder.createPagination(allPackages);
 
@@ -29,7 +28,7 @@ exports.getAllPackages = catchAsync(async (req, res, next) => {
 		message: "Barcha packagelarni ro`yhati",
 		errors: null,
 		data: {
-			allPackages,
+			...allPackages,
 		},
 	});
 });
@@ -40,10 +39,12 @@ exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 	queryBuilder.paginate().limitFields().sort().filter().search(["recipient", "recipientPhoneNumber"]);
 	let ordersbyPackage = await OrderModel.findAndCountAll({
 		include: [
+			{model: User, as: "storeOwner", attributes: ["storeName"]},
 			{model: DistrictModel, as: "district", attributes: ["name"]},
 			{model: RegionModel, as: "region", attributes: ["name"]}
 		],
-		where: { packageId: { [Op.eq]: id } }, ...queryBuilder.queryOptions
+		where: { packageId: { [Op.eq]: id } },
+		...queryBuilder.queryOptions,
 	});
 	ordersbyPackage = queryBuilder.createPagination(ordersbyPackage)
 	res.status(200).json({
@@ -51,36 +52,7 @@ exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 		message: "id bo`yicha package ma`lumotlari",
 		errors: null,
 		data: {
-			ordersbyPackage,
+			...ordersbyPackage,
 		},
-	});
-});
-
-exports.getMyOrders = catchAsync(async (req, res, next) => {
-	const { id } = req.user;
-	const queryBuilder = new QueryBuilder(req.query)
-
-	queryBuilder.paginate().filter().limitFields().search(["recipient", "recipientPhoneNumber"]).sort()
-	const myPackage = await PackageModel.findOne({
-		where: {storeOwnerId: {[Op.eq]: id}}
-	});
-	if(!myPackage){
-		return next(new AppError("Package mavjud emas", 404))
-	}
-
-	let myOrders = await OrderModel.findAndCountAll({
-		include: [
-			{model: RegionModel, as: "region", attributes: ["name"] }, 
-			{model: DistrictModel, as: "district", attributes: ["name"]}
-		], 
-	where: {packageId: {[Op.eq]: myPackage.id}},
-	...queryBuilder.queryOptions, })
-	
-	myOrders = queryBuilder.createPagination(myOrders)
-	res.json({
-		status: "success",
-		message: "Magazinga tegishli bo`lgan buyurtmalar",
-		errors: null,
-		data: {myOrders}
 	});
 });
