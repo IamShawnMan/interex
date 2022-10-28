@@ -27,16 +27,16 @@ function Pagination(props) {
     if (num === 1) {
       if (+page === pagesCount) {
         setPagesCount(pagesCount + 6);
-        navigate(`/${url}?page=${+page + 1}&size=2`);
+        navigate(`/${url}?page=${+page + 1}&size=10`);
       } else {
-        navigate(`/${url}?page=${+page + 1}&size=2`);
+        navigate(`/${url}?page=${+page + 1}&size=10`);
       }
     } else {
       if (+page === offset) {
         setPagesCount(pagesCount - 6);
-        navigate(`/${url}?page=${+page - 1}&size=2`);
+        navigate(`/${url}?page=${+page - 1}&size=10`);
       } else {
-        navigate(`/${url}?page=${+page - 1}&size=2`);
+        navigate(`/${url}?page=${+page - 1}&size=10`);
       }
     }
   };
@@ -71,7 +71,7 @@ function Pagination(props) {
                 className={`${styles.pageLinks}  ${
                   +page === i + 1 ? styles.active : ""
                 }`}
-                to={`/${url}?page=${+i + 1}&size=2`}
+                to={`/${url}?page=${+i + 1}&size=10`}
                 key={i + "xksxskj"}
                 style={page === i + 1 ? { pointerEvents: "none" } : null}
               >

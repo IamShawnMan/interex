@@ -12,7 +12,7 @@ const Posts = () => {
   const [searchParams] = useSearchParams();
 
   const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 2;
+  const size = searchParams.get("size") || 10;
   const getAllPosts = async () => {
     try {
       const res = await http({
