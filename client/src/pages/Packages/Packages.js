@@ -25,8 +25,8 @@ function Package() {
         url: `/packages?page=${page}&size=${size}`,
       });
       console.log(res);
-      setPackages(res.data.data.allPackages.content);
-      setPagination(res.data.data.ordersbyPackage.pagination);
+      setPackages(res.data.data.content);
+      setPagination(res.data.data.pagination);
     } catch (error) {}
   };
 

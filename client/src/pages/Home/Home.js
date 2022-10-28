@@ -7,7 +7,6 @@ import http from "../../utils/axios-instance";
 import styles from "./Home.module.css";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Select from "../../components/Form/FormComponents/Select/Select";
-import Checkbox from "../../components/Form/FormComponents/Checkbox/Checkbox";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import { useForm } from "react-hook-form";
 

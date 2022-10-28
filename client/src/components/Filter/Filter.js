@@ -39,7 +39,7 @@ function Filter({ url, filterFn }) {
     const res = await http({
       url: "/regions",
     });
-    setRegions(res.data.data.allRegions.content);
+    setRegions(res.data.content);
   };
 
   const getAllDistricts = async (id) => {
@@ -54,7 +54,7 @@ function Filter({ url, filterFn }) {
     });
 
     setStoreOwner(
-      res.data.data.allUsers.content.map((s) => {
+      res.data.data.content.map((s) => {
         return { id: s.id, name: s.storeName };
       })
     );

@@ -18,9 +18,9 @@ const Posts = () => {
       const res = await http({
         url: `/posts?page=${page}&size=${size}`,
       });
-      // console.log(res);
-      setValue(res.data.data.allPosts.content);
-      setPagination(res.data.data.allPosts.pagination);
+      console.log(res);
+      setValue(res.data.data.content);
+      setPagination(res.data.data.pagination);
     } catch (error) {
       toast.error(error.response.data.message);
     }

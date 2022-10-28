@@ -24,33 +24,21 @@ function Orders() {
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const [allQueries, setQueries] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
-  console.log(isAdmin, id);
-  const url =
-    (isStoreOwner && `orders/myorders`) ||
-    (isAdmin && id && `packages/${id}/orders`) ||
-    ((isAdmin || isSuperAdmin) && `orders`);
+  const url = location.pathname
+  console.log(url);
   useEffect(() => {
     filterFn(allQueries);
   }, [page]);
   const getAllMyOrders = async (data) => {
-    setValue(data?.myOrders?.content);
-    setPagination(data?.myOrders?.pagination);
-  };
-
-  const getAllOrders = async (data) => {
     console.log(data);
-    setValue(data?.allOrders?.content);
-    setPagination(data?.allOrders?.pagination);
-  };
-
-  const getOrdersByPackageId = async (data) => {
-    setValue(data?.ordersbyPackage?.content);
-    setPagination(data?.ordersbyPackage?.pagination);
+    setValue(data?.data?.content);
+    setPagination(data?.data?.pagination);
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -61,7 +49,7 @@ function Orders() {
           orderStatus: status,
         },
       });
-      getOrdersByPackageId(allQueries);
+      filterFn(allQueries);
     } catch (error) {
       console.log(error);
     }
@@ -90,7 +78,7 @@ function Orders() {
       Header: "Action",
       accessor: (order) => {
         return (
-          <div>
+          <div className={styles.actionContainer}>
             {user.userRole === "STORE_OWNER" && (
               <Button
                 size="small"
@@ -104,7 +92,7 @@ function Orders() {
               </Button>
             )}
             {user.userRole === "ADMIN" && id && (
-              <div className={styles.actionContainer}>
+              <div>
                 <Button
                   name="btn"
                   disabled={order.orderStatus === "NEW" ? false : true}
@@ -121,7 +109,10 @@ function Orders() {
                 >
                   <>NOT EXIST</>
                 </Button>
-                <Button
+               
+              </div>
+            )} 
+            <Button
                   size="small"
                   name="btn"
                   onClick={() => {
@@ -130,8 +121,6 @@ function Orders() {
                 >
                   Info
                 </Button>
-              </div>
-            )}
           </div>
         );
       },
@@ -141,11 +130,11 @@ function Orders() {
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
-
     try {
       if (isAdmin || isSuperAdmin) {
+        console.log(isAdmin,isSuperAdmin);
         const res = await http({
-          url: `/${url}?page=${page}&size=${size}${
+          url: `${url}?page=${page}&size=${size}${
             data?.status ? `&orderStatus=${data.status}` : ""
           }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
             data?.districtId ? `&districtId=${data.districtId}` : ""
@@ -155,17 +144,17 @@ function Orders() {
               : ""
           }`,
         });
-        id && getOrdersByPackageId(res.data.data);
-        !id && getAllOrders(res.data.data);
+        getAllMyOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
-          `/${url}?page=${page}&size=${size}${
+          `${url}/myorders?page=${page}&size=${size}${
             data?.status ? `&orderStatus=${data.status}` : ""
           }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
             data?.districtId ? `&districtId=${data.districtId}` : ""
           }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
         );
-        getAllMyOrders(res.data.data);
+        console.log(res);
+        getAllMyOrders(res.data);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message);

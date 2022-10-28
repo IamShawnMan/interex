@@ -176,7 +176,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	const { postId } = req.body;
+	const { id } = req.params;
 
 	queryBuilder
 		.filter()
@@ -185,10 +185,10 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
 
-	let ordersInPost = await Order.findAll({
+	let ordersInPost = await Order.findAndCountAll({
 		where: {
 			postId: {
-				[Op.eq]: postId,
+				[Op.eq]: id,
 			},
 			orderStatus: {
 				[Op.eq]: orderStatuses.STATUS_DELIVERING,
@@ -198,17 +198,17 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 
 	ordersInPost = queryBuilder.createPagination(ordersInPost);
 
-	const ordersArrInPost = ordersInPost.map((o) => {
-		return o.dataValues.id;
-	});
-
+	// const ordersArrInPost = ordersInPost.map((o) => {
+	// 	return o.dataValues.id;
+	// });
+console.log(ordersInPost);
 	res.json({
 		status: "success",
 		message: "Orders in Post",
 		error: null,
 		data: {
 			...ordersInPost,
-			ordersArrInPost,
+			// ordersArrInPost,
 		},
 	});
 });
