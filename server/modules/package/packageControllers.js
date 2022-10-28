@@ -11,15 +11,16 @@ const RegionModel = require("../region/Region")
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.paginate().limitFields();
+	queryBuilder.paginate().limitFields().sort().filter();
 
 	let allPackages = await PackageModel.findAndCountAll({
-		...queryBuilder.queryOptions,
+		
 		include: {
 			model: User,
 			as: "storeOwner",
-			attributes: ["firstName", "lastName"],
+			attributes: ["storeName"],
 		},
+		...queryBuilder.queryOptions,
 	});
 	allPackages = queryBuilder.createPagination(allPackages);
 
@@ -38,12 +39,11 @@ exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.paginate().limitFields().sort().filter().search(["recipient", "recipientPhoneNumber"]);
 	let ordersbyPackage = await OrderModel.findAndCountAll({
-		...queryBuilder.queryOptions,
 		include: [
 			{model: DistrictModel, as: "district", attributes: ["name"]},
 			{model: RegionModel, as: "region", attributes: ["name"]}
 		],
-		where: { packageId: { [Op.eq]: id } },
+		where: { packageId: { [Op.eq]: id } }, ...queryBuilder.queryOptions
 	});
 	ordersbyPackage = queryBuilder.createPagination(ordersbyPackage)
 	res.status(200).json({
@@ -69,12 +69,12 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 	}
 
 	let myOrders = await OrderModel.findAndCountAll({
-		...queryBuilder.queryOptions, 
 		include: [
 			{model: RegionModel, as: "region", attributes: ["name"] }, 
 			{model: DistrictModel, as: "district", attributes: ["name"]}
 		], 
-	where: {packageId: {[Op.eq]: myPackage.id}}})
+	where: {packageId: {[Op.eq]: myPackage.id}},
+	...queryBuilder.queryOptions, })
 	
 	myOrders = queryBuilder.createPagination(myOrders)
 	res.json({
