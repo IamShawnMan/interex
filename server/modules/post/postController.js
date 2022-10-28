@@ -15,12 +15,12 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 	queryBuilder.limitFields().filter().paginate().search(["note"]);
 
 	let allPosts = await Post.findAndCountAll({
-		...queryBuilder.queryOptions,
 		include: {
 			model: Region,
 			as: "region",
 			attributes: ["name"],
 		},
+		...queryBuilder.queryOptions,
 	});
 	allPosts = queryBuilder.createPagination(allPosts);
 
@@ -170,14 +170,22 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Post created",
 		error: null,
-		data: null,
+		data: newPost.id,
 	});
 });
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
+	const queryBuilder = new QueryBuilder(req.query);
 	const { postId } = req.body;
 
-	const ordersInPost = await Order.findAll({
+	queryBuilder
+		.filter()
+		.paginate()
+		.limitFields()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
+
+	let ordersInPost = await Order.findAll({
 		where: {
 			postId: {
 				[Op.eq]: postId,
@@ -188,6 +196,8 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		},
 	});
 
+	ordersInPost = queryBuilder.createPagination(ordersInPost);
+
 	const ordersArrInPost = ordersInPost.map((o) => {
 		return o.dataValues.id;
 	});
@@ -197,7 +207,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		message: "Orders in Post",
 		error: null,
 		data: {
-			ordersInPost,
+			...ordersInPost,
 			ordersArrInPost,
 		},
 	});

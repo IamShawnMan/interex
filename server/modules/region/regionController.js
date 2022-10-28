@@ -6,16 +6,16 @@ const District = require("../district/District");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 
 exports.getAllRegions = catchAsync(async (req, res, next) => {
-	const queryBuilder = new QueryBuilder(req.query)
-	queryBuilder.paginate().filter().limitFields().sort().search(["name"])
+	const queryBuilder = new QueryBuilder(req.query);
+	queryBuilder.paginate().filter().limitFields().sort().search(["name"]);
 	let allRegions = await Region.findAndCountAll(queryBuilder.queryOptions);
-	allRegions = queryBuilder.createPagination(allRegions)
+	allRegions = queryBuilder.createPagination(allRegions);
 	res.json({
 		status: "success",
 		message: "Barcha Viloyatlar",
 		error: null,
 		data: {
-			allRegions,
+			...allRegions,
 		},
 	});
 });
