@@ -23,7 +23,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 
   let allOrders = await OrderModel.findAndCountAll({
     include: [
-      {model: PackageModel,as: "package",attributes: ["storeOwnerId"],include: [{model: UserModel,nas: "storeOwner",attributes: ["firstName", "lastName"]}]},
+      { model: UserModel, as: "storeOwner", attributes: ["storeName"]},
       { model: RegionModel, as: "region", attributes: ["name"] },
       { model: DistrictModel, as: "district", attributes: ["name"] },
     ],
