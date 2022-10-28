@@ -48,6 +48,19 @@
   border: 0.1rem solid #7d41ed;
 }
 
+.input[type="checkbox"] {
+  accent-color: #7d41ed;
+  zoom: 2;
+  outline: none;
+  background: #ffffff;
+  border: 0.1 solid #9ca3af;
+  border-radius: 0.4rem;
+}
+
+.input[type="checkbox"]:disabled {
+  accent-color: #9ca3af;
+}
+
 .error {
   border: 0.1rem solid #ff5f4a;
 }

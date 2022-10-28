@@ -3,7 +3,17 @@ import AttentionError from "../../../../assets/icons/AttentionError";
 import CircleCheck from "../../../../assets/icons/CircleCheck";
 import styles from "./Input.module.css";
 
-function Input({ type, register, placeholder, id, error, children }) {
+function Input({
+  type,
+  register,
+  placeholder,
+  id,
+  error,
+  children,
+  style,
+  disabled,
+  onClick,
+}) {
   const [success, setSuccess] = useState(false);
 
   return (
@@ -15,11 +25,14 @@ function Input({ type, register, placeholder, id, error, children }) {
       )}
       <div className={styles.inputContainer}>
         <input
+          disabled={disabled}
+          style={style}
           type={type ? type : "text"}
           placeholder={placeholder ? placeholder : ""}
           id={id ? id : ""}
           {...(register ? register() : "")}
           className={`${styles.input} ${error ? styles.error : ""}`}
+          onClick={onClick}
         />
         {error && <AttentionError className={""} />}
       </div>
