@@ -47,11 +47,11 @@ exports.createValidator = [
 		}),
 	body("storeName")
 		.custom(async(value, {req}) => {
-			if(req.body.userRole === "STORE_OWNER") {
-				if(value === undefined || value.trim() === "") {
-					throw new Error("Do'kon nomi kiritilmadi")
-				}
-			} 
+		  if(req.body.userRole === "STORE_OWNER") {
+			if(value === undefined || value.trim() === "") {
+			  throw new Error("Do'kon nomi kiritilmadi")
+			}
+		  } 
 		})
 ];
 
@@ -94,13 +94,13 @@ exports.updateValidator = [
 			} 
 		}),
 	body("storeName")
-		.custom(async(value, {req}) => {
-			if(req.body.userRole === "STORE_OWNER") {
-				if(value === undefined || value.trim() === "") {
-					throw new Error("Do'kon nomi kiritilmadi")
-				}
-			} 
-		})
+    	.custom(async(value, {req}) => {
+      		if(req.body.userRole === "STORE_OWNER") {
+        		if(value === undefined || value.trim() === "") {
+          		throw new Error("Do'kon nomi kiritilmadi")
+        }
+      } 
+    })
 ];
 
 exports.passwordChangeValidator = [

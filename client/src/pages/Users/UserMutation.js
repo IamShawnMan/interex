@@ -99,9 +99,9 @@ const UserMutation = () => {
       navigate("/users");
     } catch (error) {
       console.log(error.response.data.message);
-      // return await error.response.data.message.map((error) =>
-      //   toast.error(error)
-      // );
+      return error.response.data.message.map((error) =>
+        toast.error(error)
+      );
     }
   };
   return (

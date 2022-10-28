@@ -29,7 +29,10 @@ const Order = sequelize.define(
 			allowNull: false,
 		},
 		deliveryPrice: DataTypes.INTEGER,
-		totalPrice: DataTypes.INTEGER,
+		totalPrice: {
+			type: DataTypes.INTEGER,
+			validate: {len: {args: [0, 5000000], msg: "qiymat 0 dan 50 mln oralig`ida bo`lishi kerak" }}
+		}
 	},
 	{ underscored: true }
 );

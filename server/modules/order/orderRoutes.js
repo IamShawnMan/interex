@@ -6,6 +6,7 @@ const orderValidator = require("./orderExpressValidator");
 router
 	.route("/")
 	.get(roleMiddleware(["ADMIN", "SUPER_ADMIN"]), orderControllers.getAllOrders)
+	.get(roleMiddleware(["ADMIN"]), orderControllers.adminOrderStatus)
 	.post(
 		roleMiddleware(["STORE_OWNER"]),
 		orderValidator.creatingOrderValidator,
@@ -14,9 +15,7 @@ router
 router
 	.route("/myOrders")
 	.get(roleMiddleware(["STORE_OWNER"]), orderControllers.getMyOrders)
-router
-	.route("/")
-	.get(roleMiddleware(["ADMIN"]), orderControllers.adminOrderStatus);
+
 router
 	.route("/status")
 	.get(orderControllers.getAllOrderStatus)
