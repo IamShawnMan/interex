@@ -5,7 +5,7 @@ const {Op} = require("sequelize")
 exports.createValidator = [
 	body("userRole")
     .custom(async(value) => {
-      if(value === "Foydalanuvchi mansabi" || value === ""){
+      if(value === "Foydalanuvchi mansabi" || value === "" || value === undefined){
         throw new Error("Foydalanuvchi mansabi kiritilmadi")
       }
     }),
@@ -64,7 +64,7 @@ exports.createValidator = [
 exports.updateValidator = [
 	body("userRole")
     .custom(async(value) => {
-      if(value === "Foydalanuvchi mansabi" || value === ""){
+      if(value === "Foydalanuvchi mansabi" || value === "" || value === undefined){
         throw new Error("Foydalanuvchi mansabi kiritilmadi")
       }
     }),
