@@ -170,7 +170,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Post created",
 		error: null,
-		data: null,
+		data: newPost.id,
 	});
 });
 
