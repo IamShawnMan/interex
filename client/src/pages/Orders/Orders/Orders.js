@@ -33,10 +33,16 @@ function Orders() {
   const { id } = useParams();
   const navigate = useNavigate();
   const url = location.pathname
-  console.log(url);
+  // console.log(url);
+// console.log(ordersIdArr);
   useEffect(() => {
     filterFn(allQueries);
   }, [page]);
+
+  function addOrders(arr) {
+    setOrdersIdArr(arr);
+  }
+
   const getAllMyOrders = async (data) => {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
@@ -126,21 +132,12 @@ function Orders() {
                 </Button>
                 <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
                     const index = ordersIdArr.includes(order.id);
-                   console.log(index);
                    if(index){
-                    console.log("ochirish");
                     let orderIsArr=ordersIdArr.filter(i =>i!==order.id)
-                    console.log(orderIsArr);
                     setOrdersIdArr(orderIsArr)
                    } else{
-                    console.log("qoshish");
-                    let orderIsArr=ordersIdArr
-                    orderIsArr.push(order.id)
-                    console.log(orderIsArr);
-                    setOrdersIdArr(orderIsArr)
+                    setOrdersIdArr(prev => ([...prev, order.id]));
                    }
-                  
-                   
                   }}></Input>
           </div>
         );
@@ -181,7 +178,7 @@ function Orders() {
       toast.error(error?.response?.data?.message);
     }
   };
-
+console.log("render");
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
       {isStoreOwner && (
@@ -215,7 +212,7 @@ function Orders() {
           method: "PUT",
         });
        console.log(res);
-      }}>Posts</Button>}
+      }}>Update Post</Button>}
     </Layout>
   );
 }

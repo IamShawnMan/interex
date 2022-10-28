@@ -16,7 +16,8 @@ function Input({
   checked,
 }) {
   const [success, setSuccess] = useState(false);
-
+  console.log(checked);
+// useEffect(() => {})
   return (
     <div className={styles.formControl}>
       {children && (
