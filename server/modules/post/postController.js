@@ -198,9 +198,9 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 
 	ordersInPost = queryBuilder.createPagination(ordersInPost);
 
-	// const ordersArrInPost = ordersInPost.map((o) => {
-	// 	return o.dataValues.id;
-	// });
+	const ordersArrInPost = ordersInPost.content.map((o) => {
+		return o.dataValues.id;
+	});
 console.log(ordersInPost);
 	res.json({
 		status: "success",
@@ -208,31 +208,34 @@ console.log(ordersInPost);
 		error: null,
 		data: {
 			...ordersInPost,
-			// ordersArrInPost,
+			ordersArrInPost,
 		},
 	});
 });
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
-	const { regionId, ordersArr } = req.body;
+	const { postId, ordersArr } = req.body;
 
 	const newPost = await Post.create({
-		regionId: regionId,
+		postId: postId,
 	});
 
 	const ordersInPost = await Order.update(
 		{
-			postId: newPost.id,
-			orderStatus: orderStatuses.STATUS_DELIVERING,
+			postId: null,
+			orderStatus: orderStatuses.STATUS_ACCEPTED,
 		},
 		{
 			where: {
 				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					[Op.eq]: orderStatuses.STATUS_DELIVERING,
 				},
-				regionId: {
-					[Op.in]: ordersArr,
+				id: {
+					[Op.notIn]: ordersArr,
 				},
+				postId:{
+					[Op.eq]: postId
+				}
 			},
 		}
 	);

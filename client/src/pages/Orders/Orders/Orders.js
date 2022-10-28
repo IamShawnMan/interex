@@ -16,6 +16,7 @@ import Button from "../../../components/Form/FormComponents/Button/Button";
 import { formatDate } from "../../../utils/dateFormatter";
 import Filter from "../../../components/Filter/Filter";
 import styles from "./Orders.module.css";
+import Input from "../../../components/Form/FormComponents/Input/Input";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -23,6 +24,7 @@ function Orders() {
   const isStoreOwner = user.userRole === "STORE_OWNER";
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
+  const [ordersIdArr, setOrdersIdArr] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const page = searchParams.get("page") || 1;
@@ -36,9 +38,9 @@ function Orders() {
     filterFn(allQueries);
   }, [page]);
   const getAllMyOrders = async (data) => {
-    console.log(data);
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
+    setOrdersIdArr(data?.data?.ordersArrInPost)
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -78,7 +80,8 @@ function Orders() {
       Header: "Action",
       accessor: (order) => {
         return (
-          <div className={styles.actionContainer}>
+        <div className={styles.actionContainer}>
+         { isAdmin&&url.split("/")[1]!=="posts"||isSuperAdmin||isSuperAdmin&& <div className={styles.actionContainer}>
             {user.userRole === "STORE_OWNER" && (
               <Button
                 size="small"
@@ -111,7 +114,7 @@ function Orders() {
                 </Button>
                
               </div>
-            )} 
+            )} </div>}
             <Button
                   size="small"
                   name="btn"
@@ -121,6 +124,24 @@ function Orders() {
                 >
                   Info
                 </Button>
+                <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
+                    const index = ordersIdArr.includes(order.id);
+                   console.log(index);
+                   if(index){
+                    console.log("ochirish");
+                    let orderIsArr=ordersIdArr.filter(i =>i!==order.id)
+                    console.log(orderIsArr);
+                    setOrdersIdArr(orderIsArr)
+                   } else{
+                    console.log("qoshish");
+                    let orderIsArr=ordersIdArr
+                    orderIsArr.push(order.id)
+                    console.log(orderIsArr);
+                    setOrdersIdArr(orderIsArr)
+                   }
+                  
+                   
+                  }}></Input>
           </div>
         );
       },
@@ -186,6 +207,15 @@ function Orders() {
       ) : (
         <p>Malumotlar yoq</p>
       )}
+      {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn" onClick={async() =>{
+        console.log(ordersIdArr);
+         const res = await http({
+          url:"posts/new/customized",
+          data: { postId:id,ordersArr:ordersIdArr },
+          method: "PUT",
+        });
+       console.log(res);
+      }}>Posts</Button>}
     </Layout>
   );
 }

@@ -13,6 +13,7 @@ function Input({
   style,
   disabled,
   onClick,
+  checked,
 }) {
   const [success, setSuccess] = useState(false);
 
@@ -25,6 +26,7 @@ function Input({
       )}
       <div className={styles.inputContainer}>
         <input
+        checked={checked}
           disabled={disabled}
           style={style}
           type={type ? type : "text"}

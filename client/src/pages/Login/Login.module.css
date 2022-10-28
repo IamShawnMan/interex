@@ -1,6 +1,4 @@
-/* *{
-  overflow: hidden;
-} */
+
 .container {
   display: flex;
   width: 100%;
@@ -88,12 +86,9 @@ p {
 .changeType > div {
   position: absolute;
   cursor: pointer;
-  /* right: 5%; */
   transform: translate(-90%, 20%);
   display: inline-block;
 }
-
-/* MEDIA QUERY  */
 
 @media (max-width: 75rem) {
   .container {
