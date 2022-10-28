@@ -29,18 +29,21 @@ function Orders() {
   const [allQueries, setQueries] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
-
+console.log(isAdmin,id);
   const url =
     (isStoreOwner && `orders/myorders`) ||
     (isAdmin && id && `packages/${id}/orders`) ||
     ((isAdmin || isSuperAdmin) && `orders`);
-
+  useEffect(() => {
+    filterFn()
+  },[page])
   const getAllMyOrders = async (data) => {
     setValue(data?.myOrders?.content);
     setPagination(data?.myOrders?.pagination);
   };
 
   const getAllOrders = async (data) => {
+    console.log(data);
     setValue(data?.allOrders?.content);
     setPagination(data?.allOrders?.pagination);
   };
@@ -152,6 +155,17 @@ function Orders() {
               : ""
           }`,
         });
+        console.log({
+          url: `/${url}?page=${page}&size=${size}${
+            data?.status ? `&orderStatus=${data.status}` : ""
+          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+            data?.districtId ? `&districtId=${data.districtId}` : ""
+          }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
+            data?.createdAt
+              ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
+              : ""
+          }`,
+        });
         id && getOrdersByPackageId(res.data.data);
         !id && getAllOrders(res.data.data);
       } else if (isStoreOwner) {
@@ -168,6 +182,8 @@ function Orders() {
       toast.error(error?.response?.data?.message);
     }
   };
+
+
 
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
@@ -189,7 +205,7 @@ function Orders() {
           columns={cols}
           data={value}
           pagination={pagination}
-          url="orders"
+          url={url}
         />
       ) : (
         <p>Malumotlar yoq</p>

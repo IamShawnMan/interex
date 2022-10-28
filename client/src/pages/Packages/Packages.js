@@ -24,6 +24,7 @@ function Package() {
       const res = await http({
         url: `/packages?page=${page}&size=${size}`,
       });
+      console.log(res);
       setPackages(res.data.data.allPackages.content);
       setPagination(res.data.data.ordersbyPackage.pagination);
     } catch (error) {}
@@ -48,6 +49,9 @@ function Package() {
         );
       },
     },
+    {
+      id:"totalPrice", Header: "Package Total Price",accessor:"packageTotalPrice"
+    }
   ];
 
   return (
