@@ -17,6 +17,7 @@ import { formatDate } from "../../../utils/dateFormatter";
 import Filter from "../../../components/Filter/Filter";
 import styles from "./Orders.module.css";
 import Input from "../../../components/Form/FormComponents/Input/Input";
+import Select from "../../../components/Form/FormComponents/Select/Select";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -25,6 +26,7 @@ function Orders() {
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
   const [ordersIdArr, setOrdersIdArr] = useState(null);
+  const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const page = searchParams.get("page") || 1;
@@ -37,8 +39,15 @@ function Orders() {
 // console.log(ordersIdArr);
   useEffect(() => {
     filterFn(allQueries);
+    getPrices()
   }, [page]);
-
+  const getPrices = async () => {
+    const res = await http({
+      url: "/orders/devprice",
+    });
+    console.log(res);
+    setPrice(res.data);
+  };
   function addOrders(arr) {
     setOrdersIdArr(arr);
   }
@@ -48,7 +57,6 @@ function Orders() {
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost)
   };
-   console.log(url.split("/")[1]!=="posts","bvhjhjb");
   const changeOrderStatus = async (id, status) => {
     try {
       const res = await http({
@@ -74,7 +82,19 @@ function Orders() {
     {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
-      accessor: "deliveryPrice",
+      accessor: (order)=>{
+        <Select
+              data={price}
+             onChange={async()=>{
+              const res = await http({
+                url: `/price/${order.id}`,
+                method:"PUT"
+              });
+             }}
+            >
+              Prices
+            </Select>
+      }
     },
     { id: "totalPrice", Header: "Malhsulotning narxi", accessor: "totalPrice" },
     {
@@ -149,6 +169,7 @@ function Orders() {
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
+    console.log(url);
     try {
       if (isAdmin || isSuperAdmin) {
         console.log(isAdmin,isSuperAdmin);

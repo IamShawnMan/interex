@@ -92,7 +92,7 @@ const Posts = () => {
           columns={regionCols}
           data={value}
           pagination={pagination}
-          url="posts"
+          url="/posts"
         />
       ) : (
         <p>Malumotlar yoq</p>
