@@ -16,6 +16,7 @@ import Button from "../../../components/Form/FormComponents/Button/Button";
 import { formatDate } from "../../../utils/dateFormatter";
 import Filter from "../../../components/Filter/Filter";
 import styles from "./Orders.module.css";
+import Input from "../../../components/Form/FormComponents/Input/Input";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -23,34 +24,29 @@ function Orders() {
   const isStoreOwner = user.userRole === "STORE_OWNER";
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
+  const [ordersIdArr, setOrdersIdArr] = useState(null);
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const [allQueries, setQueries] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
-  console.log(isAdmin, id);
-  const url =
-    (isStoreOwner && `orders/myorders`) ||
-    (isAdmin && id && `packages/${id}/orders`) ||
-    ((isAdmin || isSuperAdmin) && `orders`);
+  const url = location.pathname
+  // console.log(url);
+// console.log(ordersIdArr);
   useEffect(() => {
     filterFn(allQueries);
   }, [page]);
+
+  function addOrders(arr) {
+    setOrdersIdArr(arr);
+  }
+
   const getAllMyOrders = async (data) => {
-    setValue(data?.myOrders?.content);
-    setPagination(data?.myOrders?.pagination);
-  };
-
-  const getAllOrders = async (data) => {
-    console.log(data);
-    setValue(data?.allOrders?.content);
-    setPagination(data?.allOrders?.pagination);
-  };
-
-  const getOrdersByPackageId = async (data) => {
-    setValue(data?.ordersbyPackage?.content);
-    setPagination(data?.ordersbyPackage?.pagination);
+    setValue(data?.data?.content);
+    setPagination(data?.data?.pagination);
+    setOrdersIdArr(data?.data?.ordersArrInPost)
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -61,7 +57,7 @@ function Orders() {
           orderStatus: status,
         },
       });
-      getOrdersByPackageId(allQueries);
+      filterFn(allQueries);
     } catch (error) {
       console.log(error);
     }
@@ -90,7 +86,8 @@ function Orders() {
       Header: "Action",
       accessor: (order) => {
         return (
-          <div>
+        <div className={styles.actionContainer}>
+         { isAdmin&&url.split("/")[1]!=="posts"||isSuperAdmin||isSuperAdmin&& <div className={styles.actionContainer}>
             {user.userRole === "STORE_OWNER" && (
               <Button
                 size="small"
@@ -104,7 +101,7 @@ function Orders() {
               </Button>
             )}
             {user.userRole === "ADMIN" && id && (
-              <div className={styles.actionContainer}>
+              <div>
                 <Button
                   name="btn"
                   disabled={order.orderStatus === "NEW" ? false : true}
@@ -121,7 +118,10 @@ function Orders() {
                 >
                   <>NOT EXIST</>
                 </Button>
-                <Button
+               
+              </div>
+            )} </div>}
+            <Button
                   size="small"
                   name="btn"
                   onClick={() => {
@@ -130,8 +130,15 @@ function Orders() {
                 >
                   Info
                 </Button>
-              </div>
-            )}
+               {ordersIdArr&& <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
+                    const index = ordersIdArr.includes(order.id);
+                   if(index){
+                    let orderIsArr=ordersIdArr.filter(i =>i!==order.id)
+                    setOrdersIdArr(orderIsArr)
+                   } else{
+                    setOrdersIdArr(prev => ([...prev, order.id]));
+                   }
+                  }}></Input>}
           </div>
         );
       },
@@ -141,11 +148,11 @@ function Orders() {
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
-
     try {
       if (isAdmin || isSuperAdmin) {
+        console.log(isAdmin,isSuperAdmin);
         const res = await http({
-          url: `/${url}?page=${page}&size=${size}${
+          url: `${url}?page=${page}&size=${size}${
             data?.status ? `&orderStatus=${data.status}` : ""
           }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
             data?.districtId ? `&districtId=${data.districtId}` : ""
@@ -155,23 +162,23 @@ function Orders() {
               : ""
           }`,
         });
-        id && getOrdersByPackageId(res.data.data);
-        !id && getAllOrders(res.data.data);
+        getAllMyOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
-          `/${url}?page=${page}&size=${size}${
+          `${url}/myorders?page=${page}&size=${size}${
             data?.status ? `&orderStatus=${data.status}` : ""
           }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
             data?.districtId ? `&districtId=${data.districtId}` : ""
           }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
         );
-        getAllMyOrders(res.data.data);
+        console.log(res);
+        getAllMyOrders(res.data);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
   };
-
+console.log("render");
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
       {isStoreOwner && (
@@ -197,6 +204,15 @@ function Orders() {
       ) : (
         <p>Malumotlar yoq</p>
       )}
+      {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn" onClick={async() =>{
+        console.log(ordersIdArr);
+         const res = await http({
+          url:"posts/new/customized",
+          data: { postId:id,ordersArr:ordersIdArr },
+          method: "PUT",
+        });
+        navigate("/posts")
+      }}>Update Post</Button>}
     </Layout>
   );
 }

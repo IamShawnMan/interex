@@ -8,18 +8,19 @@ const Region = require("../region/Region");
 const userRoles = require("../../core/constants/userRole");
 const postStatuses = require("../../core/constants/postStatus");
 const orderStatuses = require("../../core/constants/orderStatus");
+const District = require("../district/District");
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.limitFields().filter().paginate().search(["note"]);
 
 	let allPosts = await Post.findAndCountAll({
-		...queryBuilder.queryOptions,
 		include: {
 			model: Region,
 			as: "region",
 			attributes: ["name"],
 		},
+		...queryBuilder.queryOptions,
 	});
 	allPosts = queryBuilder.createPagination(allPosts);
 
@@ -28,7 +29,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 		message: "All Posts",
 		error: null,
 		data: {
-			allPosts,
+			...allPosts,
 		},
 	});
 });
@@ -148,22 +149,6 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		});
 	}
 
-	const ordersInSelectedRegion = await Order.findAll({
-		where: {
-			regionId: {
-				[Op.eq]: regionId,
-			},
-		},
-	});
-
-	if (!ordersInSelectedRegion) {
-		res.json({
-			status: "fail",
-			message:
-				"Bu viloyatga tegishli bugungi pochtaga qo'shilmagan buyurtmalar mavjud emas",
-		});
-	}
-
 	await Order.update(
 		{
 			postId: newPost.id,
@@ -185,30 +170,72 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Post created",
 		error: null,
-		data: null,
+		data: newPost.id,
+	});
+});
+
+exports.getOrdersInPost = catchAsync(async (req, res, next) => {
+	const queryBuilder = new QueryBuilder(req.query);
+	const { id } = req.params;
+
+	queryBuilder
+		.filter()
+		.paginate()
+		.limitFields()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
+
+	let ordersInPost = await Order.findAndCountAll({
+		where: {
+			postId: {
+				[Op.eq]: id,
+			},
+			orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_DELIVERING,
+			},
+		},
+	});
+
+	ordersInPost = queryBuilder.createPagination(ordersInPost);
+
+	const ordersArrInPost = ordersInPost.content.map((o) => {
+		return o.dataValues.id;
+	});
+console.log(ordersInPost);
+	res.json({
+		status: "success",
+		message: "Orders in Post",
+		error: null,
+		data: {
+			...ordersInPost,
+			ordersArrInPost,
+		},
 	});
 });
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
-	const { regionId, ordersArr } = req.body;
+	const { postId, ordersArr } = req.body;
 
 	const newPost = await Post.create({
-		regionId: regionId,
+		postId: postId,
 	});
 
 	const ordersInPost = await Order.update(
 		{
-			postId: newPost.id,
-			orderStatus: orderStatuses.STATUS_DELIVERING,
+			postId: null,
+			orderStatus: orderStatuses.STATUS_ACCEPTED,
 		},
 		{
 			where: {
 				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					[Op.eq]: orderStatuses.STATUS_DELIVERING,
 				},
-				regionId: {
-					[Op.in]: ordersArr,
+				id: {
+					[Op.notIn]: ordersArr,
 				},
+				postId:{
+					[Op.eq]: postId
+				}
 			},
 		}
 	);
@@ -220,6 +247,57 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 		data: { ordersInPost },
 	});
 });
+
+// exports.getSeparatedOrders = catchAsync(async (req, res, next) => {
+// 	const { regionId } = req.body;
+
+// 	let separated = [];
+
+// 	if (regionId == 1) {
+// 		const navoiyregion = await Order.findAll({
+// 			where: {
+// 				regionId: {
+// 					[Op.eq]: regionId,
+// 				},
+// 			},
+// 		});
+// 		const samdistrict = await Order.findAll({
+// 			where: {
+// 				regionId: { [Op.eq]: 3 },
+// 				districtId: {
+// 					[Op.in]: [36, 39],
+// 				},
+// 			},
+// 		});
+// 		separated = [...navoiyregion, ...samdistrict];
+// 	} else if (regionId == 3) {
+// 		separated = await Order.findAll({
+// 			where: {
+// 				regionId: {
+// 					[Op.eq]: regionId,
+// 				},
+// 				districtId: {
+// 					[Op.notIn]: [36, 39],
+// 				},
+// 			},
+// 		});
+// 	} else {
+// 		separated = await Order.findAll({
+// 			where: {
+// 				regionId: {
+// 					[Op.eq]: regionId,
+// 				},
+// 			},
+// 		});
+// 	}
+
+// 	res.json({
+// 		status: "success",
+// 		message: "Orders ready to sent",
+// 		error: null,
+// 		data: separated,
+// 	});
+// });
 
 exports.postStatusUpdate = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;

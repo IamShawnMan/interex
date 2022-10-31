@@ -52,7 +52,7 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 		message: "Barcha foydalanuvchilar",
 		error: null,
 		data: {
-			allUsers,
+			...allUsers,
 		},
 	});
 });
@@ -208,7 +208,7 @@ exports.getAdmins = catchAsync(async (req, res, next) => {
 		message: "All admins",
 		error: null,
 		data: {
-			allAdmins
+			...allAdmins
 		}
 	})
 }) 
