@@ -176,7 +176,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	const { postId } = req.body;
+	const { id } = req.params;
 
 	queryBuilder
 		.filter()
@@ -185,10 +185,10 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
 
-	let ordersInPost = await Order.findAll({
+	let ordersInPost = await Order.findAndCountAll({
 		where: {
 			postId: {
-				[Op.eq]: postId,
+				[Op.eq]: id,
 			},
 			orderStatus: {
 				[Op.eq]: orderStatuses.STATUS_DELIVERING,
@@ -198,7 +198,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 
 	ordersInPost = queryBuilder.createPagination(ordersInPost);
 
-	const ordersArrInPost = ordersInPost.map((o) => {
+	const ordersArrInPost = ordersInPost.content.map((o) => {
 		return o.dataValues.id;
 	});
 
@@ -214,24 +214,27 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 });
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
-	const { regionId, ordersArr } = req.body;
+	const { postId, ordersArr } = req.body;
 
-	const newPost = await Post.create({
-		regionId: regionId,
+	const newPost = await Post.findOne({
+		postId: postId,
 	});
 
-	const ordersInPost = await Order.update(
+	const ordersNotInPost = await Order.update(
 		{
-			postId: newPost.id,
-			orderStatus: orderStatuses.STATUS_DELIVERING,
+			postId: null,
+			orderStatus: orderStatuses.STATUS_ACCEPTED,
 		},
 		{
 			where: {
 				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					[Op.eq]: orderStatuses.STATUS_DELIVERING,
 				},
-				regionId: {
-					[Op.in]: ordersArr,
+				id: {
+					[Op.notIn]: ordersArr,
+				},
+				postId: {
+					[Op.eq]: postId,
 				},
 			},
 		}
@@ -241,65 +244,15 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Customized Post created",
 		error: null,
-		data: { ordersInPost },
+		data: ordersNotInPost,
 	});
 });
 
-// exports.getSeparatedOrders = catchAsync(async (req, res, next) => {
-// 	const { regionId } = req.body;
-
-// 	let separated = [];
-
-// 	if (regionId == 1) {
-// 		const navoiyregion = await Order.findAll({
-// 			where: {
-// 				regionId: {
-// 					[Op.eq]: regionId,
-// 				},
-// 			},
-// 		});
-// 		const samdistrict = await Order.findAll({
-// 			where: {
-// 				regionId: { [Op.eq]: 3 },
-// 				districtId: {
-// 					[Op.in]: [36, 39],
-// 				},
-// 			},
-// 		});
-// 		separated = [...navoiyregion, ...samdistrict];
-// 	} else if (regionId == 3) {
-// 		separated = await Order.findAll({
-// 			where: {
-// 				regionId: {
-// 					[Op.eq]: regionId,
-// 				},
-// 				districtId: {
-// 					[Op.notIn]: [36, 39],
-// 				},
-// 			},
-// 		});
-// 	} else {
-// 		separated = await Order.findAll({
-// 			where: {
-// 				regionId: {
-// 					[Op.eq]: regionId,
-// 				},
-// 			},
-// 		});
-// 	}
-
-// 	res.json({
-// 		status: "success",
-// 		message: "Orders ready to sent",
-// 		error: null,
-// 		data: separated,
-// 	});
-// });
-
-exports.postStatusUpdate = catchAsync(async (req, res, next) => {
+exports.sendPost = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { id } = req.params;
 	const { postStatus } = req.body;
+	const { note } = req.body;
 	const getPostById = await Post.findByPk(id);
 
 	if (!getPostById) {
@@ -307,8 +260,20 @@ exports.postStatusUpdate = catchAsync(async (req, res, next) => {
 	}
 	if (
 		userRole === userRoles.ADMIN &&
-		postStatus === postAllStatuses.POST_DELIVERING
+		postStatus === postStatuses.POST_DELIVERING
 	) {
-		await getPostById.update({ postStatus: postStatus });
+		await getPostById.update({
+			postStatus: postStatus,
+			note: note,
+		});
 	}
+
+	res.json({
+		status: "success",
+		message: "Post sent",
+		error: null,
+		data: {
+			note,
+		},
+	});
 });
