@@ -84,15 +84,6 @@ export const courierSchema = yup.object().shape({
     .min(6, "Parol 6 ta belgidan kop bolishi kerak")
     .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
   regionId: yup.string().trim().required("Region bo'sh bo'lishi mumkin emas"),
-  userRole: yup
-    .string()
-    .trim()
-    .required("Foydalanuvchi mansabi bo'sh bo'lishi mumkin emas!")
-    .min(
-      5,
-      "Foydalanavchi mansabi eng kamida 5 ta belgidan iborat bo'lishi kerak!"
-    )
-    .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
 export const storeOwnerSchemaUpdate = yup.object().shape({
   firstName: yup
