@@ -251,9 +251,10 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
       { model: DistrictModel, as: "district", attributes: ["name"] },
       { model: RegionModel, as: "region", attributes: ["name"] },
     ],
-    where: { storeOwnerId: { [Op.eq]: userId } },
-    ...queryBuilder.queryOptions,
-  });
+    where: { storeOwnerId: { [Op.eq]: userId },...queryBuilder.queryOptions.where },
+    
+  },);
+  // console.log(  ...queryBuilder.queryOptions);
   myOrders = queryBuilder.createPagination(myOrders);
 
   res.json({

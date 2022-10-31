@@ -85,7 +85,7 @@ function Orders() {
       accessor: (order)=>{
       return <>
       {order.orderStatus==="NEW"&&id&&( <Select
-              data={price.map(e=>{return {id:e,name:e}})}
+              data={price?.map(e=>{return {id:e,name:e}})}
              onChange={async(e)=>{
               console.log(e.target.value);
               const res = await http({
