@@ -216,9 +216,7 @@ console.log(ordersInPost);
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
 
-	const newPost = await Post.create({
-		postId: postId,
-	});
+	
 
 	const ordersInPost = await Order.update(
 		{

@@ -165,11 +165,6 @@ export const adminSchemaUpdate = yup.object().shape({
     .string()
     .trim()
     .required("Foydalanuvchi mansabi bo'sh bo'lishi mumkin emas!")
-    .min(
-      5,
-      "Foydalanavchi mansabi eng kamida 5 ta belgidan iborat bo'lishi kerak!"
-    )
-    .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
 export const courierSchemaUpdate = yup.object().shape({
   firstName: yup
@@ -203,3 +198,10 @@ export const courierSchemaUpdate = yup.object().shape({
     )
     .max(20, "Foydalanuvchi mansabi 20 ta belgidan ko'p bo'lmasligi kerak!"),
 });
+
+
+export const defaultSchema = yup.object().shape({
+  userRole: yup
+    .string()
+    .trim()
+    .required("user mansabi bo'sh bo'lishi mumkin emas"),})
