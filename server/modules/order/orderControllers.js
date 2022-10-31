@@ -124,18 +124,16 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 exports.changeOrderStatus = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { userRole } = req.user;
-  const { orderStatus, deliveryPrice } = req.body;
+  const { orderStatus } = req.body;
   const orderById = await OrderModel.findByPk(id);
   const orderStatusVariables = Object.values(statusOrder).slice(1, 3);
   if (userRole === "ADMIN") {
-    const deliverySum = deliveryPrice || 45000;
     const changeOrderStatus = orderStatusVariables.find(
       (e) => e === orderStatus
     );
 
     await orderById.update({
       orderStatus: changeOrderStatus,
-      deliveryPrice: deliverySum,
     });
   }
   res.status(203).json({
@@ -281,3 +279,22 @@ exports.getAllOrderStatus =(req, res, next) => {
     },
   });
 };
+exports.changeDevPrice = catchAsync(async(req,res,next)=>{
+  const {id} = req.params
+  const {deliveryPrice} = req.body
+
+  const existedOrder = await OrderModel.findByPk(id)
+  if(!existedOrder){
+    return next(new AppError("Bunday order mavjud emas", 404))
+  }
+  existedOrder.update({deliveryPrice: deliveryPrice || 50000})
+
+  res.json({
+    status: "success",
+    message: "buyurtma yetkazish to`lovi qo`shildi",
+    error: "null",
+    data: {
+      ...existedOrder
+    }
+  })
+})

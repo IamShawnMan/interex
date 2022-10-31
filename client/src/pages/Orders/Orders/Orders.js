@@ -45,7 +45,6 @@ function Orders() {
     const res = await http({
       url: "/orders/devprice",
     });
-    console.log(res);
     setPrice(res.data);
   };
   function addOrders(arr) {
@@ -83,17 +82,24 @@ function Orders() {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
       accessor: (order)=>{
-        <Select
-              data={price}
-             onChange={async()=>{
+      return <>
+      {order.orderStatus==="NEW"&&id&&( <Select
+              data={price.map(e=>{return {id:e,name:e}})}
+             onChange={async(e)=>{
+              console.log(e.target.value);
               const res = await http({
-                url: `/price/${order.id}`,
-                method:"PUT"
+                url: `orders/${order.id}/devprice`,
+                method:"PATCH",
+                data:{deliveryPrice:e.target.value}
               });
-             }}
+               console.log(res); }
+          
+            }
             >
               Prices
-            </Select>
+            </Select>)}
+            {order.status!=="NEW"&&order.deliveryPrice}
+            </>
       }
     },
     { id: "totalPrice", Header: "Malhsulotning narxi", accessor: "totalPrice" },

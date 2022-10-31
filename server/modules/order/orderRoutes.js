@@ -33,6 +33,5 @@ router
 	.route("/:id/edit")
 	.get(orderControllers.editOrder)
 
-
-
+	router.route("/:id/devprice").patch(roleMiddleware(["ADMIN"]), orderControllers.changeDevPrice)
 module.exports = router;
