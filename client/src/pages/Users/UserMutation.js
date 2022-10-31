@@ -15,6 +15,7 @@ import {
   courierSchemaUpdate,
   adminSchemaUpdate,
   storeOwnerSchemaUpdate,
+  defaultSchema
 } from "../../utils/yupSchemas";
 
 const UserMutation = () => {
@@ -48,7 +49,7 @@ const UserMutation = () => {
         );
       }
     } else {
-      return adminSchema;
+      return defaultSchema;
     }
   };
   const {
@@ -92,6 +93,7 @@ const UserMutation = () => {
     }
     reset(user);
   };
+  console.log(errors);
   const formSubmit = async (data) => {
     console.log(data);
     try {
