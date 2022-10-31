@@ -72,13 +72,14 @@ const UserMutation = () => {
     const res = await http({
       url: "/users/roles",
     });
-    setRoles(res.data.data.roles);
+    setRoles(res.data?.data?.roles);
   };
   const getAllRegions = async () => {
     const res = await http({
       url: "/regions",
     });
-    setRegions(res.data.data.allRegions);
+    console.log(res);
+    setRegions(res.data?.data?.content);
   };
 
   const getById = async () => {
@@ -182,7 +183,7 @@ const UserMutation = () => {
           {role === "COURIER" && (
             <Select
               register={register.bind(null, "regionId")}
-              data={regions.content}
+              data={regions}
               error={errors.regionId?.message}
             >
               Viloyatlar
