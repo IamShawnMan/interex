@@ -66,7 +66,7 @@ const Posts = () => {
       accessor: (post) => {
         return (
          <div>
-              <Button
+              <Button  disabled={post.postStatus==="NEW"?false:true} 
                 size="small"
                 name="btn"
                 onClick={() => {
@@ -92,7 +92,7 @@ const Posts = () => {
           columns={regionCols}
           data={value}
           pagination={pagination}
-          url="posts"
+          url="/posts"
         />
       ) : (
         <p>Malumotlar yoq</p>

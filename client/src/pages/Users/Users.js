@@ -108,7 +108,7 @@ function Users() {
           columns={usersCols}
           data={value}
           pagination={pagination}
-          url="users"
+          url="/users"
         />
       ) : (
         <p>Malumotlar yoq</p>
