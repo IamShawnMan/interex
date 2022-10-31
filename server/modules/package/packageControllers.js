@@ -43,8 +43,8 @@ exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 			{model: DistrictModel, as: "district", attributes: ["name"]},
 			{model: RegionModel, as: "region", attributes: ["name"]}
 		],
-		where: { packageId: { [Op.eq]: id } },
-		...queryBuilder.queryOptions,
+		where: { packageId: { [Op.eq]: id }, ...queryBuilder.queryOptions.where, },
+
 	});
 	ordersbyPackage = queryBuilder.createPagination(ordersbyPackage)
 	res.status(200).json({
