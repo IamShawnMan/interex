@@ -82,11 +82,7 @@ exports.updateValidator = [
 		.trim()
 		.isLowercase()
 		.withMessage("Username faqat kichkina harflardan iborat bo'lishi kerak")
-		.custom(async(value) => {
-			const existedUser = await User.findOne({where: {username:{[Op.eq]: value}}}) 
-			if(existedUser) 
-			throw new Error("Ushbu Login tizimda mavjud, iltimos boshqa Login o'ylab toping")
-		}),
+,
 	body("passportNumber")
 		.notEmpty()
 		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas")
