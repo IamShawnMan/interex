@@ -131,9 +131,10 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
     const changeOrderStatus = orderStatusVariables.find(
       (e) => e === orderStatus
     );
-
+    const dprice=orderById.deliveryPrice
     await orderById.update({
       orderStatus: changeOrderStatus,
+      deliveryPrice: dprice||50000
     });
   }
   res.status(203).json({
@@ -287,8 +288,8 @@ exports.changeDevPrice = catchAsync(async(req,res,next)=>{
   if(!existedOrder){
     return next(new AppError("Bunday order mavjud emas", 404))
   }
-  existedOrder.update({deliveryPrice: deliveryPrice || 50000})
-
+  existedOrder.update({deliveryPrice: deliveryPrice||50000})
+  console.log(existedOrder.deliveryPrice,"waefmasdfasdklfmaslkmdfas" );
   res.json({
     status: "success",
     message: "buyurtma yetkazish to`lovi qo`shildi",

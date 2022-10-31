@@ -246,70 +246,32 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	});
 });
 
-// exports.getSeparatedOrders = catchAsync(async (req, res, next) => {
-// 	const { regionId } = req.body;
-
-// 	let separated = [];
-
-// 	if (regionId == 1) {
-// 		const navoiyregion = await Order.findAll({
-// 			where: {
-// 				regionId: {
-// 					[Op.eq]: regionId,
-// 				},
-// 			},
-// 		});
-// 		const samdistrict = await Order.findAll({
-// 			where: {
-// 				regionId: { [Op.eq]: 3 },
-// 				districtId: {
-// 					[Op.in]: [36, 39],
-// 				},
-// 			},
-// 		});
-// 		separated = [...navoiyregion, ...samdistrict];
-// 	} else if (regionId == 3) {
-// 		separated = await Order.findAll({
-// 			where: {
-// 				regionId: {
-// 					[Op.eq]: regionId,
-// 				},
-// 				districtId: {
-// 					[Op.notIn]: [36, 39],
-// 				},
-// 			},
-// 		});
-// 	} else {
-// 		separated = await Order.findAll({
-// 			where: {
-// 				regionId: {
-// 					[Op.eq]: regionId,
-// 				},
-// 			},
-// 		});
-// 	}
-
-// 	res.json({
-// 		status: "success",
-// 		message: "Orders ready to sent",
-// 		error: null,
-// 		data: separated,
-// 	});
-// });
-
-exports.postStatusUpdate = catchAsync(async (req, res, next) => {
+exports.sendPost = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { id } = req.params;
 	const { postStatus } = req.body;
+	const { note } = req.body;
 	const getPostById = await Post.findByPk(id);
-
+  
 	if (!getPostById) {
-		return next(new AppError("This post not found", 404));
+	  return next(new AppError("This post not found", 404));
 	}
 	if (
-		userRole === userRoles.ADMIN &&
-		postStatus === postAllStatuses.POST_DELIVERING
+	  userRole === userRoles.ADMIN &&
+	  postStatus === postStatuses.POST_DELIVERING
 	) {
-		await getPostById.update({ postStatus: postStatus });
+	  await getPostById.update({
+		postStatus: postStatus,
+		note: note,
+	  });
 	}
-});
+  
+	res.json({
+	  status: "success",
+	  message: "Post sent",
+	  error: null,
+	  data: {
+		note,
+	  },
+	});
+  });

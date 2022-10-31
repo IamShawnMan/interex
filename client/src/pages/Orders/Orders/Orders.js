@@ -26,6 +26,7 @@ function Orders() {
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
   const [ordersIdArr, setOrdersIdArr] = useState(null);
+  const [note, setNote] = useState(null);
   const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
@@ -232,7 +233,8 @@ console.log("render");
       ) : (
         <p>Malumotlar yoq</p>
       )}
-      {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn" onClick={async() =>{
+      <Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>
+              {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn"onClick={async() =>{
         console.log(ordersIdArr);
          const res = await http({
           url:"posts/new/customized",
@@ -241,6 +243,15 @@ console.log("render");
         });
         navigate("/posts")
       }}>Update Post</Button>}
+      {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn" onClick={async() =>{
+        console.log(note);
+         const res = await http({
+          url:`posts/${id}/send`,
+          data: {postStatus:"DELIVERING",note: note},
+          method: "PUT",
+        });
+        navigate("/posts")
+      }}>Send Post</Button>}
     </Layout>
   );
 }

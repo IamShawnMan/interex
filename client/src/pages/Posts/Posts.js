@@ -66,7 +66,7 @@ const Posts = () => {
       accessor: (post) => {
         return (
          <div>
-              <Button
+              <Button  disabled={post.postStatus==="NEW"?false:true} 
                 size="small"
                 name="btn"
                 onClick={() => {
