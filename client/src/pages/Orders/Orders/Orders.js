@@ -130,7 +130,7 @@ function Orders() {
                 >
                   Info
                 </Button>
-                <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
+               {ordersIdArr&& <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
                     const index = ordersIdArr.includes(order.id);
                    if(index){
                     let orderIsArr=ordersIdArr.filter(i =>i!==order.id)
@@ -138,7 +138,7 @@ function Orders() {
                    } else{
                     setOrdersIdArr(prev => ([...prev, order.id]));
                    }
-                  }}></Input>
+                  }}></Input>}
           </div>
         );
       },
@@ -211,7 +211,7 @@ console.log("render");
           data: { postId:id,ordersArr:ordersIdArr },
           method: "PUT",
         });
-       console.log(res);
+        navigate("/posts")
       }}>Update Post</Button>}
     </Layout>
   );

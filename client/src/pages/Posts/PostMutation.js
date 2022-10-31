@@ -10,12 +10,13 @@ const PostMutation = () => {
     const [searchParams] = useSearchParams();
 
     const page = searchParams.get("page") || 1;
-    const size = searchParams.get("size") || 2;
+    const size = searchParams.get("size") || 10;
     const getAllRegions = async () => {
       try{
         const res = await http({
           url: `/regions?page=${page}&size=${size}`,
         });
+        console.log(res);
         setValue(res.data.data.content);
         setPagination(res.data.data.pagination);
       }catch (error) {
