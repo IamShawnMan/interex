@@ -2,8 +2,6 @@ const packageControllers = require("./packageControllers")
 const roleMiddleware = require("../../core/middlewares/roleMiddleware")
 const router = require("express").Router()
 
-
-
     router
     .route("/")
     .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), packageControllers.getAllPackages)
