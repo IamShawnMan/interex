@@ -201,7 +201,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	const ordersArrInPost = ordersInPost.content.map((o) => {
 		return o.dataValues.id;
 	});
-
+console.log(ordersInPost);
 	res.json({
 		status: "success",
 		message: "Orders in Post",
@@ -216,10 +216,6 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
 
-	const newPost = await Post.findOne({
-		postId: postId,
-	});
-
 	const ordersNotInPost = await Order.update(
 		{
 			postId: null,
@@ -233,9 +229,9 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 				id: {
 					[Op.notIn]: ordersArr,
 				},
-				postId: {
-					[Op.eq]: postId,
-				},
+				postId:{
+					[Op.eq]: postId
+				}
 			},
 		}
 	);

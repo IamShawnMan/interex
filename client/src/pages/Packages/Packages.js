@@ -14,7 +14,7 @@ function Package() {
   const [searchParams] = useSearchParams();
 
   const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 2;
+  const size = searchParams.get("size") || 10;
   useEffect(() => {
     getAllPackages();
   }, [page]);
@@ -24,8 +24,9 @@ function Package() {
       const res = await http({
         url: `/packages?page=${page}&size=${size}`,
       });
-      setPackages(res.data.data.allPackages.content);
-      setPagination(res.data.data.ordersbyPackage.pagination);
+      console.log(res);
+      setPackages(res.data.data.content);
+      setPagination(res.data.data.pagination);
     } catch (error) {}
   };
 
@@ -47,6 +48,11 @@ function Package() {
           </Link>
         );
       },
+    },
+    {
+      id: "totalPrice",
+      Header: "Package Total Price",
+      accessor: "packageTotalPrice",
     },
   ];
 

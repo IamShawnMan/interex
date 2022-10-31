@@ -23,7 +23,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 
   let allOrders = await OrderModel.findAndCountAll({
     include: [
-      {model: PackageModel,as: "package",attributes: ["storeOwnerId"],include: [{model: UserModel,nas: "storeOwner",attributes: ["firstName", "lastName"]}]},
+      { model: UserModel, as: "storeOwner", attributes: ["storeName"]},
       { model: RegionModel, as: "region", attributes: ["name"] },
       { model: DistrictModel, as: "district", attributes: ["name"] },
     ],
@@ -36,7 +36,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
     message: "Barcha buyurtmalar",
     error: null,
     data: {
-      allOrders,
+      ...allOrders,
     },
   });
 });
@@ -104,7 +104,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
   const orderById = await OrderModel.findByPk(id, {
     include: [
       {model: DistrictModel,as: "district",attributes: ["name"],},
-      { model: RegionModel, as: "region", attributes: ["name"] },
+      {model: RegionModel, as: "region", attributes: ["name"] },
       {model: OrderItemModel,as: "items"}
     ],
   });
@@ -237,22 +237,6 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllDeliveryPrice = (req, res, next) => {
-  const allPrice = Object.values(priceDelivery);
-
-  res.json(allPrice);
-};
-exports.getAllOrderStatus = catchAsync(async (req, res, next) => {
-  const allOrderStatus = Object.values(statusOrder);
-  res.json({
-    status: "success",
-    message: "All order status",
-    data: {
-      allOrderStatus,
-    },
-  });
-});
-
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
 
@@ -277,6 +261,23 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
     status: "success",
     message: `${req.user.firstName} - ${req.user.userRole} ning ro\`yhatdan o\`tkazgan barcha buyurtmalari`,
     error: null,
-    data: { myOrders },
+    data: { ...myOrders },
   });
 });
+
+exports.getAllDeliveryPrice = (req, res, next) => {
+  const allPrice = Object.values(priceDelivery);
+
+  res.json(allPrice);
+};
+
+exports.getAllOrderStatus =(req, res, next) => {
+  const allOrderStatus = Object.values(statusOrder);
+  res.json({
+    status: "success",
+    message: "All order status",
+    data: {
+      allOrderStatus,
+    },
+  });
+};

@@ -13,22 +13,21 @@ function Users() {
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 2;
+  const size = searchParams.get("size") || 10;
   const { user } = useContext(AppContext);
   const getAllUser = async () => {
     try {
       const res = await http({
         url: `/users?page=${page}&size=${size}`,
       });
-      setValue(res.data.data.allUsers.content);
-      setPagination(res.data.data.allUsers.pagination);
+      setValue(res.data.data.content);
+      setPagination(res.data.data.pagination);
     } catch (error) {
       toast.error(error?.response.data.message);
     }
   };
   useEffect(() => {
     getAllUser();
-   
   }, [page]);
 
   const userStatusChangeHandler = async ({ id, status }) => {
@@ -61,45 +60,48 @@ function Users() {
       accessor: "passportNumber",
     },
     { id: "status", Header: "Mansabi", accessor: "userRole" },
-    
   ];
-  const superAdminAction=[{
-    id: "actions",
-    Header: "actions",
-    accessor: (user) => {
-      return (
-        <Link to={`/users/${user.id}`}>
-          <Button size="iconSmall" name="icon" iconName="pen"/>
-        </Link>
-      );
+  const superAdminAction = [
+    {
+      id: "actions",
+      Header: "actions",
+      accessor: (user) => {
+        return (
+          <Link to={`/users/${user.id}`}>
+            <Button size="iconSmall" name="icon" iconName="pen" />
+          </Link>
+        );
+      },
     },
-  },
-  {
-    id: "userStatus",
-    Header: "Status",
-    accessor: (user) => {
-      const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
-      return (
-        <Switch
-          onSwitch={userStatusChangeHandler.bind(null, {
-            id: user.id,
-            status,
-          })}
-          enabled={user.status === "ACTIVE"}
-        />
-      );
-    }
-  }]
-  if(user.userRole==="SUPER_ADMIN"){
-    usersCols.push(...superAdminAction)
+    {
+      id: "userStatus",
+      Header: "Status",
+      accessor: (user) => {
+        const status = user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE";
+        return (
+          <Switch
+            onSwitch={userStatusChangeHandler.bind(null, {
+              id: user.id,
+              status,
+            })}
+            enabled={user.status === "ACTIVE"}
+          />
+        );
+      },
+    },
+  ];
+  if (user.userRole === "SUPER_ADMIN") {
+    usersCols.push(...superAdminAction);
   }
   return (
     <Layout pageName="Foydalanuvchilar">
-     {user.userRole==="SUPER_ADMIN"&& <Link style={{ width: "10rem", display: "block" }} to="/users/new">
-        <Button size="small" name="btn">
-          Add User
-        </Button>
-      </Link> }
+      {user.userRole === "SUPER_ADMIN" && (
+        <Link style={{ width: "10rem", display: "block" }} to="/users/new">
+          <Button size="small" name="btn">
+            Add User
+          </Button>
+        </Link>
+      )}
 
       {value?.length > 0 ? (
         <BasicTable
