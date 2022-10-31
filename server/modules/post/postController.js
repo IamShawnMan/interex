@@ -176,7 +176,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	const { postId } = req.body;
+	const { id } = req.params;
 
 	queryBuilder
 		.filter()
@@ -185,10 +185,10 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
 
-	let ordersInPost = await Order.findAll({
+	let ordersInPost = await Order.findAndCountAll({
 		where: {
 			postId: {
-				[Op.eq]: postId,
+				[Op.eq]: id,
 			},
 			orderStatus: {
 				[Op.eq]: orderStatuses.STATUS_DELIVERING,
@@ -198,10 +198,10 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 
 	ordersInPost = queryBuilder.createPagination(ordersInPost);
 
-	const ordersArrInPost = ordersInPost.map((o) => {
+	const ordersArrInPost = ordersInPost.content.map((o) => {
 		return o.dataValues.id;
 	});
-
+console.log(ordersInPost);
 	res.json({
 		status: "success",
 		message: "Orders in Post",
@@ -214,25 +214,28 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 });
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
-	const { regionId, ordersArr } = req.body;
+	const { postId, ordersArr } = req.body;
 
 	const newPost = await Post.create({
-		regionId: regionId,
+		postId: postId,
 	});
 
 	const ordersInPost = await Order.update(
 		{
-			postId: newPost.id,
-			orderStatus: orderStatuses.STATUS_DELIVERING,
+			postId: null,
+			orderStatus: orderStatuses.STATUS_ACCEPTED,
 		},
 		{
 			where: {
 				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					[Op.eq]: orderStatuses.STATUS_DELIVERING,
 				},
-				regionId: {
-					[Op.in]: ordersArr,
+				id: {
+					[Op.notIn]: ordersArr,
 				},
+				postId:{
+					[Op.eq]: postId
+				}
 			},
 		}
 	);

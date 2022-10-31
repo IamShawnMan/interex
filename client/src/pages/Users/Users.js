@@ -20,8 +20,8 @@ function Users() {
       const res = await http({
         url: `/users?page=${page}&size=${size}`,
       });
-      setValue(res.data.data.allUsers.content);
-      setPagination(res.data.data.allUsers.pagination);
+      setValue(res.data.data.content);
+      setPagination(res.data.data.pagination);
     } catch (error) {
       toast.error(error?.response.data.message);
     }
