@@ -234,6 +234,7 @@ console.log("render");
         <p>Malumotlar yoq</p>
       )}
       <Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>
+      <div style={{display:"flex",gap:1}}>
               {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn"onClick={async() =>{
         console.log(ordersIdArr);
          const res = await http({
@@ -251,7 +252,7 @@ console.log("render");
           method: "PUT",
         });
         navigate("/posts")
-      }}>Send Post</Button>}
+      }}>Send Post</Button>}</div>
     </Layout>
   );
 }
