@@ -48,6 +48,7 @@ function Orders() {
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost)
   };
+   console.log(url.split("/")[1]!=="posts","bvhjhjb");
   const changeOrderStatus = async (id, status) => {
     try {
       const res = await http({
@@ -87,7 +88,8 @@ function Orders() {
       accessor: (order) => {
         return (
         <div className={styles.actionContainer}>
-         { isAdmin&&url.split("/")[1]!=="posts"||isSuperAdmin||isSuperAdmin&& <div className={styles.actionContainer}>
+         
+         {( (isAdmin&&url.split("/")[1]!=="posts")||isStoreOwner)&& <div className={styles.actionContainer}>
             {user.userRole === "STORE_OWNER" && (
               <Button
                 size="small"
@@ -99,9 +101,8 @@ function Orders() {
               >
                 Update
               </Button>
-            )}
-            {user.userRole === "ADMIN" && id && (
-              <div>
+            )} 
+          { isAdmin &&id&&<div>
                 <Button
                   name="btn"
                   disabled={order.orderStatus === "NEW" ? false : true}
@@ -119,8 +120,8 @@ function Orders() {
                   <>NOT EXIST</>
                 </Button>
                
-              </div>
-            )} </div>}
+              </div>}
+           </div>}
             <Button
                   size="small"
                   name="btn"
