@@ -39,7 +39,7 @@ function Filter({ url, filterFn }) {
     const res = await http({
       url: "/regions",
     });
-    setRegions(res.data.content);
+    setRegions(res.data.data.content);
   };
 
   const getAllDistricts = async (id) => {
