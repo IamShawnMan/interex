@@ -233,7 +233,7 @@ console.log("render");
       ) : (
         <p>Malumotlar yoq</p>
       )}
-      <Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>
+       {url.split("/")[1]==="posts"&&<Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>}
       <div style={{display:"flex",gap:1}}>
               {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn"onClick={async() =>{
         console.log(ordersIdArr);
