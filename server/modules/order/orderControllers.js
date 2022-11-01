@@ -21,12 +21,12 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
     .search(["recipientPhoneNumber", "recipient"])
     .sort();
 
+  queryBuilder.queryOptions.include = [
+    { model: UserModel, as: "storeOwner", attributes: ["storeName"]},
+    { model: RegionModel, as: "region", attributes: ["name"] },
+    { model: DistrictModel, as: "district", attributes: ["name"] },
+  ]
   let allOrders = await OrderModel.findAndCountAll({
-    include: [
-      { model: UserModel, as: "storeOwner", attributes: ["storeName"]},
-      { model: RegionModel, as: "region", attributes: ["name"] },
-      { model: DistrictModel, as: "district", attributes: ["name"] },
-    ],
     ...queryBuilder.queryOptions,
   });
   allOrders = queryBuilder.createPagination(allOrders);
