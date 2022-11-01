@@ -137,6 +137,8 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
     });
     if(orderById.orderStatus === statusOrder.STATUS_ACCEPTED){
       orderById.update({deliveryPrice: dprice || 50000})
+    }else{
+      orderById.update({deliveryPrice: null})
     }
   }
   res.status(203).json({
