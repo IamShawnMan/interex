@@ -21,12 +21,12 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
     .search(["recipientPhoneNumber", "recipient"])
     .sort();
 
+  queryBuilder.queryOptions.include = [
+    { model: UserModel, as: "storeOwner", attributes: ["storeName"]},
+    { model: RegionModel, as: "region", attributes: ["name"] },
+    { model: DistrictModel, as: "district", attributes: ["name"] },
+  ]
   let allOrders = await OrderModel.findAndCountAll({
-    include: [
-      { model: UserModel, as: "storeOwner", attributes: ["storeName"]},
-      { model: RegionModel, as: "region", attributes: ["name"] },
-      { model: DistrictModel, as: "district", attributes: ["name"] },
-    ],
     ...queryBuilder.queryOptions,
   });
   allOrders = queryBuilder.createPagination(allOrders);
@@ -241,6 +241,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
 
+  req.query.storeOwnerId = userId
   const queryBuilder = new QueryBuilder(req.query);
   queryBuilder
     .filter()
@@ -248,14 +249,12 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
     .limitFields()
     .search(["recipientPhoneNumber", "recipient"])
     .sort();
-  let myOrders = await OrderModel.findAndCountAll({
-    include: [
+
+    queryBuilder.queryOptions.include =  [
       { model: DistrictModel, as: "district", attributes: ["name"] },
       { model: RegionModel, as: "region", attributes: ["name"] },
-    ],
-    where: { storeOwnerId: { [Op.eq]: userId },...queryBuilder.queryOptions.where, },
-    
-  });
+    ]
+  let myOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
   myOrders = queryBuilder.createPagination(myOrders);
 
   res.json({
