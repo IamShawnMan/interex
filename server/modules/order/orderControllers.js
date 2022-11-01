@@ -21,12 +21,12 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
 
+	queryBuilder.queryOptions.include = [
+		{ model: UserModel, as: "storeOwner", attributes: ["storeName"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
+	];
 	let allOrders = await OrderModel.findAndCountAll({
-		include: [
-			{ model: UserModel, as: "storeOwner", attributes: ["storeName"] },
-			{ model: RegionModel, as: "region", attributes: ["name"] },
-			{ model: DistrictModel, as: "district", attributes: ["name"] },
-		],
 		...queryBuilder.queryOptions,
 	});
 	allOrders = queryBuilder.createPagination(allOrders);
@@ -124,19 +124,22 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const { userRole } = req.user;
-	const { orderStatus, deliveryPrice } = req.body;
-	const orderById = await OrderModel.findByPk(id);
+	const { orderStatus } = req.body;
+	let orderById = await OrderModel.findByPk(id);
 	const orderStatusVariables = Object.values(statusOrder).slice(1, 3);
 	if (userRole === "ADMIN") {
-		const deliverySum = deliveryPrice || 45000;
 		const changeOrderStatus = orderStatusVariables.find(
 			(e) => e === orderStatus
 		);
-
-		await orderById.update({
+		const dprice = orderById.deliveryPrice;
+		orderbyid = await orderById.update({
 			orderStatus: changeOrderStatus,
-			deliveryPrice: deliverySum,
 		});
+		if (orderById.orderStatus === statusOrder.STATUS_ACCEPTED) {
+			await orderById.update({ deliveryPrice: dprice || 50000 });
+		} else {
+			await orderById.update({ deliveryPrice: null });
+		}
 	}
 	res.status(203).json({
 		status: "success",
@@ -240,6 +243,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 exports.getMyOrders = catchAsync(async (req, res, next) => {
 	const userId = req.user.id;
 
+	req.query.storeOwnerId = userId;
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
 		.filter()
@@ -247,14 +251,12 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 		.limitFields()
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
-	let myOrders = await OrderModel.findAndCountAll({
-		include: [
-			{ model: DistrictModel, as: "district", attributes: ["name"] },
-			{ model: RegionModel, as: "region", attributes: ["name"] },
-		],
-		where: { storeOwnerId: { [Op.eq]: userId } },
-		...queryBuilder.queryOptions,
-	});
+
+	queryBuilder.queryOptions.include = [
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+	];
+	let myOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
 	myOrders = queryBuilder.createPagination(myOrders);
 
 	res.json({
@@ -281,3 +283,22 @@ exports.getAllOrderStatus = (req, res, next) => {
 		},
 	});
 };
+exports.changeDevPrice = catchAsync(async (req, res, next) => {
+	const { id } = req.params;
+	const { deliveryPrice } = req.body;
+
+	const existedOrder = await OrderModel.findByPk(id);
+	if (!existedOrder) {
+		return next(new AppError("Bunday order mavjud emas", 404));
+	}
+	existedOrder.update({ deliveryPrice: deliveryPrice || 50000 });
+	console.log(existedOrder.deliveryPrice, "waefmasdfasdklfmaslkmdfas");
+	res.json({
+		status: "success",
+		message: "buyurtma yetkazish to`lovi qo`shildi",
+		error: "null",
+		data: {
+			...existedOrder,
+		},
+	});
+});

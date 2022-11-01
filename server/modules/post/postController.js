@@ -278,26 +278,26 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 	const { postStatus } = req.body;
 	const { note } = req.body;
 	const getPostById = await Post.findByPk(id);
-
+  
 	if (!getPostById) {
-		return next(new AppError("This post not found", 404));
+	  return next(new AppError("This post not found", 404));
 	}
 	if (
-		userRole === userRoles.ADMIN &&
-		postStatus === postStatuses.POST_DELIVERING
+	  userRole === userRoles.ADMIN &&
+	  postStatus === postStatuses.POST_DELIVERING
 	) {
-		await getPostById.update({
-			postStatus: postStatus,
-			note: note,
-		});
+	  await getPostById.update({
+		postStatus: postStatus,
+		note: note,
+	  });
 	}
-
+  
 	res.json({
-		status: "success",
-		message: "Post sent",
-		error: null,
-		data: {
-			note,
-		},
+	  status: "success",
+	  message: "Post sent",
+	  error: null,
+	  data: {
+		note,
+	  },
 	});
-});
+  });

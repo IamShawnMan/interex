@@ -8,7 +8,7 @@ const router = require("express").Router()
 
 router
     .route("/:id/orders")
-    .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]),packageControllers.getOrdersByPackage)
+    .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), packageControllers.getOrdersByPackage)
 
 
 module.exports = router;

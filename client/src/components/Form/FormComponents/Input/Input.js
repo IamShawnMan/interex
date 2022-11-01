@@ -14,9 +14,10 @@ function Input({
   disabled,
   onClick,
   checked,
+  onChange,
 }) {
   const [success, setSuccess] = useState(false);
-  console.log(checked);
+  // console.log(checked);
 // useEffect(() => {})
   return (
     <div className={styles.formControl}>
@@ -36,6 +37,7 @@ function Input({
           {...(register ? register() : "")}
           className={`${styles.input} ${error ? styles.error : ""}`}
           onClick={onClick}
+          onChange={onChange}
         />
         {error && <AttentionError className={""} />}
       </div>

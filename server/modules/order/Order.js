@@ -52,4 +52,6 @@ Order.belongsTo(UserModel, {as: "storeOwner"})
 
 
 
+
+
 module.exports = Order;

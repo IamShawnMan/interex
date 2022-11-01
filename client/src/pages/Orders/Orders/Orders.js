@@ -17,6 +17,7 @@ import { formatDate } from "../../../utils/dateFormatter";
 import Filter from "../../../components/Filter/Filter";
 import styles from "./Orders.module.css";
 import Input from "../../../components/Form/FormComponents/Input/Input";
+import Select from "../../../components/Form/FormComponents/Select/Select";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -25,6 +26,8 @@ function Orders() {
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
   const [ordersIdArr, setOrdersIdArr] = useState(null);
+  const [note, setNote] = useState(null);
+  const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const page = searchParams.get("page") || 1;
@@ -37,8 +40,14 @@ function Orders() {
 // console.log(ordersIdArr);
   useEffect(() => {
     filterFn(allQueries);
+    getPrices()
   }, [page]);
-
+  const getPrices = async () => {
+    const res = await http({
+      url: "/orders/devprice",
+    });
+    setPrice(res.data);
+  };
   function addOrders(arr) {
     setOrdersIdArr(arr);
   }
@@ -73,7 +82,26 @@ function Orders() {
     {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
-      accessor: "deliveryPrice",
+      accessor: (order)=>{
+      return <>
+      {order.orderStatus==="NEW"&&id&&( <Select
+              data={price.map(e=>{return {id:e,name:e}})}
+             onChange={async(e)=>{
+              console.log(e.target.value);
+              const res = await http({
+                url: `orders/${order.id}/devprice`,
+                method:"PATCH",
+                data:{deliveryPrice:e.target.value}
+              });
+               console.log(res); }
+          
+            }
+            >
+              Prices
+            </Select>)}
+            {order.status!=="NEW"&&order.deliveryPrice}
+            </>
+      }
     },
     { id: "totalPrice", Header: "Malhsulotning narxi", accessor: "totalPrice" },
     {
@@ -87,7 +115,8 @@ function Orders() {
       accessor: (order) => {
         return (
         <div className={styles.actionContainer}>
-         { isAdmin&&url.split("/")[1]!=="posts"||isSuperAdmin||isSuperAdmin&& <div className={styles.actionContainer}>
+         
+         {( (isAdmin&&url.split("/")[1]!=="posts")||isStoreOwner)&& <div className={styles.actionContainer}>
             {user.userRole === "STORE_OWNER" && (
               <Button
                 size="small"
@@ -99,9 +128,8 @@ function Orders() {
               >
                 Update
               </Button>
-            )}
-            {user.userRole === "ADMIN" && id && (
-              <div>
+            )} 
+          { isAdmin &&id&&<div>
                 <Button
                   name="btn"
                   disabled={order.orderStatus === "NEW" ? false : true}
@@ -119,8 +147,8 @@ function Orders() {
                   <>NOT EXIST</>
                 </Button>
                
-              </div>
-            )} </div>}
+              </div>}
+           </div>}
             <Button
                   size="small"
                   name="btn"
@@ -148,6 +176,7 @@ function Orders() {
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
+    console.log(url);
     try {
       if (isAdmin || isSuperAdmin) {
         console.log(isAdmin,isSuperAdmin);
@@ -204,7 +233,9 @@ console.log("render");
       ) : (
         <p>Malumotlar yoq</p>
       )}
-      {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn" onClick={async() =>{
+       {url.split("/")[1]==="posts"&&<Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>}
+      <div style={{display:"flex",gap:1}}>
+              {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn"onClick={async() =>{
         console.log(ordersIdArr);
          const res = await http({
           url:"posts/new/customized",
@@ -213,6 +244,15 @@ console.log("render");
         });
         navigate("/posts")
       }}>Update Post</Button>}
+      {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn" onClick={async() =>{
+        console.log(note);
+         const res = await http({
+          url:`posts/${id}/send`,
+          data: {postStatus:"DELIVERING",note: note},
+          method: "PUT",
+        });
+        navigate("/posts")
+      }}>Send Post</Button>}</div>
     </Layout>
   );
 }
