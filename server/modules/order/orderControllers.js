@@ -52,7 +52,19 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   let existedPackage = await PackageModel.findOne({
     where: { storeOwnerId: { [Op.eq]: req.user.id } },
   });
-
+  
+  if(existedPackage){
+   const isNewOrders = await OrderModel.count({
+    where: {
+      [Op.and]:[
+      {packageId: {[Op.eq]: existedPackage.id}},
+      {orderStatus: statusOrder.STATUS_NEW}
+    ]
+    }})
+    if(isNewOrders === 0){
+    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id })
+  }
+  }
   if (!existedPackage) {
     existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
   }
