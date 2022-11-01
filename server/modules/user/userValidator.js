@@ -1,5 +1,4 @@
 const { body } = require("express-validator");
-const AppError = require("../../core/utils/AppError");
 const User = require("./User");
 const {Op} = require("sequelize")
 exports.createValidator = [
