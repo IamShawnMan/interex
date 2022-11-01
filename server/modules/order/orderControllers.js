@@ -125,17 +125,19 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { userRole } = req.user;
   const { orderStatus } = req.body;
-  const orderById = await OrderModel.findByPk(id);
+  let orderById = await OrderModel.findByPk(id);
   const orderStatusVariables = Object.values(statusOrder).slice(1, 3);
   if (userRole === "ADMIN") {
     const changeOrderStatus = orderStatusVariables.find(
       (e) => e === orderStatus
     );
     const dprice=orderById.deliveryPrice
-    await orderById.update({
+    orderById = await orderById.update({
       orderStatus: changeOrderStatus,
-      deliveryPrice: dprice||50000
     });
+    if(orderById.orderStatus === statusOrder.STATUS_ACCEPTED){
+      await orderById.update({deliveryPrice: dprice||50000})
+    }
   }
   res.status(203).json({
     status: "success",
@@ -251,8 +253,8 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
       { model: DistrictModel, as: "district", attributes: ["name"] },
       { model: RegionModel, as: "region", attributes: ["name"] },
     ],
-    where: { storeOwnerId: { [Op.eq]: userId } },
     ...queryBuilder.queryOptions,
+    where: { storeOwnerId: { [Op.eq]: userId } },
   });
   myOrders = queryBuilder.createPagination(myOrders);
 
