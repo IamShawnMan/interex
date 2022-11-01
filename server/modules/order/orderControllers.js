@@ -132,11 +132,11 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
       (e) => e === orderStatus
     );
     const dprice=orderById.deliveryPrice
-    orderById = await orderById.update({
+     orderbyid = await orderById.update({
       orderStatus: changeOrderStatus,
     });
     if(orderById.orderStatus === statusOrder.STATUS_ACCEPTED){
-      await orderById.update({deliveryPrice: dprice||50000})
+      orderById.update({deliveryPrice: dprice || 50000})
     }
   }
   res.status(203).json({
@@ -241,6 +241,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
 
+  req.query.storeOwnerId = userId
   const queryBuilder = new QueryBuilder(req.query);
   queryBuilder
     .filter()
@@ -248,14 +249,12 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
     .limitFields()
     .search(["recipientPhoneNumber", "recipient"])
     .sort();
-  let myOrders = await OrderModel.findAndCountAll({
-    include: [
+
+    queryBuilder.queryOptions.include =  [
       { model: DistrictModel, as: "district", attributes: ["name"] },
       { model: RegionModel, as: "region", attributes: ["name"] },
-    ],
-    ...queryBuilder.queryOptions,
-    where: { storeOwnerId: { [Op.eq]: userId } },
-  });
+    ]
+  let myOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
   myOrders = queryBuilder.createPagination(myOrders);
 
   res.json({
