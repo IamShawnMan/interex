@@ -78,6 +78,34 @@ exports.getPostByRegionId = catchAsync(async (req, res, next) => {
 	});
 });
 
+exports.existRegions = catchAsync(async (req, res, next) => {
+	const regionsArr = [];
+
+	const ordersInRegions = await Order.findAll({
+		where: {
+			orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+			},
+		},
+	});
+
+	console.log(ordersInRegions);
+
+	ordersInRegions.map((order) => {
+		const id = order.dataValues.regionId;
+		if (!regionsArr.includes(id)) {
+			regionsArr.push(id);
+		}
+	});
+
+	return res.json({
+		status: "success",
+		message: "regions array",
+		error: null,
+		data: regionsArr,
+	});
+});
+
 exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.body;
 
@@ -201,7 +229,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	const ordersArrInPost = ordersInPost.content.map((o) => {
 		return o.dataValues.id;
 	});
-console.log(ordersInPost);
+	console.log(ordersInPost);
 	res.json({
 		status: "success",
 		message: "Orders in Post",
@@ -216,9 +244,7 @@ console.log(ordersInPost);
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
 
-	
-
-	const ordersInPost = await Order.update(
+	const ordersNotInPost = await Order.update(
 		{
 			postId: null,
 			orderStatus: orderStatuses.STATUS_ACCEPTED,
@@ -231,9 +257,9 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 				id: {
 					[Op.notIn]: ordersArr,
 				},
-				postId:{
-					[Op.eq]: postId
-				}
+				postId: {
+					[Op.eq]: postId,
+				},
 			},
 		}
 	);
@@ -242,7 +268,7 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Customized Post created",
 		error: null,
-		data: { ordersInPost },
+		data: ordersNotInPost,
 	});
 });
 

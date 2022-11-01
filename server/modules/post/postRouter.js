@@ -7,6 +7,7 @@ module.exports = router
 	.get("/:id", postController.getPostById)
 	.get("/regions/:id", postController.getPostByRegionId)
 	.get("/:id/orders", postController.getOrdersInPost)
+	.get("/new/regions", postController.existRegions)
 	.post("/new", postController.createPostForAllOrders)
 	.put("/new/customized", postController.createPostForCustomOrders)
 	.put("/:id/send", postController.sendPost);
