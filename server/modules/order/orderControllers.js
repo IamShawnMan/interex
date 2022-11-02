@@ -255,25 +255,6 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 exports.getMyOrders = catchAsync(async (req, res, next) => {
 	const userId = req.user.id;
 
-<<<<<<< HEAD
-  const queryBuilder = new QueryBuilder(req.query);
-  queryBuilder
-    .filter()
-    .paginate()
-    .limitFields()
-    .search(["recipientPhoneNumber", "recipient"])
-    .sort();
-  let myOrders = await OrderModel.findAndCountAll({
-    include: [
-      { model: DistrictModel, as: "district", attributes: ["name"] },
-      { model: RegionModel, as: "region", attributes: ["name"] },
-    ],
-    where: { storeOwnerId: { [Op.eq]: userId },...queryBuilder.queryOptions.where },
-    
-  },);
-  // console.log(  ...queryBuilder.queryOptions);
-  myOrders = queryBuilder.createPagination(myOrders);
-=======
 	req.query.storeOwnerId = userId;
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
@@ -282,7 +263,6 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 		.limitFields()
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
->>>>>>> 7cbec2531c3dea8175ba54a701a31aa65153d226
 
 	queryBuilder.queryOptions.include = [
 		{ model: DistrictModel, as: "district", attributes: ["name"] },

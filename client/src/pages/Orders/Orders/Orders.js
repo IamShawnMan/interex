@@ -25,8 +25,6 @@ function Orders() {
   const isStoreOwner = user.userRole === "STORE_OWNER";
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
-  const [ordersIdArr, setOrdersIdArr] = useState(null);
-  const [note, setNote] = useState(null);
   const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
@@ -48,14 +46,11 @@ function Orders() {
     });
     setPrice(res.data);
   };
-  function addOrders(arr) {
-    setOrdersIdArr(arr);
-  }
+
 
   const getAllMyOrders = async (data) => {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
-    setOrdersIdArr(data?.data?.ordersArrInPost)
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -158,15 +153,7 @@ function Orders() {
                 >
                   Info
                 </Button>
-               {ordersIdArr&& <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
-                    const index = ordersIdArr.includes(order.id);
-                   if(index){
-                    let orderIsArr=ordersIdArr.filter(i =>i!==order.id)
-                    setOrdersIdArr(orderIsArr)
-                   } else{
-                    setOrdersIdArr(prev => ([...prev, order.id]));
-                   }
-                  }}></Input>}
+
           </div>
         );
       },
@@ -233,26 +220,7 @@ console.log("render");
       ) : (
         <p>Malumotlar yoq</p>
       )}
-       {url.split("/")[1]==="posts"&&<Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>}
-      <div style={{display:"flex",gap:1}}>
-              {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn"onClick={async() =>{
-        console.log(ordersIdArr);
-         const res = await http({
-          url:"posts/new/customized",
-          data: { postId:id,ordersArr:ordersIdArr },
-          method: "PUT",
-        });
-        navigate("/posts")
-      }}>Update Post</Button>}
-      {url.split("/")[1]==="posts"&&<Button type="submit" size="small" name="btn" onClick={async() =>{
-        console.log(note);
-         const res = await http({
-          url:`posts/${id}/send`,
-          data: {postStatus:"DELIVERING",note: note},
-          method: "PUT",
-        });
-        navigate("/posts")
-      }}>Send Post</Button>}</div>
+    
     </Layout>
   );
 }
