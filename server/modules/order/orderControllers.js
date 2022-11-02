@@ -42,46 +42,58 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
-	const validationErrors = validationResult(req);
-	if (!validationErrors.isEmpty()) {
-		let err = new AppError("Validatsiya xatosi", 403);
-		err.isOperational = false;
-		err.errors = validationErrors;
-		return next(err);
-	}
-	let existedPackage = await PackageModel.findOne({
-		where: { storeOwnerId: { [Op.eq]: req.user.id } },
-	});
-
-	if (!existedPackage) {
-		existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
-	}
-	const storeOwnerId = req.user.id;
-	const orders = req.body.orders;
-	orders?.forEach(async (order) => {
-		const newOrder = await OrderModel.create({
-			recipient: order.recipient,
-			regionId: order.regionId,
-			note: order.note,
-			recipientPhoneNumber: order.recipientPhoneNumber,
-			districtId: order.districtId,
-			packageId: existedPackage.id,
-			storeOwnerId,
-		});
-		let items = [];
-		let sum = 0;
-		order?.orderItems?.forEach((item) => {
-			items.push({
-				productName: item.productName,
-				quantity: item.quantity,
-				price: item.price,
-				orderItemTotalPrice: item.quantity * item.price,
-				orderId: newOrder.id,
-			});
-		});
-		items?.forEach((item) => {
-			sum += item.orderItemTotalPrice;
-		});
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    let err = new AppError("Validatsiya xatosi", 403);
+    err.isOperational = false;
+    err.errors = validationErrors;
+    return next(err);
+  }
+  let existedPackage = await PackageModel.findOne({
+    where: { storeOwnerId: { [Op.eq]: req.user.id } },
+  });
+  
+  if(existedPackage){
+   const isNewOrders = await OrderModel.count({
+    where: {
+      [Op.and]:[
+      {packageId: {[Op.eq]: existedPackage.id}},
+      {orderStatus: statusOrder.STATUS_NEW}
+    ]
+    }})
+    if(isNewOrders === 0){
+    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id })
+  }
+  }
+  if (!existedPackage) {
+    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
+  }
+  const storeOwnerId = req.user.id;
+  const orders = req.body.orders;
+  orders?.forEach(async (order) => {
+    const newOrder = await OrderModel.create({
+      recipient: order.recipient,
+      regionId: order.regionId,
+      note: order.note,
+      recipientPhoneNumber: order.recipientPhoneNumber,
+      districtId: order.districtId,
+      packageId: existedPackage.id,
+      storeOwnerId,
+    });
+    let items = [];
+    let sum = 0;
+    order?.orderItems?.forEach((item) => {
+      items.push({
+        productName: item.productName,
+        quantity: item.quantity,
+        price: item.price,
+        orderItemTotalPrice: item.quantity * item.price,
+        orderId: newOrder.id,
+      });
+    });
+    items?.forEach((item) => {
+      sum += item.orderItemTotalPrice;
+    });
 
 		await OrderItemModel.bulkCreate(items);
 		newOrder.totalPrice = sum;
