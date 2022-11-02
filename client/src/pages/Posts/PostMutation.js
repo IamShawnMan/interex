@@ -77,19 +77,21 @@ const PostMutation = () => {
             </Select>
 
     {orders&&<ul>
-      {orders?.map(e=>{return <li>
-        {e.recipient}
-
+      {orders?.map(e=>{return <li style={{border: '1px solid black'}}>
+      <p style={{display: 'inline',padding: '5rem'}}> {e.recipient}</p> 
+              
                <Button
                   size="small"
                   name="btn"
+                  btnStyle={{width: "12rem"}}
                   onClick={() => {
                     navigate(`/orders/info/${e.id}`);
                   }}
                 >
                   Info
                 </Button>
-               {ordersArr&& <Input type="checkbox" checked={ordersArr.includes(e.id)} onClick={() => {
+                <div style={{textAlign: "center",display: 'inline-block',padding:"2rem"}} >
+                    {ordersArr&& <Input type="checkbox" checked={ordersArr.includes(e.id)} onClick={() => {
                     const index = ordersArr.includes(e.id);
                    if(index){
                     let orderIsArr=ordersArr.filter(i =>i!==e.id)
@@ -98,6 +100,8 @@ const PostMutation = () => {
                     setOrdersArr(prev => ([...prev, e.id]));
                    }
                   }}></Input>}
+                </div>
+             
       </li>})}
        <Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>
      <Button name="btn" size="small" onClick={()=>async() =>{
@@ -106,7 +110,7 @@ const PostMutation = () => {
           data: {postStatus:"DELIVERING",note: note},
           method: "PUT",
         });
-        navigate("/posts")
+        // navigate("/posts")
       }}>Send</Button> </ul>}
 
      </form>
