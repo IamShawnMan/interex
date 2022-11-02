@@ -38,10 +38,8 @@ class QueryBuilder {
         }
      })
      if(this.queryOptions.where){
-         console.log("fhhffh");
         this.queryOptions.where =  {...filterObject, ...this.queryOptions.where}; 
      }else{
-         console.log("xato");
         this.queryOptions.where = filterObject;
      }
      return this;

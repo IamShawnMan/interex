@@ -39,7 +39,7 @@ const PostMutation = () => {
     return (
       <Layout pageName="Add Post">
         {value?.length > 0 ? (
-          <BasicTable columns={regionCols} data={value} pagination={pagination}           url="posts/new"
+          <BasicTable columns={regionCols} data={value} pagination={pagination} url="posts/new"
           />
         ) : (
           <p>Malumotlar yoq</p>
