@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import http from "../../utils/axios-instance";
-import UserContext from "../../context/AppContext";
+import AppContext from "../../context/AppContext";
 import styles from "./Login.module.css";
 import UsernameIcon from "../../assets/icons/UsernameIcon";
 import LoginIcon from "../../assets/icons/LoginIcon";
@@ -34,7 +34,7 @@ function Login() {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-	const ctx = useContext(UserContext);
+	const ctx = useContext(AppContext);
 	const navigate = useNavigate();
 	const [typeState, setTypeState] = useState(null);
 	const typeChangeHandler = () => {
@@ -58,7 +58,6 @@ function Login() {
 			navigate("/home");
 		} catch (error) {
 			toast.error(error.response.data.message);
-			console.log(error);
 		}
 	};
 
@@ -71,7 +70,6 @@ function Login() {
 			<div className={styles["right-page"]}>
 				<div className={styles["right-page-main-content"]}>
 					<h1>Tizimga Kirish</h1>
-
 					<form onSubmit={handleSubmit(login)}>
 						<div>
 							<label htmlFor="username">
