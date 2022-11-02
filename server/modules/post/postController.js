@@ -280,6 +280,23 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	});
 });
 
+exports.newPosts = catchAsync(async (req, res, next) => {
+	const notSentPosts = await Post.findAll({
+		where: {
+			postStatus: {
+				[Op.eq]: postStatuses.POST_NEW,
+			},
+		},
+	});
+
+	res.json({
+		status: "success",
+		message: "Not sent posts",
+		error: null,
+		data: notSentPosts,
+	});
+});
+
 exports.sendPost = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { id } = req.params;
