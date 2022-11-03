@@ -156,7 +156,7 @@ function Orders() {
                 >
                   Info
                 </Button>
-               {ordersIdArr&& <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
+               {ordersIdArr&& <Input disabled={postStatus!=="NEW"} type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
                     const index = ordersIdArr.includes(order.id);
                    if(index){
                     let orderIsArr=ordersIdArr.filter(i =>i!==order.id)
