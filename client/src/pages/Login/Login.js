@@ -70,7 +70,6 @@ function Login() {
       <div className={styles["right-page"]}>
         <div className={styles["right-page-main-content"]}>
           <h1>Tizimga Kirish</h1>
-
           <form onSubmit={handleSubmit(login)}>
             <div>
               <label htmlFor="username">
@@ -105,7 +104,6 @@ function Login() {
                     </div>
                   </div>
                 </div>
-
                 <input
                   style={{ borderBottom: errors.password && "1px solid red" }}
                   type={typeState ? "text" : "password"}
@@ -120,11 +118,9 @@ function Login() {
               )}
             </div>
             <div style={{marginTop:"1rem"}}>
-         
               <Button size="medium" name="btn" type="submit" >
                 Kirish
               </Button>
-         
             </div>
           </form>
         </div>

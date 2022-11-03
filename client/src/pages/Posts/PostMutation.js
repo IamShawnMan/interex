@@ -1,11 +1,10 @@
 import {useEffect, useState} from "react"
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Select from "../../components/Form/FormComponents/Select/Select";
 import Layout from "../../components/Layout/Layout";
-import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 const PostMutation = () => {
   const [regions,setRegions]=useState(null);
@@ -44,7 +43,6 @@ const PostMutation = () => {
         const res = await http({
           url: `/posts/${id}/orders`,
         });
-        // console.log(res);
         setOrders(res.data.data.content)
         setOrdersArr(res.data.data.ordersArrInPost)
       }catch (error) {
@@ -58,7 +56,6 @@ const PostMutation = () => {
           method: "POST",
           data:{regionId:id}
         });
-        // console.log(res);
         setPostId(res.data.data)
           toast.success(res.data.message);
       } catch (error) {
@@ -79,7 +76,6 @@ const PostMutation = () => {
     {orders&&<ul>
       {orders?.map(e=>{return <li style={{border: '1px solid black'}}>
       <p style={{display: 'inline',padding: '5rem'}}> {e.recipient}</p> 
-              
                <Button
                   size="small"
                   name="btn"
@@ -101,7 +97,6 @@ const PostMutation = () => {
                    }
                   }}></Input>}
                 </div>
-             
       </li>})}
        <Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>
      <Button name="btn" size="small" onClick={()=>async() =>{
@@ -110,7 +105,6 @@ const PostMutation = () => {
           data: {postStatus:"DELIVERING",note: note},
           method: "PUT",
         });
-        // navigate("/posts")
       }}>Send</Button> </ul>}
 
      </form>

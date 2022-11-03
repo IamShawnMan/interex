@@ -10,7 +10,7 @@ const Posts = () => {
   const [value, setValue] = useState([]);
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const getAllPosts = async () => {
@@ -42,6 +42,11 @@ const Posts = () => {
       accessor: "note",
     },
     {
+      id: "regionName",
+      Header: "regionName",
+      accessor: "region.name",
+    },
+    {
       id: "postStatus",
       Header: "postStatus",
       accessor: "postStatus",
@@ -51,42 +56,23 @@ const Posts = () => {
       Header: "postTotalPrice",
       accessor: "postTotalPrice",
     },
-    {
-      id: "regionName",
-      Header: "regionName",
-      accessor: "region.name",
-    },
-    {
-      id: "regionId",
-      Header: "regionId",
-      accessor: "regionId",
-    },
-     {
-      Header: "Action",
-      accessor: (post) => {
-        return (
-         <div>
-              <Button  disabled={post.postStatus==="NEW"?false:true} 
-                size="small"
-                name="btn"
-                onClick={() => {
-                  navigate(`/posts/${post.id}/orders`);
-                }}
-              >
-                Update
-              </Button>
-          </div>
-        );
-    },}
   ];
 
   return (
     <Layout pageName="Postlar">
-      <Link style={{ width: "12rem", display: "block" }} to="./new">
-        <Button size="small" name="btn">
-          Add Post
-        </Button>
-      </Link>
+      <div style={{ display: "flex", gap: 1 }}>
+        <Link style={{ width: "12rem", display: "block" }} to="./new">
+          <Button size="small" name="btn">
+            Add Post
+          </Button>
+        </Link>
+        <Link style={{ width: "12rem", display: "block" }} to="./new">
+          <Button size="small" name="btn">
+            Send Post
+          </Button>
+        </Link>
+      </div>
+
       {value?.length > 0 ? (
         <BasicTable
           columns={regionCols}
