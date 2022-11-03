@@ -8,6 +8,7 @@ import http from "../../utils/axios-instance";
 
 const Posts = () => {
   const [value, setValue] = useState([]);
+  const [regionValue, setRegionValue] = useState([]);
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
  const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Posts = () => {
     getAllPosts();
   }, [page]);
 
-  const regionCols = [
+  const postCols = [
     {
       id: "id",
       Header: "id",
@@ -65,31 +66,61 @@ const Posts = () => {
       Header: "Action",
       accessor: (post) => {
         return (
-         <div>
-              <Button  disabled={post.postStatus==="NEW"?false:true} 
+         <div style={{display: 'flex',gap: 1}}>
+              <Button  
                 size="small"
                 name="btn"
                 onClick={() => {
                   navigate(`/posts/${post.id}/orders`);
                 }}
               >
-                Update
+                info
+              </Button>
+            <Button  
+                size="small"
+                name="btn"
+                disabled={post.postStatus!=="NEW"}
+              >
+                Send Post
               </Button>
           </div>
         );
     },}
   ];
-
+  const getAllRegions = async () => {
+    try{
+      const res = await http({
+        url: `/posts/new/regions`,
+      });
+      console.log(res);
+      setRegionValue(res.data.data);
+    }catch (error) {
+      toast.error(error.response.data.message);
+    }   
+  };   
+  useEffect(() => {
+    getAllRegions();
+  }, []);
+  const regionCols = [
+    {  
+      id: "name",
+      Header: "Viloyat",
+      accessor: (region) => {
+        return <Link to={`/posts/new/${region.id}`}>{region.name}</Link>;
+      },
+    }  
+  ];   
   return (
     <Layout pageName="Postlar">
-      <Link style={{ width: "12rem", display: "block" }} to="./new">
-        <Button size="small" name="btn">
-          Add Post
-        </Button>
-      </Link>
+   <p>Regions</p>
+      {regionValue?.length > 0 ? (
+          <BasicTable columns={regionCols} data={regionValue} />
+        ) : (
+          <p>Malumotlar yoq</p>
+        )}
       {value?.length > 0 ? (
         <BasicTable
-          columns={regionCols}
+          columns={postCols}
           data={value}
           pagination={pagination}
           url="/posts"
