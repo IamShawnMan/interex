@@ -213,6 +213,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
 	const { id } = req.params;
+	const currentPostStaus = await Post.findByPk(id, {attributes:["postStatus"]})
 
 	queryBuilder
 		.filter()
@@ -245,6 +246,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		data: {
 			...ordersInPost,
 			ordersArrInPost,
+			currentPostStaus
 		},
 	});
 });

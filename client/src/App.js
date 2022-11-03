@@ -12,6 +12,8 @@ import Orders from "./pages/Orders/Orders/Orders";
 import OrderMutation from "./pages/Orders/OrderMutation/OrderMutation";
 import Packages from "./pages/Packages/Packages";
 import Posts from "./pages/Posts/Posts";
+// import IncomingOrders from "./pages/IncomingOrders/IncomingOrders";
+import PostInner from "./pages/Posts/PostInner/PostInner";
 import PostMutation from "./pages/Posts/PostMutation";
 import OrderInfo from "./pages/Orders/OrderInfo/OrderInfo";
 
@@ -48,6 +50,9 @@ function App() {
         {isAuth && <Route path="/posts" element={<Posts />} />}
         {isAuth && <Route path="/posts/:id/orders" element={<Orders />} />}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
+        {isAuth && (
+          <Route path="/posts/new/:id" element={<PostInner />} />
+        )}
         {isAuth && (
           <Route path="/packages/:id/orders" element={<Orders />} />
         )}

@@ -25,7 +25,9 @@ function Orders() {
   const isStoreOwner = user.userRole === "STORE_OWNER";
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
+  const [ordersIdArr, setOrdersIdArr] = useState(null);
   const [price, setPrice] = useState(null);
+  const [postStatus, setPostStatus] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const page = searchParams.get("page") || 1;
@@ -47,10 +49,11 @@ function Orders() {
     setPrice(res.data);
   };
 
-
   const getAllMyOrders = async (data) => {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
+    setOrdersIdArr(data?.data?.ordersArrInPost)
+    setPostStatus(data?.data?.currentPostStaus.postStatus)
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -153,7 +156,15 @@ function Orders() {
                 >
                   Info
                 </Button>
-
+               {ordersIdArr&& <Input type="checkbox" checked={ordersIdArr.includes(order.id)} onClick={() => {
+                    const index = ordersIdArr.includes(order.id);
+                   if(index){
+                    let orderIsArr=ordersIdArr.filter(i =>i!==order.id)
+                    setOrdersIdArr(orderIsArr)
+                   } else{
+                    setOrdersIdArr(prev => ([...prev, order.id]));
+                   }
+                  }}></Input>}
           </div>
         );
       },
@@ -220,7 +231,17 @@ console.log("render");
       ) : (
         <p>Malumotlar yoq</p>
       )}
-    
+      <div style={{display:"flex",gap:1}}>
+      {url.split("/")[1]==="posts"&&postStatus==="NEW"&&<Button type="submit" size="small" name="btn"onClick={async() =>{
+        console.log(ordersIdArr);
+         const res = await http({
+          url:"posts/new/customized",
+          data: { postId:id,ordersArr:ordersIdArr },
+          method: "PUT",
+        });
+        navigate("/posts")
+      }}>Save</Button>}
+     </div>
     </Layout>
   );
 }
