@@ -89,8 +89,6 @@ exports.existRegions = catchAsync(async (req, res, next) => {
 		},
 	});
 
-	console.log(ordersInRegions);
-
 	ordersInRegions.map((order) => {
 		const id = order.dataValues.regionId;
 		if (!regionsArr.includes(id)) {
@@ -98,11 +96,19 @@ exports.existRegions = catchAsync(async (req, res, next) => {
 		}
 	});
 
+	const regionsWeHave = await Region.findAll({
+		where: {
+			id: {
+				[Op.in]: regionsArr,
+			},
+		},
+	});
+
 	return res.json({
 		status: "success",
 		message: "regions array",
 		error: null,
-		data: regionsArr,
+		data: regionsWeHave,
 	});
 });
 
@@ -113,7 +119,9 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		where: {
 			[Op.and]: [
 				{
-					orderStatus: orderStatuses.STATUS_ACCEPTED,
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_ACCEPTED,
+					},
 				},
 				{
 					districtId: {
@@ -278,26 +286,26 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 	const { postStatus } = req.body;
 	const { note } = req.body;
 	const getPostById = await Post.findByPk(id);
-  
+
 	if (!getPostById) {
-	  return next(new AppError("This post not found", 404));
+		return next(new AppError("This post not found", 404));
 	}
 	if (
-	  userRole === userRoles.ADMIN &&
-	  postStatus === postStatuses.POST_DELIVERING
+		userRole === userRoles.ADMIN &&
+		postStatus === postStatuses.POST_DELIVERING
 	) {
-	  await getPostById.update({
-		postStatus: postStatus,
-		note: note,
-	  });
+		await getPostById.update({
+			postStatus: postStatus,
+			note: note,
+		});
 	}
-  
+
 	res.json({
-	  status: "success",
-	  message: "Post sent",
-	  error: null,
-	  data: {
-		note,
-	  },
+		status: "success",
+		message: "Post sent",
+		error: null,
+		data: {
+			note,
+		},
 	});
-  });
+});
