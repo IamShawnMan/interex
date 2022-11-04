@@ -70,10 +70,11 @@ const Posts = () => {
                 info
               </Button>
             
-             <Button  
+              <Button  
                 size="small"
                 name="btn"
                 disabled={post.postStatus!=="NEW"}
+                onClick={() => {setInfo(post.id)}}
               >
                 Send Post
               </Button>
@@ -121,6 +122,7 @@ const Posts = () => {
         ) : (
           <p>Malumotlar yoq</p>
         )}
+            {info &&<PostSendCourier id={info} onClose={() => {setInfo(false)}} />} 
       {value?.length > 0 ? (
         <BasicTable
           columns={postCols}
