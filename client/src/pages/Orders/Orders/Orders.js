@@ -53,7 +53,7 @@ function Orders() {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost);
-    setPostStatus(data?.data?.currentPostStaus?.postStatus);
+    setPostStatus(data?.data?.currentPostStatus?.postStatus);
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -188,7 +188,7 @@ function Orders() {
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
-
+    console.log(url);
     try {
       if (isAdmin || isSuperAdmin) {
         const res = await http({
@@ -202,7 +202,7 @@ function Orders() {
               : ""
           }`,
         });
-        getAllOrders(res.data);
+        getAllMyOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
           `${url}/myorders?page=${page}&size=${size}${
