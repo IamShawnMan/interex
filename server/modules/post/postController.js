@@ -267,6 +267,9 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
+	const {id} = req.params
+	req.query.postId = id
+	req.query.orderStatus = orderStatuses.STATUS_DELIVERING
 	const queryBuilder = new QueryBuilder(req.query);
 	const { postId } = req.params;
 	const currentPostStatus = await Post.findByPk(postId, {
@@ -279,6 +282,11 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		.limitFields()
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
+	
+	queryBuilder.queryOptions.include = [
+		{ model: District, as: "district", attributes: ["name"] },
+		{ model: Region, as: "region", attributes: ["name"] },
+	]
 
 	let ordersInPost = await Order.findAndCountAll({
 		where: {

@@ -4,11 +4,11 @@
   flex-direction: column;
   align-items: center;
   gap: 2rem;
-  overflow: scroll;
+  /* overflow: scroll; */
 }
 .table {
   width: 100%;
-  overflow: scroll;
+  /* overflow: scroll; */
 }
 table,
 table th,
