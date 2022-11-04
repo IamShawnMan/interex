@@ -48,7 +48,9 @@ function App() {
         {isAuth && <Route path="/posts/:id/orders" element={<Orders />} />}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
         {isAuth && (<Route path="/posts/new/:id" element={<PostInner />} />)}
-        {isAuth && (<Route path="/packages/:id/orders" element={<Orders />} />)}
+        {isAuth && (
+<Route path="/packages/:id/orders" element={<Orders />} />
+        )}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>
