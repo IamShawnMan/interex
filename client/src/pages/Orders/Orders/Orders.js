@@ -53,7 +53,7 @@ function Orders() {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost)
-    setPostStatus(data?.data?.currentPostStaus.postStatus)
+    setPostStatus(data?.data?.currentPostStatus?.postStatus)
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -173,7 +173,8 @@ function Orders() {
 
   const filterFn = async (data) => {
     setQueries(data);
-    const dateCreatedAt = new Date(data?.createdAt);
+    console.log(data);
+    const dateCreatedAt = new Date(data?.createdAt)
     console.log(url);
     try {
       if (isAdmin || isSuperAdmin) {
@@ -185,10 +186,10 @@ function Orders() {
             data?.districtId ? `&districtId=${data.districtId}` : ""
           }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
             data?.createdAt
-              ? `&createdAt[gte]=${dateCreatedAt.toISOString()}`
+              ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
               : ""
           }`,
-        });
+        }); 
         getAllMyOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
@@ -196,7 +197,7 @@ function Orders() {
             data?.status ? `&orderStatus=${data.status}` : ""
           }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
             data?.districtId ? `&districtId=${data.districtId}` : ""
-          }${data?.createdAt ? `&createdAt[gte]=${data.createdAt}` : ""}`
+          }${data?.createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`
         );
         console.log(res);
         getAllMyOrders(res.data);

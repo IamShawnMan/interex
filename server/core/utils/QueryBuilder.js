@@ -1,7 +1,8 @@
 const {Op} = require("sequelize");
+const dayjs = require("dayjs")
 
 const excludeParams = ["page", "size", "fields", "search", "sort"];
-const operators = ["gte", "gt", "lt", "lte", "in"]
+const operators = ["gte", "gt", "lt", "lte", "in", "eq"]
 
 class QueryBuilder {
     constructor(queryParams){
@@ -11,6 +12,7 @@ class QueryBuilder {
 
     filter(){
      const filterFields = {...this.queryParams}
+     console.log(this.queryParams);
      excludeParams.forEach(p=>delete filterFields[p])
      const filterObject = {};
      Object.keys(filterFields).forEach(k=>{
@@ -29,6 +31,13 @@ class QueryBuilder {
                 filterObject[k] = {[Op[ik]]: filterItem[ik].split(",")}
                return
              }
+             if(Object.keys(filterFields[k])[0]==="eq"){
+                filterObject[k] = {
+                    [Op["gte"]]: filterItem[ik],
+                    [Op["lte"]]: dayjs(`${filterItem[ik]}`).endOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]") 
+                }
+               return
+             }
                 if(operators.includes(ik)){
                     filterObject[k] = {[Op[ik]]: filterItem[ik]}
                 }
@@ -38,10 +47,8 @@ class QueryBuilder {
         }
      })
      if(this.queryOptions.where){
-         console.log("fhhffh");
         this.queryOptions.where =  {...filterObject, ...this.queryOptions.where}; 
      }else{
-         console.log("xato");
         this.queryOptions.where = filterObject;
      }
      return this;
