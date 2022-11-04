@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Link,
   useLocation,
@@ -188,7 +188,6 @@ function Orders() {
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
-    console.log(url);
     try {
       if (isAdmin || isSuperAdmin) {
         const res = await http({
@@ -202,7 +201,7 @@ function Orders() {
               : ""
           }`,
         });
-        getAllMyOrders(res.data);
+        getAllOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
           `${url}/myorders?page=${page}&size=${size}${

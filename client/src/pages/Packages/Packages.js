@@ -24,7 +24,6 @@ function Package() {
       const res = await http({
         url: `/packages?page=${page}&size=${size}`,
       });
-      console.log(res);
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {}
@@ -42,6 +41,7 @@ function Package() {
       id: "storeOwner",
       Header: "Package",
       accessor: (pack) => {
+        console.log(pack);
         return (
           <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
             {`${pack.storeOwner.firstName} ${pack.storeOwner.lastName}`}
