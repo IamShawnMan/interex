@@ -252,7 +252,10 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
 
-	const ordersNotInPost = await Order.update(
+	const ordersNotInPost = await Order.update({
+		postId: null,
+		orderStatus: orderStatuses.STATUS_ACCEPTED
+	},
 		{
 			where: {
 				orderStatus: {

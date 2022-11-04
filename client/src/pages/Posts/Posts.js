@@ -5,11 +5,13 @@ import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
+import PostSendCourier from "./PostSendCourier";
 
 const Posts = () => {
   const [value, setValue] = useState([]);
   const [regionValue, setRegionValue] = useState([]);
   const [pagination, setPagination] = useState({});
+  const [info, setInfo] = useState(null);
   const [searchParams] = useSearchParams();
  const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
@@ -29,7 +31,7 @@ const Posts = () => {
 
   useEffect(() => {
     getAllPosts();
-  }, [page]);
+  }, [page,info]);
 
   const postCols = [
     {
@@ -76,10 +78,12 @@ const Posts = () => {
               >
                 info
               </Button>
-            <Button  
+            
+             <Button  
                 size="small"
                 name="btn"
                 disabled={post.postStatus!=="NEW"}
+                onClick={() => {setInfo(post.id)}}
               >
                 Send Post
               </Button>
@@ -118,6 +122,7 @@ const Posts = () => {
         ) : (
           <p>Malumotlar yoq</p>
         )}
+         {info &&<PostSendCourier id={info} onClose={() => {setInfo(false)}} />} 
       {value?.length > 0 ? (
         <BasicTable
           columns={postCols}

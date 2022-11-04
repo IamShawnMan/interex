@@ -202,7 +202,7 @@ function Orders() {
               : ""
           }`,
         });
-        getAllMyOrders(res.data);
+        getAllOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
           `${url}/myorders?page=${page}&size=${size}${
@@ -258,11 +258,17 @@ function Orders() {
             name="btn"
             onClick={async () => {
               console.log(ordersIdArr);
-              const res = await http({
+              try {
+                   const res = await http({
                 url: "posts/new/customized",
                 data: { postId: id, ordersArr: ordersIdArr },
                 method: "PUT",
               });
+              } catch (error) {
+                console.log(error);
+              }
+           
+              
               navigate("/posts");
             }}
           >
