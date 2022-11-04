@@ -29,6 +29,7 @@ class QueryBuilder {
                 filterObject[k] = {[Op[ik]]: filterItem[ik].split(",")}
                return
              }
+
                 if(operators.includes(ik)){
                     filterObject[k] = {[Op[ik]]: filterItem[ik]}
                 }

@@ -53,7 +53,8 @@ function Orders() {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost)
-    setPostStatus(data?.data?.currentPostStaus.postStatus)
+    // console.log(data);
+    setPostStatus(data?.data?.currentPostStaus?.postStatus)
   };
   const changeOrderStatus = async (id, status) => {
     try {
