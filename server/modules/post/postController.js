@@ -215,6 +215,11 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	req.query.postId = id
 	req.query.orderStatus = orderStatuses.STATUS_DELIVERING
 	const queryBuilder = new QueryBuilder(req.query);
+<<<<<<< HEAD
+=======
+	const { id } = req.params;
+	const currentPostStaus = await Post.findByPk(id, {attributes:["postStatus"]})
+>>>>>>> 33dc528d0615a12269ab388bb9818c5be58b5422
 
 	queryBuilder
 		.filter()
@@ -243,6 +248,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		data: {
 			...ordersInPost,
 			ordersArrInPost,
+			currentPostStaus
 		},
 	});
 });
@@ -271,6 +277,23 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 		message: "Customized Post created",
 		error: null,
 		data: ordersNotInPost,
+	});
+});
+
+exports.newPosts = catchAsync(async (req, res, next) => {
+	const notSentPosts = await Post.findAll({
+		where: {
+			postStatus: {
+				[Op.eq]: postStatuses.POST_NEW,
+			},
+		},
+	});
+
+	res.json({
+		status: "success",
+		message: "Not sent posts",
+		error: null,
+		data: notSentPosts,
 	});
 });
 

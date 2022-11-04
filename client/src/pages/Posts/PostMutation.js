@@ -1,73 +1,44 @@
 import {useEffect, useState} from "react"
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Button from "../../components/Form/FormComponents/Button/Button";
-import Input from "../../components/Form/FormComponents/Input/Input";
-import Select from "../../components/Form/FormComponents/Select/Select";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 const PostMutation = () => {
-  const [regions,setRegions]=useState(null);
-  const [regionId,setRegionId]=useState(null);  
-  const [postId,setPostId]=useState(null);  
-  const [orders,setOrders]=useState(null);  
-  const [ordersArr,setOrdersArr]=useState(null);  
-  const [note,setNote]=useState(null);  
-  const navigate = useNavigate();
-    useEffect(() => {
-      getAllRegions();
-    }, []);
-    useEffect(() => {
-      if(regionId){
-        getOrdersByPackageId(regionId)
-      }
-    },[regionId])
-    useEffect(() => {
-      if(postId){
-        getAllRegionsByIdOrders(postId)
-      }
-    },[postId])
+    const [value, setValue] = useState([]);
+    const [pagination, setPagination] = useState({});
+    const [searchParams] = useSearchParams();
+
+    const page = searchParams.get("page") || 1;
+    const size = searchParams.get("size") || 10;
     const getAllRegions = async () => {
       try{
         const res = await http({
-          url: `/posts/new/regions`,
+          url: `/regions?page=${page}&size=${size}`,
         });
         console.log(res);
-        setRegions(res.data.data);
+        setValue(res.data.data.content);
+        setPagination(res.data.data.pagination);
       }catch (error) {
         toast.error(error.response.data.message);
       }   
     };   
-    const getAllRegionsByIdOrders = async (id) => {
-      try{
-        const res = await http({
-          url: `/posts/${id}/orders`,
-        });
-        // console.log(res);
-        setOrders(res.data.data.content)
-        setOrdersArr(res.data.data.ordersArrInPost)
-      }catch (error) {
-        toast.error(error.response.data.message);
-      }   
-    };   
-    const getOrdersByPackageId = async (id) => {
-      try {
-        const res = await http({
-          url: `/posts/new`,
-          method: "POST",
-          data:{regionId:id}
-        });
-        // console.log(res);
-        setPostId(res.data.data)
-          toast.success(res.data.message);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
+    useEffect(() => {
+      getAllRegions();
+    }, [page]);
+    const regionCols = [
+      {  
+        id: "name",
+        Header: "Viloyat",
+        accessor: (region) => {
+          return <Link to={`/posts/new/${region.id}`}>{region.name}</Link>;
+        },
+      }  
+    ];   
+         
     return (
       <Layout pageName="Add Post">
+<<<<<<< HEAD
      <form>
      <Select
               data={regions?.map(e=>{
@@ -117,6 +88,14 @@ const PostMutation = () => {
       }}>Send</Button> </ul>}
 
      </form>
+=======
+        {value?.length > 0 ? (
+          <BasicTable columns={regionCols} data={value} pagination={pagination}           url="posts/new"
+          />
+        ) : (
+          <p>Malumotlar yoq</p>
+        )}
+>>>>>>> 33dc528d0615a12269ab388bb9818c5be58b5422
       </Layout>
     );
 }

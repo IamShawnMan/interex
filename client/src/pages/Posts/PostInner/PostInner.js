@@ -18,7 +18,7 @@ function PostInnerOrders() {
         data:{regionId:id}
       });
       console.log(res);
-        toast.success(res.data.message);
+        // toast.success(res.data.message);
         navigate(`/posts/${res.data.data}/orders`)
     } catch (error) {
       console.log(error);
