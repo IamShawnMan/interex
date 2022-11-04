@@ -116,82 +116,82 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
 	const { regionId } = req.params;
 	const queryBuilder = new QueryBuilder(req.query);
 	let allOrders = [];
-	let ordersArr = [];
+	let ordersArrInPost = [];
 	req.query.orderStatus = orderStatuses.STATUS_ACCEPTED;
-
+  
 	queryBuilder.queryOptions.include = [
-		{ model: Region, as: "region", attributes: ["name"] },
-		{ model: District, as: "district", attributes: ["name"] },
+	  { model: Region, as: "region", attributes: ["name"] },
+	  { model: District, as: "district", attributes: ["name"] },
 	];
-
+  
 	queryBuilder
-		.filter()
-		.paginate()
-		.limitFields()
-		.search(["recipientPhoneNumber", "recipient"])
-		.sort();
-
+	  .filter()
+	  .paginate()
+	  .limitFields()
+	  .search(["recipientPhoneNumber", "recipient"])
+	  .sort();
+  
 	const region = await Region.findOne({
-		attributes: ["id", "name"],
-		where: {
-			id: {
-				[Op.eq]: regionId,
-			},
+	  attributes: ["id", "name"],
+	  where: {
+		id: {
+		  [Op.eq]: regionId,
 		},
+	  },
 	});
-
+  
 	if (region.name === "Samarqand viloyati") {
-		queryBuilder.queryOptions.where = {
-			...queryBuilder.queryOptions.where,
-			regionId: {
-				[Op.eq]: regionId,
-			},
-			districtId: {
-				[Op.notIn]: [36, 39],
-			},
-		};
-		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
-		allOrders = queryBuilder.createPagination(allOrders);
-		ordersArr = allOrders.content.map((order) => {
-			return order.dataValues.id;
-		});
-	} else if (region.name === "Navoiy viloyati") {
-		queryBuilder.queryOptions.where = {
-			...queryBuilder.queryOptions.where,
-			[Op.or]: {
-				regionId: {
-					[Op.eq]: regionId,
-				},
-				districtId: {
-					[Op.in]: [36, 39],
-				},
-			},
-		};
-		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
-		allOrders = queryBuilder.createPagination(allOrders);
-		ordersArr = allOrders.content.map((order) => {
-			return order.dataValues.id;
-		});
-	} else {
-		req.query.regionId = regionId;
-		queryBuilder.filter();
-		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
-		allOrders = queryBuilder.createPagination(allOrders);
-		ordersArr = allOrders.content.map((order) => {
-			return order.dataValues.id;
-		});
-	}
-
-	res.json({
-		status: "success",
-		message: "Orders ready to sent",
-		error: null,
-		data: {
-			allOrders,
-			ordersArr,
+	  queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		regionId: {
+		  [Op.eq]: regionId,
 		},
+		districtId: {
+		  [Op.notIn]: [36, 39],
+		},
+	  };
+	  allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+	  allOrders = queryBuilder.createPagination(allOrders);
+	  ordersArrInPost = allOrders.content.map((order) => {
+		return order.dataValues.id;
+	  });
+	} else if (region.name === "Navoiy viloyati") {
+	  queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		[Op.or]: {
+		  regionId: {
+			[Op.eq]: regionId,
+		  },
+		  districtId: {
+			[Op.in]: [36, 39],
+		  },
+		},
+	  };
+	  allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+	  allOrders = queryBuilder.createPagination(allOrders);
+	  ordersArrInPost = allOrders.content.map((order) => {
+		return order.dataValues.id;
+	  });
+	} else {
+	  req.query.regionId = regionId;
+	  queryBuilder.filter();
+	  allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+	  allOrders = queryBuilder.createPagination(allOrders);
+	  ordersArrInPost = allOrders.content.map((order) => {
+		return order.dataValues.id;
+	  });
+	}
+  
+	res.json({
+	  status: "success",
+	  message: "Orders ready to sent",
+	  error: null,
+	  data: {
+		...allOrders,
+		ordersArrInPost,
+	  },
 	});
-});
+  });
 
 exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 	const { regionId, ordersArr } = req.body;
@@ -267,12 +267,9 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
-	const {id} = req.params
-	req.query.postId = id
-	req.query.orderStatus = orderStatuses.STATUS_DELIVERING
 	const queryBuilder = new QueryBuilder(req.query);
-	const { postId } = req.params;
-	const currentPostStatus = await Post.findByPk(postId, {
+	const { id } = req.params;
+	const currentPostStatus = await Post.findByPk(id, {
 		attributes: ["postStatus"],
 	});
 
@@ -291,7 +288,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	let ordersInPost = await Order.findAndCountAll({
 		where: {
 			postId: {
-				[Op.eq]: postId,
+				[Op.eq]: id,
 			},
 			orderStatus: {
 				[Op.eq]: orderStatuses.STATUS_DELIVERING,

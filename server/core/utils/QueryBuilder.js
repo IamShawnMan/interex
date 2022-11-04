@@ -12,7 +12,6 @@ class QueryBuilder {
 
     filter(){
      const filterFields = {...this.queryParams}
-     console.log(this.queryParams);
      excludeParams.forEach(p=>delete filterFields[p])
      const filterObject = {};
      Object.keys(filterFields).forEach(k=>{
@@ -49,6 +48,7 @@ class QueryBuilder {
      if(this.queryOptions.where){
         this.queryOptions.where =  {...filterObject, ...this.queryOptions.where}; 
      }else{
+		console.log(filterObject);
         this.queryOptions.where = filterObject;
      }
      return this;

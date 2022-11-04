@@ -13,12 +13,9 @@ function PostInnerOrders() {
   const getOrdersByPackageId = async () => {
     try {
       const res = await http({
-        url: `/posts/new`,
-        method: "POST",
-        data:{regionId:id}
+        url: `/posts/${id}/ready`
       });
       console.log(res);
-        // toast.success(res.data.message);
         navigate(`/posts/${res.data.data}/orders`)
     } catch (error) {
       console.log(error);
