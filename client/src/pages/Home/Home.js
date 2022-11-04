@@ -11,31 +11,31 @@ import Input from "../../components/Form/FormComponents/Input/Input";
 import { useForm } from "react-hook-form";
 
 function Home() {
-  const [updatePassword, setUpdatePassword] = useState(false);
-  const { register, handleSubmit } = useForm();
-  const ctx = useContext(AppContext);
-  const { user } = useContext(AppContext);
-  const navigate = useNavigate();
+	const [updatePassword, setUpdatePassword] = useState(false);
+	const { register, handleSubmit } = useForm();
+	const ctx = useContext(AppContext);
+	const { user } = useContext(AppContext);
+	const navigate = useNavigate();
 
-  const updateSelfPassword = () => {
-    setUpdatePassword(!updatePassword);
-  };
+	const updateSelfPassword = () => {
+		setUpdatePassword(!updatePassword);
+	};
 
-  return (
-    <Layout pageName={"Bosh Sahifa"}>
-      <div>
-        <p
-          onClick={updateSelfPassword}
-          style={{
-            cursor: "pointer",
-          }}
-        >
-          {!updatePassword ? "UpdatePassword" : "Paroldan chiqish"}
-        </p>
-        {updatePassword && <UpdatePassword id={user.id} />}
-      </div>
-    </Layout>
-  );
+	return (
+		<Layout pageName={"Bosh Sahifa"}>
+			<div>
+				<p
+					onClick={updateSelfPassword}
+					style={{
+						cursor: "pointer",
+					}}
+				>
+					{!updatePassword ? "UpdatePassword" : "Paroldan chiqish"}
+				</p>
+				{updatePassword && <UpdatePassword id={user.id} />}
+			</div>
+		</Layout>
+	);
 }
 
 export default Home;
