@@ -1,13 +1,13 @@
-import {useEffect, useState} from "react"
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 const PostMutation = () => {
-    const [value, setValue] = useState([]);
-    const [pagination, setPagination] = useState({});
-    const [searchParams] = useSearchParams();
+  const [value, setValue] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [searchParams] = useSearchParams();
 
     const page = searchParams.get("page") || 1;
     const size = searchParams.get("size") || 10;

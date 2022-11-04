@@ -6,7 +6,7 @@ module.exports = router
 	.get("/", postController.getAllPosts)
 	.get("/:id", postController.getPostById)
 	.get("/regions/:id", postController.getPostByRegionId)
-	.get("/:postId/orders", postController.getOrdersInPost)
+	.get("/:id/orders", postController.getOrdersInPost)
 	.get("/:regionId/regionorders", postController.ordersBeforeSend)
 	.get("/new/regions", postController.existRegions)
 	.get("/status/new", postController.newPosts)
