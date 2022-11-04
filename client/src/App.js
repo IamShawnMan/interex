@@ -46,6 +46,7 @@ function App() {
         {isAuth && <Route path="/packages" element={<Packages />} />}
         {isAuth && <Route path="/posts" element={<Posts />} />}
         {isAuth && <Route path="/posts/:id/orders" element={<Orders />} />}
+        {isAuth && <Route path="/posts/:id/regionorders" element={<Orders />} />}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
         {isAuth && (<Route path="/posts/new/:id" element={<PostInner />} />)}
         {isAuth && (

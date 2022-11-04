@@ -31,7 +31,7 @@ const PostMutation = () => {
         id: "name",
         Header: "Viloyat",
         accessor: (region) => {
-          return <Link to={`/posts/new/${region.id}`}>{region.name}</Link>;
+          return <Link to={`/posts/${region.id}/orders`}>{region.name}</Link>;
         },
       }  
     ];   
