@@ -53,7 +53,7 @@ function Orders() {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost)
-    setPostStatus(data?.data?.currentPostStaus.postStatus)
+    setPostStatus(data?.data?.currentPostStatus?.postStatus)
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -186,10 +186,10 @@ function Orders() {
             data?.districtId ? `&districtId=${data.districtId}` : ""
           }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
             data?.createdAt
-              ? `&createdAt[eq]=${data?.createdAt}`
+              ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
               : ""
           }`,
-        });
+        }); 
         getAllMyOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
