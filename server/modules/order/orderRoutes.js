@@ -13,7 +13,7 @@ router
 		orderControllers.createOrder
 	);
 router
-	.route("/myOrders")
+	.route("/myorders")
 	.get(roleMiddleware(["STORE_OWNER"]), orderControllers.getMyOrders)
 
 router

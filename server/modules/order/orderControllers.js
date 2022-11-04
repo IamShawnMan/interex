@@ -254,7 +254,6 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 
 exports.getMyOrders = catchAsync(async (req, res, next) => {
 	const userId = req.user.id;
-
 	req.query.storeOwnerId = userId;
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
