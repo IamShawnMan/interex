@@ -365,26 +365,48 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getTodaysPost = catchAsync(async (req, res, next) => {
-	const { id } = req.params;
-
-	const postOnTheWay = await Post.findAll({
-		where: {
-			regionId: {
-				[Op.eq]: id,
-			},
-			postStatus: {
-				[Op.eq]: postStatuses.POST_DELIVERING,
-			},
+	const { regionId } = req.user;
+  
+	const queryBuilder = new QueryBuilder(req.query);
+  
+	queryBuilder
+	  .filter()
+	  .limitFields()
+	  .paginate()
+	  .search(["recipientPhoneNumber", "recipient"])
+	  .sort();
+  
+	const postOnTheWay = await Post.findOne({
+	  where: {
+		regionId: {
+		  [Op.eq]: regionId,
 		},
+		postStatus: {
+		  [Op.eq]: postStatuses.POST_DELIVERING,
+		},
+	  },
 	});
-
+  
+	// req.query.postId = postOnTheWay.id;
+  
+	queryBuilder.queryOptions.where = {
+	  ...queryBuilder.queryOptions.where,
+	  postId: {
+		[Op.eq]: postOnTheWay.id,
+	  },
+	};
+  
+	let ordersOnTheWay = await Order.findAndCountAll(queryBuilder.queryOptions);
+	ordersOnTheWay = queryBuilder.createPagination(ordersOnTheWay);
+  
+	const orderArr = ordersOnTheWay.content.map((order) => {
+	  return order.id;
+	});
+  
 	res.json({
-		status: "success",
-		message: "Yo'ldagi pochta",
-		error: null,
-		data: postOnTheWay,
+	  status: "success",
+	  message: "Yo'ldagi pochta",
+	  error: null,
+	  data: { ordersOnTheWay, orderArr },
 	});
-	res.send("Recieve Post");
-});
-
-exports.recieve;
+  });
