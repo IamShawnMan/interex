@@ -106,7 +106,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 	res.status(201).json({
 		status: "success",
-		message: "yangi orderlar qo`shildi",
+		message: "yangi buyurtmalar qo`shildi",
 		errrors: null,
 		data: null,
 	});
@@ -313,3 +313,72 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
+exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
+	const postOrderStatuses = Object.values(statusOrder).slice(5, 9)
+	const deliveredOrders = await OrderModel.findAndCountAll({
+		where: {
+			orderStatus: {
+				[Op.in] : postOrderStatuses
+			},
+			regionId: {
+				[Op.eq]: regionId
+			} 
+		}
+	})
+	res.json({
+		status: "success",
+		message: "Yetkazib berilgan buyurtmalar",
+		error: null, 
+		data: {
+			deliveredOrders
+		}
+	})
+})
+
+exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
+	const {id} = req.params
+	const {orderStatus} = req.body
+	const postOrdersById = await OrderModel.findByPk(id, {
+		where: {
+			regionId: {
+				[Op.eq]: regionId
+			} 
+		}
+	})
+	const postOrderStatuses = Object.values(statusOrder).slice(6, 9)
+	const postOrderStatusChange = postOrderStatuses.find(e => e === orderStatus)
+	if(postOrdersById.dataValues.orderStatus === "DELIVERED" 
+	|| postOrdersById.dataValues.orderStatus === "PENDING") {
+		await postOrdersById.update({orderStatus: postOrderStatusChange})
+	}
+
+	res.status(203).json({
+		status: "success",
+		message: "Post orderining statusi o'zgardi",
+		error: null,
+		data: null
+	})
+})
+
+exports.getDailyOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
+	const ordersOneDay = await OrderModel.findAndCountAll({
+		where: {
+			[Op.or]: [
+				{orderStatus: statusOrder.STATUS_DELIVERED},
+				{orderStatus: statusOrder.STATUS_PENDING}
+			],
+			regionId: regionId
+		}
+	})
+	res.json({
+		status: "success",
+		message: "Bir kunlik yetkazilishi kerak bo'lgan buyurtmalar",
+		error: null,
+		data: {
+			ordersOneDay
+		}
+	})
+})
