@@ -373,31 +373,3 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 	});
 	res.send("Recieve Post");
 });
-exports.getTodaysPost = catchAsync(async (req, res, next) => {
-	const { regionId } = req.user;
-  
-	console.log(req.user);
-  
-	const postOnTheWay = await Post.findAll({
-	  where: {
-		regionId: {
-		  [Op.eq]: regionId,
-		},
-		postStatus: {
-		  [Op.eq]: postStatuses.POST_DELIVERING,
-		},
-	  },
-	});g
-  
-	console.log(postOnTheWay);
-  
-	return res.send(postOnTheWay);
-  
-	res.json({
-	  status: "success",
-	  message: "Yo'ldagi pochta",
-	  error: null,
-	  data: postOnTheWay,
-	});
-	res.send("Recieve Post");
-  });
