@@ -50,7 +50,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     return next(err);
   }
   let existedPackage = await PackageModel.findOne({
-    where: { storeOwnerId: { [Op.eq]: req.user.id } },
+    where: { storeOwnerId: { [Op.eq]: req.user.id },},
+	order: [["createdAt", "DESC"]]
   });
   
   if(existedPackage){
@@ -303,7 +304,6 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 		return next(new AppError("Bunday order mavjud emas", 404));
 	}
 	existedOrder.update({ deliveryPrice: deliveryPrice || 50000 });
-	console.log(existedOrder.deliveryPrice, "waefmasdfasdklfmaslkmdfas");
 	res.json({
 		status: "success",
 		message: "buyurtma yetkazish to`lovi qo`shildi",
