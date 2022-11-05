@@ -7,8 +7,6 @@ import Modal from "../../components/Modal/Modal";
 import http from "../../utils/axios-instance";
 const PostSendCourier= ({ id,onClose}) => {
     const [note,setNote] = useState(null)
-    const navigate = useNavigate();
-    console.log(id);
     const sendPost=async()=>{
         try {
             const res = await http({
@@ -19,8 +17,6 @@ const PostSendCourier= ({ id,onClose}) => {
               console.log(res);
               toast.success(res.data.message)
               onClose()
-            //   console.log(res);
-            //   navigate("/posts")
         } catch (error) {
             console.log(error);
         }
