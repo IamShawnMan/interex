@@ -113,69 +113,72 @@ exports.existRegions = catchAsync(async (req, res, next) => {
 });
 
 exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
-	const { id } = req.params;
+	const { regionId } = req.params;
+	const queryBuilder = new QueryBuilder(req.query);
 	let allOrders = [];
-	let ordersArr = [];
+	let ordersArrInPost = [];
+	req.query.orderStatus = orderStatuses.STATUS_ACCEPTED;
+
+	queryBuilder.queryOptions.include = [
+		{ model: Region, as: "region", attributes: ["name"] },
+		{ model: District, as: "district", attributes: ["name"] },
+	];
+
+	queryBuilder
+		.filter()
+		.paginate()
+		.limitFields()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
+
 	const region = await Region.findOne({
 		attributes: ["id", "name"],
 		where: {
 			id: {
-				[Op.eq]: id,
+				[Op.eq]: regionId,
 			},
 		},
 	});
+
 	if (region.name === "Samarqand viloyati") {
-		allOrders = await Order.findAll({
-			include: [
-				{ model: Region, as: "region", attributes: ["name"] },
-				{ model: District, as: "district", attributes: ["name"] },
-			],
-			where: {
-				regionId: {
-					[Op.eq]: id,
-				},
-				districtId: {
-					[Op.notIn]: [36, 39],
-				},
+		queryBuilder.queryOptions.where = {
+			...queryBuilder.queryOptions.where,
+			regionId: {
+				[Op.eq]: regionId,
 			},
-		});
-		ordersArr = allOrders.map((order) => {
-			return order.id;
+			districtId: {
+				[Op.notIn]: [36, 39],
+			},
+		};
+		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+		allOrders = queryBuilder.createPagination(allOrders);
+		ordersArrInPost = allOrders.content.map((order) => {
+			return order.dataValues.id;
 		});
 	} else if (region.name === "Navoiy viloyati") {
-		allOrders = await Order.findAll({
-			include: [
-				{ model: Region, as: "region", attributes: ["name"] },
-				{ model: District, as: "district", attributes: ["name"] },
-			],
-			where: {
-				[Op.or]: {
-					regionId: {
-						[Op.eq]: id,
-					},
-					districtId: {
-						[Op.in]: [36, 39],
-					},
+		queryBuilder.queryOptions.where = {
+			...queryBuilder.queryOptions.where,
+			[Op.or]: {
+				regionId: {
+					[Op.eq]: regionId,
+				},
+				districtId: {
+					[Op.in]: [36, 39],
 				},
 			},
-		});
-		ordersArr = allOrders.map((order) => {
-			return order.id;
+		};
+		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+		allOrders = queryBuilder.createPagination(allOrders);
+		ordersArrInPost = allOrders.content.map((order) => {
+			return order.dataValues.id;
 		});
 	} else {
-		allOrders = await Order.findAll({
-			include: [
-				{ model: Region, as: "region", attributes: ["name"] },
-				{ model: District, as: "district", attributes: ["name"] },
-			],
-			where: {
-				regionId: {
-					[Op.eq]: id,
-				},
-			},
-		});
-		ordersArr = allOrders.map((order) => {
-			return order.id;
+		req.query.regionId = regionId;
+		queryBuilder.filter();
+		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+		allOrders = queryBuilder.createPagination(allOrders);
+		ordersArrInPost = allOrders.content.map((order) => {
+			return order.dataValues.id;
 		});
 	}
 
@@ -184,8 +187,8 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
 		message: "Orders ready to sent",
 		error: null,
 		data: {
-			allOrders,
-			ordersArr,
+			...allOrders,
+			ordersArrInPost,
 		},
 	});
 });
@@ -264,9 +267,6 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
-	const {id} = req.params
-	req.query.postId = id
-	req.query.orderStatus = orderStatuses.STATUS_DELIVERING
 	const queryBuilder = new QueryBuilder(req.query);
 	const currentPostStatus = await Post.findByPk(id, {
 		attributes: ["postStatus"],
@@ -278,13 +278,22 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		.limitFields()
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
-	
+
 	queryBuilder.queryOptions.include = [
 		{ model: District, as: "district", attributes: ["name"] },
 		{ model: Region, as: "region", attributes: ["name"] },
-	]
+	];
 
-	let ordersInPost = await Order.findAndCountAll(queryBuilder.queryOptions);
+	let ordersInPost = await Order.findAndCountAll({
+		where: {
+			postId: {
+				[Op.eq]: id,
+			},
+			orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_DELIVERING,
+			},
+		},
+	});
 
 	ordersInPost = queryBuilder.createPagination(ordersInPost);
 
@@ -324,8 +333,7 @@ exports.newPosts = catchAsync(async (req, res, next) => {
 exports.sendPost = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { id } = req.params;
-	const { postStatus } = req.body;
-	const { note } = req.body;
+	const { postStatus, note } = req.body;
 	const getPostById = await Post.findByPk(id);
 
 	if (!getPostById) {
@@ -352,12 +360,21 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getTodaysPost = catchAsync(async (req, res, next) => {
-	const { id } = req.params;
+	const { regionId } = req.user;
 
-	const postOnTheWay = await Post.findAll({
+	const queryBuilder = new QueryBuilder(req.query);
+
+	queryBuilder
+		.filter()
+		.limitFields()
+		.paginate()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
+
+	const postOnTheWay = await Post.findOne({
 		where: {
 			regionId: {
-				[Op.eq]: id,
+				[Op.eq]: regionId,
 			},
 			postStatus: {
 				[Op.eq]: postStatuses.POST_DELIVERING,
@@ -365,11 +382,102 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 		},
 	});
 
+	queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		postId: {
+			[Op.eq]: postOnTheWay.id,
+		},
+	};
+
+	let ordersOnTheWay = await Order.findAndCountAll(queryBuilder.queryOptions);
+	ordersOnTheWay = queryBuilder.createPagination(ordersOnTheWay);
+
+	const orderArr = ordersOnTheWay.content.map((order) => {
+		return order.id;
+	});
+
 	res.json({
 		status: "success",
 		message: "Yo'ldagi pochta",
 		error: null,
-		data: postOnTheWay,
+		data: { ordersOnTheWay, orderArr },
 	});
-	res.send("Recieve Post");
 });
+
+exports.recievePost = catchAsync(async (req, res, next) => {
+	const { postStatus, ordersArr, postId } = req.body;
+
+	await Post.update(
+		{
+			postStatus: postStatus,
+		},
+		{
+			where: {
+				postId: {
+					[Op.eq]: postId,
+				},
+			},
+		}
+	);
+
+	const ordersNotInArr = await Order.findAll({
+		where: {
+			id: {
+				[Op.notIn]: ordersArr,
+			},
+		},
+	});
+
+	if (ordersNotInArr) {
+		await Order.update(
+			{
+				orderStatus: orderStatuses.STATUS_NOT_DELIVERED,
+			},
+			{
+				where: {
+					id: {
+						[Op.notIn]: ordersArr,
+					},
+				},
+			}
+		);
+	}
+
+	await Order.update(
+		{
+			orderStatus: orderStatuses.STATUS_DELIVERED,
+		},
+		{
+			where: {
+				id: {
+					[Op.in]: ordersArr,
+				},
+			},
+		}
+	);
+
+	res.json({
+		status: "sucess",
+		message: "Orders and Post Updated",
+		error: null,
+		data: null,
+	});
+});
+
+exports.getDeliveredPosts = catchAsync(async (req, res, next) => {
+	const deliveredPosts = await Post.findAndCountAll({
+		where: {
+			postStatus: {
+				[Op.eq]: postStatuses.POST_DELIVERED
+			}
+		}
+	})
+	res.json({
+		status: "success",
+		message: "Delivered posts",
+		error: null,
+		data: {
+			deliveredPosts
+		}
+	})
+})

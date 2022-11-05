@@ -64,7 +64,7 @@ function Sidebar(props) {
           {open && <p className="h6">Orders</p>}
         </Link>
 
-        {user.userRole === "ADMIN" && (
+        {(user.userRole === "ADMIN" || user.userRole === "COURIER") && (
           <Link
             to={"/posts"}
             className={`${styles.sidebarLink} ${

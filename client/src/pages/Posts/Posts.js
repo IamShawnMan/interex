@@ -1,17 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
+import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
+import PostSendCourier from "./PostSendCourier";
 
 const Posts = () => {
+  const { user } = useContext(AppContext);
   const [value, setValue] = useState([]);
   const [regionValue, setRegionValue] = useState([]);
   const [pagination, setPagination] = useState({});
+  const [info, setInfo] = useState(null);
   const [searchParams] = useSearchParams();
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const getAllPosts = async () => {
@@ -19,18 +23,15 @@ const Posts = () => {
       const res = await http({
         url: `/posts?page=${page}&size=${size}`,
       });
-      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
-
   useEffect(() => {
     getAllPosts();
-  }, [page]);
-
+  }, [page,info]);
   const postCols = [
     {
       id: "id",
@@ -53,16 +54,6 @@ const Posts = () => {
       accessor: "postTotalPrice",
     },
     {
-      id: "regionName",
-      Header: "regionName",
-      accessor: "region.name",
-    },
-    {
-      id: "regionId",
-      Header: "regionId",
-      accessor: "regionId",
-    },
-     {
       Header: "Action",
       accessor: (post) => {
         return (
@@ -76,40 +67,50 @@ const Posts = () => {
               >
                 info
               </Button>
-            <Button  
+            
+              <Button  
                 size="small"
                 name="btn"
                 disabled={post.postStatus!=="NEW"}
+                onClick={() => {setInfo(post.id)}}
               >
                 Send Post
               </Button>
+            
           </div>
         );
-    },}
+      },
+    },
   ];
   const getAllRegions = async () => {
-    try{
+    try {
       const res = await http({
         url: `/posts/new/regions`,
       });
-      console.log(res);
       setRegionValue(res.data.data);
-    }catch (error) {
+    } catch (error) {
       toast.error(error.response.data.message);
-    }   
-  };   
+    }
+  };
   useEffect(() => {
-    getAllRegions();
+    user.userRole !== "COURIER" && getAllRegions();
   }, []);
+  if (user.userRole !== "COURIER") {
+    postCols.unshift({
+      id: "regionName",
+      Header: "regionName",
+      accessor: "region.name",
+    });
+  }
   const regionCols = [
-    {  
+    {
       id: "name",
       Header: "Viloyat",
       accessor: (region) => {
-        return <Link to={`/posts/new/${region.id}`}>{region.name}</Link>;
+        return <Link to={`/posts/${region.id}/regionorders`}>{region.name}</Link>;
       },
-    }  
-  ];   
+    },
+  ];
   return (
     <Layout pageName="Postlar">
    <p>Regions</p>
@@ -118,6 +119,7 @@ const Posts = () => {
         ) : (
           <p>Malumotlar yoq</p>
         )}
+            {info &&<PostSendCourier id={info} onClose={() => {setInfo(false)}} />} 
       {value?.length > 0 ? (
         <BasicTable
           columns={postCols}
