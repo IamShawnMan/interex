@@ -166,7 +166,7 @@ function Orders() {
             </Button>
             {ordersIdArr && (
               <Input
-                // disabled={postStatus !== "NEW"}
+                disabled={postStatus&&postStatus !== "NEW"}
                 type="checkbox"
                 checked={ordersIdArr.includes(order.id)}
                 onClick={() => {
@@ -252,13 +252,13 @@ function Orders() {
       {info && <OrderInfo id={info} onClose={closeHandler} />}
       <div style={{ display: "flex", gap: 1 }}>
         {console.log(url.split("/")[3]==="regionorders")}
-        {url.split("/")[1] === "posts"  && (
+        {url.split("/")[1] === "posts"  &&(postStatus==="NEW"|| url.split("/")[3]==="regionorders")&&(
           <Button
             type="submit"
             size="small"
             name="btn"
             onClick={async () => {
-              console.log(ordersIdArr,"idlar");
+              // console.log(ordersIdArr,"idlar");
               try {
                    const res = await http({
                 url: url.split("/")[3]==="regionorders"?"posts/new":"posts/new/customized",
