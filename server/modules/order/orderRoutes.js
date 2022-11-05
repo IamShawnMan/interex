@@ -13,6 +13,10 @@ router
 		orderControllers.createOrder
 	);
 router
+	.get("/delivered", orderControllers.getDeliveredOrders) 
+	.get("/delivered/daily", orderControllers.getDailyOrders)
+	.put("/delivered/:id/status", orderControllers.changeStatusDeliveredOrders) 
+router
 	.route("/myorders")
 	.get(roleMiddleware(["STORE_OWNER"]), orderControllers.getMyOrders)
 
@@ -34,4 +38,5 @@ router
 	.get(orderControllers.editOrder)
 
 	router.route("/:id/devprice").patch(roleMiddleware(["ADMIN"]), orderControllers.changeDevPrice)
+
 module.exports = router;

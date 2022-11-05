@@ -268,7 +268,6 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	const { id } = req.params;
 	const currentPostStatus = await Post.findByPk(id, {
 		attributes: ["postStatus"],
 	});
@@ -464,3 +463,21 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 		data: null,
 	});
 });
+
+exports.getDeliveredPosts = catchAsync(async (req, res, next) => {
+	const deliveredPosts = await Post.findAndCountAll({
+		where: {
+			postStatus: {
+				[Op.eq]: postStatuses.POST_DELIVERED
+			}
+		}
+	})
+	res.json({
+		status: "success",
+		message: "Delivered posts",
+		error: null,
+		data: {
+			deliveredPosts
+		}
+	})
+})
