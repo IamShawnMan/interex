@@ -23,8 +23,12 @@ const PostSendCourier= ({ id,onClose}) => {
     }
     return ( 
         <Modal onClose={onClose} >
+            <div style={{padding:"20px"}}>
             <Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>
-            <Button name="btn" size="small" onClick={sendPost}>Send Post</Button>
+
+            <Button name="btn" size="small" btnStyle={{marginTop:"10px"}} onClick={sendPost}>Send Post</Button>
+            </div>
+      
         </Modal>
      );
 }
