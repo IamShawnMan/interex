@@ -29,11 +29,9 @@ const Posts = () => {
       toast.error(error.response.data.message);
     }
   };
-
   useEffect(() => {
     getAllPosts();
   }, [page,info]);
-
   const postCols = [
     {
       id: "id",
@@ -97,7 +95,6 @@ const Posts = () => {
   useEffect(() => {
     user.userRole !== "COURIER" && getAllRegions();
   }, []);
-
   if (user.userRole !== "COURIER") {
     postCols.unshift({
       id: "regionName",

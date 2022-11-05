@@ -48,9 +48,7 @@ function Orders() {
     });
     setPrice(res.data);
   };
-
   const getAllOrders = async (data) => {
-    console.log(data);
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost);
@@ -185,7 +183,19 @@ function Orders() {
       },
     },
   ];
-
+const postCreateOrUpdateFn=async () => {
+  try {
+       const res = await http({
+    url: url.split("/")[3]==="regionorders"?"posts/new":"posts/new/customized",
+    data:url.split("/")[3]==="regionorders"?{regionId:id,ordersArr:ordersIdArr}: { postId: id, ordersArr: ordersIdArr },
+    method: url.split("/")[3]==="regionorders"?"POST":"PUT",
+  });
+ toast.success(res.data.message);
+  } catch (error) {
+    console.log(error);
+  }
+  navigate("/posts");
+}
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
@@ -251,28 +261,12 @@ function Orders() {
       )}
       {info && <OrderInfo id={info} onClose={closeHandler} />}
       <div style={{ display: "flex", gap: 1 }}>
-        {console.log(url.split("/")[3]==="regionorders")}
         {url.split("/")[1] === "posts"  &&(postStatus==="NEW"|| url.split("/")[3]==="regionorders")&&(
           <Button
             type="submit"
             size="small"
             name="btn"
-            onClick={async () => {
-              // console.log(ordersIdArr,"idlar");
-              try {
-                   const res = await http({
-                url: url.split("/")[3]==="regionorders"?"posts/new":"posts/new/customized",
-                data:url.split("/")[3]==="regionorders"?{regionId:id,ordersArr:ordersIdArr}: { postId: id, ordersArr: ordersIdArr },
-                method: url.split("/")[3]==="regionorders"?"POST":"PUT",
-              });
-              console.log(res);
-              } catch (error) {
-                console.log(error);
-              }
-           
-              
-              navigate("/posts");
-            }}
+            onClick={postCreateOrUpdateFn}
           >
           { url.split("/")[3]==="regionorders"?"create":"update"}
           </Button>
