@@ -48,7 +48,6 @@ function Orders() {
     });
     setPrice(res.data);
   };
-
   const getAllOrders = async (data) => {
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
@@ -165,7 +164,7 @@ function Orders() {
             </Button>
             {ordersIdArr && (
               <Input
-                disabled={postStatus !== "NEW"}
+                disabled={postStatus&&postStatus !== "NEW"}
                 type="checkbox"
                 checked={ordersIdArr.includes(order.id)}
                 onClick={() => {
@@ -184,7 +183,19 @@ function Orders() {
       },
     },
   ];
-
+const postCreateOrUpdateFn=async () => {
+  try {
+       const res = await http({
+    url: url.split("/")[3]==="regionorders"?"posts/new":"posts/new/customized",
+    data:url.split("/")[3]==="regionorders"?{regionId:id,ordersArr:ordersIdArr}: { postId: id, ordersArr: ordersIdArr },
+    method: url.split("/")[3]==="regionorders"?"POST":"PUT",
+  });
+ toast.success(res.data.message);
+  } catch (error) {
+    console.log(error);
+  }
+  navigate("/posts");
+}
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
@@ -250,22 +261,14 @@ function Orders() {
       )}
       {info && <OrderInfo id={info} onClose={closeHandler} />}
       <div style={{ display: "flex", gap: 1 }}>
-        {url.split("/")[1] === "posts" && postStatus === "NEW" && (
+        {url.split("/")[1] === "posts"  &&(postStatus==="NEW"|| url.split("/")[3]==="regionorders")&&(
           <Button
             type="submit"
             size="small"
             name="btn"
-            onClick={async () => {
-              console.log(ordersIdArr);
-              const res = await http({
-                url: "posts/new/customized",
-                data: { postId: id, ordersArr: ordersIdArr },
-                method: "PUT",
-              });
-              navigate("/posts");
-            }}
+            onClick={postCreateOrUpdateFn}
           >
-            Save
+          { url.split("/")[3]==="regionorders"?"create":"update"}
           </Button>
         )}
       </div>

@@ -116,7 +116,7 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
 	const { regionId } = req.params;
 	const queryBuilder = new QueryBuilder(req.query);
 	let allOrders = [];
-	let ordersArr = [];
+	let ordersArrInPost = [];
 	req.query.orderStatus = orderStatuses.STATUS_ACCEPTED;
 
 	queryBuilder.queryOptions.include = [
@@ -152,7 +152,7 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
 		};
 		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
 		allOrders = queryBuilder.createPagination(allOrders);
-		ordersArr = allOrders.content.map((order) => {
+		ordersArrInPost = allOrders.content.map((order) => {
 			return order.dataValues.id;
 		});
 	} else if (region.name === "Navoiy viloyati") {
@@ -169,7 +169,7 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
 		};
 		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
 		allOrders = queryBuilder.createPagination(allOrders);
-		ordersArr = allOrders.content.map((order) => {
+		ordersArrInPost = allOrders.content.map((order) => {
 			return order.dataValues.id;
 		});
 	} else {
@@ -177,7 +177,7 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
 		queryBuilder.filter();
 		allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
 		allOrders = queryBuilder.createPagination(allOrders);
-		ordersArr = allOrders.content.map((order) => {
+		ordersArrInPost = allOrders.content.map((order) => {
 			return order.dataValues.id;
 		});
 	}
@@ -187,8 +187,8 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
 		message: "Orders ready to sent",
 		error: null,
 		data: {
-			allOrders,
-			ordersArr,
+			...allOrders,
+			ordersArrInPost,
 		},
 	});
 });
@@ -267,12 +267,9 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
-	const {id} = req.params
-	req.query.postId = id
-	req.query.orderStatus = orderStatuses.STATUS_DELIVERING
 	const queryBuilder = new QueryBuilder(req.query);
-	const { postId } = req.params;
-	const currentPostStatus = await Post.findByPk(postId, {
+	const { id } = req.params;
+	const currentPostStatus = await Post.findByPk(id, {
 		attributes: ["postStatus"],
 	});
 
@@ -282,16 +279,16 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 		.limitFields()
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort();
-	
+
 	queryBuilder.queryOptions.include = [
 		{ model: District, as: "district", attributes: ["name"] },
 		{ model: Region, as: "region", attributes: ["name"] },
-	]
+	];
 
 	let ordersInPost = await Order.findAndCountAll({
 		where: {
 			postId: {
-				[Op.eq]: postId,
+				[Op.eq]: id,
 			},
 			orderStatus: {
 				[Op.eq]: orderStatuses.STATUS_DELIVERING,
@@ -366,6 +363,7 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 
 exports.getTodaysPost = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
+<<<<<<< HEAD
   
 	const queryBuilder = new QueryBuilder(req.query);
   
@@ -380,12 +378,33 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 	  where: {
 		regionId: {
 		  [Op.eq]: regionId,
+=======
+
+	const queryBuilder = new QueryBuilder(req.query);
+
+	queryBuilder
+		.filter()
+		.limitFields()
+		.paginate()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
+
+	const postOnTheWay = await Post.findOne({
+		where: {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+			postStatus: {
+				[Op.eq]: postStatuses.POST_DELIVERING,
+			},
+>>>>>>> 52f8487aa62f2bd2238dc6b319a750c9b589aa17
 		},
 		postStatus: {
 		  [Op.eq]: postStatuses.POST_DELIVERING,
 		},
 	  },
 	});
+<<<<<<< HEAD
   
 	// req.query.postId = postOnTheWay.id;
   
@@ -410,3 +429,31 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 	  data: { ordersOnTheWay, orderArr },
 	});
   });
+=======
+
+	// req.query.postId = postOnTheWay.id;
+
+	queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		postId: {
+			[Op.eq]: postOnTheWay.id,
+		},
+	};
+
+	let ordersOnTheWay = await Order.findAndCountAll(queryBuilder.queryOptions);
+	ordersOnTheWay = queryBuilder.createPagination(ordersOnTheWay);
+
+	const orderArr = ordersOnTheWay.content.map((order) => {
+		return order.id;
+	});
+
+	res.json({
+		status: "success",
+		message: "Yo'ldagi pochta",
+		error: null,
+		data: { ordersOnTheWay, orderArr },
+	});
+});
+
+exports.recievePost = catchAsync(async (req, res, next) => {});
+>>>>>>> 52f8487aa62f2bd2238dc6b319a750c9b589aa17
