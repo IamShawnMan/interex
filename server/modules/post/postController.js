@@ -268,7 +268,6 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
 	req.query.postId = id
 	req.query.orderStatus = orderStatuses.STATUS_DELIVERING
 	const queryBuilder = new QueryBuilder(req.query);
-	const { id } = req.params;
 	const currentPostStatus = await Post.findByPk(id, {
 		attributes: ["postStatus"],
 	});
@@ -374,5 +373,31 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 	});
 	res.send("Recieve Post");
 });
-
-exports.recieve;
+exports.getTodaysPost = catchAsync(async (req, res, next) => {
+	const { regionId } = req.user;
+  
+	console.log(req.user);
+  
+	const postOnTheWay = await Post.findAll({
+	  where: {
+		regionId: {
+		  [Op.eq]: regionId,
+		},
+		postStatus: {
+		  [Op.eq]: postStatuses.POST_DELIVERING,
+		},
+	  },
+	});g
+  
+	console.log(postOnTheWay);
+  
+	return res.send(postOnTheWay);
+  
+	res.json({
+	  status: "success",
+	  message: "Yo'ldagi pochta",
+	  error: null,
+	  data: postOnTheWay,
+	});
+	res.send("Recieve Post");
+  });

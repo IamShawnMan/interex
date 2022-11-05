@@ -48,7 +48,8 @@ exports.login = catchAsync(async (req, res, next) => {
         phoneNumber: candidate.phoneNumber,
         passportNumber: candidate.passportNumber,
         userRole: candidate.userRole,
-        status: candidate.status
+        status: candidate.status,
+        regionId: candidate.regionId
     }
     const token = await generateToken(payload, process.env.JWT_SECRET, {
         algorithm: "HS512",

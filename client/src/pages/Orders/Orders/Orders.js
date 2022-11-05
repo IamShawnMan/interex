@@ -202,7 +202,7 @@ function Orders() {
               : ""
           }`,
         });
-        getAllMyOrders(res.data);
+        getAllOrders(res.data);
       } else if (isStoreOwner) {
         const res = await http(
           `${url}/myorders?page=${page}&size=${size}${
