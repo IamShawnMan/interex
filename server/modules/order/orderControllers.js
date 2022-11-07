@@ -345,6 +345,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 })
 
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
 	const {id} = req.params
 	const {orderStatus} = req.body
 	const postOrdersById = await OrderModel.findByPk(id, {
