@@ -391,7 +391,7 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
   queryBuilder.queryOptions.where = {
     ...queryBuilder.queryOptions.where,
     postId: {
-      [Op.eq]: postOnTheWay.id,
+      [Op.eq]: postOnTheWay?.id,
     },
   };
 
