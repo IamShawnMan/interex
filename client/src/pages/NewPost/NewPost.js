@@ -137,15 +137,15 @@ function NewPost() {
 
   const postHandler = async () => {
     const res = await http({
-      url: "/",
-      metod: "POST",
+      url: "/posts/new/recieve",
       data: {
         postStatus: "DELIVERED",
         orderArr: ordersIdArr,
         postId: postData?.[0]?.id,
       },
+      method: "PUT",
     });
-    console.log(res.data.data);
+    console.log(res?.data);
   };
 
   return (

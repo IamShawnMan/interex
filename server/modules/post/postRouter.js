@@ -11,6 +11,8 @@ module.exports = router
   .get("/new/regions", postController.existRegions)
   .get("/status/new", postController.newPosts)
   .get("/new/coming", postController.getTodaysPost)
+  .put("/new/recieve", postController.recievePost)
   .post("/new", postController.createPostForAllOrders)
   .put("/new/customized", postController.createPostForCustomOrders)
-  .put("/:id/send", postController.sendPost);
+  .put("/:id/send", postController.sendPost)
+  .get("/:id/delivered", postController.getDeliveredPosts);

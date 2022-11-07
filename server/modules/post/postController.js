@@ -334,8 +334,7 @@ exports.newPosts = catchAsync(async (req, res, next) => {
 exports.sendPost = catchAsync(async (req, res, next) => {
   const { userRole } = req.user;
   const { id } = req.params;
-  const { postStatus } = req.body;
-  const { note } = req.body;
+  const { postStatus, note } = req.body;
   const getPostById = await Post.findByPk(id);
 
   if (!getPostById) {
@@ -387,15 +386,12 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
         [Op.eq]: postStatuses.POST_DELIVERING,
       },
     },
-    postStatus: {
-      [Op.eq]: postStatuses.POST_DELIVERING,
-    },
   });
 
   queryBuilder.queryOptions.where = {
     ...queryBuilder.queryOptions.where,
     postId: {
-      [Op.eq]: postOnTheWay?.id,
+      [Op.eq]: postOnTheWay.id,
     },
   };
 
@@ -414,4 +410,85 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.recievePost = catchAsync(async (req, res, next) => {});
+exports.recievePost = catchAsync(async (req, res, next) => {
+  const { postStatus, ordersArr, postId } = req.body;
+
+  const postInfo = await Post.update(
+    {
+      postStatus: postStatus,
+    },
+    {
+      where: {
+        id: {
+          [Op.eq]: postId,
+        },
+      },
+    }
+  );
+
+  const ordersNotInArr = await Order.findAll({
+    where: {
+      id: {
+        [Op.notIn]: ordersArr,
+      },
+    },
+  });
+
+  if (ordersNotInArr) {
+    console.log(ordersNotInArr);
+    await Order.update(
+      {
+        orderStatus: orderStatuses.STATUS_NOT_DELIVERED,
+      },
+      {
+        where: {
+          id: {
+            [Op.notIn]: ordersArr,
+          },
+        },
+      }
+    );
+  }
+
+  const updatedOrders = await Order.update(
+    {
+      orderStatus: orderStatuses.STATUS_DELIVERED,
+    },
+    {
+      where: {
+        id: {
+          [Op.in]: ordersArr,
+        },
+      },
+    }
+  );
+
+  res.json({
+    status: "sucess",
+    message: "Orders and Post Updated",
+    error: null,
+    data: {
+      postInfo,
+      ordersNotInArr,
+      updatedOrders,
+    },
+  });
+});
+
+exports.getDeliveredPosts = catchAsync(async (req, res, next) => {
+  const deliveredPosts = await Post.findAndCountAll({
+    where: {
+      postStatus: {
+        [Op.eq]: postStatuses.POST_DELIVERED,
+      },
+    },
+  });
+  res.json({
+    status: "success",
+    message: "Delivered posts",
+    error: null,
+    data: {
+      deliveredPosts,
+    },
+  });
+});
