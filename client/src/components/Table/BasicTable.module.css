@@ -1,38 +1,38 @@
 .basicTable {
-  /* margin-top: 2rem;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem; */
-  /* overflow: scroll; */
+  gap: 2rem;
+  overflow: scroll;
 }
 .table {
-  /* width: 100%; */
-  /* overflow: scroll; */
+  width: 100%;
+  overflow: scroll;
 }
-/* table,
+table,
 table th,
 table td {
   padding: 0.4rem 0.6rem;
   border-collapse: collapse;
-} */
-/* .td,
+}
+.td,
 .th {
   border-collapse: collapse;
   padding: 0.8rem;
   border: none;
-} */
-/* .tr:nth-child(even) {
+}
+.tr:nth-child(even) {
   background: #dfcffb;
   border: none;
   color: #7a7a7a;
-} */
-/* .tr:nth-child(odd) {
+}
+.tr:nth-child(odd) {
   background: #fff;
   border: none;
   color: #7a7a7a;
-} */
-/* .td {
+}
+.td {
   text-align: center;
   font-style: normal;
   font-weight: 500;
@@ -42,8 +42,8 @@ table td {
   padding-bottom: 1.2rem;
   color: #7a7a7a;
   border: none;
-} */
-/* .th {
+}
+.th {
   font-style: normal;
   font-weight: 500;
   font-size: 1.6rem;
@@ -53,9 +53,9 @@ table td {
   background: #dfcffb;
   color: black;
   border: none;
-} */
+}
 
-.table {
+/* .table {
   border: 1px solid #ccc;
   border-collapse: collapse;
   margin: 0;
@@ -133,10 +133,7 @@ table td {
   }
   
   .table .td::before {
-    /*
-    * aria-label has no advantage, it won't be read inside a table
-    content: attr(aria-label);
-    */
+
     content: attr(data-label);
     float: left;
     font-weight: bold;
@@ -157,4 +154,4 @@ table td {
     color: #7a7a7a;
   }
 }
-
+ */
