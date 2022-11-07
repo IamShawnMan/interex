@@ -108,7 +108,14 @@ function Orders() {
     {
       Header: "Sanasi",
       accessor: (order) => {
-        return formatDate(order.createdAt);
+        const date = formatDate(order.createdAt);
+        return (
+          <>
+            {date.slice(0, 10)}
+            <br />
+            {date.slice(10)}
+          </>
+        );
       },
     },
     {
@@ -164,7 +171,7 @@ function Orders() {
             </Button>
             {ordersIdArr && (
               <Input
-                disabled={postStatus&&postStatus !== "NEW"}
+                disabled={postStatus && postStatus !== "NEW"}
                 type="checkbox"
                 checked={ordersIdArr.includes(order.id)}
                 onClick={() => {
@@ -183,19 +190,25 @@ function Orders() {
       },
     },
   ];
-const postCreateOrUpdateFn=async () => {
-  try {
-       const res = await http({
-    url: url.split("/")[3]==="regionorders"?"posts/new":"posts/new/customized",
-    data:url.split("/")[3]==="regionorders"?{regionId:id,ordersArr:ordersIdArr}: { postId: id, ordersArr: ordersIdArr },
-    method: url.split("/")[3]==="regionorders"?"POST":"PUT",
-  });
- toast.success(res.data.message);
-  } catch (error) {
-    console.log(error);
-  }
-  navigate("/posts");
-}
+  const postCreateOrUpdateFn = async () => {
+    try {
+      const res = await http({
+        url:
+          url.split("/")[3] === "regionorders"
+            ? "posts/new"
+            : "posts/new/customized",
+        data:
+          url.split("/")[3] === "regionorders"
+            ? { regionId: id, ordersArr: ordersIdArr }
+            : { postId: id, ordersArr: ordersIdArr },
+        method: url.split("/")[3] === "regionorders" ? "POST" : "PUT",
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log(error);
+    }
+    navigate("/posts");
+  };
   const filterFn = async (data) => {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
@@ -261,16 +274,17 @@ const postCreateOrUpdateFn=async () => {
       )}
       {info && <OrderInfo id={info} onClose={closeHandler} />}
       <div style={{ display: "flex", gap: 1 }}>
-        {url.split("/")[1] === "posts"  &&(postStatus==="NEW"|| url.split("/")[3]==="regionorders")&&(
-          <Button
-            type="submit"
-            size="small"
-            name="btn"
-            onClick={postCreateOrUpdateFn}
-          >
-          { url.split("/")[3]==="regionorders"?"create":"update"}
-          </Button>
-        )}
+        {url.split("/")[1] === "posts" &&
+          (postStatus === "NEW" || url.split("/")[3] === "regionorders") && (
+            <Button
+              type="submit"
+              size="small"
+              name="btn"
+              onClick={postCreateOrUpdateFn}
+            >
+              {url.split("/")[3] === "regionorders" ? "create" : "update"}
+            </Button>
+          )}
       </div>
     </Layout>
   );

@@ -15,6 +15,7 @@ import Posts from "./pages/Posts/Posts";
 import PostInner from "./pages/Posts/PostInner/PostInner";
 import PostMutation from "./pages/Posts/PostMutation";
 import OrderInfo from "./pages/Orders/OrderInfo/OrderInfo";
+import NewPost from "./pages/NewPost/NewPost";
 function App() {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
@@ -45,13 +46,14 @@ function App() {
         {isAuth && <Route path="/orders/info/:id" element={<OrderInfo />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
         {isAuth && <Route path="/posts" element={<Posts />} />}
+        {isAuth && <Route path="/new-post" element={<NewPost />} />}
         {isAuth && <Route path="/posts/:id/orders" element={<Orders />} />}
-        {isAuth && <Route path="/posts/:id/regionorders" element={<Orders />} />}
-        {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
-        {isAuth && (<Route path="/posts/new/:id" element={<PostInner />} />)}
         {isAuth && (
-<Route path="/packages/:id/orders" element={<Orders />} />
+          <Route path="/posts/:id/regionorders" element={<Orders />} />
         )}
+        {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
+        {isAuth && <Route path="/posts/new/:id" element={<PostInner />} />}
+        {isAuth && <Route path="/packages/:id/orders" element={<Orders />} />}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>
