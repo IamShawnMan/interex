@@ -29,13 +29,13 @@ function Input({
       )}
       <div className={styles.inputContainer}>
         <input
-          checked={checked}
+          defaultChecked={checked}
           disabled={disabled}
           style={style}
           type={type ? type : "text"}
           placeholder={placeholder ? placeholder : ""}
           id={id ? id : ""}
-          value={value}
+          defaultValue={value}
           {...(register ? register() : "")}
           className={`${styles.input} ${error ? styles.error : ""}`}
           onClick={onClick}

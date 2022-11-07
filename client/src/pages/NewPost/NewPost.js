@@ -3,68 +3,68 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
 import Input from "../../components/Form/FormComponents/Input/Input";
+import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
-const data = [
-  {
-    id: 1,
-    resipient: "Abdumalik",
-    orderStatus: "DELIVERING",
-    createdAt: "07/05/2022",
-    resipientPhoneNumber: "+998978008878",
-    district: "Karmana",
-    note: "tez kelsin",
-    totalPrice: 250000,
-  },
-  {
-    id: 2,
-    resipient: "Abdumalik",
-    orderStatus: "DELIVERING",
-    createdAt: "07/05/2022",
-    resipientPhoneNumber: "+998978008878",
-    district: "Karmana",
-    note: "tez kelsin",
-    totalPrice: 250000,
-  },
-  {
-    id: 3,
-    resipient: "Abdumalik",
-    orderStatus: "DELIVERING",
-    createdAt: "07/05/2022",
-    resipientPhoneNumber: "+998978008878",
-    district: "Karmana",
-    note: "tez kelsin",
-    totalPrice: 250000,
-  },
-  {
-    id: 4,
-    resipient: "Abdumalik",
-    orderStatus: "DELIVERING",
-    createdAt: "07/05/2022",
-    resipientPhoneNumber: "+998978008878",
-    district: "Karmana",
-    note: "tez kelsin",
-    totalPrice: 250000,
-  },
-];
+import { formatDate } from "../../utils/dateFormatter";
 
 function NewPost() {
-  const { register, handleSubmit, reset } = useForm();
+  const [ordersIdArr, setOrdersIdArr] = useState([]);
+  const [postData, setPostData] = useState([]);
+  const [orderData, setOrderData] = useState([]);
+
   useEffect(() => {
-    const data1 = data.map((e) => {
-      return { ["order" + e.id]: true };
-    });
-    reset(data1);
+    getNewPost();
   }, []);
-  const cols = [
+
+  const getNewPost = async () => {
+    const res = await http("/posts/new/coming");
+    setOrdersIdArr(res?.data?.data?.orderArr);
+    setOrderData(res?.data?.data?.ordersOnTheWay?.content);
+    setPostData([res?.data?.data?.postOnTheWay]);
+  };
+
+  const postCols = [
+    {
+      id: "status",
+      Header: "Post holati",
+      accessor: "postStatus",
+    },
+    {
+      id: "note",
+      Header: "Eslatma",
+      accessor: "note",
+    },
+    {
+      id: "date",
+      Header: "kun-oy-yil",
+      accessor: (post) => {
+        const date = formatDate(post.createdAt);
+        return (
+          <>
+            {date.slice(0, 10)}
+            <br />
+            {date.slice(10)}
+          </>
+        );
+      },
+    },
+    {
+      id: "postTotalPrice",
+      Header: "Post umumiy narxi",
+      accessor: "postTotalPrice",
+    },
+  ];
+
+  const orderCols = [
     {
       id: "id",
-      Header: "Id",
+      Header: "ID",
       accessor: "id",
     },
     {
-      id: "resipient",
+      id: "recipient",
       Header: "Xaridor",
-      accessor: "resipient",
+      accessor: "recipient",
     },
     {
       id: "note",
@@ -79,17 +79,26 @@ function NewPost() {
     {
       id: "district",
       Header: "Tuman",
-      accessor: "district",
+      accessor: "district.name",
     },
     {
-      id: "resipientPhoneNumber",
+      id: "recipientPhoneNumber",
       Header: "Raqami",
-      accessor: "resipientPhoneNumber",
+      accessor: "recipientPhoneNumber",
     },
     {
       id: "createdAt",
-      Header: "Sanasi",
-      accessor: "createdAt",
+      Header: "kun-oy-yil",
+      accessor: (order) => {
+        const date = formatDate(order.createdAt);
+        return (
+          <>
+            {date.slice(0, 10)}
+            <br />
+            {date.slice(10)}
+          </>
+        );
+      },
     },
     {
       id: "totalPrice",
@@ -108,8 +117,16 @@ function NewPost() {
             {order.orderStatus === "DELIVERING" && (
               <Input
                 type="checkbox"
-                register={register.bind(null, `order${order.id}`)}
-                // value={value}
+                checked={ordersIdArr.includes(order.id)}
+                onClick={() => {
+                  const index = ordersIdArr.includes(order.id);
+                  if (index) {
+                    let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
+                    setOrdersIdArr(orderIsArr);
+                  } else {
+                    setOrdersIdArr((prev) => [...prev, order.id]);
+                  }
+                }}
               />
             )}
           </>
@@ -118,18 +135,34 @@ function NewPost() {
     },
   ];
 
-  const postHandler = (data) => {
-    console.log(data);
+  const postHandler = async () => {
+    const res = await http({
+      url: "/",
+      metod: "POST",
+      data: {
+        postStatus: "DELIVERED",
+        orderArr: ordersIdArr,
+        postId: postData?.[0]?.id,
+      },
+    });
+    console.log(res.data.data);
   };
 
   return (
     <Layout pageName="Yangi kelgan Pochtalar">
-      <form onSubmit={handleSubmit(postHandler)}>
-        <BasicTable columns={cols} data={data} />
-        <Button name="btn" size="small">
-          Qabul qildim
-        </Button>
-      </form>
+      {orderData.length > 0 ? (
+        <>
+          {postData && <BasicTable columns={postCols} data={postData} />}
+          <br />
+          <hr />
+          <BasicTable columns={orderCols} data={orderData} />
+        </>
+      ) : (
+        <p style={{ textAligin: "center" }}>Ma'lumotlar topilmadi</p>
+      )}
+      <Button onClick={postHandler} name="btn" size="small" type="button">
+        Qabul qildim
+      </Button>
     </Layout>
   );
 }
