@@ -140,7 +140,7 @@ function NewPost() {
       url: "/posts/new/recieve",
       data: {
         postStatus: "DELIVERED",
-        orderArr: ordersIdArr,
+        ordersArr: ordersIdArr,
         postId: postData?.[0]?.id,
       },
       method: "PUT",
