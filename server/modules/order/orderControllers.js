@@ -347,7 +347,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	const {regionId} = req.user
 	const {id} = req.params
-	const {orderStatus} = req.body
+	const {orderStatus, note} = req.body
 	const postOrdersById = await OrderModel.findByPk(id, {
 		where: {
 			regionId: {
@@ -359,14 +359,16 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	const postOrderStatusChange = postOrderStatuses.find(e => e === orderStatus)
 	if(postOrdersById.dataValues.orderStatus === "DELIVERED" 
 	|| postOrdersById.dataValues.orderStatus === "PENDING") {
-		await postOrdersById.update({orderStatus: postOrderStatusChange})
+		await postOrdersById.update({orderStatus: postOrderStatusChange, note})
 	}
 
 	res.status(203).json({
 		status: "success",
 		message: "Post orderining statusi o'zgardi",
 		error: null,
-		data: null
+		data: {
+			note
+		}
 	})
 })
 
