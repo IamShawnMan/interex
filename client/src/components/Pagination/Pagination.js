@@ -11,7 +11,6 @@ function Pagination(props) {
   const navigate = useNavigate();
   const [pagesCount, setPagesCount] = useState(6);
   const offset = pagesCount - 6;
-
   const page = searchParams.get("page") || 1;
   const sixPageChange = (num) => {
     if (num === 1) {
