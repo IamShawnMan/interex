@@ -48,7 +48,6 @@ class QueryBuilder {
      if(this.queryOptions.where){
         this.queryOptions.where =  {...filterObject, ...this.queryOptions.where}; 
      }else{
-		console.log(filterObject);
         this.queryOptions.where = filterObject;
      }
      return this;

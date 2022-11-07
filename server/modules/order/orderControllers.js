@@ -316,17 +316,24 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 
 exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	const {regionId} = req.user
+	req.query.regionId = regionId
+	const queryBuilder = new QueryBuilder(req.query)
+	queryBuilder
+		.filter()
+		.limitFields()
+		.paginate()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort()
+
 	const postOrderStatuses = Object.values(statusOrder).slice(5, 9)
-	const deliveredOrders = await OrderModel.findAndCountAll({
-		where: {
-			orderStatus: {
-				[Op.in] : postOrderStatuses
-			},
-			regionId: {
-				[Op.eq]: regionId
-			} 
+	queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		orderStatus: {
+			[Op.in] : postOrderStatuses
 		}
-	})
+	}
+	let deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
+	deliveredOrders = queryBuilder.createPagination(deliveredOrders)
 	res.json({
 		status: "success",
 		message: "Yetkazib berilgan buyurtmalar",
@@ -364,15 +371,25 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const {regionId} = req.user
-	const ordersOneDay = await OrderModel.findAndCountAll({
-		where: {
-			[Op.or]: [
-				{orderStatus: statusOrder.STATUS_DELIVERED},
-				{orderStatus: statusOrder.STATUS_PENDING}
-			],
-			regionId: regionId
-		}
-	})
+	req.query.regionId = regionId
+	const queryBuilder = new QueryBuilder(req.query)
+	queryBuilder
+		.filter()
+		.limitFields()
+		.paginate()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort()
+		
+	queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		[Op.or]: [
+			{orderStatus: statusOrder.STATUS_DELIVERED},
+			{orderStatus: statusOrder.STATUS_PENDING}
+		]
+	}
+	let ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
+	ordersOneDay = queryBuilder.createPagination(ordersOneDay)
+
 	res.json({
 		status: "success",
 		message: "Bir kunlik yetkazilishi kerak bo'lgan buyurtmalar",
