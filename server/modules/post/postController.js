@@ -425,16 +425,17 @@ console.log(req.body);
       },
     }
   );
-  console.log("428888888888888888");
 
   const ordersNotInArr = await Order.findAll({
     where: {
       id: {
         [Op.notIn]: ordersArr,
       },
+      postId: {
+        [Op.eq]: postId
+      }
     },
   });
-  console.log("436666666666666666");
 
   if (ordersNotInArr) {
     console.log(ordersNotInArr);
@@ -447,11 +448,13 @@ console.log(req.body);
           id: {
             [Op.notIn]: ordersArr,
           },
+          postId: {
+            [Op.eq]: postId
+          }
         },
       }
     );
   }
-  console.log("462222222222222222222222");
 
   const updatedOrders = await Order.update(
     {
@@ -462,10 +465,12 @@ console.log(req.body);
         id: {
           [Op.in]: ordersArr,
         },
+        postId: {
+          [Op.eq]: postId
+        }
       },
     }
   );
-  console.log("4655555555555555555555555");
   res.json({
     status: "sucess",
     message: "Orders and Post Updated",
