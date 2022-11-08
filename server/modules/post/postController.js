@@ -223,7 +223,6 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
       },
     }
   );
-
   const orderArrSum = await Order.sum("totalPrice", {where:{
     id: {
       [Op.in]: ordersArr
