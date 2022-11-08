@@ -36,7 +36,7 @@ const PostMutation = () => {
   ];
 
   return (
-    <Layout pageName="Add Post">
+    <Layout pageName="Yangi pochta yaratish">
       {value?.length > 0 ? (
         <BasicTable
           columns={regionCols}
@@ -45,7 +45,7 @@ const PostMutation = () => {
           url="posts/new"
         />
       ) : (
-        <p>Malumotlar yoq</p>
+        <p>Ma'lumotlar yo'q</p>
       )}
     </Layout>
   );

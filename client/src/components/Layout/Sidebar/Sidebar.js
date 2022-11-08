@@ -31,7 +31,7 @@ function Sidebar(props) {
         </h1>
       </Link>
       <div className={`${styles.mainMenu} ${styles.linksContainer}`}>
-        <p className={`subtitle ${styles.subtitle}`}>MAIN MENU</p>
+        <p className={`subtitle ${styles.subtitle}`}>ASOSIY MENU</p>
         {(user.userRole === "SUPER_ADMIN" || user.userRole === "ADMIN") && (
           <Link
             to={"/users"}
@@ -40,7 +40,7 @@ function Sidebar(props) {
             }`}
           >
             <Recruitment classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Users</p>}
+            {open && <p className="h6">Foydalanuvchilar</p>}
           </Link>
         )}
         {user.userRole === "ADMIN" && (
@@ -51,17 +51,23 @@ function Sidebar(props) {
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Packages</p>}
+            {open && <p className="h6">Paketlar</p>}
           </Link>
         )}
         <Link
-          to={"/orders"}
+          to={
+            user.userRole === "COURIER"
+              ? "/orders/delivered"
+              : user.userRole === "STORE_OWNER"
+              ? "/orders/myorders"
+              : "/orders"
+          }
           className={`${styles.sidebarLink} ${
             open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
           }`}
         >
           <DashboardIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Orders</p>}
+          {open && <p className="h6">Yetkazmalar</p>}
         </Link>
 
         {(user.userRole === "ADMIN" || user.userRole === "COURIER") && (
@@ -72,7 +78,7 @@ function Sidebar(props) {
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Posts</p>}
+            {open && <p className="h6">Pochtalar</p>}
           </Link>
         )}
         {user.userRole === "COURIER" && (
@@ -83,7 +89,7 @@ function Sidebar(props) {
             }`}
           >
             <UsersIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">New Post</p>}
+            {open && <p className="h6">Pochta</p>}
           </Link>
         )}
         <Link

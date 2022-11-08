@@ -1,0 +1,16 @@
+.orderContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.btnIconTextContainer {
+  width: 13rem;
+  margin: 10px;
+}
+.trashBtn {
+  width: 13rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(0%, 80%);
+}

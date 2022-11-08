@@ -40,12 +40,13 @@ function Navbar(props) {
       >
         <ArrowForBtn />
       </div>
-      <div className={styles.formControl}>
+      {/* <div className={styles.formControl}>
         <Input plascholder={"Search"} />
         <div className={styles.searchSvg}>
           <SearchIcon classname={styles.searchSvg} />
         </div>
-      </div>
+      </div> */}
+      <div></div>
       <div className={styles.userInfo}>
         <div className={styles.RoundNotificationSvg}>
           <RoundNotifications classname={styles.RoundNotificationSvg} />
@@ -67,13 +68,13 @@ function Navbar(props) {
               onClick={logoutHandle}
               className={`h6 ${styles.userMenuModalItem}`}
             >
-              Log Out
+              Chiqish
             </p>
             <Link
               className={`h6 ${styles.userMenuModalItem}`}
               to={`/settings/${user.id}`}
             >
-              Settings
+              Sozlamalar
             </Link>
           </div>
         </div>
