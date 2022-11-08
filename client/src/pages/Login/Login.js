@@ -57,6 +57,7 @@ function Login() {
 			toast.success(res.data.message);
 			navigate("/home");
 		} catch (error) {
+			console.log(error);
 			toast.error(error.response.data.message);
 		}
 	};

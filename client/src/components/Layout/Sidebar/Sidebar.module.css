@@ -2,7 +2,7 @@
   position: absolute;
   width: 16%;
   height: 100vh;
-  overflow: scroll;
+  overflow: auto;
   left: 0;
   top: 0;
   padding: 2rem 1.5rem;

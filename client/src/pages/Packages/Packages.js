@@ -41,7 +41,6 @@ function Package() {
       id: "storeOwner",
       Header: "Package",
       accessor: (pack) => {
-        console.log(pack);
         return (
           <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
             {`${pack.storeOwner.firstName} ${pack.storeOwner.lastName}`}
@@ -62,7 +61,7 @@ function Package() {
         <BasicTable
           columns={packageCols}
           data={packages}
-          url="packages"
+          url="/packages"
           pagination={pagination}
         />
       ) : (

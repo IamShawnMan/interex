@@ -19,7 +19,6 @@ router
 router
 	.route("/myorders")
 	.get(roleMiddleware(["STORE_OWNER"]), orderControllers.getMyOrders)
-
 router
 	.route("/status")
 	.get(orderControllers.getAllOrderStatus)

@@ -119,7 +119,7 @@ const Posts = () => {
         ) : (
           <p>Malumotlar yoq</p>
         )}
-            {info &&<PostSendCourier id={info} onClose={() => {setInfo(false)}} />} 
+      {info &&<PostSendCourier id={info} onClose={() => {setInfo(false)}} />} 
       {value?.length > 0 ? (
         <BasicTable
           columns={postCols}
