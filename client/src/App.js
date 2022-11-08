@@ -42,6 +42,8 @@ function App() {
         {isAuth && <Route path="/users" element={<Users />} />}
         {isAuth && <Route path="/users/:id" element={<UserMutation />} />}
         {isAuth && <Route path="/orders" element={<Orders />} />}
+        {isAuth && <Route path="/orders/delivered/daily" element={<Orders />} />}
+        {isAuth && <Route path="/orders/delivered" element={<Orders />} />}
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/orders/info/:id" element={<OrderInfo />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}

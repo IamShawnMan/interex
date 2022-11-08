@@ -19,11 +19,13 @@ import styles from "./Orders.module.css";
 import Input from "../../../components/Form/FormComponents/Input/Input";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
+import PostSendCourier from "../../Posts/PostSendCourier";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
   const isSuperAdmin = user.userRole === "SUPER_ADMIN";
   const isStoreOwner = user.userRole === "STORE_OWNER";
+  const isCourier = user.userRole === "COURIER";
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
   const [ordersIdArr, setOrdersIdArr] = useState(null);
@@ -33,6 +35,7 @@ function Orders() {
   const [allQueries, setQueries] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
+
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const { id } = useParams();
@@ -41,7 +44,7 @@ function Orders() {
   useEffect(() => {
     filterFn(allQueries);
     getPrices();
-  }, [page]);
+  }, [page,info]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
@@ -49,6 +52,7 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
+    console.log(data);
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost);
@@ -68,6 +72,7 @@ function Orders() {
       console.log(error);
     }
   };
+
   const cols = [
     { Header: "id", accessor: "id" },
     { Header: "Haridor", accessor: "recipient" },
@@ -157,8 +162,36 @@ function Orders() {
                     </Button>
                   </div>
                 )}
+                
               </div>
-            )}
+            )} {isCourier &&  (
+                  <div>
+                    <Button
+                      name="btn"
+                      disabled={(order.orderStatus === "SOLD"||order.orderStatus === "REJECTED" )? true : false}
+                      onClick={() => {setInfo({id:order.id,status:"SOLD"})}}
+                    >
+                      <>SOLD</>
+                    </Button>
+
+                    <Button
+                      disabled={(order.orderStatus === "SOLD"||order.orderStatus === "REJECTED"||order.orderStatus === "PENDING" ) ? true : false}
+                      size="small"
+                      name="btn"
+                      onClick={() => {setInfo({id:order.id,status:"PENDING"})}}
+                    >
+                      <>PENDING</>
+                    </Button>
+                    <Button
+                      disabled={(order.orderStatus === "SOLD"||order.orderStatus === "REJECTED" )? true: false}
+                      size="small"
+                      name="btn"
+                      onClick={() => {setInfo({id:order.id,status:"REJECTED"})}}
+                    >
+                      <>REJECTED</>
+                    </Button>
+                  </div>
+                )}
             <Button
               size="small"
               name="btn"
@@ -213,7 +246,7 @@ function Orders() {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
     try {
-      if (isAdmin || isSuperAdmin) {
+      if (isAdmin || isSuperAdmin||isCourier) {
         const res = await http({
           url: `${url}?page=${page}&size=${size}${
             data?.status ? `&orderStatus=${data.status}` : ""
@@ -273,7 +306,9 @@ function Orders() {
       ) : (
         <p>Malumotlar yoq</p>
       )}
-      {info && <OrderInfo id={info} onClose={closeHandler} />}
+      {console.log(url)}
+      {info &&url!=="/orders/delivered/daily" &&<OrderInfo id={info} onClose={closeHandler} />}
+      {info&&url==="/orders/delivered/daily"&&<PostSendCourier id={info} url={url} onClose={() => {setInfo(false)}} />}
       <div style={{ display: "flex", gap: 1 }}>
         {url.split("/")[1] === "posts" &&
           (postStatus === "NEW" || url.split("/")[3] === "regionorders") && (
