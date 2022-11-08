@@ -325,6 +325,10 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort()
 
+	queryBuilder.queryOptions.include = [
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+	]
 	const postOrderStatuses = Object.values(statusOrder).slice(5, 9)
 	queryBuilder.queryOptions.where = {
 		...queryBuilder.queryOptions.where,
@@ -382,7 +386,11 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		.paginate()
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort()
-		
+	
+	queryBuilder.queryOptions.include = [
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+	]
 	queryBuilder.queryOptions.where = {
 		...queryBuilder.queryOptions.where,
 		[Op.or]: [

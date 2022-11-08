@@ -46,7 +46,7 @@ const PostSendCourier= ({ id,url,onClose}) => {
             <div style={{padding:"20px"}}>
             <Input type="text" placeholder="note" onChange={(e)=>setNote(e.target.value)}/>
 
-            <Button name="btn" size="small" btnStyle={{marginTop:"10px"}} onClick={ url!=="/orders/delivered/daily"?sendPost:changeOrderStatusByCourier}>{url!=="/orders/delivered/daily"?"Send Post":`${id.status} Order`}</Button>
+            <Button name="btn" size="small" btnStyle={{marginTop:"10px"}} onClick={ typeof id!== 'object'?sendPost:changeOrderStatusByCourier}>{typeof id!=='object'?"Send Post":`${id.status} Order`}</Button>
             </div>
       
         </Modal>

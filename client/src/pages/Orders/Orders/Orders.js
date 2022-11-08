@@ -109,7 +109,7 @@ function Orders() {
         );
       },
     },
-    { id: "totalPrice", Header: "Malhsulotning narxi", accessor: "totalPrice" },
+    { id: "totalPrice", Header: "Mahsulotning narxi", accessor: "totalPrice" },
     {
       Header: "Sanasi",
       accessor: (order) => {
@@ -307,8 +307,8 @@ function Orders() {
         <p>Malumotlar yoq</p>
       )}
       {console.log(url)}
-      {info &&url!=="/orders/delivered/daily" &&<OrderInfo id={info} onClose={closeHandler} />}
-      {info&&url==="/orders/delivered/daily"&&<PostSendCourier id={info} url={url} onClose={() => {setInfo(false)}} />}
+      {info &&typeof info!== 'object'&&<OrderInfo id={info} onClose={closeHandler} />}
+      {info&&typeof info=== 'object'&&<PostSendCourier id={info} url={url} onClose={() => {setInfo(false)}} />}
       <div style={{ display: "flex", gap: 1 }}>
         {url.split("/")[1] === "posts" &&
           (postStatus === "NEW" || url.split("/")[3] === "regionorders") && (
