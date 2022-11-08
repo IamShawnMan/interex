@@ -15,7 +15,7 @@ import {
   courierSchemaUpdate,
   adminSchemaUpdate,
   storeOwnerSchemaUpdate,
-  defaultSchema
+  defaultSchema,
 } from "../../utils/yupSchemas";
 
 const UserMutation = () => {
@@ -79,7 +79,6 @@ const UserMutation = () => {
     const res = await http({
       url: "/regions",
     });
-    console.log(res);
     setRegions(res.data?.data?.content);
   };
 
@@ -90,10 +89,11 @@ const UserMutation = () => {
     const user = res.data.data.userById;
     if (user.userRole === "COURIER") {
       setRole("COURIER");
+    } else if (user.userRole === "STORE_OWNER") {
+      setRole("STORE_OWNER");
     }
     reset(user);
   };
-  console.log(errors);
   const formSubmit = async (data) => {
     console.log(data);
     try {

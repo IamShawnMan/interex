@@ -11,7 +11,7 @@ const RegionModel = require("../region/Region")
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.paginate().limitFields();
+	queryBuilder.filter().paginate().limitFields().sort();
 	
 	queryBuilder.queryOptions.include = {
 		model: User,

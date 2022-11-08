@@ -48,7 +48,6 @@ class QueryBuilder {
      if(this.queryOptions.where){
         this.queryOptions.where =  {...filterObject, ...this.queryOptions.where}; 
      }else{
-		console.log(filterObject);
         this.queryOptions.where = filterObject;
      }
      return this;
@@ -68,8 +67,8 @@ class QueryBuilder {
 	}
 
 	paginate() {
-		const page = (this.queryParams.page ||= 1);
-		const limit = (this.queryParams.size ||= 100);
+		const page = this.queryParams.page ||= 1
+		const limit = this.queryParams.size ||= 100
 		this.queryOptions.limit = limit;
 		this.queryOptions.offset = (page - 1) * limit;
 		return this;

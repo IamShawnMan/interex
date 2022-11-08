@@ -15,10 +15,11 @@ function Input({
   onClick,
   checked,
   onChange,
+  value,
 }) {
   const [success, setSuccess] = useState(false);
   // console.log(checked);
-// useEffect(() => {})
+  // useEffect(() => {})
   return (
     <div className={styles.formControl}>
       {children && (
@@ -28,12 +29,13 @@ function Input({
       )}
       <div className={styles.inputContainer}>
         <input
-        checked={checked}
+          defaultChecked={checked}
           disabled={disabled}
           style={style}
           type={type ? type : "text"}
           placeholder={placeholder ? placeholder : ""}
           id={id ? id : ""}
+          defaultValue={value}
           {...(register ? register() : "")}
           className={`${styles.input} ${error ? styles.error : ""}`}
           onClick={onClick}

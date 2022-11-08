@@ -50,7 +50,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     return next(err);
   }
   let existedPackage = await PackageModel.findOne({
-    where: { storeOwnerId: { [Op.eq]: req.user.id } },
+    where: { storeOwnerId: { [Op.eq]: req.user.id },},
+	order: [["createdAt", "DESC"]]
   });
   
   if(existedPackage){
@@ -105,7 +106,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 	res.status(201).json({
 		status: "success",
-		message: "yangi orderlar qo`shildi",
+		message: "yangi buyurtmalar qo`shildi",
 		errrors: null,
 		data: null,
 	});
@@ -303,7 +304,6 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 		return next(new AppError("Bunday order mavjud emas", 404));
 	}
 	existedOrder.update({ deliveryPrice: deliveryPrice || 50000 });
-	console.log(existedOrder.deliveryPrice, "waefmasdfasdklfmaslkmdfas");
 	res.json({
 		status: "success",
 		message: "buyurtma yetkazish to`lovi qo`shildi",
@@ -313,3 +313,92 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
+exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
+	req.query.regionId = regionId
+	const queryBuilder = new QueryBuilder(req.query)
+	queryBuilder
+		.filter()
+		.limitFields()
+		.paginate()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort()
+
+	const postOrderStatuses = Object.values(statusOrder).slice(5, 9)
+	queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		orderStatus: {
+			[Op.in] : postOrderStatuses
+		}
+	}
+	let deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
+	deliveredOrders = queryBuilder.createPagination(deliveredOrders)
+	res.json({
+		status: "success",
+		message: "Yetkazib berilgan buyurtmalar",
+		error: null, 
+		data: {
+			deliveredOrders
+		}
+	})
+})
+
+exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
+	const {id} = req.params
+	const {orderStatus, note} = req.body
+	const postOrdersById = await OrderModel.findByPk(id, {
+		where: {
+			regionId: {
+				[Op.eq]: regionId
+			} 
+		}
+	})
+	const postOrderStatuses = Object.values(statusOrder).slice(6, 9)
+	const postOrderStatusChange = postOrderStatuses.find(e => e === orderStatus)
+	if(postOrdersById.dataValues.orderStatus === "DELIVERED" 
+	|| postOrdersById.dataValues.orderStatus === "PENDING") {
+		await postOrdersById.update({orderStatus: postOrderStatusChange, note})
+	}
+
+	res.status(203).json({
+		status: "success",
+		message: "Post orderining statusi o'zgardi",
+		error: null,
+		data: {
+			note
+		}
+	})
+})
+
+exports.getDailyOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
+	req.query.regionId = regionId
+	const queryBuilder = new QueryBuilder(req.query)
+	queryBuilder
+		.filter()
+		.limitFields()
+		.paginate()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort()
+		
+	queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		[Op.or]: [
+			{orderStatus: statusOrder.STATUS_DELIVERED},
+			{orderStatus: statusOrder.STATUS_PENDING}
+		]
+	}
+	let ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
+	ordersOneDay = queryBuilder.createPagination(ordersOneDay)
+
+	res.json({
+		status: "success",
+		message: "Bir kunlik yetkazilishi kerak bo'lgan buyurtmalar",
+		error: null,
+		data: {
+			ordersOneDay
+		}
+	})
+})
