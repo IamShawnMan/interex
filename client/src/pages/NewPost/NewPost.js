@@ -18,6 +18,7 @@ function NewPost() {
 
   const getNewPost = async () => {
     const res = await http("/posts/new/coming");
+    console.log(res);
     setOrdersIdArr(res?.data?.data?.orderArr);
     setOrderData(res?.data?.data?.ordersOnTheWay?.content);
     setPostData([res?.data?.data?.postOnTheWay]);

@@ -12,7 +12,6 @@ const useHttp = (reqFn) => {
     setError(null);
     try {
       const res = await reqFn(reqData);
-      // console.log(data.data);
       setData(res.data.content);
       setPagination(res.data.pagination);
       if (res.message) {

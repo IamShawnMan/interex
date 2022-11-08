@@ -339,7 +339,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		message: "Yetkazib berilgan buyurtmalar",
 		error: null, 
 		data: {
-			deliveredOrders
+			...deliveredOrders
 		}
 	})
 })
@@ -398,7 +398,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		message: "Bir kunlik yetkazilishi kerak bo'lgan buyurtmalar",
 		error: null,
 		data: {
-			ordersOneDay
+			...ordersOneDay
 		}
 	})
 })
