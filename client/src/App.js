@@ -12,7 +12,6 @@ import Orders from "./pages/Orders/Orders/Orders";
 import OrderMutation from "./pages/Orders/OrderMutation/OrderMutation";
 import Packages from "./pages/Packages/Packages";
 import Posts from "./pages/Posts/Posts";
-import PostInner from "./pages/Posts/PostInner/PostInner";
 import PostMutation from "./pages/Posts/PostMutation";
 import OrderInfo from "./pages/Orders/OrderInfo/OrderInfo";
 import NewPost from "./pages/NewPost/NewPost";
@@ -42,20 +41,22 @@ function App() {
         {isAuth && <Route path="/users" element={<Users />} />}
         {isAuth && <Route path="/users/:id" element={<UserMutation />} />}
         {isAuth && <Route path="/orders" element={<Orders />} />}
-        {isAuth && <Route path="/orders/delivered/daily" element={<Orders />} />}
+        {isAuth && <Route path="/orders/myorders" element={<Orders />} />}
         {isAuth && <Route path="/orders/delivered" element={<Orders />} />}
+        {isAuth && (
+          <Route path="/orders/delivered/daily" element={<Orders />} />
+        )}
+        {isAuth && <Route path="/posts/:id/orders" element={<Orders />} />}
+        {isAuth && <Route path="/packages/:id/orders" element={<Orders />} />}
+        {isAuth && (
+          <Route path="/posts/:id/regionorders" element={<Orders />} />
+        )}
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/orders/info/:id" element={<OrderInfo />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
         {isAuth && <Route path="/posts" element={<Posts />} />}
         {isAuth && <Route path="/new-post" element={<NewPost />} />}
-        {isAuth && <Route path="/posts/:id/orders" element={<Orders />} />}
-        {isAuth && (
-          <Route path="/posts/:id/regionorders" element={<Orders />} />
-        )}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
-        {isAuth && <Route path="/posts/new/:id" element={<PostInner />} />}
-        {isAuth && <Route path="/packages/:id/orders" element={<Orders />} />}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>

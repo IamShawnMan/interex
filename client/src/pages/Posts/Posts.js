@@ -31,52 +31,57 @@ const Posts = () => {
   };
   useEffect(() => {
     getAllPosts();
-  }, [page,info]);
+  }, [page, info]);
   const postCols = [
     {
       id: "id",
-      Header: "id",
-      accessor: "id",
+      Header: "NO",
+      accessor: (_, i) => {
+        return i + 1;
+      },
     },
     {
       id: "note",
-      Header: "note",
+      Header: "Eslatma",
       accessor: "note",
     },
     {
       id: "postStatus",
-      Header: "postStatus",
+      Header: "Pochta holati",
       accessor: "postStatus",
     },
     {
       id: "postTotalPrice",
-      Header: "postTotalPrice",
+      Header: "Pochta narxi",
       accessor: "postTotalPrice",
     },
     {
-      Header: "Action",
+      Header: "Tugmalar",
       accessor: (post) => {
         return (
-         <div style={{display: 'flex',gap: 1}}>
-              <Button  
+          <div style={{ display: "flex", gap: 1 }}>
+            <Button
+              size="small"
+              name="btn"
+              onClick={() => {
+                navigate(`/posts/${post.id}/orders`);
+              }}
+            >
+              Ma'lumot
+            </Button>
+
+            {user.userRole === "ADMIN" && (
+              <Button
                 size="small"
                 name="btn"
+                disabled={post.postStatus !== "NEW"}
                 onClick={() => {
-                  navigate(`/posts/${post.id}/orders`);
+                  setInfo(post.id);
                 }}
               >
-                info
+                Pochtani jo'natish
               </Button>
-            
-              <Button  
-                size="small"
-                name="btn"
-                disabled={post.postStatus!=="NEW"}
-                onClick={() => {setInfo(post.id)}}
-              >
-                Send Post
-              </Button>
-            
+            )}
           </div>
         );
       },
@@ -107,19 +112,37 @@ const Posts = () => {
       id: "name",
       Header: "Viloyat",
       accessor: (region) => {
-        return <Link to={`/posts/${region.id}/regionorders`}>{region.name}</Link>;
+        return (
+          <Link to={`/posts/${region.id}/regionorders`}>{region.name}</Link>
+        );
       },
     },
   ];
   return (
     <Layout pageName="Postlar">
-   <p>Regions</p>
-      {regionValue?.length > 0 ? (
-          <BasicTable columns={regionCols} data={regionValue} />
-        ) : (
-          <p>Malumotlar yoq</p>
-        )}
-      {info &&<PostSendCourier id={info} onClose={() => {setInfo(false)}} />} 
+      {user.userRole === "ADMIN" ? (
+        <>
+          {regionValue?.length > 0 ? (
+            <>
+              <p>Regions</p>
+              <BasicTable columns={regionCols} data={regionValue} />
+            </>
+          ) : (
+            <p>Ma'lumotlar yo'q</p>
+          )}
+        </>
+      ) : (
+        ""
+      )}
+
+      {info && (
+        <PostSendCourier
+          id={info}
+          onClose={() => {
+            setInfo(false);
+          }}
+        />
+      )}
       {value?.length > 0 ? (
         <BasicTable
           columns={postCols}
@@ -128,7 +151,7 @@ const Posts = () => {
           url="/posts"
         />
       ) : (
-        <p>Malumotlar yoq</p>
+        <p>Ma'lumotlar yo'q</p>
       )}
     </Layout>
   );

@@ -6,11 +6,13 @@ import Input from "../../components/Form/FormComponents/Input/Input";
 import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import { formatDate } from "../../utils/dateFormatter";
+import { useNavigate } from "react-router-dom";
 
 function NewPost() {
   const [ordersIdArr, setOrdersIdArr] = useState([]);
   const [postData, setPostData] = useState([]);
   const [orderData, setOrderData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getNewPost();
@@ -18,7 +20,6 @@ function NewPost() {
 
   const getNewPost = async () => {
     const res = await http("/posts/new/coming");
-    console.log(res);
     setOrdersIdArr(res?.data?.data?.orderArr);
     setOrderData(res?.data?.data?.ordersOnTheWay?.content);
     setPostData([res?.data?.data?.postOnTheWay]);
@@ -146,7 +147,7 @@ function NewPost() {
       },
       method: "PUT",
     });
-    console.log(res?.data);
+    navigate("/posts");
   };
 
   return (
@@ -157,13 +158,13 @@ function NewPost() {
           <br />
           <hr />
           <BasicTable columns={orderCols} data={orderData} />
+          <Button onClick={postHandler} name="btn" size="small" type="button">
+            Qabul qildim
+          </Button>
         </>
       ) : (
         <p style={{ textAligin: "center" }}>Ma'lumotlar topilmadi</p>
       )}
-      <Button onClick={postHandler} name="btn" size="small" type="button">
-        Qabul qildim
-      </Button>
     </Layout>
   );
 }

@@ -286,7 +286,11 @@ exports.getAllDeliveryPrice = (req, res, next) => {
 };
 
 exports.getAllOrderStatus = (req, res, next) => {
-	const allOrderStatus = Object.values(statusOrder);
+	const {userRole} = req.user
+	let allOrderStatus = Object.values(statusOrder);
+	if(userRole === "COURIER") {
+		allOrderStatus = Object.values(statusOrder).slice(4, 9);
+	}
 	res.json({
 		status: "success",
 		message: "All order status",
@@ -317,6 +321,8 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	const {regionId} = req.user
 	req.query.regionId = regionId
+	const postOrderStatuses = Object.values(statusOrder).slice(4, 9)
+	console.log(req.query);
 	const queryBuilder = new QueryBuilder(req.query)
 	queryBuilder
 		.filter()
@@ -325,13 +331,18 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort()
 
-	const postOrderStatuses = Object.values(statusOrder).slice(5, 9)
+	queryBuilder.queryOptions.include = [
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+	]
+
 	queryBuilder.queryOptions.where = {
-		...queryBuilder.queryOptions.where,
 		orderStatus: {
 			[Op.in] : postOrderStatuses
-		}
+		},
+		...queryBuilder.queryOptions.where
 	}
+	console.log(queryBuilder.queryOptions);
 	let deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
 	deliveredOrders = queryBuilder.createPagination(deliveredOrders)
 	res.json({
@@ -382,13 +393,17 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		.paginate()
 		.search(["recipientPhoneNumber", "recipient"])
 		.sort()
-		
+	
+	queryBuilder.queryOptions.include = [
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+	]
 	queryBuilder.queryOptions.where = {
-		...queryBuilder.queryOptions.where,
 		[Op.or]: [
 			{orderStatus: statusOrder.STATUS_DELIVERED},
 			{orderStatus: statusOrder.STATUS_PENDING}
-		]
+		],
+		...queryBuilder.queryOptions.where
 	}
 	let ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
 	ordersOneDay = queryBuilder.createPagination(ordersOneDay)

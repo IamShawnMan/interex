@@ -14,17 +14,17 @@ const schema = object().shape({
   orders: array()
     .of(
       object().shape({
-        recipient: string().required("recipient kriting"),
-        note: string().required("note kriting"),
-        recipientPhoneNumber: string().required("phoneNumber kriting"),
-        regionId: string().required("regionId kriting"),
-        districtId: string().required("districtId kriting"),
+        recipient: string().trim().required("recipient kriting"),
+        note: string().trim().required("note kriting"),
+        recipientPhoneNumber: string().trim().required("phoneNumber kriting"),
+        regionId: string().trim().required("regionId kriting"),
+        districtId: string().trim().required("districtId kriting"),
         orderItems: array()
           .of(
             object().shape({
-              productName: string().required("name kriting"),
-              quantity: string().required("quantity kriting"),
-              price: string().required("price kriting"),
+              productName: string().trim().required("name kriting"),
+              quantity: string().trim().required("quantity kriting"),
+              price: string().trim().required("price kriting"),
             })
           )
           .min(1, "Tovarlar royhati soni kamida 1ta bolishi kerak"),
@@ -82,11 +82,9 @@ function OrderMutation() {
         data: isUpdate ? data.orders[0] : data,
       });
       toast.success(res.data.message);
-      navigate("/orders");
+      navigate("/orders/myorders");
     } catch (error) {
-      return  error.response.data.message.map((error) =>
-      toast.error(error)
-    );
+      return error.response.data.message.map((error) => toast.error(error));
     }
   };
 
@@ -94,7 +92,6 @@ function OrderMutation() {
     const res = await http({
       url: `/orders/${id}/edit`,
     });
-    console.log(res);
     const orderById = res.data.data;
     setRId(orderById.regionId);
     setUpdateData(orderById);
@@ -114,7 +111,7 @@ function OrderMutation() {
   return (
     <Layout>
       <form onSubmit={handleSubmit((data) => formSubmit(data))}>
-        <ul style={{ overflowY: "scroll" }}>
+        <ul style={{ overflowY: "avto", listStyle: "none" }}>
           {errors.orders?.type === "min" && (
             <p style={{ color: "red" }}>{errors.orders.message}</p>
           )}
@@ -133,29 +130,41 @@ function OrderMutation() {
             />
           ))}
         </ul>
-        <div
-          className={styles.btnIconTextContainer}
-          onClick={() =>
-            append({
-              recipient: "",
-              note: "",
-              recipientPhoneNumber: "",
-              regionId: "",
-              districtId: "",
-              orderItems: [],
-            })
-          }
-        >
-          {!isUpdate && (
-            <Button size="small" name="iconText" iconName="plus" type="button">
-              Order
+        <div className={styles.btnBox}>
+          <div className={styles.btnContainer}>
+            {!isUpdate && (
+              <div
+                className={styles.btnIconTextContainer}
+                onClick={() =>
+                  append({
+                    recipient: "",
+                    note: "",
+                    recipientPhoneNumber: "",
+                    regionId: "",
+                    districtId: "",
+                    orderItems: [],
+                  })
+                }
+              >
+                <Button
+                  name="iconText"
+                  iconName="plus"
+                  btnStyle={{ width: "13rem" }}
+                >
+                  Yetkazma
+                </Button>
+              </div>
+            )}
+            <Button
+              size="normal"
+              name="iconText"
+              type="submit"
+              btnStyle={{ width: "13rem" }}
+            >
+              {isUpdate ? "Yetkazmani o'zhgartirish" : "Saqlash"}
             </Button>
-          )}
+          </div>
         </div>
-
-        <Button size="small" name="btn" type="submit">
-          {isUpdate ? "Update Order" : "Create Order"}
-        </Button>
       </form>
     </Layout>
   );
