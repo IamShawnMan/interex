@@ -144,7 +144,7 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
         [Op.eq]: regionId,
       },
       districtId: {
-        [Op.notIn]: [36, 39],
+        [Op.notIn]: [115, 120],
       },
     };
     allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
@@ -160,7 +160,7 @@ exports.ordersBeforeSend = catchAsync(async (req, res, next) => {
           [Op.eq]: regionId,
         },
         districtId: {
-          [Op.in]: [36, 39],
+          [Op.in]: [115, 120],
         },
       },
     };
