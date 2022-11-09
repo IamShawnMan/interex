@@ -14,14 +14,11 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
   const queryBuilder = new QueryBuilder(req.query);
   queryBuilder.limitFields().filter().paginate().search(["note"]);
 
-  let allPosts = await Post.findAndCountAll({
-    include: {
-      model: Region,
-      as: "region",
-      attributes: ["name"],
-    },
-    ...queryBuilder.queryOptions,
-  });
+  queryBuilder.queryOptions.include = [
+    { model: Region, as: "region", attributes: ["name"] }
+  ]
+
+  let allPosts = await Post.findAndCountAll(queryBuilder.queryOptions)
   allPosts = queryBuilder.createPagination(allPosts);
 
   res.json({
@@ -226,6 +223,14 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
       },
     }
   );
+  const orderArrSum = await Order.sum("totalPrice", {where:{
+    id: {
+      [Op.in]: ordersArr
+    }
+  }})
+
+  newPost.postTotalPrice += orderArrSum
+  await newPost.save()
 
   res.json({
     status: "success",
@@ -237,6 +242,26 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
   const { postId, ordersArr } = req.body;
+
+  const postByPk = await Post.findByPk(postId)
+  
+  const subtractingOrders = await Order.sum("totalPrice",
+  {
+    where: {
+      orderStatus: {
+        [Op.eq]: orderStatuses.STATUS_DELIVERING,
+      },
+      id: {
+        [Op.notIn]: ordersArr,
+      },
+      postId: {
+        [Op.eq]: postId,
+      },
+    },
+  })
+
+  postByPk.postTotalPrice -= subtractingOrders
+  await postByPk.save()
 
   const ordersNotInPost = await Order.update(
     {
@@ -267,8 +292,10 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
-  const queryBuilder = new QueryBuilder(req.query);
   const { id } = req.params;
+  req.query.postId = id
+  req.query.orderStatus = orderStatuses.STATUS_DELIVERING
+  const queryBuilder = new QueryBuilder(req.query);
   const currentPostStatus = await Post.findByPk(id, {
     attributes: ["postStatus"],
   });
@@ -285,23 +312,13 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
     { model: Region, as: "region", attributes: ["name"] },
   ];
 
-  let ordersInPost = await Order.findAndCountAll({
-    where: {
-      postId: {
-        [Op.eq]: id,
-      },
-      orderStatus: {
-        [Op.eq]: orderStatuses.STATUS_DELIVERING,
-      },
-    },
-  });
+  let ordersInPost = await Order.findAndCountAll(queryBuilder.queryOptions);
 
   ordersInPost = queryBuilder.createPagination(ordersInPost);
 
   const ordersArrInPost = ordersInPost.content.map((o) => {
     return o.dataValues.id;
   });
-  console.log(ordersInPost);
   res.json({
     status: "success",
     message: "Orders in Post",
@@ -412,7 +429,6 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 
 exports.recievePost = catchAsync(async (req, res, next) => {
   const { postStatus, ordersArr, postId } = req.body;
-console.log(req.body);
   const postInfo = await Post.update(
     {
       postStatus: postStatus,
@@ -438,7 +454,6 @@ console.log(req.body);
   });
 
   if (ordersNotInArr) {
-    console.log(ordersNotInArr);
     await Order.update(
       {
         orderStatus: orderStatuses.STATUS_NOT_DELIVERED,
