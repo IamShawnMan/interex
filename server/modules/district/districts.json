@@ -1,282 +1,632 @@
 [
     {
-        "id": "12",
-        "regionId": "1",
-        "name": "Konimex tumani"
+        "id": "98",
+        "name": "Mingbuloq tumani",
+        "regionId": "7"
     },
     {
-        "id": "13",
-        "regionId": "1",
-        "name": "Karmana tumani"
+        "id": "99",
+        "name": "Namangan tumani",
+        "regionId": "7"
     },
     {
-        "id": "14",
-        "regionId": "1",
-        "name": "Qiziltepa tumani"
+        "id": "100",
+        "name": "Namangan shahri",
+        "regionId": "7"
     },
     {
-        "id": "15",
-        "regionId": "1",
-        "name": "Xatirchi tumani"
+        "id": "101",
+        "name": "Norin tumani",
+        "regionId": "7"
     },
     {
-        "id": "16",
-        "regionId": "1",
-        "name": "Navbahor tumani"
+        "id": "102",
+        "name": "Pop tumani",
+        "regionId": "7"
     },
     {
-        "id": "17",
-        "regionId": "1",
-        "name": "Nurota tumani"
+        "id": "103",
+        "name": "To`raqo`rg`on tumani",
+        "regionId": "7"
     },
     {
-        "id": "18",
-        "regionId": "1",
-        "name": "Tomdi tumani"
+        "id": "104",
+        "name": "Uychi tumani",
+        "regionId": "7"
     },
     {
-        "id": "19",
-        "regionId": "1",
-        "name": "Uchquduq tumani"
+        "id": "105",
+        "name": "Uchqo`rg`on tumani",
+        "regionId": "7"
     },
     {
-        "id": "20",
-        "regionId": "2",
-        "name": "Bektemir tumani"
+        "id": "106",
+        "name": "Chortoq tumani",
+        "regionId": "7"
     },
     {
-        "id": "21",
-        "regionId": "2",
-        "name": "Mirobod tumani"
+        "id": "107",
+        "name": "Chust tumani",
+        "regionId": "7"
     },
     {
-        "id": "22",
-        "regionId": "2",
-        "name": "Mirzo Ulug'bek tumani"
+        "id": "108",
+        "name": "Yangiqo`rg`on tumani",
+        "regionId": "7"
     },
     {
-        "id": "23",
-        "regionId": "2",
-        "name": "Sergeli tumani"
+        "id": "109",
+        "name": "Bulung`ur tumani",
+        "regionId": "8"
     },
     {
-        "id": "24",
-        "regionId": "2",
-        "name": "Olmazor tumani"
+        "id": "110",
+        "name": "Jomboy tumani",
+        "regionId": "8"
     },
     {
-        "id": "25",
-        "regionId": "2",
-        "name": "Uchtepa tumani"
+        "id": "111",
+        "name": "Ishtixon tumani",
+        "regionId": "8"
     },
     {
-        "id": "26",
-        "regionId": "2",
-        "name": "Shayxontoxur tumani"
+        "id": "112",
+        "name": "Kattaqo`rg`on tumani",
+        "regionId": "8"
     },
     {
-        "id": "27",
-        "regionId": "2",
-        "name": "Yashnobod tumani"
+        "id": "113",
+        "name": "Kattaqo`rg`on shahri",
+        "regionId": "8"
     },
     {
-        "id": "28",
-        "regionId": "2",
-        "name": "Chilonzor tumani"
+        "id": "114",
+        "name": "Qo`shrabot tumani",
+        "regionId": "8"
     },
     {
-        "id": "29",
-        "regionId": "2",
-        "name": "Yunusobod tumani"
+        "id": "115",
+        "name": "Narpay tumani",
+        "regionId": "8"
     },
     {
-        "id": "30",
-        "regionId": "2",
-        "name": "Yakkasaroy tumani"
+        "id": "116",
+        "name": "Nurabod tumani",
+        "regionId": "8"
     },
     {
-        "id": "31",
-        "regionId": "3",
-        "name": "Bulung'ur tumani"
+        "id": "117",
+        "name": "Oqdaryo tumani",
+        "regionId": "8"
     },
     {
-        "id": "32",
-        "regionId": "3",
-        "name": "Ishtixon tumani"
+        "id": "118",
+        "name": "Payariq tumani",
+        "regionId": "8"
     },
     {
-        "id": "33",
-        "regionId": "3",
-        "name": "Jomboy tumani"
+        "id": "119",
+        "name": "Pastarg`om tumani",
+        "regionId": "8"
     },
     {
-        "id": "34",
-        "regionId": "3",
-        "name": "Kattaqo'rg'on tumani"
+        "id": "120",
+        "name": "Paxtachi tumani",
+        "regionId": "8"
     },
     {
-        "id": "35",
-        "regionId": "3",
-        "name": "Qo'shrabot tumani"
+        "id": "121",
+        "name": "Samarqand tumani",
+        "regionId": "8"
     },
     {
-        "id": "36",
-        "regionId": "3",
-        "name": "Narpay tumani"
+        "id": "122",
+        "name": "Samarqand shahri",
+        "regionId": "8"
     },
     {
-        "id": "37",
-        "regionId": "3",
-        "name": "Nurobod tumani"
+        "id": "123",
+        "name": "Toyloq tumani",
+        "regionId": "8"
     },
     {
-        "id": "38",
-        "regionId": "3",
-        "name": "Oqdaro tumani"
+        "id": "124",
+        "name": "Urgut tumani",
+        "regionId": "8"
     },
     {
-        "id": "39",
-        "regionId": "3",
-        "name": "Paxtachi tumani"
+        "id": "125",
+        "name": "Angor tumani",
+        "regionId": "9"
     },
     {
-        "id": "40",
-        "regionId": "3",
-        "name": "Payariq tumani"
+        "id": "126",
+        "name": "Boysun tumani",
+        "regionId": "9"
     },
     {
-        "id": "41",
-        "regionId": "3",
-        "name": "Pasdarg'om tumani"
+        "id": "127",
+        "name": "Denov tumani",
+        "regionId": "9"
     },
     {
-        "id": "42",
-        "regionId": "3",
-        "name": "Samarqand tumani"
+        "id": "128",
+        "name": "Jarqo`rg`on tumani",
+        "regionId": "9"
     },
     {
-        "id": "43",
-        "regionId": "3",
-        "name": "Toyloq tumani"
+        "id": "129",
+        "name": "Qiziriq tumani",
+        "regionId": "9"
     },
     {
-        "id": "44",
-        "regionId": "3",
-        "name": "Urgut tumani"
+        "id": "130",
+        "name": "Qo`mqo`rg`on tumani",
+        "regionId": "9"
     },
     {
-        "id": "45",
-        "regionId": "4",
-        "name": "Boyovut tumani"
+        "id": "131",
+        "name": "Muzrabot tumani",
+        "regionId": "9"
     },
     {
-        "id": "46",
-        "regionId": "4",
-        "name": "Oqoltin tumani"
+        "id": "132",
+        "name": "Oltinsoy tumani",
+        "regionId": "9"
     },
     {
-        "id": "47",
-        "regionId": "4",
-        "name": "Guliston tumani"
+        "id": "133",
+        "name": "Sariosiyo tumani",
+        "regionId": "9"
     },
     {
-        "id": "48",
-        "regionId": "4",
-        "name": "Xovos tumani"
+        "id": "134",
+        "name": "Termiz tumani",
+        "regionId": "9"
     },
     {
-        "id": "49",
-        "regionId": "4",
-        "name": "Mirzaobod tumani"
+        "id": "135",
+        "name": "Termiz shahri",
+        "regionId": "9"
     },
     {
-        "id": "50",
-        "regionId": "4",
-        "name": "Sardoba tumani"
+        "id": "136",
+        "name": "Uzun tumani",
+        "regionId": "9"
     },
     {
-        "id": "51",
-        "regionId": "4",
-        "name": "Sayxunobod tumani"
+        "id": "137",
+        "name": "Sherobod tumani",
+        "regionId": "9"
     },
     {
-        "id": "52",
-        "regionId": "4",
-        "name": "Sirdaryo tumani"
+        "id": "138",
+        "name": "Sho`rchi tumani",
+        "regionId": "9"
     },
     {
-        "id": "53",
-        "regionId": "5",
-        "name": "Termiz shahri"
+        "id": "139",
+        "name": "Boyovut tumani",
+        "regionId": "10"
     },
     {
-        "id": "54",
-        "regionId": "5",
-        "name": "Termiz tumani"
+        "id": "140",
+        "name": "Guliston tumani",
+        "regionId": "10"
     },
     {
-        "id": "55",
-        "regionId": "5",
-        "name": "Angor tumani"
+        "id": "141",
+        "name": "Guliston shahri",
+        "regionId": "10"
     },
     {
-        "id": "56",
-        "regionId": "5",
-        "name": "Sherabod tumani"
+        "id": "142",
+        "name": "Mirzaobod tumani",
+        "regionId": "10"
     },
     {
-        "id": "57",
-        "regionId": "5",
-        "name": "Boysun tumani"
+        "id": "143",
+        "name": "Oqoltin tumani",
+        "regionId": "10"
     },
     {
-        "id": "58",
-        "regionId": "5",
-        "name": "Denov tumani"
+        "id": "144",
+        "name": "Sayxunobod tumani",
+        "regionId": "10"
     },
     {
-        "id": "59",
-        "regionId": "5",
-        "name": "Uzun tumani"
+        "id": "145",
+        "name": "Sardoba tumani",
+        "regionId": "10"
     },
     {
-        "id": "60",
-        "regionId": "5",
-        "name": "Sariosiyo tumani"
+        "id": "146",
+        "name": "Sirdaryo tumani",
+        "regionId": "10"
     },
     {
-        "id": "61",
-        "regionId": "5",
-        "name": "Oltinsoy tumani"
+        "id": "147",
+        "name": "Xavos tumani",
+        "regionId": "10"
     },
     {
-        "id": "62",
-        "regionId": "5",
-        "name": "Bandixon tumani"
+        "id": "148",
+        "name": "Shirin shahri",
+        "regionId": "10"
     },
     {
-        "id": "63",
-        "regionId": "5",
-        "name": "Jarqo`rg`on tumani"
+        "id": "149",
+        "name": "Yangiyer shahri",
+        "regionId": "10"
     },
     {
-        "id": "64",
-        "regionId": "5",
-        "name": "Sho`rchi tumani"
+        "id": "150",
+        "name": "Angiren shahri",
+        "regionId": "11"
     },
     {
-        "id": "65",
-        "regionId": "5",
-        "name": "Qumqo`rg`on tumani"
+        "id": "151",
+        "name": "Bekabod tumani",
+        "regionId": "11"
     },
     {
-        "id": "66",
-        "regionId": "5",
-        "name": "Muzrabod tumani"
+        "id": "152",
+        "name": "Bekabod shahri",
+        "regionId": "11"
     },
     {
-        "id": "67",
-        "regionId": "5",
-        "name": "Qiziriq tumani"
+        "id": "153",
+        "name": "Bo`ka tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "154",
+        "name": "Bo`stonliq tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "155",
+        "name": "Zangiota tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "156",
+        "name": "Qibray tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "157",
+        "name": "Quyichirchiq tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "158",
+        "name": "Oqqo`rg`on tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "159",
+        "name": "Olmaliq shahri",
+        "regionId": "11"
+    },
+    {
+        "id": "160",
+        "name": "Ohangaron tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "161",
+        "name": "Parkent tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "162",
+        "name": "Piskent tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "163",
+        "name": "O`rtachirchiq tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "164",
+        "name": "Chinoz tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "165",
+        "name": "Chirchiq shahri",
+        "regionId": "11"
+    },
+    {
+        "id": "166",
+        "name": "Yuqorichirchiq tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "167",
+        "name": "Yangiyo`l tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "168",
+        "name": "Beshariq tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "169",
+        "name": "Bog`dod tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "170",
+        "name": "Buvayda tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "171",
+        "name": "Dang`ara tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "172",
+        "name": "Yozyovon tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "173",
+        "name": "Quva tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "174",
+        "name": "Quvasoy shahri",
+        "regionId": "12"
+    },
+    {
+        "id": "175",
+        "name": "Qo`qon shahri",
+        "regionId": "12"
+    },
+    {
+        "id": "176",
+        "name": "Qo`shtepa tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "177",
+        "name": "Marg`ilon shahri",
+        "regionId": "12"
+    },
+    {
+        "id": "178",
+        "name": "Oltiariq tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "179",
+        "name": "Rishton tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "180",
+        "name": "So`x tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "181",
+        "name": "Toshloq tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "182",
+        "name": "Uchko`prik tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "183",
+        "name": "O`zbekiston tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "184",
+        "name": "Farg`ona tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "185",
+        "name": "Farg`ona shahri",
+        "regionId": "12"
+    },
+    {
+        "id": "186",
+        "name": "Furqat tumani",
+        "regionId": "12"
+    },
+    {
+        "id": "187",
+        "name": "Bog`ot tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "188",
+        "name": "Gurlan tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "189",
+        "name": "Qo`shko`pir tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "190",
+        "name": "Urganch tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "191",
+        "name": "Urganch shahri",
+        "regionId": "13"
+    },
+    {
+        "id": "192",
+        "name": "Xiva tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "193",
+        "name": "Xazarasp tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "194",
+        "name": "Xonqa tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "195",
+        "name": "Shavot tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "196",
+        "name": "Yangiariq tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "197",
+        "name": "Yangibozor tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "198",
+        "name": "Bektimer tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "199",
+        "name": "Mirzo Ulug'bek tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "200",
+        "name": "Mirobod tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "201",
+        "name": "Olmazor tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "202",
+        "name": "Sirg'ali tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "203",
+        "name": "Uchtepa tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "204",
+        "name": "Yashnobod tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "205",
+        "name": "Chilonzor tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "206",
+        "name": "Shayxontohur tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "207",
+        "name": "Yunusobod tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "208",
+        "name": "Yakkasaroy tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "209",
+        "name": "Taxiatosh shahri",
+        "regionId": "1"
+    },
+    {
+        "id": "210",
+        "name": "Asaka shahri",
+        "regionId": "2"
+    },
+    {
+        "id": "211",
+        "name": "Bandixon tumani",
+        "regionId": "9"
+    },
+    {
+        "id": "212",
+        "name": "Ohangaron shahri",
+        "regionId": "11"
+    },
+    {
+        "id": "213",
+        "name": "Yangiyo`l shahri",
+        "regionId": "11"
+    },
+    {
+        "id": "215",
+        "name": "Toshkent tumani",
+        "regionId": "11"
+    },
+    {
+        "id": "216",
+        "name": "Xiva shahri",
+        "regionId": "13"
+    },
+    {
+        "id": "217",
+        "name": "Do'stlik shahri",
+        "regionId": "13"
+    },
+    {
+        "id": "218",
+        "name": "Yangihayot tumani",
+        "regionId": "14"
+    },
+    {
+        "id": "219",
+        "name": "Tuproqqala tumani",
+        "regionId": "13"
+    },
+    {
+        "id": "220",
+        "name": "Davlatobod tumani",
+        "regionId": "7"
+    },
+    {
+        "id": "221",
+        "name": "G`ozg`on shahri",
+        "regionId": "6"
+    },
+    {
+        "id": "222",
+        "name": "Bo`zatov tumani",
+        "regionId": "1"
+    },
+    {
+        "id": "224",
+        "name": "Shahrisabz shahri",
+        "regionId": "5"
+    },
+    {
+        "id": "225",
+        "name": "Ko`kdala tumani",
+        "regionId": "5"
     }
 ]
