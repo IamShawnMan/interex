@@ -16,9 +16,9 @@ function Filter({ url, filterFn }) {
   const [region, setRegion] = useState(null);
   const [districts, setDistricts] = useState(null);
   const [storeOwnerIds, setStoreOwner] = useState(null);
-  const [allQueries, setAllQueries] = useState(null)
+  const [allQueries, setAllQueries] = useState(null);
   useEffect(() => {
-    filterFn(allQueries)
+    filterFn(allQueries);
     getAllRegions();
     getAllStatuses();
     region && getAllDistricts(region);
@@ -43,10 +43,12 @@ function Filter({ url, filterFn }) {
   };
 
   const getAllDistricts = async (id) => {
-  const res =id&& await http({
-      url: `/regions/${id}/districts`,
-    });
-    id&& setDistricts(res.data.data.getDistrictByRegion);
+    const res =
+      id &&
+      (await http({
+        url: `/regions/${id}/districts`,
+      }));
+    id && setDistricts(res.data.data.getDistrictByRegion);
   };
   const getAllStoreOwner = async () => {
     const res = await http({
@@ -60,8 +62,8 @@ function Filter({ url, filterFn }) {
     );
   };
   const filterHandler = async (data) => {
-    setAllQueries(data)
-    filterFn(data)
+    setAllQueries(data);
+    filterFn(data);
   };
 
   const regionHandler = (e) => {
@@ -74,13 +76,20 @@ function Filter({ url, filterFn }) {
       onSubmit={handleSubmit(filterHandler)}
       className={styles.filterContainer}
     >
-      <Select register={register.bind(null, "status")} data={statuses}>
+      <Select
+        register={register.bind(null, "status")}
+        data={statuses}
+        placeholder="Barchasi"
+        id="status"
+      >
         Holati
       </Select>
       {(isAdmin || isSuperAdmin) && (
         <Select
           register={register.bind(null, "storeOwnerId")}
           data={storeOwnerIds}
+          placeholder="Barcha Do'konlar"
+          id="storeName"
         >
           Magazin nomi
         </Select>
@@ -89,15 +98,29 @@ function Filter({ url, filterFn }) {
         register={register.bind(null, "regionId")}
         data={regions}
         onChange={regionHandler}
+        placeholder="Barcha viloyatlar"
+        id="viloyatlar"
       >
         Viloyatlar
       </Select>
-      <Select register={register.bind(null, "districtId")} data={districts}>
+      <Select
+        register={register.bind(null, "districtId")}
+        data={districts}
+        placeholder="Barcha tumanlar"
+        id="tumanlar"
+      >
         Tumanlar
       </Select>
-      <Input type="date" register={register.bind(null, "createdAt")} />
-      <Button size={"small"} type="submit" name={"btn"}>
-        Apply
+      <Input type="date" register={register.bind(null, "createdAt")}>
+        Sanasi
+      </Input>
+      <Button
+        size={"small"}
+        type="submit"
+        name={"btn"}
+        btnStyle={{ padding: "1rem 1rem", marginTop: "2.2rem" }}
+      >
+        Saralash
       </Button>
     </form>
   );

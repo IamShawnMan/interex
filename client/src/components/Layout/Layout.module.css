@@ -31,3 +31,12 @@
   font-weight: 500;
   margin-bottom: 2.4rem;
 }
+
+.goBack {
+  cursor: pointer;
+  margin: 1.5rem 2rem;
+}
+
+.goBack:hover {
+  color: blue;
+}

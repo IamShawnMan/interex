@@ -16,6 +16,7 @@ function Input({
   checked,
   onChange,
   value,
+  defaultValue,
 }) {
   const [success, setSuccess] = useState(false);
   // console.log(checked);
@@ -35,7 +36,8 @@ function Input({
           type={type ? type : "text"}
           placeholder={placeholder ? placeholder : ""}
           id={id ? id : ""}
-          defaultValue={value}
+          defaultValue={defaultValue}
+          value={value}
           {...(register ? register() : "")}
           className={`${styles.input} ${error ? styles.error : ""}`}
           onClick={onClick}

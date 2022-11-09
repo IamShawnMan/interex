@@ -56,7 +56,7 @@ export const BasicTable = ({ columns, data, pagination, url }) => {
                   // console.log(cell);
                   return (
                     <td
-                    data-label={cell.column.Header}
+                      data-label={cell.column.Header}
                       className={styles.td}
                       key={cell.column.id}
                       {...cell.getCellProps()}
@@ -70,7 +70,7 @@ export const BasicTable = ({ columns, data, pagination, url }) => {
           })}
         </tbody>
       </table>
-    {pagination&&<Pagination pagination={pagination} url={url} />}
+      {pagination && <Pagination pagination={pagination} url={url} />}
     </div>
   ) : (
     <p>Malumotlar yoq</p>

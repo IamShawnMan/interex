@@ -48,16 +48,16 @@ function Button({
       buttonSize = "medium";
       break;
     default:
-      buttonSize = "small";
+      buttonSize = "defaultSize";
   }
 
   return (
     <button
-      style={btnStyle}
       disabled={disabled}
       className={`${styles[buttonSize]} ${styles[name]} ${
         name !== "dots" ? styles.btn : styles.dots
       }`}
+      style={btnStyle}
       type={type || "submit"}
       onClick={customFunction}
     >

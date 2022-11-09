@@ -20,6 +20,7 @@ import Input from "../../../components/Form/FormComponents/Input/Input";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
+import Plus from "../../../assets/icons/Plus";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -44,7 +45,7 @@ function Orders() {
   useEffect(() => {
     filterFn(allQueries);
     getPrices();
-  }, [page,info]);
+  }, [page, info]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
@@ -52,7 +53,6 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
-    console.log(data);
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost);
@@ -74,9 +74,15 @@ function Orders() {
   };
 
   const cols = [
-    { Header: "id", accessor: "id" },
+    {
+      id: "id",
+      Header: "NO",
+      accessor: (_, i) => {
+        return `${i + 1}`;
+      },
+    },
     { Header: "Haridor", accessor: "recipient" },
-    { Header: "Holati", accessor: "orderStatus" },
+    { id: "status", Header: "Holati", accessor: "orderStatus" },
     { Header: "Telefon", accessor: "recipientPhoneNumber" },
     { Header: "Eslatma", accessor: "note" },
     { Header: "Viloyat", accessor: "region.name" },
@@ -101,7 +107,7 @@ function Orders() {
                   });
                 }}
               >
-                Prices
+                Narxi
               </Select>
             )}
             {order.status !== "NEW" && order.deliveryPrice}
@@ -113,18 +119,18 @@ function Orders() {
     {
       Header: "Sanasi",
       accessor: (order) => {
-        const date = formatDate(order.createdAt);
+        const date = formatDate(order?.createdAt);
         return (
           <>
-            {date.slice(0, 10)}
+            {date ? date?.slice(0, 10) : ""}
             <br />
-            {date.slice(10)}
+            {date ? date.slice(10) : ""}
           </>
         );
       },
     },
     {
-      Header: "Action",
+      Header: "Tugma",
       accessor: (order) => {
         return (
           <div className={styles.actionContainer}>
@@ -139,17 +145,17 @@ function Orders() {
                       navigate(`/orders/${order.id}`);
                     }}
                   >
-                    Update
+                    O'zgartirish
                   </Button>
                 )}
                 {isAdmin && id && (
-                  <div>
+                  <>
                     <Button
                       name="btn"
                       disabled={order.orderStatus === "NEW" ? false : true}
                       onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
                     >
-                      <>ACCEPTED</>
+                      Qabul qilindi
                     </Button>
 
                     <Button
@@ -158,40 +164,66 @@ function Orders() {
                       name="btn"
                       onClick={() => changeOrderStatus(order.id, "NOT_EXIST")}
                     >
-                      <>NOT EXIST</>
+                      Qabul qilinmadi
                     </Button>
-                  </div>
+                  </>
                 )}
-                
               </div>
-            )} {isCourier &&  (
-                  <div>
-                    <Button
-                      name="btn"
-                      disabled={(order.orderStatus === "SOLD"||order.orderStatus === "REJECTED" )? true : false}
-                      onClick={() => {setInfo({id:order.id,status:"SOLD"})}}
-                    >
-                      <>SOLD</>
-                    </Button>
+            )}
+            {isCourier &&
+              (order.orderStatus === "DELIVERED" ||
+                order.orderStatus === "SOLD" ||
+                order.orderStatus !== "PENDING" ||
+                order.orderStatus !== "REJECTED") && (
+                <>
+                  <Button
+                    name="btn"
+                    disabled={
+                      order.orderStatus === "SOLD" ||
+                      order.orderStatus === "REJECTED"
+                        ? true
+                        : false
+                    }
+                    onClick={() => {
+                      setInfo({ id: order.id, status: "SOLD" });
+                    }}
+                  >
+                    Sotildi
+                  </Button>
 
-                    <Button
-                      disabled={(order.orderStatus === "SOLD"||order.orderStatus === "REJECTED"||order.orderStatus === "PENDING" ) ? true : false}
-                      size="small"
-                      name="btn"
-                      onClick={() => {setInfo({id:order.id,status:"PENDING"})}}
-                    >
-                      <>PENDING</>
-                    </Button>
-                    <Button
-                      disabled={(order.orderStatus === "SOLD"||order.orderStatus === "REJECTED" )? true: false}
-                      size="small"
-                      name="btn"
-                      onClick={() => {setInfo({id:order.id,status:"REJECTED"})}}
-                    >
-                      <>REJECTED</>
-                    </Button>
-                  </div>
-                )}
+                  <Button
+                    disabled={
+                      order.orderStatus === "SOLD" ||
+                      order.orderStatus === "REJECTED" ||
+                      order.orderStatus === "PENDING"
+                        ? true
+                        : false
+                    }
+                    size="small"
+                    name="btn"
+                    onClick={() => {
+                      setInfo({ id: order.id, status: "PENDING" });
+                    }}
+                  >
+                    Kutilmoqda
+                  </Button>
+                  <Button
+                    disabled={
+                      order.orderStatus === "SOLD" ||
+                      order.orderStatus === "REJECTED"
+                        ? true
+                        : false
+                    }
+                    size="small"
+                    name="btn"
+                    onClick={() => {
+                      setInfo({ id: order.id, status: "REJECTED" });
+                    }}
+                  >
+                    Qaytdi
+                  </Button>
+                </>
+              )}
             <Button
               size="small"
               name="btn"
@@ -200,7 +232,7 @@ function Orders() {
                 // navigate(`/orders/info/${order.id}`);
               }}
             >
-              Info
+              Ma'lumot
             </Button>
             {ordersIdArr && (
               <Input
@@ -226,15 +258,21 @@ function Orders() {
   const postCreateOrUpdateFn = async () => {
     try {
       const res = await http({
-        url:
-          url.split("/")[3] === "regionorders"
+        url: url
+          ? url.split("/")[3] === "regionorders"
             ? "posts/new"
-            : "posts/new/customized",
-        data:
-          url.split("/")[3] === "regionorders"
+            : "posts/new/customized"
+          : "",
+        data: url
+          ? url.split("/")[3] === "regionorders"
             ? { regionId: id, ordersArr: ordersIdArr }
-            : { postId: id, ordersArr: ordersIdArr },
-        method: url.split("/")[3] === "regionorders" ? "POST" : "PUT",
+            : { postId: id, ordersArr: ordersIdArr }
+          : "",
+        method: url
+          ? url.split("/")[3] === "regionorders"
+            ? "POST"
+            : "PUT"
+          : "",
       });
       toast.success(res.data.message);
     } catch (error) {
@@ -246,33 +284,22 @@ function Orders() {
     setQueries(data);
     const dateCreatedAt = new Date(data?.createdAt);
     try {
-      if (isAdmin || isSuperAdmin||isCourier) {
-        const res = await http({
-          url: `${url}?page=${page}&size=${size}${
-            data?.status ? `&orderStatus=${data.status}` : ""
-          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-            data?.districtId ? `&districtId=${data.districtId}` : ""
-          }${data?.storeOwnerId ? `&storeOwnerId=${data.storeOwnerId}` : ""}${
-            data?.createdAt
-              ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
+      const res = await http({
+        url: `${url}?page=${page}&size=${size}${
+          data?.status ? `&orderStatus=${data.status}` : ""
+        }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+          data?.districtId ? `&districtId=${data.districtId}` : ""
+        }${
+          !isStoreOwner
+            ? data?.storeOwnerId
+              ? `&storeOwnerId=${data.storeOwnerId}`
               : ""
-          }`,
-        });
-        getAllOrders(res.data);
-      } else if (isStoreOwner) {
-        const res = await http(
-          `${url}/myorders?page=${page}&size=${size}${
-            data?.status ? `&orderStatus=${data.status}` : ""
-          }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-            data?.districtId ? `&districtId=${data.districtId}` : ""
-          }${
-            data?.createdAt
-              ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
-              : ""
-          }`
-        );
-        getAllOrders(res.data);
-      }
+            : ""
+        }${
+          data?.createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""
+        }`,
+      });
+      getAllOrders(res.data);
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message);
@@ -285,14 +312,14 @@ function Orders() {
     <Layout pageName="Jo'natmalar Ro'yxati">
       {isStoreOwner && (
         <Button
-          size="small"
-          name="btn"
+          name="iconText"
+          iconName="plus"
           onClick={() => {
             navigate("/orders/new");
           }}
-          btnStyle={{ display: "inline-block", width: "12rem" }}
+          btnStyle={{ width: "13rem" }}
         >
-          Add Order
+          Yetkazma
         </Button>
       )}
       <Filter filterFn={filterFn} />
@@ -306,9 +333,18 @@ function Orders() {
       ) : (
         <p>Malumotlar yoq</p>
       )}
-      {console.log(url)}
-      {info &&typeof info!== 'object'&&<OrderInfo id={info} onClose={closeHandler} />}
-      {info&&typeof info=== 'object'&&<PostSendCourier id={info} url={url} onClose={() => {setInfo(false)}} />}
+      {info && typeof info !== "object" && (
+        <OrderInfo id={info} onClose={closeHandler} />
+      )}
+      {info && typeof info === "object" && (
+        <PostSendCourier
+          id={info}
+          url={url}
+          onClose={() => {
+            setInfo(false);
+          }}
+        />
+      )}
       <div style={{ display: "flex", gap: 1 }}>
         {url.split("/")[1] === "posts" &&
           (postStatus === "NEW" || url.split("/")[3] === "regionorders") && (

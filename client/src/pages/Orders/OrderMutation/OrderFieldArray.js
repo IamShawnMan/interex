@@ -3,7 +3,7 @@ import OrderItems from "./nestedFieldArray";
 import http from "../../../utils/axios-instance";
 import Input from "../../../components/Form/FormComponents/Input/Input";
 import Button from "../../../components/Form/FormComponents/Button/Button";
-import styles from "./OrderMutation.module.css";
+import styles from "./OrderField.module.css";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 
 const OrderFieldArray = ({
@@ -15,11 +15,11 @@ const OrderFieldArray = ({
   regions,
   control,
   remove,
-  rId
+  rId,
 }) => {
   const [districts, setDistricts] = useState(null);
-  const [regionId, setRegionId] = useState(rId)
-  let districtId=watch(`orders.${index}.districtId`)
+  const [regionId, setRegionId] = useState(rId);
+  let districtId = watch(`orders.${index}.districtId`);
   const getAllDistrict = async () => {
     const res = await http({
       url: `regions/${regionId}/districts`,
@@ -31,48 +31,64 @@ const OrderFieldArray = ({
     regionId && getAllDistrict();
   }, [regionId]);
   return (
-    <li style={{ borderBottom: "1px solid black" }} key={item.id}>
-      <Input
-        placeholder="recipient"
-        register={register.bind(null, `orders.${index}.recipient`)}
-        error={errors?.orders?.[index]?.recipient?.message}
-      />
-      <Input
-        placeholder="note"
-        register={register.bind(null, `orders.${index}.note`)}
-        error={errors?.orders?.[index]?.note?.message}
-      />
-      <Input
-        type="text"
-        placeholder="phoneNumber"
-        register={register.bind(null, `orders.${index}.recipientPhoneNumber`)}
-        error={errors?.orders?.[index]?.recipientPhoneNumber?.message}
-      />
-      <Select
-        register={register.bind(null, `orders.${index}.regionId`)}
-        data={regions}
-        error={
-          errors?.orders?.[index]
-            ? errors?.orders?.[index]?.regionId?.message
-            : ""
-          
-        }
-        onChange={(e)=>{setRegionId(e.target.value)}}
-      ></Select>
-      {regionId && (
+    <li
+      style={{ borderBottom: "1px solid black", position: "relative" }}
+      key={item.id}
+    >
+      <div className={styles.orderContainer}>
+        <Input
+          placeholder="Anvar"
+          register={register.bind(null, `orders.${index}.recipient`)}
+          error={errors?.orders?.[index]?.recipient?.message}
+        >
+          Haridor
+        </Input>
+        <Input
+          placeholder="Mo'ljal/Vaqt"
+          register={register.bind(null, `orders.${index}.note`)}
+          error={errors?.orders?.[index]?.note?.message}
+        >
+          Eslatma
+        </Input>
+        <Input
+          type="text"
+          placeholder="+998991234567"
+          register={register.bind(null, `orders.${index}.recipientPhoneNumber`)}
+          error={errors?.orders?.[index]?.recipientPhoneNumber?.message}
+        >
+          Telefon
+        </Input>
+        <Select
+          register={register.bind(null, `orders.${index}.regionId`)}
+          data={regions}
+          error={
+            errors?.orders?.[index]
+              ? errors?.orders?.[index]?.regionId?.message
+              : ""
+          }
+          placeholder="Barcha viloyat"
+          onChange={(e) => {
+            setRegionId(e.target.value);
+          }}
+        >
+          Viloyat
+        </Select>
+
         <Select
           register={register.bind(null, `orders.${index}.districtId`)}
           data={districts}
+          placeholder="Barcha tuman"
           error={
             errors?.orders?.[index]
               ? errors?.orders?.[index]?.districtId?.message
               : ""
           }
         >
-          { districts?.filter(d=>d.id===districtId)[0]?.name}
+          {/* {districts?.filter((d) => d.id === districtId)[0]?.name} */}
+          Tumanlar
         </Select>
-      )}
-     
+      </div>
+
       <OrderItems
         orderIndex={index}
         control={control}
@@ -83,8 +99,8 @@ const OrderFieldArray = ({
         className={styles.btnIconTextContainer}
         onClick={() => remove(index)}
       >
-        <Button type="button" size="small" name="iconText" iconName="trash">
-          Delete
+        <Button type="button" name="iconText" iconName="trash">
+          Tashlash
         </Button>
       </div>
     </li>
