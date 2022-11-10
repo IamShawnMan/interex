@@ -53,6 +53,7 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
+    console.log(data);
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost);
@@ -174,7 +175,7 @@ function Orders() {
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
-                order.orderStatus !== "REJECTED") && (
+                order.orderStatus !== "REJECTED") &&order.orderStatus!=="DELIVERING"&& (
                 <>
                   <Button
                     name="btn"
