@@ -322,7 +322,7 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
     .sort();
 
     if(userRole === "COURIER") {
-      const postOrderStatuses = Object.values(statusOrder).slice(4, 9)
+      const postOrderStatuses = Object.values(orderStatuses).slice(4, 9)
       queryBuilder.queryOptions.where = {
         orderStatus: {
           [Op.in]: postOrderStatuses
