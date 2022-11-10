@@ -53,7 +53,6 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
-    console.log(data);
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost);
