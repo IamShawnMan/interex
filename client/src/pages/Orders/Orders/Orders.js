@@ -174,13 +174,13 @@ function Orders() {
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
-                order.orderStatus !== "REJECTED") && (
+                order.orderStatus !== "REJECTED") &&order.orderStatus!=="DELIVERING"&& (
                 <>
                   <Button
                     name="btn"
                     disabled={
                       order.orderStatus === "SOLD" ||
-                      order.orderStatus === "REJECTED"
+                      order.orderStatus === "REJECTED"||order.orderStatus==="NOT_DELIVERED"
                         ? true
                         : false
                     }
@@ -195,7 +195,7 @@ function Orders() {
                     disabled={
                       order.orderStatus === "SOLD" ||
                       order.orderStatus === "REJECTED" ||
-                      order.orderStatus === "PENDING"
+                      order.orderStatus === "PENDING"||order.orderStatus==="NOT_DELIVERED"
                         ? true
                         : false
                     }
@@ -210,7 +210,7 @@ function Orders() {
                   <Button
                     disabled={
                       order.orderStatus === "SOLD" ||
-                      order.orderStatus === "REJECTED"
+                      order.orderStatus === "REJECTED"||order.orderStatus==="NOT_DELIVERED"
                         ? true
                         : false
                     }
