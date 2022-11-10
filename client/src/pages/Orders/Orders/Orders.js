@@ -174,7 +174,7 @@ function Orders() {
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
-                order.orderStatus !== "REJECTED") && (
+                order.orderStatus !== "REJECTED") &&order.orderStatus!=="DELIVERING"&& (
                 <>
                   <Button
                     name="btn"
