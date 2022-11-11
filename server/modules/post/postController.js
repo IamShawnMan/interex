@@ -653,3 +653,33 @@ exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
     data: newRejectedPost.id,
   });
 });
+
+
+exports.sendRejectedPost = catchAsync(async (req, res, next) => {
+  const { userRole } = req.user;
+  const { id } = req.params;
+  const { postStatus, note } = req.body;
+  const getRejectedPostById = await Post.findByPk(id);
+
+  if (!getRejectedPostById) {
+    return next(new AppError("This post not found", 404));
+  }
+  if (
+    userRole === userRoles.COURIER &&
+    postStatus === postStatuses.POST_REJECTED_DELIVERING
+  ) {
+    await getRejectedPostById.update({
+      postStatus: postStatus,
+      note: note,
+    });
+  }
+
+  res.json({
+    status: "success",
+    message: "Rejected Pochta jo'natildi",
+    error: null,
+    data: {
+      note,
+    },
+  });
+});

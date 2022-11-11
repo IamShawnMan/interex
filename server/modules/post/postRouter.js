@@ -17,4 +17,5 @@ module.exports = router
   .post("/new/rejected", postController.createPostForAllRejectedOrders)
   .put("/new/customized", postController.createPostForCustomOrders)
   .put("/:id/send", postController.sendPost)
-  .get("/:id/delivered", postController.getDeliveredPosts);
+  .get("/:id/delivered", postController.getDeliveredPosts)
+  .put("/:id/send/rejected", postController.sendRejectedPost)

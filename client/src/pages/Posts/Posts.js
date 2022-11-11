@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
@@ -18,6 +18,8 @@ const Posts = () => {
   const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
+  const location = useLocation();
+  const url = location.pathname;
   const getAllPosts = async () => {
     try {
       const res = await http({
@@ -70,11 +72,11 @@ const Posts = () => {
               Ma'lumot
             </Button>
 
-            {user.userRole === "ADMIN" && (
+            {(user.userRole === "ADMIN" ||user.userRole === "COURIER")&& (
               <Button
                 size="small"
                 name="btn"
-                disabled={post.postStatus !== "NEW"}
+                disabled={user.userRole === "COURIER"?post.postStatus !== "REJECTED_NEW":post.postStatus !== "NEW"}
                 onClick={() => {
                   setInfo(post.id);
                 }}
@@ -138,6 +140,7 @@ const Posts = () => {
       {info && (
         <PostSendCourier
           id={info}
+          url={url}
           onClose={() => {
             setInfo(false);
           }}
