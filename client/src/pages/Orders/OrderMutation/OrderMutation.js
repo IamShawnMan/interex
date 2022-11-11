@@ -36,6 +36,7 @@ const schema = object().shape({
 function OrderMutation() {
   const [regions, setRegions] = useState(null);
   const [rId, setRId] = useState(null);
+  const [dId, setDId] = useState(null);
   const [regionId, setRegionId] = useState(null);
   const [updateData, setUpdateData] = useState(null);
   const { id } = useParams();
@@ -70,10 +71,11 @@ function OrderMutation() {
       });
   }, [regionId]);
   useEffect(() => {
+    let defaultValue={};
     isUpdate &&
       updateData &&
-      append({ ...updateData, districtId: updateData.districtId });
-  }, updateData);
+      append({ ...updateData});
+  }, [updateData]);
   const formSubmit = async (data) => {
     try {
       const res = await http({
@@ -94,6 +96,7 @@ function OrderMutation() {
     });
     const orderById = res.data.data;
     setRId(orderById.regionId);
+    setDId(orderById.districtId);
     setUpdateData(orderById);
   };
 
@@ -127,6 +130,8 @@ function OrderMutation() {
               regions={regions}
               control={control}
               remove={remove}
+              dId={dId}
+              reset={(obj)=>reset(obj)}
             />
           ))}
         </ul>
