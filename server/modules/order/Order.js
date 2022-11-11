@@ -32,9 +32,11 @@ const Order = sequelize.define(
 		totalPrice: {
 			type: DataTypes.INTEGER,
 			validate: {len: {args: [0, 5000000], msg: "qiymat 0 dan 50 mln oralig`ida bo`lishi kerak" }}
-		}
+		},
+		createdAt: { type: DataTypes.DATE, field: 'created_at' },
+		updatedAt: { type: DataTypes.DATE, field: 'updated_at' }
 	},
-	{ underscored: true }
+	{ underscored: true , timestamps: true,}
 );
 
 RegiomModel.hasMany(Order, { as: "orders", foreignKey: "regionId" });
