@@ -16,10 +16,12 @@ const OrderFieldArray = ({
   control,
   remove,
   rId,
+  dId
 }) => {
   const [districts, setDistricts] = useState(null);
   const [regionId, setRegionId] = useState(rId);
-  let districtId = watch(`orders.${index}.districtId`);
+  const [districtId, setDistrictId] = useState(dId);
+  // let districtId = watch(`orders.${index}.districtId`);
   const getAllDistrict = async () => {
     const res = await http({
       url: `regions/${regionId}/districts`,
@@ -28,8 +30,9 @@ const OrderFieldArray = ({
     setDistricts(res.data.data.getDistrictByRegion);
   };
   useEffect(() => {
-    regionId && getAllDistrict();
+    regionId && getAllDistrict(); 
   }, [regionId]);
+
   return (
     <li
       style={{ borderBottom: "1px solid black", position: "relative" }}
@@ -83,9 +86,11 @@ const OrderFieldArray = ({
               ? errors?.orders?.[index]?.districtId?.message
               : ""
           }
+          onChange={(e) => {
+            setDistrictId(e.target.value);
+          }}
         >
-          {/* {districts?.filter((d) => d.id === districtId)[0]?.name} */}
-          Tumanlar
+         Tumanlar
         </Select>
       </div>
 
