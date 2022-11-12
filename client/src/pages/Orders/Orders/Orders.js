@@ -119,20 +119,28 @@ function Orders() {
                 Narxi
               </Select>
             )}
-            {order.status !== "NEW" && order.deliveryPrice}
+            {order.status !== "NEW" &&
+              order.deliveryPrice?.toLocaleString("Ru-Ru")}
           </>
         );
       },
     },
     {
+      id: "totalPrice",
+      Header: "Mahsulotning narxi",
+      accessor: (order) => {
+        return <>{order.totalPrice.toLocaleString("Ru-Ru")}</>;
+      },
+    },
+    {
       Header: "Sanasi",
       accessor: (order) => {
-        const date = formatDate(order?.updatedAt);
+        const dateNew = new Date(order.createdAt);
         return (
           <>
-            {date ? date?.slice(0, 10) : ""}
+            {dateNew.getDay()}/{dateNew.getMonth()}/{dateNew.getFullYear()}
             <br />
-            {date ? date.slice(10) : ""}
+            {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
           </>
         );
       },
@@ -288,7 +296,20 @@ function Orders() {
       });
       toast.success(res.data.message);
     } catch (error) {
-      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+    navigate("/posts");
+  };
+  const postRejectedCreateOrUpdateFn = async () => {
+    try {
+      const res = await http({
+        url: "/posts/new/rejected",
+        data: { ordersArr: ordersIdArr },
+        method: "POST",
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
     }
     navigate("/posts");
   };
@@ -356,15 +377,25 @@ function Orders() {
         />
       )}
       <div style={{ display: "flex", gap: 1 }}>
-        {url.split("/")[1] === "posts" &&
-          (postStatus === "NEW" || url.split("/")[3] === "regionorders") && (
+        {console.log(url)}
+        {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
+          (postStatus === "NEW" ||
+            url.split("/")[3] === "regionorders" ||
+            url.split("/")[2] === "rejected") && (
             <Button
               type="submit"
               size="small"
               name="btn"
-              onClick={postCreateOrUpdateFn}
+              onClick={
+                url.split("/")[2] === "rejected"
+                  ? postRejectedCreateOrUpdateFn
+                  : postCreateOrUpdateFn
+              }
             >
-              {url.split("/")[3] === "regionorders" ? "create" : "update"}
+              {url.split("/")[3] === "regionorders" ||
+              url.split("/")[2] === "rejected"
+                ? "create"
+                : "update"}
             </Button>
           )}
       </div>
