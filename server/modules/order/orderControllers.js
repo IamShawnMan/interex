@@ -49,9 +49,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     err.errors = validationErrors;
     return next(err);
   }
+  const {userRole} = req.user
+
   let existedPackage = await PackageModel.findOne({
     where: { storeOwnerId: { [Op.eq]: req.user.id },},
-	order: [["createdAt", "DESC"]]
+	order: [["createdAt", "desc"]]
   });
   
   if(existedPackage){
@@ -75,7 +77,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     const newOrder = await OrderModel.create({
       recipient: order.recipient,
       regionId: order.regionId,
-      note: order.note,
+      note: `${userRole}: ${order.note}`,
       recipientPhoneNumber: order.recipientPhoneNumber,
       districtId: order.districtId,
       packageId: existedPackage.id,
@@ -356,7 +358,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 })
 
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
-	const {regionId} = req.user
+	const {regionId, userRole} = req.user
 	const {id} = req.params
 	const {orderStatus, note} = req.body
 	const postOrdersById = await OrderModel.findByPk(id, {
@@ -370,7 +372,9 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	const postOrderStatusChange = postOrderStatuses.find(e => e === orderStatus)
 	if(postOrdersById.dataValues.orderStatus === "DELIVERED" 
 	|| postOrdersById.dataValues.orderStatus === "PENDING") {
-		await postOrdersById.update({orderStatus: postOrderStatusChange, note})
+		await postOrdersById.update({
+			orderStatus: postOrderStatusChange, note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`
+		})
 	}
 
 	res.status(203).json({
