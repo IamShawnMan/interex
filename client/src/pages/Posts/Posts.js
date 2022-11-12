@@ -35,10 +35,8 @@ const Posts = () => {
   const postCols = [
     {
       id: "id",
-      Header: "NO",
-      accessor: (_, i) => {
-        return i + 1;
-      },
+      Header: "ID",
+      accessor: "id",
     },
     {
       id: "note",
@@ -59,7 +57,15 @@ const Posts = () => {
       Header: "Tugmalar",
       accessor: (post) => {
         return (
-          <div style={{ display: "flex", gap: 1 }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              margin: "0 auto",
+              gap: "0.5rem",
+              width: "14rem",
+            }}
+          >
             <Button
               size="small"
               name="btn"
@@ -69,7 +75,6 @@ const Posts = () => {
             >
               Ma'lumot
             </Button>
-
             {user.userRole === "ADMIN" && (
               <Button
                 size="small"
@@ -100,16 +105,25 @@ const Posts = () => {
   useEffect(() => {
     user.userRole !== "COURIER" && getAllRegions();
   }, []);
+
   if (user.userRole !== "COURIER") {
+    postCols.splice(0, 1);
     postCols.unshift({
-      id: "regionName",
-      Header: "regionName",
+      id: "region",
+      Header: "Viloyat",
       accessor: "region.name",
     });
+
+    postCols.unshift({
+      id: "id",
+      Header: "ID",
+      accessor: "id",
+    });
   }
+
   const regionCols = [
     {
-      id: "name",
+      id: "region",
       Header: "Viloyat",
       accessor: (region) => {
         return (
@@ -124,11 +138,11 @@ const Posts = () => {
         <>
           {regionValue?.length > 0 ? (
             <>
-              <p>Regions</p>
+              <p>Viloyatlar</p>
               <BasicTable columns={regionCols} data={regionValue} />
             </>
           ) : (
-            <p>Ma'lumotlar yo'q</p>
+            <p>Viloyat ma'lumotlari yo'q</p>
           )}
         </>
       ) : (
@@ -151,7 +165,7 @@ const Posts = () => {
           url="/posts"
         />
       ) : (
-        <p>Ma'lumotlar yo'q</p>
+        <p>Pochta ma'lumotlari yo'q</p>
       )}
     </Layout>
   );

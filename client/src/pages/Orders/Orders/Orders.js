@@ -24,26 +24,29 @@ import Plus from "../../../assets/icons/Plus";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
-  const isSuperAdmin = user.userRole === "SUPER_ADMIN";
   const isStoreOwner = user.userRole === "STORE_OWNER";
   const isCourier = user.userRole === "COURIER";
   const [pagination, setPagination] = useState(null);
   const [value, setValue] = useState(null);
   const [ordersIdArr, setOrdersIdArr] = useState(null);
-  const [price, setPrice] = useState(null);
   const [info, setInfo] = useState(null);
   const [postStatus, setPostStatus] = useState(null);
   const [allQueries, setQueries] = useState(null);
+  const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
-
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
+  const createdAt = searchParams.get("createdAt") || "";
+  const orderStatus = searchParams.get("orderStatus") || "";
+  const regionId = searchParams.get("regionId") || "";
+  const districtId = searchParams.get("districtId") || "";
+  const storeOwnerId = !isStoreOwner ? searchParams.get("storeOwnerId") : "";
   const { id } = useParams();
   const navigate = useNavigate();
   const url = location.pathname;
   useEffect(() => {
-    filterFn(allQueries);
+    filterFn();
     getPrices();
   }, [page, info]);
   const getPrices = async () => {
@@ -67,26 +70,32 @@ function Orders() {
           orderStatus: status,
         },
       });
-      filterFn(allQueries);
+      filterFn();
     } catch (error) {
-      console.log(error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const cols = [
     {
       id: "id",
-      Header: "NO",
-      accessor: (_, i) => {
-        return `${i + 1}`;
+      Header: "ID",
+      accessor: "id",
+    },
+    {
+      Header: "Manzil",
+      accessor: (order) => {
+        return (
+          <>
+            {order.region.name}
+            <br />
+            {order.district.name}
+          </>
+        );
       },
     },
-    { Header: "Haridor", accessor: "recipient" },
+    { id: "totalPrice", Header: "Mahsulotning narxi", accessor: "totalPrice" },
     { id: "status", Header: "Holati", accessor: "orderStatus" },
-    { Header: "Telefon", accessor: "recipientPhoneNumber" },
-    { Header: "Eslatma", accessor: "note" },
-    { Header: "Viloyat", accessor: "region.name" },
-    { Header: "Tuman", accessor: "district.name" },
     {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
@@ -115,11 +124,10 @@ function Orders() {
         );
       },
     },
-    { id: "totalPrice", Header: "Mahsulotning narxi", accessor: "totalPrice" },
     {
       Header: "Sanasi",
       accessor: (order) => {
-        const date = formatDate(order?.createdAt);
+        const date = formatDate(order?.updatedAt);
         return (
           <>
             {date ? date?.slice(0, 10) : ""}
@@ -174,13 +182,15 @@ function Orders() {
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
-                order.orderStatus !== "REJECTED") &&order.orderStatus!=="DELIVERING"&& (
+                order.orderStatus !== "REJECTED") &&
+              order.orderStatus !== "DELIVERING" && (
                 <>
                   <Button
                     name="btn"
                     disabled={
                       order.orderStatus === "SOLD" ||
-                      order.orderStatus === "REJECTED"||order.orderStatus==="NOT_DELIVERED"
+                      order.orderStatus === "REJECTED" ||
+                      order.orderStatus === "NOT_DELIVERED"
                         ? true
                         : false
                     }
@@ -195,7 +205,8 @@ function Orders() {
                     disabled={
                       order.orderStatus === "SOLD" ||
                       order.orderStatus === "REJECTED" ||
-                      order.orderStatus === "PENDING"||order.orderStatus==="NOT_DELIVERED"
+                      order.orderStatus === "PENDING" ||
+                      order.orderStatus === "NOT_DELIVERED"
                         ? true
                         : false
                     }
@@ -210,7 +221,8 @@ function Orders() {
                   <Button
                     disabled={
                       order.orderStatus === "SOLD" ||
-                      order.orderStatus === "REJECTED"||order.orderStatus==="NOT_DELIVERED"
+                      order.orderStatus === "REJECTED" ||
+                      order.orderStatus === "NOT_DELIVERED"
                         ? true
                         : false
                     }
@@ -280,28 +292,24 @@ function Orders() {
     }
     navigate("/posts");
   };
-  const filterFn = async (data) => {
-    setQueries(data);
-    const dateCreatedAt = new Date(data?.createdAt);
+  const filterFn = async () => {
+    const dateCreatedAt = new Date(createdAt ? createdAt : "");
     try {
       const res = await http({
         url: `${url}?page=${page}&size=${size}${
-          data?.status ? `&orderStatus=${data.status}` : ""
-        }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
-          data?.districtId ? `&districtId=${data.districtId}` : ""
+          orderStatus ? `&orderStatus=${orderStatus}` : ""
+        }${regionId ? `&regionId=${regionId}` : ""}${
+          districtId ? `&districtId=${districtId}` : ""
         }${
           !isStoreOwner
-            ? data?.storeOwnerId
-              ? `&storeOwnerId=${data.storeOwnerId}`
+            ? storeOwnerId
+              ? `&storeOwnerId=${storeOwnerId}`
               : ""
             : ""
-        }${
-          data?.createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""
-        }`,
+        }${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
       });
       getAllOrders(res.data);
     } catch (error) {
-      console.log(error);
       toast.error(error?.response?.data?.message);
     }
   };
@@ -310,19 +318,21 @@ function Orders() {
   };
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
-      {isStoreOwner && (
-        <Button
-          name="iconText"
-          iconName="plus"
-          onClick={() => {
-            navigate("/orders/new");
-          }}
-          btnStyle={{ width: "13rem" }}
-        >
-          Yetkazma
-        </Button>
-      )}
-      <Filter filterFn={filterFn} />
+      <div>
+        {isStoreOwner && (
+          <Button
+            name="iconText"
+            iconName="plus"
+            onClick={() => {
+              navigate("/orders/new");
+            }}
+            btnStyle={{ width: "13rem" }}
+          >
+            Buyurtma
+          </Button>
+        )}
+      </div>
+      <Filter filterFn={filterFn} url={url} />
       {value?.length > 0 ? (
         <BasicTable
           columns={cols}

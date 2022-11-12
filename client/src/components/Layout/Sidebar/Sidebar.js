@@ -31,7 +31,13 @@ function Sidebar(props) {
         </h1>
       </Link>
       <div className={`${styles.mainMenu} ${styles.linksContainer}`}>
-        <p className={`subtitle ${styles.subtitle}`}>ASOSIY MENU</p>
+        <p
+          className={`subtitle ${styles.subtitle} ${
+            !open ? styles.displayNone : ""
+          }`}
+        >
+          ASOSIY MENU
+        </p>
         {(user.userRole === "SUPER_ADMIN" || user.userRole === "ADMIN") && (
           <Link
             to={"/users"}
@@ -67,7 +73,7 @@ function Sidebar(props) {
           }`}
         >
           <DashboardIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Yetkazmalar</p>}
+          {open && <p className="h6">Buyurtmalar</p>}
         </Link>
 
         {(user.userRole === "ADMIN" || user.userRole === "COURIER") && (
@@ -102,7 +108,13 @@ function Sidebar(props) {
         </Link>
       </div>
       <div className={`${styles.other} ${styles.linksContainer}`}>
-        <p className={`subtitle ${styles.subtitle}`}>OTHER</p>
+        <p
+          className={`subtitle ${styles.subtitle} ${
+            !open ? styles.displayNone : ""
+          }`}
+        >
+          OTHER
+        </p>
         <Link
           className={`${styles.sidebarLink} ${
             open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
