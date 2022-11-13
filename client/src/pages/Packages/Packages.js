@@ -53,6 +53,21 @@ function Package() {
       Header: "Package Total Price",
       accessor: "packageTotalPrice",
     },
+    {
+      Header: "Sanasi",
+      accessor: (order) => {
+        const dateNew=new Date(order.createdAt)
+        return (
+          <>
+             {dateNew.getDay()}/
+             {dateNew.getMonth()}/
+             {dateNew.getFullYear()}
+             <br/>
+             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+          </>
+        );
+      },
+    },
   ];
 
   return (
