@@ -15,7 +15,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
   const queryBuilder = new QueryBuilder(req.query);
   queryBuilder.limitFields().filter().paginate().search(["note"]);
 
-  queryBuilder.queryOptions.include = [
+  queryBuilder.queryOptions.include = [ 
     { model: Region, as: "region", attributes: ["name"] }
   ]
   if(userRole === "COURIER") {
@@ -23,7 +23,9 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
       postStatus: {
         [Op.in]: [
           postStatuses.POST_DELIVERING,
-          postStatuses.POST_DELIVERED
+          postStatuses.POST_DELIVERED,
+          postStatuses.POST_REJECTED_NEW,
+          postStatuses.POST_DELIVERING
         ]
       },
       regionId: {
@@ -537,3 +539,212 @@ exports.recievePost = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getDeliveredPosts = catchAsync(async (req, res, next) => {
+  const deliveredPosts = await Post.findAndCountAll({
+    where: {
+      postStatus: {
+        [Op.eq]: postStatuses.POST_DELIVERED,
+      },
+    },
+  });
+  res.json({
+    status: "success",
+    message: "Delivered posts",
+    error: null,
+    data: {
+      deliveredPosts,
+    },
+  });
+});
+
+exports.rejectedOrdersBeforeSend = catchAsync(async (req, res, next) => {
+  const { regionId } = req.user;
+  const queryBuilder = new QueryBuilder(req.query);
+  let allRejectedOrders = [];
+  let ordersArrInPost = [];
+  req.query.orderStatus = orderStatuses.STATUS_REJECTED;
+
+  queryBuilder.queryOptions.include = [
+    { model: Region, as: "region", attributes: ["name"] },
+    { model: District, as: "district", attributes: ["name"] },
+  ];
+
+  queryBuilder
+    .filter()
+    .paginate()
+    .limitFields()
+    .search(["recipientPhoneNumber", "recipient"])
+    .sort();
+
+  const region = await Region.findOne({
+    attributes: ["id", "name"],
+    where: {
+      id: {
+        [Op.eq]: regionId,
+      },
+    },
+  });
+
+  if (region.name === "Samarqand viloyati") {
+    queryBuilder.queryOptions.where = {
+      ...queryBuilder.queryOptions.where,
+      regionId: {
+        [Op.eq]: regionId,
+      },
+      districtId: {
+        [Op.notIn]: [101, 106],
+      },
+    };
+    allRejectedOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+    allRejectedOrders = queryBuilder.createPagination(allRejectedOrders);
+    ordersArrInPost = allRejectedOrders.content.map((order) => {
+      return order.dataValues.id;
+    });
+  } else if (region.name === "Navoiy viloyati") {
+    queryBuilder.queryOptions.where = {
+      ...queryBuilder.queryOptions.where,
+      [Op.or]: {
+        regionId: {
+          [Op.eq]: regionId,
+        },
+        districtId: {
+          [Op.in]: [101, 106],
+        },
+      },
+    };
+    allRejectedOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+    allRejectedOrders = queryBuilder.createPagination(allRejectedOrders);
+    ordersArrInPost = allRejectedOrders.content.map((order) => {
+      return order.dataValues.id;
+    });
+  } else {
+    req.query.regionId = regionId;
+    queryBuilder.filter();
+    allRejectedOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+    allRejectedOrders = queryBuilder.createPagination(allRejectedOrders);
+    ordersArrInPost = allRejectedOrders.content.map((order) => {
+      return order.dataValues.id;
+    });
+  }
+
+  res.json({
+    status: "success",
+    message: "Orders ready to sent",
+    error: null,
+    data: {
+      ...allRejectedOrders,
+      ordersArrInPost,
+    },
+  });
+});
+
+exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
+  const {  ordersArr } = req.body;
+  const {regionId}=req.user
+  let newRejectedPost = await Post.findOne({
+    where: {
+      regionId: {
+        [Op.eq]: regionId,
+      },
+      postStatus: {
+        [Op.eq]: postStatuses.POST_REJECTED_NEW,
+      },
+    },
+  });
+
+  if (!newRejectedPost) {
+    newRejectedPost = await Post.create({
+      regionId: regionId,
+      postStatus: postStatuses.POST_REJECTED_NEW
+    });
+  }
+
+  await Order.update(
+    {
+      postId: newRejectedPost.id,
+      orderStatus: orderStatuses.STATUS_REJECTED_DELIVERING,
+    },
+    {
+      where: {
+        id: {
+          [Op.in]: ordersArr,
+        },
+      },
+    }
+  );
+  const rejectedOrderArrSum = await Order.sum("totalPrice", {
+    where: {
+      id: {
+        [Op.in]: ordersArr,
+      },
+    },
+  });
+
+  newRejectedPost.postTotalPrice += rejectedOrderArrSum;
+  await newRejectedPost.save();
+
+  res.json({
+    status: "success",
+    message: "Pochta yaratildi",
+    error: null,
+    data: newRejectedPost.id,
+  });
+});
+
+exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
+  const { ordersArr, postId } = req.body;
+  const ordersNotInArr = await Order.findAll({
+    where: {
+      id: {
+        [Op.notIn]: ordersArr,
+      },
+      postId: {
+        [Op.eq]: postId
+      }
+    },
+  });
+
+  if (ordersNotInArr) {
+    await Order.update(
+      {
+        orderStatus: orderStatuses.STATUS_REJECTED_NOT_DELIVERED,
+      },
+      {
+        where: {
+          id: {
+            [Op.notIn]: ordersArr,
+          },
+          postId: {
+            [Op.eq]: postId
+          }
+        },
+      }
+    );
+  }
+
+  let updateRejectedOrders = await Order.update(
+    {
+      orderStatus: orderStatuses.STATUS_REJECTED_DELIVERED,
+    },
+    {
+      where: {
+        id: {
+          [Op.in]: ordersArr,
+        },
+        postId: {
+          [Op.eq]: postId
+        }
+      },
+    }
+  );
+  res.json({
+    status: "sucess",
+    message: "Qaytarib yuborilgan pochta qabul qilindi",
+    error: null,
+    data: {
+      ordersNotInArr,
+      updateRejectedOrders,
+    },
+  });
+})

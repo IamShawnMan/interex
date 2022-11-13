@@ -82,6 +82,7 @@ function Sidebar(props) {
           </Link>
         )}
         {user.userRole === "COURIER" && (
+          <>
           <Link
             to="/new-post"
             className={`${styles.sidebarLink} ${
@@ -91,6 +92,16 @@ function Sidebar(props) {
             <UsersIcon classname={styles.sidebarLinkSvg} />
             {open && <p className="h6">Pochta</p>}
           </Link>
+          <Link
+            to="/posts/rejected/orders"
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
+            <UsersIcon classname={styles.sidebarLinkSvg} />
+            {open && <p className="h6">Rejected Orders</p>}
+          </Link>
+          </>
         )}
         <Link
           className={`${styles.sidebarLink} ${

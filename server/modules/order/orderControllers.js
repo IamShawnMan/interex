@@ -11,6 +11,7 @@ const priceDelivery = require("../../core/constants/deliveryPrice");
 const RegionModel = require("../region/Region");
 const DistrictModel = require("../district/District");
 const UserModel = require("../user/User");
+const statusPackage = require('../../core/constants/packageStatus')
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -52,8 +53,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   const {userRole} = req.user
 
   let existedPackage = await PackageModel.findOne({
-    where: { storeOwnerId: { [Op.eq]: req.user.id },},
-	order: [["createdAt", "desc"]]
+    where: {[Op.and]: [
+		{storeOwnerId: { [Op.eq]: req.user.id }},
+		{packageStatus: {[Op.eq]: statusPackage.STATUS_NEW}}
+	]},
+	order: [["createdAt", "DESC"]]
   });
   
   if(existedPackage){
@@ -65,6 +69,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     ]
     }})
     if(isNewOrders === 0){
+	existedPackage.packageStatus = statusPackage.STATUS_OLD
+	await existedPackage.save()
     existedPackage = await PackageModel.create({ storeOwnerId: req.user.id })
   }
   }
