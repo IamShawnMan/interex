@@ -27,6 +27,7 @@ const Posts = () => {
       });
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
+      console.log(res);
     } catch (error) {
       toast.error(error.response.data.message);
     }

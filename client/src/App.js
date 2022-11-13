@@ -52,7 +52,7 @@ function App() {
           <Route path="/posts/:id/regionorders" element={<Orders />} />
         )}
         {isAuth && (
-          <Route path="/posts/rejected/orders" element={<Orders />} />
+          <Route path="/postback/rejected/orders" element={<Orders />} />
         )}
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/orders/info/:id" element={<OrderInfo />} />}

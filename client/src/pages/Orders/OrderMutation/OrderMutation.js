@@ -155,6 +155,7 @@ function OrderMutation() {
                   name="iconText"
                   iconName="plus"
                   btnStyle={{ width: "13rem" }}
+                  type="button"
                 >
                   Yetkazma
                 </Button>

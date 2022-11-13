@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../core/config/database/database");
 const UserModel = require("../user/User");
+const statusPackages = require("../../core/constants/packageStatus")
 const Package = sequelize.define(
   "package",
   {
@@ -12,6 +13,10 @@ const Package = sequelize.define(
     packageTotalPrice: {
       type: DataTypes.INTEGER,
       validate: {len: {args: [0, 200000000], msg: "qiymati 0 dan 2 mlrd dan kam bo`lmasligi kerak"}}
+    },
+    packageStatus: {
+      type: DataTypes.ENUM(Object.values(statusPackages)),
+      defaultValue: statusPackages.STATUS_NEW
     }
   },
   { underscored: true }

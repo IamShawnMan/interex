@@ -129,8 +129,8 @@ function Orders() {
         const dateNew=new Date(order.createdAt)
         return (
           <>
-             {dateNew.getDay()}/
-             {dateNew.getMonth()}/
+             {dateNew.getDate()}/
+             {dateNew.getUTCMonth()}/
              {dateNew.getFullYear()}
              <br/>
              {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
@@ -292,7 +292,7 @@ function Orders() {
   const postRejectedCreateOrUpdateFn = async () => {
     try {
       const res = await http({
-        url:"/posts/new/rejected",
+        url:"/postback/new/rejected",
         data:  {ordersArr: ordersIdArr },
         method: "POST",
       });

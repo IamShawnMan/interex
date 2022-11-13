@@ -12,6 +12,7 @@ const authMiddleware = require("./core/middlewares/authMiddleware");
 const districtRouter = require("./modules/district/districtRouter");
 const packageRoutes = require("./modules/package/packageRoutes");
 const postsRoutes = require("./modules/post/postRouter");
+const postBackRouter = require("./modules/postBack/postBackRouter");
 require("./modules/user/User");
 
 const app = express();
@@ -25,14 +26,15 @@ app.use("/api/v1/orders", authMiddleware, orderRoutes);
 app.use("/api/v1/packages", authMiddleware, packageRoutes);
 app.use("/api/v1/districts", authMiddleware, districtRouter);
 app.use("/api/v1/posts", authMiddleware, postsRoutes);
+app.use("/api/v1/postback", authMiddleware, postBackRouter);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/build/index.html");
+	res.sendFile(__dirname + "/build/index.html");
 });
 
 app.all("*", (req, res, next) => {
-  return next(new AppError(`${req.path} yo'li mavjud emas`, 404));
+	return next(new AppError(`${req.path} yo'li mavjud emas`, 404));
 });
 
 app.use(errorController);
