@@ -14,6 +14,40 @@ const UserModel = require("../user/User");
 const statusPackage = require('../../core/constants/packageStatus')
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
+
+	orders = {orders: [{
+		recipient: "Anvar",
+		note: "fjksdfjdskf",
+		recipientPhoneNumber: +998939950106,
+		regionId: 1,
+		districtId: 2,
+		orderItems: [{
+			product: "Choynak",
+			quantity: 1,
+			price: 15000
+		}]
+	},
+	{
+		recipient: "Anvar",
+		note: "fjksdfjdskf",
+		recipientPhoneNumber: +998939950106,
+		regionId: 1,
+		districtId: 2,
+		totalPrice: 0,
+		orderItems: [{
+			product: "Choynak",
+			quantity: 1,
+			price: 15000,
+			orderItemTotalPrice: quantity * price
+		},
+		{
+			product: "Piyola",
+			quantity: 1,
+			price: 15000,
+			orderItemTotalPrice: quantity * price
+		}]
+	},
+]} 
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
 		.filter()
