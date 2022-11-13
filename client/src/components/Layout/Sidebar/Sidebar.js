@@ -93,7 +93,7 @@ function Sidebar(props) {
             {open && <p className="h6">Pochta</p>}
           </Link>
           <Link
-            to="/posts/rejected/orders"
+            to="/postback/rejected/orders"
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
