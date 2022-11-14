@@ -92,7 +92,8 @@ exports.rejectedOrdersBeforeSend = catchAsync(async (req, res, next) => {
 });
 
 exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
-	const { regionId, ordersArr } = req.body;
+	const { regionId } = req.user
+	const { ordersArr } = req.body;
 
 	let newRejectedPost = await PostBack.findOne({
 		where: {
@@ -235,11 +236,7 @@ exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
 	if(userRole === "COURIER") {
 	  queryBuilder.queryOptions.where = {
 		postStatus: {
-		  [Op.in]: [
-			postStatuses.POST_REJECTED_DELIVERING,
-			postStatuses.POST_REJECTED_DELIVERED,
-			postStatuses.POST_REJECTED_NOT_DELIVERED
-		  ] 
+		  [Op.eq]: postStatuses.POST_REJECTED_NEW 
 		},
 		regionId: {
 		  [Op.eq]: regionId
