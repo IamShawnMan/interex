@@ -92,12 +92,14 @@ function NewPost() {
       id: "createdAt",
       Header: "kun-oy-yil",
       accessor: (order) => {
-        const date = formatDate(order.createdAt);
+        const dateNew=new Date(order.createdAt)
         return (
           <>
-            {date.slice(0, 10)}
-            <br />
-            {date.slice(10)}
+             {dateNew.getDate()}/
+             {dateNew.getMonth()+1}/
+             {dateNew.getFullYear()}
+             <br/>
+             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
           </>
         );
       },
