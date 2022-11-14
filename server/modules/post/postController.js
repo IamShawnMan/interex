@@ -25,7 +25,6 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
           postStatuses.POST_DELIVERING,
           postStatuses.POST_DELIVERED,
           postStatuses.POST_REJECTED_NEW,
-          postStatuses.POST_DELIVERING
         ]
       },
       regionId: {
