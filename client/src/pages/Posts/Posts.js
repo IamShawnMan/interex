@@ -20,11 +20,13 @@ const Posts = () => {
   const size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
+  console.log(url);
   const getAllPosts = async () => {
     try {
       const res = await http({
-        url: `/posts?page=${page}&size=${size}`,
+        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejected/orders?page=${page}&size=${size}`,
       });
+      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
       console.log(res);
@@ -56,7 +58,29 @@ const Posts = () => {
     {
       id: "postTotalPrice",
       Header: "Pochta narxi",
-      accessor: "postTotalPrice",
+      accessor: (post)=>{
+        return(
+          <>
+          {(post.postTotalPrice)?.toLocaleString("Ru-Ru")}
+          </>
+        )
+      },
+    },
+    {
+      Header: "Sanasi",
+      accessor: (order) => {
+        const dateNew=new Date(order.createdAt)
+        console.log(dateNew);
+        return (
+          <>
+             {dateNew.getDate()}/
+             {dateNew.getMonth()+1}/
+             {dateNew.getFullYear()}
+             <br/>
+             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+          </>
+        );
+      },
     },
     {
       Header: "Tugmalar",
