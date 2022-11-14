@@ -41,11 +41,11 @@ exports.getDailyPackages = catchAsync(async(req,res,next)=>{
 		as: "storeOwner",
 		attributes: ["firstName", "lastName", "storeName"],
 	}
-	queryBuilder.queryOptions.where = {
-		...queryBuilder.queryOptions.where, 
-		where: {packageStatus: {[Op.eq]: statusPackages.STATUS_NEW}}
-	}
 
+	queryBuilder.queryOptions.where = {
+	packageStatus: {[Op.eq]: statusPackages.STATUS_NEW},
+	...queryBuilder.queryOptions.where
+	}
 	let dailyPackages = await PackageModel.findAndCountAll(queryBuilder.queryOptions);
 	dailyPackages = queryBuilder.createPagination(dailyPackages);
 

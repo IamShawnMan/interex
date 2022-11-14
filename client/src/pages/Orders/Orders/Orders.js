@@ -20,7 +20,6 @@ import Input from "../../../components/Form/FormComponents/Input/Input";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
-import Plus from "../../../assets/icons/Plus";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -81,6 +80,23 @@ function Orders() {
     });
     setValue(res.data.data.content);
     setPagination(res.data.data.pagination);
+  };
+
+  const getFile = async () => {
+    http({
+      url: "orders/download",
+      method: "GET",
+      responseType: "blob",
+    }).then((res) => {
+      const href = URL.createObjectURL(res.data);
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "orders.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    });
   };
 
   const cols = [
@@ -193,6 +209,7 @@ function Orders() {
               </div>
             )}
             {isCourier &&
+              order.orderStatus === "DELIVERED" &&
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
@@ -407,6 +424,7 @@ function Orders() {
             </Button>
           )}
       </div>
+      <div onClick={() => getFile()}>Download</div>
     </Layout>
   );
 }

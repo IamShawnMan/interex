@@ -24,7 +24,6 @@ const Posts = () => {
   const size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
-  console.log(url);
   const getAllPosts = async () => {
     try {
       const res = await http({
@@ -38,6 +37,7 @@ const Posts = () => {
       setPagination(res.data.data.pagination);
       console.log(res);
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.message);
     }
   };
