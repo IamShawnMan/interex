@@ -23,6 +23,8 @@ const PostBack = sequelize.define("postBack", {
 		type: DataTypes.ENUM(Object.values(postStatus)),
 		defaultValue: postStatus.POST_REJECTED_NEW,
 	},
+},{
+	underscored: true
 });
 
 Region.hasMany(PostBack, { as: "postbacks" });
