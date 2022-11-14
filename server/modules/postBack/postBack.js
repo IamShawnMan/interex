@@ -28,7 +28,7 @@ const PostBack = sequelize.define("postBack", {
 });
 
 Region.hasMany(PostBack, { as: "postbacks" });
-PostBack.belongsTo(Region);
+PostBack.belongsTo(Region)
 
 PostBack.hasMany(Order, { as: "orders" });
 Order.belongsTo(PostBack);

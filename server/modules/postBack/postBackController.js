@@ -114,7 +114,7 @@ exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
 
 	await Order.update(
 		{
-			postId: newRejectedPost.id,
+			postBackId: newRejectedPost.id,
 			orderStatus: orderStatuses.STATUS_REJECTED_DELIVERING,
 		},
 		{
@@ -221,26 +221,40 @@ exports.getTodaysRejectedPost = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Yo'ldagi pochta",
 		error: null,
-		data: { rejectedOrdersOnTheWay, orderArr, rejectedPostOnTheWay },
+		data: { ...rejectedOrdersOnTheWay, orderArr, rejectedPostOnTheWay },
 	});
 });
 
 exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
-	const {regionId} = req.user
+	const {userRole, regionId} = req.user
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.limitFields().filter().paginate().search(["note"]);
   
 	queryBuilder.queryOptions.include = [ 
 	  { model: Region, as: "region", attributes: ["name"] }
 	]
-	queryBuilder.queryOptions.where = {
-		postStatus: {
-			[Op.eq]: postStatuses.POST_REJECTED_NEW
-		},
-		regionId: {
-		  [Op.eq]: regionId
-		},
-		...queryBuilder.queryOptions.where
+	if(userRole === "COURIER") {
+		queryBuilder.queryOptions.where = {
+			postStatus: {
+		  		[Op.eq]: postStatuses.POST_REJECTED_NEW 
+			},
+			regionId: {
+		  		[Op.eq]: regionId
+			},
+			...queryBuilder.queryOptions.where
+		}
+	}
+	if(userRole === "ADMIN") {
+		queryBuilder.queryOptions.where = {
+			postStatus: {
+		  		[Op.in]: [
+					  postStatuses.POST_REJECTED_DELIVERING,
+					  postStatuses.POST_REJECTED_DELIVERED,
+					  postStatuses.POST_REJECTED_NOT_DELIVERED
+				  ] 
+			},
+			...queryBuilder.queryOptions.where
+		}
 	}
 	let allPosts = await PostBack.findAndCountAll(queryBuilder.queryOptions)
 	allPosts = queryBuilder.createPagination(allPosts);

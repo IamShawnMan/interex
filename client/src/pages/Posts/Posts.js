@@ -7,7 +7,6 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 import PostSendCourier from "./PostSendCourier";
-
 const Posts = () => {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState([]);
@@ -24,13 +23,14 @@ const Posts = () => {
   const getAllPosts = async () => {
     try {
       const res = await http({
-        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejected/orders?page=${page}&size=${size}`,
+        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejectedposts`,
       });
       console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
       console.log(res);
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.message);
     }
   };
