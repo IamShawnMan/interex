@@ -4,7 +4,7 @@
 .layoutBox {
   background-color: rgb(228, 228, 228);
   flex-grow: 1;
-  padding: 3.2rem 8rem 2rem 3.5rem;
+  padding: 3.2rem 3rem 2rem 2rem;
   overflow: auto;
 }
 .contents {
@@ -34,7 +34,8 @@
 
 .goBack {
   cursor: pointer;
-  margin: 1.5rem 2rem;
+  padding: 1rem 2rem;
+  background-color: rgb(191, 192, 191);
 }
 
 .goBack:hover {

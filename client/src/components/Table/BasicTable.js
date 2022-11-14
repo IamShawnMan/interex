@@ -53,7 +53,6 @@ export const BasicTable = ({ columns, data, pagination, url }) => {
                 {...row.getRowProps()}
               >
                 {row.cells.map((cell) => {
-                  // console.log(cell);
                   return (
                     <td
                       data-label={cell.column.Header}

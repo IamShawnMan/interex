@@ -68,7 +68,15 @@ function Users() {
       accessor: (user) => {
         return (
           <Link to={`/users/${user.id}`}>
-            <Button size="iconSmall" name="icon" iconName="pen" />
+            <Button
+              size="iconSmall"
+              name="icon"
+              iconName="pen"
+              btnStyle={{
+                margin: "0 auto",
+                width: "4rem",
+              }}
+            />
           </Link>
         );
       },
@@ -85,6 +93,7 @@ function Users() {
               status,
             })}
             enabled={user.status === "ACTIVE"}
+            style={{ margin: "0 auto" }}
           />
         );
       },

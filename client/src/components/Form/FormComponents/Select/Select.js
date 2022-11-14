@@ -21,7 +21,7 @@ function Select({
             </label>
           )}
           <select
-            className={styles.select}
+            className={`${styles.select} ${error ? styles.error : ""}`}
             {...(register ? register() : "")}
             onChange={onChange}
           >
@@ -41,9 +41,10 @@ function Select({
             )}
           </select>
         </div>
-        {error && <AttentionError className={""} />}
       </div>
-      {error && <p className={styles.errorText}>{error}</p>}
+      <p className={error ? styles.errorText : styles.errorTextNone}>
+        {error ? error : "default Error"}
+      </p>
     </div>
   );
 }
