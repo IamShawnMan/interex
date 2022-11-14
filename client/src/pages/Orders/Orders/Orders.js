@@ -72,6 +72,23 @@ function Orders() {
     }
   };
 
+  const getFile = async () => {
+    http({
+      url: "orders/download",
+      method: "GET",
+      responseType: "blob", 
+    }).then((res) => {
+      const href = URL.createObjectURL(res.data)
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "orders.xlsx")
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+  })
+  }
+
   const cols = [
     {
       id: "id",
@@ -379,6 +396,7 @@ function Orders() {
             </Button>
           )}
       </div>
+      <div onClick={() => getFile()}>Download</div>
     </Layout>
   );
 }

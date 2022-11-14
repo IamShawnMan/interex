@@ -12,6 +12,7 @@ const RegionModel = require("../region/Region");
 const DistrictModel = require("../district/District");
 const UserModel = require("../user/User");
 const statusPackage = require('../../core/constants/packageStatus')
+const excelJS = require("exceljs")
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -426,4 +427,45 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 			...ordersOneDay
 		}
 	})
+})
+
+exports.exportOrders = catchAsync(async (req, res, next) => {
+	const workbook = new excelJS.Workbook();
+	const worksheet = workbook.addWorksheet("orders");
+	const path = "./files"
+	worksheet.columns = [
+		{header: "No", key: "s_no", width: 20},
+		{header: "Haridor", key: "recipient", width: 20},
+		{header: "Telefon raqami", key: "recipientPhoneNumber", width: 20},
+		{header: "Izoh", key: "note", width: 70},
+		{header: "Holati", key: "orderStatus", width: 30},
+		{header: "Yetkazish narxi", key: "deliveryPrice", width: 20},
+		{header: "Umumiy narxi", key: "totalPrice", width: 20},
+		{header: "Yaratilgan sana", key: "createdAt", width: 20},
+		{header: "O'zgartirilgan sana", key: "updatedAt", width: 20},
+	]
+	let orders = await OrderModel.findAndCountAll();
+	const ordersArr = Object.values(orders.rows.map(e => e.dataValues))
+	let counter = 1;
+	ordersArr.forEach((order) => {
+		order.s_no = counter;
+		worksheet.addRow(order)
+		counter++;
+	})
+	worksheet.getRow(1).eachCell((cell) => {
+		cell.font = {bold: true}
+	})
+	worksheet.eachRow((row) => {
+		row.eachCell((cell) => {
+			cell.alignment = {
+				horizontal: "center"
+			}
+		})
+	})
+	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  	res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+	const data = await workbook.xlsx.writeFile(`${path}/orders.xlsx`)
+	return workbook.xlsx.write(res).then(() => {
+      res.status(200).end();
+    });
 })

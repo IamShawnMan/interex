@@ -12,6 +12,7 @@ router
 		orderValidator.creatingOrderValidator,
 		orderControllers.createOrder
 	);
+router.get("/download", orderControllers.exportOrders)
 router
 	.get("/delivered", orderControllers.getDeliveredOrders) 
 	.get("/delivered/daily", orderControllers.getDailyOrders)
