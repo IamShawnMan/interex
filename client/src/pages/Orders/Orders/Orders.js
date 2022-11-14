@@ -290,6 +290,7 @@ function Orders() {
     navigate("/posts");
   };
   const postRejectedCreateOrUpdateFn = async () => {
+    console.log(ordersIdArr);
     try {
       const res = await http({
         url:"/postback/new/rejected",
