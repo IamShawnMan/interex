@@ -24,7 +24,7 @@ const Posts = () => {
   const getAllPosts = async () => {
     try {
       const res = await http({
-        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejected/orders?page=${page}&size=${size}`,
+        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejected/coming?page=${page}&size=${size}`,
       });
       console.log(res);
       setValue(res.data.data.content);
