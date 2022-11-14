@@ -6,4 +6,7 @@ module.exports = router
 	.get("/rejected/orders", postBackController.rejectedOrdersBeforeSend)
 	.get("/rejected/coming", postBackController.getTodaysRejectedPost)
 	.post("/new/rejected", postBackController.createPostForAllRejectedOrders)
-	.put("/:id/send/rejected", postBackController.sendRejectedPost);
+	.put("/:id/send/rejected", postBackController.sendRejectedPost)
+	.get("/rejectedposts", postBackController.getAllRejectedPosts)
+	.get("/rejectedposts/:id", postBackController.getAllRejectedOrdersInPost)
+	.put("/new/receiverejectedpost", postBackController.receiveRejectedOrders)
