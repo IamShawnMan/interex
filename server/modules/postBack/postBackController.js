@@ -220,7 +220,7 @@ exports.getTodaysRejectedPost = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: "Yo'ldagi pochta",
 		error: null,
-		data: { rejectedOrdersOnTheWay, orderArr, rejectedPostOnTheWay },
+		data: { ...rejectedOrdersOnTheWay, orderArr, rejectedPostOnTheWay },
 	});
 });
 
