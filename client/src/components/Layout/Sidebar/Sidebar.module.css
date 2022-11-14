@@ -84,3 +84,7 @@
 .sidebarLink:focus .sidebarLinkSvg {
   fill: #fff;
 }
+
+.displayNone {
+  display: none;
+}

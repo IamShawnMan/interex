@@ -18,24 +18,25 @@ function OrderItems(props) {
       <ul>
         {fields.map((item, index) => (
           <li className={styles.itemContainer} key={item.id}>
+            <div className="medium h6">{index + 1}</div>
             <Input
               type="text"
               register={props.register.bind(
                 null,
                 `orders.${props.orderIndex}.orderItems.${index}.productName`
               )}
-              placeholder="Choynak"
+              placeholder=""
               id="name"
               error={
                 props.errors?.orders?.[props.orderIndex]?.orderItems?.[index]
                   ?.name?.message
               }
             >
-              Jo'natma nomi
+              Buyurtma nomi
             </Input>
             <Input
               type="number"
-              placeholder="1"
+              placeholder=""
               register={props.register.bind(
                 null,
                 `orders.${props.orderIndex}.orderItems.${index}.quantity`
@@ -46,11 +47,11 @@ function OrderItems(props) {
                   ?.quantity?.message
               }
             >
-              Jo'natma soni
+              Buyurtma soni
             </Input>
             <Input
               type="number"
-              placeholder="1000 so'm"
+              placeholder=""
               register={props.register.bind(
                 null,
                 `orders.${props.orderIndex}.orderItems.${index}.price`
@@ -60,7 +61,7 @@ function OrderItems(props) {
                   ?.price?.message
               }
             >
-              Jo'natma narxi
+              Buyurtma narxi
             </Input>
             <div
               onClick={() => remove(index)}
@@ -68,9 +69,8 @@ function OrderItems(props) {
                 width: "17rem",
               }}
             >
-              <label className={styles.label}>O'chirish</label>
               <Button type="button" name="iconText" iconName="trash">
-                Tashlash
+                O'chirish
               </Button>
             </div>
           </li>
@@ -81,7 +81,7 @@ function OrderItems(props) {
         onClick={() => append({ productName: "", quantity: "", price: "" })}
       >
         <Button type="button" name="iconText" iconName="plus">
-          Item
+          Mahsulot
         </Button>
       </div>
     </div>

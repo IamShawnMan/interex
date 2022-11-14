@@ -1,5 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
@@ -22,7 +27,10 @@ const Posts = () => {
   const getAllPosts = async () => {
     try {
       const res = await http({
-        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejectedposts`,
+        url:
+          url === "/posts"
+            ? `/posts?page=${page}&size=${size}`
+            : `/postback/rejectedposts`,
       });
       console.log(res);
       setValue(res.data.data.content);
@@ -39,10 +47,8 @@ const Posts = () => {
   const postCols = [
     {
       id: "id",
-      Header: "NO",
-      accessor: (_, i) => {
-        return i + 1;
-      },
+      Header: "ID",
+      accessor: "id",
     },
     {
       id: "note",
@@ -57,26 +63,20 @@ const Posts = () => {
     {
       id: "postTotalPrice",
       Header: "Pochta narxi",
-      accessor: (post)=>{
-        return(
-          <>
-          {(post.postTotalPrice)?.toLocaleString("Ru-Ru")}
-          </>
-        )
+      accessor: (post) => {
+        return <>{post.postTotalPrice?.toLocaleString("Ru-Ru")}</>;
       },
     },
     {
       Header: "Sanasi",
       accessor: (order) => {
-        const dateNew=new Date(order.createdAt)
+        const dateNew = new Date(order.createdAt);
         console.log(dateNew);
         return (
           <>
-             {dateNew.getDate()}/
-             {dateNew.getMonth()+1}/
-             {dateNew.getFullYear()}
-             <br/>
-             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+            {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
+            <br />
+            {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
           </>
         );
       },
@@ -85,7 +85,15 @@ const Posts = () => {
       Header: "Tugmalar",
       accessor: (post) => {
         return (
-          <div style={{ display: "flex", gap: 1 }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              margin: "0 auto",
+              gap: "0.5rem",
+              width: "14rem",
+            }}
+          >
             <Button
               size="small"
               name="btn"
@@ -96,11 +104,15 @@ const Posts = () => {
               Ma'lumot
             </Button>
 
-            {(user.userRole === "ADMIN" ||user.userRole === "COURIER")&& (
+            {(user.userRole === "ADMIN" || user.userRole === "COURIER") && (
               <Button
                 size="small"
                 name="btn"
-                disabled={user.userRole === "COURIER"?post.postStatus !== "REJECTED_NEW":post.postStatus !== "NEW"}
+                disabled={
+                  user.userRole === "COURIER"
+                    ? post.postStatus !== "REJECTED_NEW"
+                    : post.postStatus !== "NEW"
+                }
                 onClick={() => {
                   setInfo(post.id);
                 }}
@@ -126,16 +138,25 @@ const Posts = () => {
   useEffect(() => {
     user.userRole !== "COURIER" && getAllRegions();
   }, []);
+
   if (user.userRole !== "COURIER") {
+    postCols.splice(0, 1);
     postCols.unshift({
-      id: "regionName",
-      Header: "regionName",
+      id: "region",
+      Header: "Viloyat",
       accessor: "region.name",
     });
+
+    postCols.unshift({
+      id: "id",
+      Header: "ID",
+      accessor: "id",
+    });
   }
+
   const regionCols = [
     {
-      id: "name",
+      id: "region",
       Header: "Viloyat",
       accessor: (region) => {
         return (
@@ -146,15 +167,27 @@ const Posts = () => {
   ];
   return (
     <Layout pageName="Postlar">
+      {user.userRole === "COURIER" && (
+        <div style={{ width: "25rem" }}>
+          <Button
+            name="btn"
+            onClick={() => {
+              navigate("/new-post");
+            }}
+          >
+            Bugungi pochta
+          </Button>
+        </div>
+      )}
       {user.userRole === "ADMIN" ? (
         <>
           {regionValue?.length > 0 ? (
             <>
-              <p>Regions</p>
+              <p>Viloyatlar</p>
               <BasicTable columns={regionCols} data={regionValue} />
             </>
           ) : (
-            <p>Ma'lumotlar yo'q</p>
+            <p>Viloyat ma'lumotlari yo'q</p>
           )}
         </>
       ) : (
@@ -178,7 +211,7 @@ const Posts = () => {
           url="/posts"
         />
       ) : (
-        <p>Ma'lumotlar yo'q</p>
+        <p>Pochta ma'lumotlari yo'q</p>
       )}
     </Layout>
   );
