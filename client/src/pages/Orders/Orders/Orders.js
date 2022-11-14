@@ -130,7 +130,7 @@ function Orders() {
         return (
           <>
              {dateNew.getDate()}/
-             {dateNew.getUTCMonth()}/
+             {dateNew.getMonth()+1}/
              {dateNew.getFullYear()}
              <br/>
              {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}

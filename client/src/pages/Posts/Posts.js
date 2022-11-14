@@ -25,6 +25,7 @@ const Posts = () => {
       const res = await http({
         url: `/posts?page=${page}&size=${size}`,
       });
+      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
       console.log(res);
@@ -57,6 +58,22 @@ const Posts = () => {
       id: "postTotalPrice",
       Header: "Pochta narxi",
       accessor: "postTotalPrice",
+    },
+    {
+      Header: "Sanasi",
+      accessor: (order) => {
+        const dateNew=new Date(order.createdAt)
+        console.log(dateNew);
+        return (
+          <>
+             {dateNew.getDate()}/
+             {dateNew.getMonth()+1}/
+             {dateNew.getFullYear()}
+             <br/>
+             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+          </>
+        );
+      },
     },
     {
       Header: "Tugmalar",
