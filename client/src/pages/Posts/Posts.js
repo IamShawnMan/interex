@@ -7,7 +7,6 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 import PostSendCourier from "./PostSendCourier";
-
 const Posts = () => {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState([]);
@@ -20,15 +19,18 @@ const Posts = () => {
   const size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
+  console.log(url);
   const getAllPosts = async () => {
     try {
       const res = await http({
-        url: `/posts?page=${page}&size=${size}`,
+        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejectedposts`,
       });
+      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
       console.log(res);
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -56,7 +58,29 @@ const Posts = () => {
     {
       id: "postTotalPrice",
       Header: "Pochta narxi",
-      accessor: "postTotalPrice",
+      accessor: (post)=>{
+        return(
+          <>
+          {(post.postTotalPrice)?.toLocaleString("Ru-Ru")}
+          </>
+        )
+      },
+    },
+    {
+      Header: "Sanasi",
+      accessor: (order) => {
+        const dateNew=new Date(order.createdAt)
+        console.log(dateNew);
+        return (
+          <>
+             {dateNew.getDate()}/
+             {dateNew.getMonth()+1}/
+             {dateNew.getFullYear()}
+             <br/>
+             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+          </>
+        );
+      },
     },
     {
       Header: "Tugmalar",

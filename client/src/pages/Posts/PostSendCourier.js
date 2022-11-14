@@ -9,12 +9,10 @@ import http from "../../utils/axios-instance";
 const PostSendCourier = ({ id, url, onClose }) => {
   const [note, setNote] = useState(null);
   const { user } = useContext(AppContext);
-
-console.log(url);
   const sendPost = async () => {
     try {
       const res = await http({
-        url:user.userRole==="ADMIN" ?`posts/${id}/send`:`/posts/${id}/send/rejected`,
+        url:user.userRole==="ADMIN" ?`posts/${id}/send`:`/postback/${id}/send/rejected`,
         method: "PUT",
         data: { postStatus:user.userRole==="ADMIN" ? "DELIVERING":"REJECTED_DELIVERING", note },
       });
@@ -56,10 +54,10 @@ console.log(url);
           size="small"
           btnStyle={{ marginTop: "10px" }}
           onClick={
-          (url==="/orders/delivered"&&changeOrderStatusByCourier)||(url==="/posts"&& sendPost)  
+          (url==="/orders/delivered"&&changeOrderStatusByCourier)||(url==="/postback"&& sendPost)  
           }
         >
-          {(url==="/orders/delivered" &&`${id.status} Order`)||(url==="/posts" && "Send Post" )}
+          {(url==="/orders/delivered" &&`${id.status} Order`)||(url==="/postback" && "Send Post" )}
         </Button>
       </div>
     </Modal>

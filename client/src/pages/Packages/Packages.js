@@ -24,6 +24,7 @@ function Package() {
       const res = await http({
         url: `/packages?page=${page}&size=${size}`,
       });
+      console.log(res);
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {}
@@ -39,28 +40,39 @@ function Package() {
     },
     {
       id: "storeOwner",
-      Header: "Package",
+      Header: "Paket",
       accessor: (pack) => {
         return (
           <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
-            {`${pack.storeOwner.firstName} ${pack.storeOwner.lastName}`}
+            {`${pack.storeOwner.storeName} `}
           </Link>
         );
       },
     },
     {
+     id:"status", Header: "Holati", accessor:"packageStatus"
+
+    },
+    {
       id: "totalPrice",
-      Header: "Package Total Price",
-      accessor: "packageTotalPrice",
+      Header: "Paketlar umumiy narxi",
+      accessor: (packag)=>{
+        return(
+          <>
+          {(packag.packageTotalPrice)?.toLocaleString("Ru-Ru")}
+          </>
+        )
+      }
     },
     {
       Header: "Sanasi",
       accessor: (order) => {
         const dateNew=new Date(order.createdAt)
+        console.log(dateNew);
         return (
           <>
-             {dateNew.getDay()}/
-             {dateNew.getMonth()}/
+             {dateNew.getDate()}/
+             {dateNew.getMonth()+1}/
              {dateNew.getFullYear()}
              <br/>
              {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
