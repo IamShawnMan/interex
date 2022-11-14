@@ -9,12 +9,10 @@ import http from "../../utils/axios-instance";
 const PostSendCourier = ({ id, url, onClose }) => {
   const [note, setNote] = useState(null);
   const { user } = useContext(AppContext);
-
-console.log(url);
   const sendPost = async () => {
     try {
       const res = await http({
-        url:user.userRole==="ADMIN" ?`posts/${id}/send`:`/posts/${id}/send/rejected`,
+        url:user.userRole==="ADMIN" ?`posts/${id}/send`:`/postback/${id}/send/rejected`,
         method: "PUT",
         data: { postStatus:user.userRole==="ADMIN" ? "DELIVERING":"REJECTED_DELIVERING", note },
       });

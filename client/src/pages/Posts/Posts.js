@@ -20,10 +20,11 @@ const Posts = () => {
   const size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
+  console.log(url);
   const getAllPosts = async () => {
     try {
       const res = await http({
-        url: `/posts?page=${page}&size=${size}`,
+        url:url==="/posts"? `/posts?page=${page}&size=${size}`:`/postback/rejected/orders?page=${page}&size=${size}`,
       });
       console.log(res);
       setValue(res.data.data.content);
