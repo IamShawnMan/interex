@@ -325,28 +325,22 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
   const {userRole} = req.user
   const { id } = req.params;
-  req.query.postId = id
   const queryBuilder = new QueryBuilder(req.query);
   const currentPostStatus = await Post.findByPk(id, {
     attributes: ["postStatus"],
   });
-
   queryBuilder
     .filter()
     .paginate()
     .limitFields()
     .search(["recipientPhoneNumber", "recipient"])
     .sort();
-
-    if(userRole === "COURIER") {
-      const postOrderStatuses = Object.values(orderStatuses).slice(3, 9)
       queryBuilder.queryOptions.where = {
-        orderStatus: {
-          [Op.in]: postOrderStatuses
-        },
-        ...queryBuilder.queryOptions.where
-      } 
-    }
+        ...queryBuilder.queryOptions.where,
+        postId:{
+          [Op.eq]: id
+        }
+      }
 
   queryBuilder.queryOptions.include = [
     { model: District, as: "district", attributes: ["name"] },
@@ -354,6 +348,8 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
   ];
 
   let ordersInPost = await Order.findAndCountAll(queryBuilder.queryOptions);
+
+  console.log(ordersInPost);
 
   ordersInPost = queryBuilder.createPagination(ordersInPost);
 
