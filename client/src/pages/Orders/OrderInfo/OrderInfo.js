@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import http from "../../../utils/axios-instance";
-import { useNavigate, useParams } from "react-router-dom";
-import Layout from "../../../components/Layout/Layout";
-import Button from "../../../components/Form/FormComponents/Button/Button";
 import { BasicTable } from "../../../components/Table/BasicTable";
 import Modal from "../../../components/Modal/Modal";
+import styles from "../Orders/Orders.module.css";
+import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
+
 const OrderInfo = ({ id, onClose }) => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(null);
@@ -18,33 +18,65 @@ const OrderInfo = ({ id, onClose }) => {
     setValue(res.data.data.orderById);
     setItems(res.data.data.orderById.items);
   };
+
   const itemsCols = [
     {
+      id: "id",
+      Header: "No",
+      accessor: (e, i) => {
+        return `${i + 1}`;
+      },
+    },
+    { id: "productName", Header: "Mahsulot omi", accessor: "productName" },
+    { id: "quantity", Header: "Soni", accessor: "quantity" },
+    {
       id: "price",
-      Header: "price",
+      Header: "Narxi",
       accessor: "price",
     },
-    { id: "productName", Header: "productName", accessor: "productName" },
-    { id: "quantity", Header: "quantity", accessor: "quantity" },
     {
       id: "Total Price",
-      Header: "Total Price",
+      Header: "Umumiy narxi",
       accessor: "orderItemTotalPrice",
     },
   ];
 
   return (
     <Modal onClose={onClose}>
-      <li>Recipient {value?.recipient}</li>
-      <li>Price {value?.totalPrice}</li>
-      <li>Region Name {value?.region?.name}</li>
-      <li>District Name {value?.district?.name}</li>
-      <li>Status {value?.orderStatus}</li>
-      {items?.length > 0 ? (
-        <BasicTable columns={itemsCols} data={items} />
-      ) : (
-        <p>Malumotlar yoq</p>
-      )}
+      <div className={styles.orderInfo}>
+        <ul style={{ listStyle: "none" }}>
+          <li className="h6">
+            <p className="bold inline-block">Xaridor Ismi:</p>{" "}
+            <span>{value?.recipient}</span>
+          </li>
+          <li className="h6">
+            <p className="bold inline-block"> Xaridor telefon raqami:</p>
+            <span>{phoneNumberFormat(value?.recipientPhoneNumber)}</span>
+          </li>
+
+          <li className="h6">
+            <p className="bold inline-block">Mahsulot narxi:</p>{" "}
+            <span>{value?.totalPrice}</span>
+          </li>
+          <li className="h6">
+            <p className="bold inline-block">Mahsulot holati:</p>{" "}
+            {value?.orderStatus}
+          </li>
+          <li className="h6">
+            <p className="bold inline-block"> Viloyat:</p>
+            <span>{value?.region?.name}</span>
+          </li>
+          <li className="h6">
+            <p className="bold inline-block"> Tuman:</p>
+            <span>{value?.district?.name}</span>
+          </li>
+        </ul>
+        {items?.length > 0 ? (
+          <BasicTable columns={itemsCols} data={items} />
+        ) : (
+          <p>Malumotlar yoq</p>
+        )}
+      </div>
     </Modal>
   );
 };

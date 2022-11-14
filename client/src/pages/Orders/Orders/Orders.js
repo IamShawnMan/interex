@@ -31,7 +31,6 @@ function Orders() {
   const [ordersIdArr, setOrdersIdArr] = useState(null);
   const [info, setInfo] = useState(null);
   const [postStatus, setPostStatus] = useState(null);
-  const [allQueries, setQueries] = useState(null);
   const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
@@ -48,7 +47,7 @@ function Orders() {
   useEffect(() => {
     filterFn();
     getPrices();
-  }, [page, info]);
+  }, [page, info, regionId, districtId, storeOwnerId, createdAt]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
@@ -76,6 +75,14 @@ function Orders() {
     }
   };
 
+  const dailyOrders = async () => {
+    const res = await http({
+      url: "/orders/delivered/daily",
+    });
+    setValue(res.data.data.content);
+    setPagination(res.data.data.pagination);
+  };
+
   const cols = [
     {
       id: "id",
@@ -94,7 +101,6 @@ function Orders() {
         );
       },
     },
-    { id: "totalPrice", Header: "Mahsulotning narxi", accessor: "totalPrice" },
     { id: "status", Header: "Holati", accessor: "orderStatus" },
     {
       id: "deliveryPrice",
@@ -108,7 +114,6 @@ function Orders() {
                   return { id: e, name: e };
                 })}
                 onChange={async (e) => {
-                  console.log(e.target.value);
                   const res = await http({
                     url: `orders/${order.id}/devprice`,
                     method: "PATCH",
@@ -129,18 +134,21 @@ function Orders() {
       id: "totalPrice",
       Header: "Mahsulotning narxi",
       accessor: (order) => {
-        return <>{order.totalPrice.toLocaleString("Ru-Ru")}</>;
+        return <>{`${order.totalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
       },
     },
     {
+      id: "createdAt",
       Header: "Sanasi",
       accessor: (order) => {
-        const dateNew = new Date(order.createdAt);
+        const newDate = formatDate(order.createdAt);
+        const dateNew = new Date(newDate);
         return (
           <>
-            {dateNew.getDay()}/{dateNew.getMonth()}/{dateNew.getFullYear()}
+            {dateNew.getDay()}/{dateNew.getMonth().toString()}/
+            {dateNew.getFullYear()}
             <br />
-            {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+            {dateNew.getHours()}:{dateNew.getMinutes()}
           </>
         );
       },
@@ -249,7 +257,6 @@ function Orders() {
               name="btn"
               onClick={() => {
                 setInfo(order.id);
-                // navigate(`/orders/info/${order.id}`);
               }}
             >
               Ma'lumot
@@ -352,6 +359,16 @@ function Orders() {
             Buyurtma
           </Button>
         )}
+        {isCourier && (
+          <div style={{ display: "flex", gap: "2rem", width: "30%" }}>
+            <Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
+              Bugungilar
+            </Button>
+            <Button style={{ width: "13rem" }} name="btn" onClick={filterFn}>
+              Hammasi
+            </Button>
+          </div>
+        )}
       </div>
       <Filter filterFn={filterFn} url={url} />
       {value?.length > 0 ? (
@@ -368,16 +385,9 @@ function Orders() {
         <OrderInfo id={info} onClose={closeHandler} />
       )}
       {info && typeof info === "object" && (
-        <PostSendCourier
-          id={info}
-          url={url}
-          onClose={() => {
-            setInfo(false);
-          }}
-        />
+        <PostSendCourier id={info} url={url} onClose={closeHandler} />
       )}
       <div style={{ display: "flex", gap: 1 }}>
-        {console.log(url)}
         {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
           (postStatus === "NEW" ||
             url.split("/")[3] === "regionorders" ||

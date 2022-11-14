@@ -46,18 +46,7 @@ function Sidebar(props) {
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Foydalanuvchilar</p>}
-          </Link>
-        )}
-        {user.userRole === "ADMIN" && (
-          <Link
-            to={"/packages"}
-            className={`${styles.sidebarLink} ${
-              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
-          >
-            <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Paketlar</p>}
+            {open && <p className="h6">Adminlar</p>}
           </Link>
         )}
         <Link
@@ -75,7 +64,17 @@ function Sidebar(props) {
           <DashboardIcon classname={styles.sidebarLinkSvg} />
           {open && <p className="h6">Buyurtmalar</p>}
         </Link>
-
+        {user.userRole === "ADMIN" && (
+          <Link
+            to={"/packages"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
+            <DashboardIcon classname={styles.sidebarLinkSvg} />
+            {open && <p className="h6">Paketlar</p>}
+          </Link>
+        )}
         {(user.userRole === "ADMIN" || user.userRole === "COURIER") && (
           <Link
             to={"/posts"}
@@ -89,15 +88,6 @@ function Sidebar(props) {
         )}
         {user.userRole === "COURIER" && (
           <>
-            <Link
-              to="/new-post"
-              className={`${styles.sidebarLink} ${
-                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
-            >
-              <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Pochta</p>}
-            </Link>
             <Link
               to="/posts/rejected/orders"
               className={`${styles.sidebarLink} ${

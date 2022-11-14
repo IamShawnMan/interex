@@ -134,6 +134,16 @@ const Posts = () => {
   ];
   return (
     <Layout pageName="Postlar">
+      <div style={{ width: "25rem" }}>
+        <Button
+          name="btn"
+          onClick={() => {
+            navigate("/new-post");
+          }}
+        >
+          Bugungi pochta
+        </Button>
+      </div>
       {user.userRole === "ADMIN" ? (
         <>
           {regionValue?.length > 0 ? (
