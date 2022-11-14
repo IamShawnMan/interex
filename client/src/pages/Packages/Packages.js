@@ -40,7 +40,7 @@ function Package() {
     },
     {
       id: "storeOwner",
-      Header: "Package",
+      Header: "Paket",
       accessor: (pack) => {
         return (
           <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
@@ -55,8 +55,14 @@ function Package() {
     },
     {
       id: "totalPrice",
-      Header: "Package Total Price",
-      accessor: "packageTotalPrice",
+      Header: "Paketlar umumiy narxi",
+      accessor: (packag)=>{
+        return(
+          <>
+          {(packag.packageTotalPrice)?.toLocaleString("Ru-Ru")}
+          </>
+        )
+      }
     },
     {
       Header: "Sanasi",
