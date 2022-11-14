@@ -6,7 +6,9 @@ import Button from "../Form/FormComponents/Button/Button";
 import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import AppContext from "../../context/AppContext";
-function Filter({ url, filterFn }) {
+import { useNavigate, useSearchParams } from "react-router-dom";
+function Filter({ url }) {
+  const [searchParams] = useSearchParams();
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
   const isSuperAdmin = user.userRole === "SUPER_ADMIN";
@@ -16,9 +18,10 @@ function Filter({ url, filterFn }) {
   const [region, setRegion] = useState(null);
   const [districts, setDistricts] = useState(null);
   const [storeOwnerIds, setStoreOwner] = useState(null);
-  const [allQueries, setAllQueries] = useState(null);
+  const navigate = useNavigate();
+  const page = searchParams.get("page") || 1;
+  const size = searchParams.get("size") || 10;
   useEffect(() => {
-    filterFn(allQueries);
     getAllRegions();
     getAllStatuses();
     region && getAllDistricts(region);
@@ -62,8 +65,19 @@ function Filter({ url, filterFn }) {
     );
   };
   const filterHandler = async (data) => {
-    setAllQueries(data);
-    filterFn(data);
+    navigate(
+      `${url}?page=${page}&size=${size}${
+        data?.status ? `&orderStatus=${data.status}` : ""
+      }${data?.regionId ? `&regionId=${data.regionId}` : ""}${
+        data?.districtId ? `&districtId=${data.districtId}` : ""
+      }${
+        user.userRole !== "STORE_OWNER"
+          ? data?.storeOwnerId
+            ? `&storeOwnerId=${data.storeOwnerId}`
+            : ""
+          : ""
+      }${data?.createdAt ? `&createdAt[eq]=${data.createdAt}` : ""}`
+    );
   };
 
   const regionHandler = (e) => {
@@ -91,7 +105,7 @@ function Filter({ url, filterFn }) {
           placeholder="Barcha Do'konlar"
           id="storeName"
         >
-          Magazin nomi
+          Do'kon nomi
         </Select>
       )}
       <Select
@@ -115,10 +129,12 @@ function Filter({ url, filterFn }) {
         Sanasi
       </Input>
       <Button
-        size={"small"}
         type="submit"
-        name={"btn"}
-        btnStyle={{ padding: "1rem 1rem", marginTop: "2.2rem" }}
+        name="btn"
+        btnStyle={{
+          height: "4rem",
+          width: "10rem",
+        }}
       >
         Saralash
       </Button>

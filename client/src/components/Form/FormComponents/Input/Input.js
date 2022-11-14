@@ -43,9 +43,11 @@ function Input({
           onClick={onClick}
           onChange={onChange}
         />
-        {error && <AttentionError className={""} />}
       </div>
-      {error && <p className={styles.errorText}>{error}</p>}
+
+      <p className={error ? styles.errorText : styles.errorTextNone}>
+        {error ? error : "default Error"}
+      </p>
     </div>
   );
 }

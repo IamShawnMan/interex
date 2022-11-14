@@ -4,6 +4,7 @@
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  position: relative;
 }
 .table {
   width: 100%;
