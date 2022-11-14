@@ -177,7 +177,7 @@ function Orders() {
                 )}
               </div>
             )}
-            {isCourier&&order.orderStatus === "DELIVERED"&&
+            {isCourier&&(order.orderStatus === "DELIVERED"||order.orderStatus === "PENDING")&&
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
