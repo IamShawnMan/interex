@@ -57,7 +57,13 @@ const Posts = () => {
     {
       id: "postTotalPrice",
       Header: "Pochta narxi",
-      accessor: "postTotalPrice",
+      accessor: (post)=>{
+        return(
+          <>
+          {(post.postTotalPrice)?.toLocaleString("Ru-Ru")}
+          </>
+        )
+      },
     },
     {
       Header: "Sanasi",
