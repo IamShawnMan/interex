@@ -1,4 +1,4 @@
-const PostBack = require("./postBack");
+const PostBack = require("./PostBack");
 const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
@@ -92,7 +92,8 @@ exports.rejectedOrdersBeforeSend = catchAsync(async (req, res, next) => {
 });
 
 exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
-	const { regionId, ordersArr } = req.body;
+	const { regionId } = req.user
+	const { ordersArr } = req.body;
 
 	let newRejectedPost = await PostBack.findOne({
 		where: {
@@ -225,27 +226,21 @@ exports.getTodaysRejectedPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
-	const {userRole, regionId} = req.user
+	const {regionId} = req.user
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.limitFields().filter().paginate().search(["note"]);
   
 	queryBuilder.queryOptions.include = [ 
 	  { model: Region, as: "region", attributes: ["name"] }
 	]
-	if(userRole === "COURIER") {
-	  queryBuilder.queryOptions.where = {
+	queryBuilder.queryOptions.where = {
 		postStatus: {
-		  [Op.in]: [
-			postStatuses.POST_REJECTED_DELIVERING,
-			postStatuses.POST_REJECTED_DELIVERED,
-			postStatuses.POST_REJECTED_NOT_DELIVERED
-		  ] 
+			[Op.eq]: postStatuses.POST_REJECTED_NEW
 		},
 		regionId: {
 		  [Op.eq]: regionId
 		},
 		...queryBuilder.queryOptions.where
-	  } 
 	}
 	let allPosts = await PostBack.findAndCountAll(queryBuilder.queryOptions)
 	allPosts = queryBuilder.createPagination(allPosts);
