@@ -54,10 +54,10 @@ const PostSendCourier = ({ id, url, onClose }) => {
           size="small"
           btnStyle={{ marginTop: "10px" }}
           onClick={
-          (url==="/orders/delivered"&&changeOrderStatusByCourier)||(url==="/postback"&& sendPost)  
+          (url==="/orders/delivered"&&changeOrderStatusByCourier)||((url==="/postback"||url==="/posts")&& sendPost)  
           }
         >
-          {(url==="/orders/delivered" &&`${id.status} Order`)||(url==="/postback" && "Send Post" )}
+          {(url==="/orders/delivered" &&`${id.status} Order`)||((url==="/postback"||url==="/posts") && "Send Post" )}
         </Button>
       </div>
     </Modal>
