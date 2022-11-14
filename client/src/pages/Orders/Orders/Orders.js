@@ -20,11 +20,9 @@ import Input from "../../../components/Form/FormComponents/Input/Input";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
-import Plus from "../../../assets/icons/Plus";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
-  const isSuperAdmin = user.userRole === "SUPER_ADMIN";
   const isStoreOwner = user.userRole === "STORE_OWNER";
   const isCourier = user.userRole === "COURIER";
   const [pagination, setPagination] = useState(null);
@@ -179,7 +177,7 @@ function Orders() {
                 )}
               </div>
             )}
-            {isCourier &&
+            {isCourier&&order.orderStatus === "DELIVERED"&&
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
@@ -238,7 +236,6 @@ function Orders() {
               name="btn"
               onClick={() => {
                 setInfo(order.id);
-                // navigate(`/orders/info/${order.id}`);
               }}
             >
               Ma'lumot

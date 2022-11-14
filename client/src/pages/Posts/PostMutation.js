@@ -8,7 +8,6 @@ const PostMutation = () => {
   const [value, setValue] = useState([]);
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
-
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const getAllRegions = async () => {

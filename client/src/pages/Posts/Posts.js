@@ -19,7 +19,6 @@ const Posts = () => {
   const size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
-  console.log(url);
   const getAllPosts = async () => {
     try {
       const res = await http({
