@@ -43,7 +43,7 @@ function Orders() {
   useEffect(() => {
     filterFn(allQueries);
     getPrices();
-  }, [page, info]);
+  }, [page, info,url]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
