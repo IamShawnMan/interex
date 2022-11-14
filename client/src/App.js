@@ -48,11 +48,14 @@ function App() {
         {isAuth && (
           <Route path="/posts/:id/regionorders" element={<Orders />} />
         )}
-        {isAuth && <Route path="/posts/rejected/orders" element={<Orders />} />}
+        {isAuth && (
+          <Route path="/postback/rejected/orders" element={<Orders />} />
+        )}
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/orders/info/:id" element={<OrderInfo />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
         {isAuth && <Route path="/posts" element={<Posts />} />}
+        {isAuth && <Route path="/postback" element={<Posts />} />}
         {isAuth && <Route path="/new-post" element={<NewPost />} />}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
         <Route path="*" element={<Navigate to={"/login"} />} />

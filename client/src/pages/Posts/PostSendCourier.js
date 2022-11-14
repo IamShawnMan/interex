@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Modal from "../../components/Modal/Modal";
+import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 const PostSendCourier = ({ id, url, onClose }) => {
   const [note, setNote] = useState(null);
-
+  const { user } = useContext(AppContext);
   const sendPost = async () => {
     try {
       const res = await http({
-        url: `posts/${id}/send`,
+        url:user.userRole==="ADMIN" ?`posts/${id}/send`:`/postback/${id}/send/rejected`,
         method: "PUT",
-        data: { postStatus: "DELIVERING", note },
+        data: { postStatus:user.userRole==="ADMIN" ? "DELIVERING":"REJECTED_DELIVERING", note },
       });
       toast.success(res.data.message);
+      console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -52,10 +54,10 @@ const PostSendCourier = ({ id, url, onClose }) => {
           size="small"
           btnStyle={{ marginTop: "10px" }}
           onClick={
-            typeof id !== "object" ? sendPost : changeOrderStatusByCourier
+          (url==="/orders/delivered"&&changeOrderStatusByCourier)||(url==="/posts"&& sendPost)  
           }
         >
-          {typeof id !== "object" ? "Send Post" : `${id.status} Order`}
+          {(url==="/orders/delivered" &&`${id.status} Order`)||(url==="/posts" && "Send Post" )}
         </Button>
       </div>
     </Modal>

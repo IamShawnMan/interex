@@ -16,7 +16,7 @@ const OrderFieldArray = ({
   control,
   remove,
   rId,
-  dId
+  dId,
 }) => {
   const [districts, setDistricts] = useState(null);
   const [regionId, setRegionId] = useState(rId);
@@ -30,7 +30,7 @@ const OrderFieldArray = ({
     setDistricts(res.data.data.getDistrictByRegion);
   };
   useEffect(() => {
-    regionId && getAllDistrict(); 
+    regionId && getAllDistrict();
   }, [regionId]);
 
   return (
@@ -39,27 +39,28 @@ const OrderFieldArray = ({
       key={item.id}
     >
       <div className={styles.orderContainer}>
+        <div className="bold h6">{index + 1}</div>
         <Input
-          placeholder="Anvar"
+          placeholder=""
           register={register.bind(null, `orders.${index}.recipient`)}
           error={errors?.orders?.[index]?.recipient?.message}
         >
-          Haridor
+          Xaridor ismi
         </Input>
         <Input
-          placeholder="Mo'ljal/Vaqt"
+          placeholder=""
           register={register.bind(null, `orders.${index}.note`)}
           error={errors?.orders?.[index]?.note?.message}
         >
-          Eslatma
+          Izoh
         </Input>
         <Input
           type="text"
-          placeholder="+998991234567"
+          placeholder=""
           register={register.bind(null, `orders.${index}.recipientPhoneNumber`)}
           error={errors?.orders?.[index]?.recipientPhoneNumber?.message}
         >
-          Telefon
+          Telefon raqami
         </Input>
         <Select
           register={register.bind(null, `orders.${index}.regionId`)}
@@ -69,7 +70,7 @@ const OrderFieldArray = ({
               ? errors?.orders?.[index]?.regionId?.message
               : ""
           }
-          placeholder="Barcha viloyat"
+          placeholder="Viloyat tanlang"
           onChange={(e) => {
             setRegionId(e.target.value);
           }}
@@ -80,7 +81,7 @@ const OrderFieldArray = ({
         <Select
           register={register.bind(null, `orders.${index}.districtId`)}
           data={districts}
-          placeholder="Barcha tuman"
+          placeholder="Tumanni tanlang"
           error={
             errors?.orders?.[index]
               ? errors?.orders?.[index]?.districtId?.message
@@ -90,7 +91,7 @@ const OrderFieldArray = ({
             setDistrictId(e.target.value);
           }}
         >
-         Tumanlar
+          Tumanlar
         </Select>
       </div>
 
@@ -105,7 +106,7 @@ const OrderFieldArray = ({
         onClick={() => remove(index)}
       >
         <Button type="button" name="iconText" iconName="trash">
-          Tashlash
+          O'chirish
         </Button>
       </div>
     </li>

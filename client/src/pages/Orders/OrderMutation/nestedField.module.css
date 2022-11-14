@@ -1,17 +1,17 @@
 .itemContainer {
   position: relative;
-  padding: 2rem 0rem;
-  margin: 0 auto 2rem auto;
+  padding: 1rem 0rem;
+  margin: 0 auto 0 auto;
   width: 70%;
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .btnIconTextContainer {
   width: 13rem;
-  margin: 10px;
+  margin: 0.5rem;
   position: absolute;
   bottom: 0%;
   right: 14%;
@@ -19,12 +19,4 @@
 }
 .trashBtn {
   width: 17rem;
-}
-.label {
-  font-weight: 500;
-  font-size: 1.8rem;
-  line-height: 2.2rem;
-  letter-spacing: -0.01em;
-  color: transparent;
-  margin-bottom: 1.6rem;
 }

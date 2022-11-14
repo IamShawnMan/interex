@@ -129,10 +129,12 @@ function Filter({ url }) {
         Sanasi
       </Input>
       <Button
-        size={"small"}
         type="submit"
-        name={"btn"}
-        btnStyle={{ padding: "1rem 1rem", marginTop: "2.2rem" }}
+        name="btn"
+        btnStyle={{
+          height: "4rem",
+          width: "10rem",
+        }}
       >
         Saralash
       </Button>

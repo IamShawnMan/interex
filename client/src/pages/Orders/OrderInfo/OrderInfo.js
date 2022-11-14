@@ -27,7 +27,7 @@ const OrderInfo = ({ id, onClose }) => {
         return `${i + 1}`;
       },
     },
-    { id: "productName", Header: "Mahsulot omi", accessor: "productName" },
+    { id: "productName", Header: "Maxsulot nomi", accessor: "productName" },
     { id: "quantity", Header: "Soni", accessor: "quantity" },
     {
       id: "price",

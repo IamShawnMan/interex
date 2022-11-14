@@ -53,6 +53,47 @@ const useAdminOrders = (styles) => {
       toast.error(error?.response?.data?.message);
     }
   };
+
+  const changeOrderStatus = async (id, status) => {
+    try {
+      const res = await http({
+        url: `/orders/${id}`,
+        method: "PATCH",
+        data: {
+          orderStatus: status,
+        },
+      });
+      filterFn();
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const postCreateOrUpdateFn = async () => {
+    try {
+      const res = await http({
+        url: url
+          ? url.split("/")[3] === "regionorders"
+            ? "posts/new"
+            : "posts/new/customized"
+          : "",
+        data: url
+          ? url.split("/")[3] === "regionorders"
+            ? { regionId: id, ordersArr: ordersIdArr }
+            : { postId: id, ordersArr: ordersIdArr }
+          : "",
+        method: url
+          ? url.split("/")[3] === "regionorders"
+            ? "POST"
+            : "PUT"
+          : "",
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+    navigate("/posts");
+  };
   const cols = [
     {
       id: "id",

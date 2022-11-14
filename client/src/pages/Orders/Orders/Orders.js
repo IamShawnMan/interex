@@ -138,15 +138,13 @@ function Orders() {
       },
     },
     {
-      id: "createdAt",
+      id: "updatedAt",
       Header: "Sanasi",
       accessor: (order) => {
-        const newDate = formatDate(order.createdAt);
-        const dateNew = new Date(newDate);
+        const dateNew = new Date(order?.updatedAt);
         return (
           <>
-            {dateNew.getDay()}/{dateNew.getMonth().toString()}/
-            {dateNew.getFullYear()}
+            {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
             <br />
             {dateNew.getHours()}:{dateNew.getMinutes()}
           </>
@@ -307,10 +305,10 @@ function Orders() {
     }
     navigate("/posts");
   };
-  const postRejectedCreateOrUpdateFn = async () => {
+  const postRejectedCreateOrUpdateFn = async (ordersIdArr) => {
     try {
       const res = await http({
-        url: "/posts/new/rejected",
+        url: "/postback/new/rejected",
         data: { ordersArr: ordersIdArr },
         method: "POST",
       });

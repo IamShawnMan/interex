@@ -14,20 +14,22 @@ const schema = object().shape({
   orders: array()
     .of(
       object().shape({
-        recipient: string().trim().required("recipient kriting"),
-        note: string().trim().required("note kriting"),
-        recipientPhoneNumber: string().trim().required("phoneNumber kriting"),
-        regionId: string().trim().required("regionId kriting"),
-        districtId: string().trim().required("districtId kriting"),
+        recipient: string().trim().required("Xaridor ismini kriting"),
+        note: string().trim().required("Izoh kriting"),
+        recipientPhoneNumber: string()
+          .trim()
+          .required("Telefon raqamini kriting"),
+        regionId: string().trim().required("Viloyatni tanlag"),
+        districtId: string().trim().required("Tumanni tanlang"),
         orderItems: array()
           .of(
             object().shape({
-              productName: string().trim().required("name kriting"),
-              quantity: string().trim().required("quantity kriting"),
-              price: string().trim().required("price kriting"),
+              productName: string().trim().required("Mahsulot nomini kriting"),
+              quantity: string().trim().required("Mahsulot sonini kriting"),
+              price: string().trim().required("Mahsulot narxini kriting"),
             })
           )
-          .min(1, "Tovarlar royhati soni kamida 1ta bolishi kerak"),
+          .min(1, "Mahsulotlar kamida 1ta bolishi kerak"),
       })
     )
     .min(1, "Buyurtmalar soni kamida 1ta bolishi kerak"),
@@ -71,10 +73,8 @@ function OrderMutation() {
       });
   }, [regionId]);
   useEffect(() => {
-    let defaultValue={};
-    isUpdate &&
-      updateData &&
-      append({ ...updateData});
+    let defaultValue = {};
+    isUpdate && updateData && append({ ...updateData });
   }, [updateData]);
   const formSubmit = async (data) => {
     try {
@@ -131,7 +131,7 @@ function OrderMutation() {
               control={control}
               remove={remove}
               dId={dId}
-              reset={(obj)=>reset(obj)}
+              reset={(obj) => reset(obj)}
             />
           ))}
         </ul>
@@ -157,7 +157,7 @@ function OrderMutation() {
                   btnStyle={{ width: "13rem" }}
                   type="button"
                 >
-                  Yetkazma
+                  Buyurtma
                 </Button>
               </div>
             )}
@@ -167,7 +167,7 @@ function OrderMutation() {
               type="submit"
               btnStyle={{ width: "13rem" }}
             >
-              {isUpdate ? "Yetkazmani o'zhgartirish" : "Saqlash"}
+              {isUpdate ? "Buyurtmani o'zgartirish" : "Saqlash"}
             </Button>
           </div>
         </div>
