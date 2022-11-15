@@ -426,16 +426,6 @@ function Orders() {
             </Button>
           )}
       </div>
-      <div style={{ width: "10rem", marginTop: "4rem" }}>
-        <Button
-          name="btn"
-          onClick={() => {
-            getFile;
-          }}
-        >
-          Download
-        </Button>
-      </div>
     </Layout>
   );
 }
