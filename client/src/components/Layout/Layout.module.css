@@ -27,6 +27,11 @@
   left: 9%;
 }
 
+.pathRoad {
+  display: flex;
+  gap: 2rem;
+}
+
 .pageName {
   font-weight: 500;
   margin-bottom: 2.4rem;
@@ -34,8 +39,9 @@
 
 .goBack {
   cursor: pointer;
-  padding: 1rem 2rem;
-  background-color: rgb(191, 192, 191);
+  padding: 0.5rem 1rem;
+  width: 15rem;
+  /* background-color: rgb(191, 192, 191); */
 }
 
 .goBack:hover {

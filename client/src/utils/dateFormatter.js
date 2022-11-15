@@ -1,5 +1,10 @@
 export function formatDate(date) {
-  const [yyyy, mm, dd, hh, mi] = date.split(/[/:\-T]/);
-
-  return `${dd}-${mm}-${yyyy} ${hh + ":" + mi}`;
+  const dateNew = new Date(date);
+  return (
+    <>
+      {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
+      <br />
+      {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+    </>
+  );
 }

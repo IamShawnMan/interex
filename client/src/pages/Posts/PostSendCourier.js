@@ -11,12 +11,18 @@ const PostSendCourier = ({ id, url, onClose }) => {
   const sendPost = async () => {
     try {
       const res = await http({
-        url:user.userRole==="ADMIN" ?`posts/${id}/send`:`/postback/${id}/send/rejected`,
+        url:
+          user.userRole === "ADMIN"
+            ? `posts/${id}/send`
+            : `/postback/${id}/send/rejected`,
         method: "PUT",
-        data: { postStatus:user.userRole==="ADMIN" ? "DELIVERING":"REJECTED_DELIVERING", note },
+        data: {
+          postStatus:
+            user.userRole === "ADMIN" ? "DELIVERING" : "REJECTED_DELIVERING",
+          note,
+        },
       });
       toast.success(res.data.message);
-      console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -53,10 +59,12 @@ const PostSendCourier = ({ id, url, onClose }) => {
           size="small"
           btnStyle={{ marginTop: "10px" }}
           onClick={
-          (url==="/orders/delivered"&&changeOrderStatusByCourier)||((url==="/postback"||url==="/posts")&& sendPost)  
+            (url === "/orders/delivered" && changeOrderStatusByCourier) ||
+            ((url === "/postback" || url === "/posts") && sendPost)
           }
         >
-          {(url==="/orders/delivered" &&`${id.status} Order`)||((url==="/postback"||url==="/posts") && "Send Post" )}
+          {(url === "/orders/delivered" && `${id.status} Order`) ||
+            ((url === "/postback" || url === "/posts") && "Send Post")}
         </Button>
       </div>
     </Modal>

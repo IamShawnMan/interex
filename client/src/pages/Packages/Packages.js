@@ -14,12 +14,15 @@ function Package() {
   const size = searchParams.get("size") || 10;
   useEffect(() => {
     getAllPackages();
-  }, [page,sNew]);
+  }, [page, sNew]);
 
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url: sNew===false?`/packages?page=${page}&size=${size}`:`/packages/daily?page=${page}&size=${size}`,
+        url:
+          sNew === false
+            ? `/packages?page=${page}&size=${size}`
+            : `/packages/daily?page=${page}&size=${size}`,
       });
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
@@ -32,46 +35,41 @@ function Package() {
     {
       id: "id",
       Header: "id",
-      accessor:"id"
+      accessor: "id",
     },
     {
       id: "storeOwner",
       Header: "Paket",
-      accessor:"storeOwner.storeName"
+      accessor: "storeOwner.storeName",
     },
     {
-     id:"status", Header: "Holati", accessor:"packageStatus"
-
+      id: "status",
+      Header: "Holati",
+      accessor: "packageStatus",
     },
     {
       id: "totalPrice",
       Header: "Paketlar umumiy narxi",
-      accessor: (packag)=>{
-        return(
-          <>
-          {(packag.packageTotalPrice)?.toLocaleString("Ru-Ru")}
-          </>
-        )
-      }
+      accessor: (packag) => {
+        return <>{packag.packageTotalPrice?.toLocaleString("Ru-Ru")}</>;
+      },
     },
     {
       Header: "Sanasi",
       accessor: (order) => {
-        const dateNew=new Date(order.createdAt)
+        const dateNew = new Date(order.createdAt);
         console.log(dateNew);
         return (
           <>
-             {dateNew.getDate()}/
-             {dateNew.getMonth()+1}/
-             {dateNew.getFullYear()}
-             <br/>
-             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+            {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
+            <br />
+            {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
           </>
         );
       },
     },
     {
-      Header:"Tugmalar",
+      Header: "Tugmalar",
       accessor: (pack) => {
         return (
           <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
@@ -79,14 +77,18 @@ function Package() {
           </Link>
         );
       },
-    }
+    },
   ];
 
   return (
     <Layout>
-      <div style={{display: 'flex',margin:"10px",gap:"10px"}}> 
-      <Button name="btn" onClick={()=>setSNew(true)}>Yangi</Button>
-      <Button name="btn" onClick={()=>setSNew(false)}>Barchasi</Button>
+      <div style={{ display: "flex", gap: "1rem", width: "22rem" }}>
+        <Button name="btn" onClick={() => setSNew(true)}>
+          Yangi
+        </Button>
+        <Button name="btn" onClick={() => setSNew(false)}>
+          Barchasi
+        </Button>
       </div>
       {packages?.length > 0 ? (
         <BasicTable
