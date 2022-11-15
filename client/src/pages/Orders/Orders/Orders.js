@@ -358,7 +358,7 @@ function Orders() {
       <Button
         type="button"
         name="btn"
-        btnStyle={{ width: "9rem" }}
+        btnStyle={{ width: "9rem"}}
         onClick={() => getFile()}
       >
         Download
