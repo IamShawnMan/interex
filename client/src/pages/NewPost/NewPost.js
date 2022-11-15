@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BasicTable } from "../../components/Table/BasicTable";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Layout from "../../components/Layout/Layout";
@@ -7,8 +7,10 @@ import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import { formatDate } from "../../utils/dateFormatter";
 import { useNavigate } from "react-router-dom";
+import AppContext from "../../context/AppContext";
 
 function NewPost() {
+  const { user } = useContext(AppContext);
   const [ordersIdArr, setOrdersIdArr] = useState([]);
   const [postData, setPostData] = useState([]);
   const [orderData, setOrderData] = useState([]);
@@ -40,14 +42,7 @@ function NewPost() {
       id: "date",
       Header: "kun-oy-yil",
       accessor: (post) => {
-        const date = formatDate(post.createdAt);
-        return (
-          <>
-            {date.slice(0, 10)}
-            <br />
-            {date.slice(10)}
-          </>
-        );
+        return formatDate(post.updatedAt);
       },
     },
     {
@@ -92,14 +87,12 @@ function NewPost() {
       id: "createdAt",
       Header: "kun-oy-yil",
       accessor: (order) => {
-        const dateNew=new Date(order.createdAt)
+        const dateNew = new Date(order.createdAt);
         return (
           <>
-             {dateNew.getDate()}/
-             {dateNew.getMonth()+1}/
-             {dateNew.getFullYear()}
-             <br/>
-             {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
+            {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
+            <br />
+            {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
           </>
         );
       },
@@ -118,21 +111,24 @@ function NewPost() {
             {order.orderStatus === "DELIVERED" && (
               <Button type="button" size="btnSmall" name="dots" />
             )}
-            {order.orderStatus === "DELIVERING" && (
-              <Input
-                type="checkbox"
-                checked={ordersIdArr.includes(order.id)}
-                onClick={() => {
-                  const index = ordersIdArr.includes(order.id);
-                  if (index) {
-                    let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
-                    setOrdersIdArr(orderIsArr);
-                  } else {
-                    setOrdersIdArr((prev) => [...prev, order.id]);
-                  }
-                }}
-              />
-            )}
+            {order.orderStatus === "DELIVERING" ||
+              (order.orderStatus === "REJECTED_DELIVERING" && (
+                <Input
+                  type="checkbox"
+                  checked={ordersIdArr.includes(order.id)}
+                  onClick={() => {
+                    const index = ordersIdArr.includes(order.id);
+                    if (index) {
+                      let orderIsArr = ordersIdArr.filter(
+                        (i) => i !== order.id
+                      );
+                      setOrdersIdArr(orderIsArr);
+                    } else {
+                      setOrdersIdArr((prev) => [...prev, order.id]);
+                    }
+                  }}
+                />
+              ))}
           </>
         );
       },
@@ -154,6 +150,18 @@ function NewPost() {
 
   return (
     <Layout pageName="Yangi kelgan Pochtalar">
+      {user.userRole === "COURIER" && (
+        <div style={{ width: "25rem" }}>
+          <Button
+            name="btn"
+            onClick={() => {
+              navigate("/posts");
+            }}
+          >
+            Hamma pochtalar
+          </Button>
+        </div>
+      )}
       {orderData.length > 0 ? (
         <>
           {postData && <BasicTable columns={postCols} data={postData} />}

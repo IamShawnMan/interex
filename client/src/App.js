@@ -15,6 +15,8 @@ import Posts from "./pages/Posts/Posts";
 import PostMutation from "./pages/Posts/PostMutation";
 import OrderInfo from "./pages/Orders/OrderInfo/OrderInfo";
 import NewPost from "./pages/NewPost/NewPost";
+import RejectedPosts from "./pages/Rejected-Posts/Rejected-Posts";
+import RejectedOrders from "./pages/Rejected-Orders/Rejected-Orders";
 function App() {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
@@ -61,6 +63,13 @@ function App() {
         {isAuth && <Route path="/postback" element={<Posts />} />}
         {isAuth && <Route path="/new-post" element={<NewPost />} />}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
+        {isAuth && <Route path="/rejected/posts" element={<RejectedPosts />} />}
+        {isAuth && (
+          <Route
+            path="/rejected/post/:id/orders"
+            element={<RejectedOrders />}
+          />
+        )}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
     </>
