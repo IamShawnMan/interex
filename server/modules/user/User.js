@@ -50,9 +50,9 @@ const User = sequelize.define("user", {
     storeName: {
         type: DataTypes.STRING,
     },
-    // chatId: {
-    //     type: DataTypes.INTEGER
-    // },
+    chatId: {
+        type: DataTypes.INTEGER
+    },
 }, {
     underscored: true,
     hooks: {
