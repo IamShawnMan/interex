@@ -3,7 +3,6 @@ const { Op } = require("sequelize");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const PackageModel = require("./Package");
 const OrderModel = require("../order/Order");
-const AppError = require("../../core/utils/AppError");
 const UserModel = require("../user/User");
 const DistrictModel = require("../district/District")
 const RegionModel = require("../region/Region")
@@ -64,12 +63,16 @@ exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 	req.query.packageId = id
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.paginate().limitFields().sort().filter().search(["recipient", "recipientPhoneNumber"]);
+
 	queryBuilder.queryOptions.include = [
 		{model: UserModel, as: "storeOwner", attributes: ["storeName"]},
 		{model: DistrictModel, as: "district", attributes: ["name"]},
 		{model: RegionModel, as: "region", attributes: ["name"]}
-	]
-	let ordersbyPackage = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+	] 
+
+	let ordersbyPackage = await OrderModel.findAndCountAll(
+		queryBuilder.queryOptions
+		);
 	ordersbyPackage = queryBuilder.createPagination(ordersbyPackage)
 	res.status(200).json({
 		status: "success",

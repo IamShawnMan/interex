@@ -202,7 +202,8 @@ function Orders() {
               </div>
             )}
             {isCourier &&
-              order.orderStatus === "DELIVERED" &&
+              (order.orderStatus === "DELIVERED" ||
+                order.orderStatus === "PENDING") &&
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
@@ -424,6 +425,16 @@ function Orders() {
                 : "update"}
             </Button>
           )}
+      </div>
+      <div style={{ width: "10rem", marginTop: "4rem" }}>
+        <Button
+          name="btn"
+          onClick={() => {
+            getFile;
+          }}
+        >
+          Download
+        </Button>
       </div>
     </Layout>
   );
