@@ -60,20 +60,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	order: [["createdAt", "DESC"]]
   });
   
-  if(existedPackage){
-   const isNewOrders = await OrderModel.count({
-    where: {
-      [Op.and]:[
-      {packageId: {[Op.eq]: existedPackage.id}},
-      {orderStatus: statusOrder.STATUS_NEW}
-    ]
-    }})
-    if(isNewOrders === 0){
-	existedPackage.packageStatus = statusPackage.STATUS_OLD
-	await existedPackage.save()
-    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id })
-  }
-  }
   if (!existedPackage) {
     existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
   }
@@ -153,7 +139,7 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 			(e) => e === orderStatus
 		);
 		const dprice = orderById.deliveryPrice;
-		orderbyid = await orderById.update({
+		orderById = await orderById.update({
 			orderStatus: changeOrderStatus,
 		});
 		if (orderById.orderStatus === statusOrder.STATUS_ACCEPTED) {
@@ -161,6 +147,18 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 		} else {
 			await orderById.update({ deliveryPrice: null });
 		}
+		const existedPackage = await PackageModel.findByPk(orderById.packageId)
+
+		const isNewOrders = await OrderModel.count({where: {[Op.and]: [
+			{packageId: {[Op.eq]: existedPackage.id}},
+			{orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}}
+		]}})
+		console.log(isNewOrders)
+		if(isNewOrders === 0){
+			
+			await existedPackage.update({packageStatus: statusPackage.STATUS_OLD})
+		}
+
 	}
 	res.status(203).json({
 		status: "success",
