@@ -13,6 +13,7 @@ const DistrictModel = require("../district/District");
 const UserModel = require("../user/User");
 const statusPackage = require('../../core/constants/packageStatus')
 const excelJS = require("exceljs")
+const Region = require("../region/regions.json")
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -326,38 +327,89 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 });
 
 exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
-	const {regionId} = req.user
-	req.query.regionId = regionId
-	const postOrderStatuses = Object.values(statusOrder).slice(4, 9)
-	console.log(req.query);
-	const queryBuilder = new QueryBuilder(req.query)
-	queryBuilder
-		.filter()
-		.limitFields()
-		.paginate()
-		.search(["recipientPhoneNumber", "recipient"])
-		.sort()
-
+	const { regionId } = req.user;
+	const queryBuilder = new QueryBuilder(req.query);
+	let allOrders = [];
+	let ordersArrInPost = [];
+  
 	queryBuilder.queryOptions.include = [
-		{ model: DistrictModel, as: "district", attributes: ["name"] },
-		{ model: RegionModel, as: "region", attributes: ["name"] },
-	]
-
-	queryBuilder.queryOptions.where = {
-		orderStatus: {
-			[Op.in] : postOrderStatuses
+	  { model: RegionModel, as: "region", attributes: ["name"] },
+	  { model: DistrictModel, as: "district", attributes: ["name"] },
+	];
+  
+	queryBuilder
+	  .filter()
+	  .paginate()
+	  .limitFields()
+	  .search(["recipientPhoneNumber", "recipient"])
+	  .sort();
+  
+	const region = await RegionModel.findOne({
+	  attributes: ["id", "name"],
+	  where: {
+		id: {
+		  [Op.eq]: regionId,
 		},
-		...queryBuilder.queryOptions.where
+	  },
+	});
+  
+	if (region.name === "Samarqand viloyati") {
+	  const orderStatuses = Object.values(statusOrder).slice(5, 8)
+	  queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		regionId: {
+		  [Op.eq]: regionId,
+		},
+		districtId: {
+		  [Op.notIn]: [101, 106],
+		},
+		orderStatus: {
+		   [Op.in]: orderStatuses
+		}
+	  };
+	  deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
+	  ordersArrInPost = deliveredOrders.content.map((order) => {
+		return order.dataValues.id;
+	  });
+	} else if (region.name === "Navoiy viloyati") {
+      const orderStatuses = Object.values(statusOrder).slice(5, 8)
+	  queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		[Op.or]: {
+		  regionId: {
+			[Op.eq]: regionId,
+		  },
+		  districtId: {
+			[Op.in]: [101, 106],
+		  },
+		  orderStatus: {
+			[Op.in]: orderStatuses
+		 }
+		},
+	  };
+	  deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
+	  ordersArrInPost = deliveredOrders.content.map((order) => {
+		return order.dataValues.id;
+	  });
+	} else {
+	  req.query.regionId = regionId;
+	  queryBuilder.filter();
+	  deliveredOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
+	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
+	  ordersArrInPost = deliveredOrders.content.map((order) => {
+		return order.dataValues.id;
+	  });
 	}
-	console.log(queryBuilder.queryOptions);
-	let deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
-	deliveredOrders = queryBuilder.createPagination(deliveredOrders)
+  
 	res.json({
 		status: "success",
 		message: "Yetkazib berilgan buyurtmalar",
 		error: null, 
 		data: {
-			...deliveredOrders
+			...deliveredOrders,
+			ordersArrInPost,
 		}
 	})
 })
@@ -394,35 +446,87 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const {regionId} = req.user
-	req.query.regionId = regionId
-	const queryBuilder = new QueryBuilder(req.query)
-	queryBuilder
-		.filter()
-		.limitFields()
-		.paginate()
-		.search(["recipientPhoneNumber", "recipient"])
-		.sort()
-	
+	const queryBuilder = new QueryBuilder(req.query);
+	let allOrders = [];
+	let ordersArrInPost = [];
+	req.query.orderStatus = statusOrder.STATUS_DELIVERED
+  
 	queryBuilder.queryOptions.include = [
-		{ model: DistrictModel, as: "district", attributes: ["name"] },
-		{ model: RegionModel, as: "region", attributes: ["name"] },
-	]
-	queryBuilder.queryOptions.where = {
-		[Op.or]: [
-			{orderStatus: statusOrder.STATUS_DELIVERED},
-			{orderStatus: statusOrder.STATUS_PENDING}
-		],
-		...queryBuilder.queryOptions.where
+	  { model: RegionModel, as: "region", attributes: ["name"] },
+	  { model: DistrictModel, as: "district", attributes: ["name"] },
+	];
+  
+	queryBuilder
+	  .filter()
+	  .paginate()
+	  .limitFields()
+	  .search(["recipientPhoneNumber", "recipient"])
+	  .sort();
+  
+	const region = await RegionModel.findOne({
+	  attributes: ["id", "name"],
+	  where: {
+		id: {
+		  [Op.eq]: regionId,
+		},
+	  },
+	});
+  
+	if (region.name === "Samarqand viloyati") {
+	  queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		regionId: {
+		  [Op.eq]: regionId,
+		},
+		districtId: {
+		  [Op.notIn]: [101, 106],
+		},
+		orderStatus: {
+			[Op.eq]: statusOrder.STATUS_DELIVERED
+		}
+	  };
+	  ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+	  ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+	  ordersArrInPost = ordersOneDay.content.map((order) => {
+		return order.dataValues.id;
+	  });
+	} else if (region.name === "Navoiy viloyati") {
+	  queryBuilder.queryOptions.where = {
+		...queryBuilder.queryOptions.where,
+		[Op.or]: {
+		  regionId: {
+			[Op.eq]: regionId,
+		  },
+		  districtId: {
+			[Op.in]: [101, 106],
+		  },
+		  orderStatus: {
+			  [Op.eq]: statusOrder.STATUS_DELIVERED
+		  }
+		},
+	  };
+	  ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+	  ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+	  ordersArrInPost = ordersOneDay.content.map((order) => {
+		return order.dataValues.id;
+	  });
+	} else {
+	  req.query.regionId = regionId;
+	  queryBuilder.filter();
+	  ordersOneDay = await Order.findAndCountAll(queryBuilder.queryOptions);
+	  ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+	  ordersArrInPost = ordersOneDay.content.map((order) => {
+		return order.dataValues.id;
+	  });
 	}
-	let ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
-	ordersOneDay = queryBuilder.createPagination(ordersOneDay)
-
+  
 	res.json({
 		status: "success",
-		message: "Bir kunlik yetkazilishi kerak bo'lgan buyurtmalar",
-		error: null,
+		message: "Yetkazib berilgan buyurtmalar",
+		error: null, 
 		data: {
-			...ordersOneDay
+			...ordersOneDay,
+			ordersArrInPost,
 		}
 	})
 })
