@@ -89,8 +89,9 @@ bot.onText(/\/start/, async(message) => {
                         bot.sendMessage(message.chat.id, "Sizga yangi junatma yo'q")
                     }
                     else {
-                        bot.sendMessage(message.chat.id, "Sizga yangi junatma bor")
-                        bot.sendMessage(message.chat.id, `${a}`)
+                        bot.sendMessage(message.chat.id, "Sizga yangi junatma bor").then(() => {
+                            bot.sendMessage(message.chat.id, `${a}`)
+                        })
                     }   
                 } 
         })
