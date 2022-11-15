@@ -4,6 +4,7 @@ const AppError = require("./core/utils/AppError");
 const userRouter = require("./modules/user/userRouter");
 const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
+const telegramBot = require("./core/utils/telegramBot")
 const cors = require("cors");
 
 // ROUTES
@@ -15,6 +16,7 @@ const postsRoutes = require("./modules/post/postRouter");
 const postBackRouter = require("./modules/postBack/postBackRouter");
 require("./modules/user/User");
 
+telegramBot()
 const app = express();
 app.use(express.json());
 app.use(cors());
