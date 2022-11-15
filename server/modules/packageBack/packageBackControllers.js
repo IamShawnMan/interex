@@ -16,8 +16,7 @@ exports.getAllRejectedDelivered = catchAsync(async (req,res,next)=>{
 })
 
 exports.updateRejDevOrdersinStoreOwner = catchAsync(async(req,res,next)=>{
-    // STOREOWNER ID
-    const {id} = req.user
+    let storeOwnerArr = []
 
     let existedPackageBack = await PackageBackModel.findOne({
         where: {[Op.and]: [ 
