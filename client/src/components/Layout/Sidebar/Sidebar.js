@@ -31,7 +31,13 @@ function Sidebar(props) {
         </h1>
       </Link>
       <div className={`${styles.mainMenu} ${styles.linksContainer}`}>
-        <p className={`subtitle ${styles.subtitle}`}>ASOSIY MENU</p>
+        <p
+          className={`subtitle ${styles.subtitle} ${
+            !open ? styles.displayNone : ""
+          }`}
+        >
+          ASOSIY MENU
+        </p>
         {(user.userRole === "SUPER_ADMIN" || user.userRole === "ADMIN") && (
           <Link
             to={"/users"}
@@ -39,19 +45,8 @@ function Sidebar(props) {
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
           >
-            <Recruitment classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Foydalanuvchilar</p>}
-          </Link>
-        )}
-        {user.userRole === "ADMIN" && (
-          <Link
-            to={"/packages"}
-            className={`${styles.sidebarLink} ${
-              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
-          >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Paketlar</p>}
+            {open && <p className="h6">Adminlar</p>}
           </Link>
         )}
         <Link
@@ -67,9 +62,19 @@ function Sidebar(props) {
           }`}
         >
           <DashboardIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Yetkazmalar</p>}
+          {open && <p className="h6">Buyurtmalar</p>}
         </Link>
-
+        {user.userRole === "ADMIN" && (
+          <Link
+            to={"/packages"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
+            <DashboardIcon classname={styles.sidebarLinkSvg} />
+            {open && <p className="h6">Paketlar</p>}
+          </Link>
+        )}
         {(user.userRole === "ADMIN" || user.userRole === "COURIER") && (
           <Link
             to={"/posts"}
@@ -83,33 +88,24 @@ function Sidebar(props) {
         )}
         {user.userRole === "COURIER" && (
           <>
-          <Link
-            to="/new-post"
-            className={`${styles.sidebarLink} ${
-              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
-          >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Pochta</p>}
-          </Link>
-          <Link
-            to="/postback/rejected/orders"
-            className={`${styles.sidebarLink} ${
-              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
-          >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Rejected Orders</p>}
-          </Link>
-          <Link
-            to="/postback"
-            className={`${styles.sidebarLink} ${
-              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
-          >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Rejected Posts</p>}
-          </Link>
+            <Link
+              to="/postback/rejected/orders"
+              className={`${styles.sidebarLink} ${
+                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+              }`}
+            >
+              <UsersIcon classname={styles.sidebarLinkSvg} />
+              {open && <p className="h6">Rejected Orders</p>}
+            </Link>
+            <Link
+              to="/postback"
+              className={`${styles.sidebarLink} ${
+                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+              }`}
+            >
+              <UsersIcon classname={styles.sidebarLinkSvg} />
+              {open && <p className="h6">Rejected Posts</p>}
+            </Link>
           </>
         )}
         <Link
@@ -122,7 +118,13 @@ function Sidebar(props) {
         </Link>
       </div>
       <div className={`${styles.other} ${styles.linksContainer}`}>
-        <p className={`subtitle ${styles.subtitle}`}>OTHER</p>
+        <p
+          className={`subtitle ${styles.subtitle} ${
+            !open ? styles.displayNone : ""
+          }`}
+        >
+          OTHER
+        </p>
         <Link
           className={`${styles.sidebarLink} ${
             open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse

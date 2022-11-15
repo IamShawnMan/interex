@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Switch.module.css";
 
-function Switch({ onSwitch, enabled }) {
+function Switch({ onSwitch, enabled, style }) {
   const switchChangeHandler = async () => {
     await onSwitch();
   };
@@ -12,6 +12,7 @@ function Switch({ onSwitch, enabled }) {
       className={`${styles.toggleButton} ${
         enabled ? styles.buttonEnabled : ""
       }`}
+      style={style ? style : ""}
     >
       <div
         className={`${styles.toggle} ${enabled ? styles.toggleEnabled : ""}`}
