@@ -117,30 +117,7 @@ const useAdminOrders = (styles) => {
     {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
-      accessor: (order) => {
-        return (
-          <>
-            {order.orderStatus === "NEW" && id && (
-              <Select
-                data={price?.map((e) => {
-                  return { id: e, name: e };
-                })}
-                onChange={async (e) => {
-                  const res = await http({
-                    url: `orders/${order.id}/devprice`,
-                    method: "PATCH",
-                    data: { deliveryPrice: e.target.value },
-                  });
-                }}
-              >
-                Narxi
-              </Select>
-            )}
-            {order.status !== "NEW" &&
-              order.deliveryPrice?.toLocaleString("Ru-Ru")}
-          </>
-        );
-      },
+      accessor: "deliveryPrice",
     },
     {
       id: "totalPrice",

@@ -155,16 +155,9 @@ function Orders() {
     },
     {
       id: "updatedAt",
-      Header: "Sanasi",
+      Header: "Oxirgi o'zgarish",
       accessor: (order) => {
-        const dateNew = new Date(order?.updatedAt);
-        return (
-          <>
-            {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
-            <br />
-            {dateNew.getHours()}:{dateNew.getMinutes()}
-          </>
-        );
+        return formatDate(order.updatedAt);
       },
     },
     {
@@ -208,7 +201,9 @@ function Orders() {
                 )}
               </div>
             )}
-            {isCourier&&(order.orderStatus === "DELIVERED"||order.orderStatus === "PENDING")&&
+            {isCourier &&
+              (order.orderStatus === "DELIVERED" ||
+                order.orderStatus === "PENDING") &&
               (order.orderStatus === "DELIVERED" ||
                 order.orderStatus === "SOLD" ||
                 order.orderStatus !== "PENDING" ||
@@ -321,7 +316,7 @@ function Orders() {
     }
     navigate("/posts");
   };
-  const postRejectedCreateOrUpdateFn = async (ordersIdArr) => {
+  const postRejectedCreateOrUpdateFn = async () => {
     try {
       const res = await http({
         url: "/postback/new/rejected",
@@ -360,6 +355,14 @@ function Orders() {
   };
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
+      <Button
+        type="button"
+        name="btn"
+        btnStyle={{ width: "9rem" }}
+        onClick={() => getFile()}
+      >
+        Download
+      </Button>
       <div>
         {isStoreOwner && (
           <Button
@@ -374,7 +377,7 @@ function Orders() {
           </Button>
         )}
         {isCourier && (
-          <div style={{ display: "flex", gap: "2rem", width: "30%" }}>
+          <div style={{ display: "flex", gap: "2rem", width: "50%" }}>
             <Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
               Bugungilar
             </Button>
@@ -423,8 +426,15 @@ function Orders() {
             </Button>
           )}
       </div>
-      <div style={{width:"10rem",marginTop:"4rem"}}>
-      <Button name="btn"  onClick={() => getFile()}>Download</Button>
+      <div style={{ width: "10rem", marginTop: "4rem" }}>
+        <Button
+          name="btn"
+          onClick={() => {
+            getFile;
+          }}
+        >
+          Download
+        </Button>
       </div>
     </Layout>
   );

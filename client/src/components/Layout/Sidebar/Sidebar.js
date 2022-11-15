@@ -75,7 +75,7 @@ function Sidebar(props) {
             {open && <p className="h6">Paketlar</p>}
           </Link>
         )}
-        {(user.userRole === "ADMIN" || user.userRole === "COURIER") && (
+        {user.userRole === "ADMIN" && (
           <Link
             to={"/posts"}
             className={`${styles.sidebarLink} ${
@@ -89,13 +89,22 @@ function Sidebar(props) {
         {user.userRole === "COURIER" && (
           <>
             <Link
+              to={"/new-post"}
+              className={`${styles.sidebarLink} ${
+                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+              }`}
+            >
+              <DashboardIcon classname={styles.sidebarLinkSvg} />
+              {open && <p className="h6">Pochta</p>}
+            </Link>
+            <Link
               to="/postback/rejected/orders"
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
               }`}
             >
               <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Rejected Orders</p>}
+              {open && <p className="h6">Qaytarilgan buyurtmalar</p>}
             </Link>
             <Link
               to="/postback"
@@ -104,7 +113,7 @@ function Sidebar(props) {
               }`}
             >
               <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Rejected Posts</p>}
+              {open && <p className="h6">Jo'natilgan pochtalar</p>}
             </Link>
           </>
         )}

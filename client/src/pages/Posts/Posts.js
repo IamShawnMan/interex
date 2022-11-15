@@ -11,6 +11,7 @@ import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
+import { formatDate } from "../../utils/dateFormatter";
 import PostSendCourier from "./PostSendCourier";
 const Posts = () => {
   const { user } = useContext(AppContext);
@@ -18,6 +19,7 @@ const Posts = () => {
   const [regionValue, setRegionValue] = useState([]);
   const [pagination, setPagination] = useState({});
   const [info, setInfo] = useState(null);
+  const [viewAllPosts, setViewAllPosts] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
@@ -32,10 +34,8 @@ const Posts = () => {
             ? `/posts?page=${page}&size=${size}`
             : `/postback/rejectedposts`,
       });
-      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
-      console.log(res);
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -56,11 +56,6 @@ const Posts = () => {
       accessor: "note",
     },
     {
-      id: "postStatus",
-      Header: "Pochta holati",
-      accessor: "postStatus",
-    },
-    {
       id: "postTotalPrice",
       Header: "Pochta narxi",
       accessor: (post) => {
@@ -68,17 +63,15 @@ const Posts = () => {
       },
     },
     {
-      Header: "Sanasi",
+      id: "postStatus",
+      Header: "Pochta holati",
+      accessor: "postStatus",
+    },
+
+    {
+      Header: "Oxirgi o'zgarish",
       accessor: (order) => {
-        const dateNew = new Date(order.createdAt);
-        console.log(dateNew);
-        return (
-          <>
-            {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
-            <br />
-            {dateNew.getHours()}:{dateNew.getMinutes()}:{dateNew.getSeconds()}
-          </>
-        );
+        return formatDate(order.updatedAt);
       },
     },
     {
@@ -179,7 +172,29 @@ const Posts = () => {
           </Button>
         </div>
       )}
-      {user.userRole === "ADMIN" ? (
+      {user.userRole === "ADMIN" && (
+        <div style={{ width: "45rem", display: "flex", gap: "2rem" }}>
+          <Button
+            name="btn"
+            type="button"
+            onClick={() => {
+              navigate("/rejected/posts");
+            }}
+          >
+            Qaytarilgan po'chtalar
+          </Button>
+          <Button
+            name="btn"
+            type="button"
+            onClick={() => {
+              setViewAllPosts(!viewAllPosts);
+            }}
+          >
+            {viewAllPosts ? "Hamma po'chtalar" : "Hamma po'chtalarni yashirish"}
+          </Button>
+        </div>
+      )}
+      {!viewAllPosts && user.userRole === "ADMIN" ? (
         <>
           {regionValue?.length > 0 ? (
             <>
@@ -187,7 +202,11 @@ const Posts = () => {
               <BasicTable columns={regionCols} data={regionValue} />
             </>
           ) : (
-            <p>Viloyat ma'lumotlari yo'q</p>
+            <p
+              style={{ width: "50%", margin: "2rem auto", textAlign: "center" }}
+            >
+              Yuborilishi kerak bo'lgan po'chtalar yo'q
+            </p>
           )}
         </>
       ) : (
@@ -203,7 +222,8 @@ const Posts = () => {
           }}
         />
       )}
-      {value?.length > 0 ? (
+
+      {viewAllPosts && value?.length > 0 ? (
         <BasicTable
           columns={postCols}
           data={value}
@@ -211,7 +231,7 @@ const Posts = () => {
           url="/posts"
         />
       ) : (
-        <p>Pochta ma'lumotlari yo'q</p>
+        <>{viewAllPosts && <p>Pochta ma'lumotlari yo'q</p>}</>
       )}
     </Layout>
   );
