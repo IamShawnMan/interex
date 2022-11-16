@@ -354,7 +354,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	});
   
 	if (region.name === "Samarqand viloyati") {
-	  const orderStatuses = Object.values(statusOrder).slice(5, 9)
+	  const orderStatuses = Object.values(statusOrder).slice(4, 9)
 	  queryBuilder.queryOptions.where = {
 		regionId: {
 			[Op.eq]: regionId
@@ -373,7 +373,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		return order.dataValues.id;
 	  });
 	} else if (region.name === "Navoiy viloyati") {
-      const orderStatuses = Object.values(statusOrder).slice(5, 9)
+      const orderStatuses = Object.values(statusOrder).slice(4, 9)
 	  queryBuilder.queryOptions.where = {
 		[Op.or]: {
 			regionId: {
@@ -394,7 +394,8 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		return order.dataValues.id;
 	  });
 	} else {
-		const orderStatuses = Object.values(statusOrder).slice(5, 9)
+		const orderStatuses = Object.values(statusOrder).slice(4, 9)
+		console.log(orderStatuses);
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId
