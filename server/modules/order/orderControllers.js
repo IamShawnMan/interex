@@ -465,7 +465,6 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	let allOrders = [];
 	let ordersArrInPost = [];
 
-
 	queryBuilder.queryOptions.include = [
 		{ model: RegionModel, as: "region", attributes: ["name"] },
 		{ model: DistrictModel, as: "district", attributes: ["name"] },
@@ -529,10 +528,10 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		req.query.regionId = regionId;
 		req.query.where = {
 			...req.query.where,
-			orderStatus:{
-				[Op.in]: [statusOrder.STATUS_DELIVERED, statusOrder.]
-			}
-		}
+			orderStatus: {
+				[Op.in]: [statusOrder.STATUS_DELIVERED, statusOrder.STATUS_PENDING],
+			},
+		};
 		queryBuilder.filter();
 		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
 		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
