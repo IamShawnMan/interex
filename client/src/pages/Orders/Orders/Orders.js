@@ -84,8 +84,19 @@ function Orders() {
   };
 
   const getFile = async () => {
+    const dateCreatedAt = new Date(createdAt ? createdAt : "");
     http({
-      url: "orders/download",
+    url: `orders/download?page=${page}&size=${size}${
+      orderStatus ? `&orderStatus=${orderStatus}` : ""
+    }${regionId ? `&regionId=${regionId}` : ""}${
+      districtId ? `&districtId=${districtId}` : ""
+    }${
+      !isStoreOwner
+        ? storeOwnerId
+          ? `&storeOwnerId=${storeOwnerId}`
+          : ""
+        : ""
+    }${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
       method: "GET",
       responseType: "blob",
     }).then((res) => {
