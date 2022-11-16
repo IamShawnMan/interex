@@ -104,7 +104,7 @@ function Sidebar(props) {
               }`}
             >
               <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Qaytarilgan buyurtmalar</p>}
+              {open && <p className="h6">Pochta Yaratish</p>}
             </Link>
             <Link
               to="/postback"
@@ -113,7 +113,7 @@ function Sidebar(props) {
               }`}
             >
               <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Jo'natilgan pochtalar</p>}
+              {open && <p className="h6">Mening pochtalarim</p>}
             </Link>
           </>
         )}

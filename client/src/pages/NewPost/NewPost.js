@@ -111,8 +111,8 @@ function NewPost() {
             {order.orderStatus === "DELIVERED" && (
               <Button type="button" size="btnSmall" name="dots" />
             )}
-            {order.orderStatus === "DELIVERING" ||
-              (order.orderStatus === "REJECTED_DELIVERING" && (
+            {(order.orderStatus === "DELIVERING" ||
+              order.orderStatus === "REJECTED_DELIVERING") && (
                 <Input
                   type="checkbox"
                   checked={ordersIdArr.includes(order.id)}
@@ -128,7 +128,7 @@ function NewPost() {
                     }
                   }}
                 />
-              ))}
+              )}
           </>
         );
       },

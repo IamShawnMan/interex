@@ -46,7 +46,7 @@ function Orders() {
   useEffect(() => {
     filterFn();
     getPrices();
-  }, [page, info, regionId, districtId, storeOwnerId, createdAt]);
+  }, [page, info, regionId, districtId, storeOwnerId, createdAt,url]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
@@ -328,7 +328,7 @@ function Orders() {
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
-    navigate("/posts");
+    navigate("/postback");
   };
   const filterFn = async () => {
     const dateCreatedAt = new Date(createdAt ? createdAt : "");
@@ -359,7 +359,7 @@ function Orders() {
       <Button
         type="button"
         name="btn"
-        btnStyle={{ width: "9rem" }}
+        btnStyle={{ width: "9rem",marginBottom:".5rem"}}
         onClick={() => getFile()}
       >
         Download
@@ -382,7 +382,7 @@ function Orders() {
             <Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
               Bugungilar
             </Button>
-            <Button style={{ width: "13rem" }} name="btn" onClick={filterFn}>
+            <Button style={{ width: "13rem" }} name="btn" onClick={url==="/postback/rejected/orders"?()=>{navigate("/postback")}:filterFn}>
               Hammasi
             </Button>
           </div>
@@ -426,16 +426,6 @@ function Orders() {
                 : "update"}
             </Button>
           )}
-      </div>
-      <div style={{ width: "10rem", marginTop: "4rem" }}>
-        <Button
-          name="btn"
-          onClick={() => {
-            // getFile;
-          }}
-        >
-          Download
-        </Button>
       </div>
     </Layout>
   );
