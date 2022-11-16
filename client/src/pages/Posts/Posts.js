@@ -34,6 +34,10 @@ const Posts = () => {
             ? `/posts?page=${page}&size=${size}`
             : `/postback/rejectedposts`,
       });
+      console.log(url === "/posts"
+      ? `/posts?page=${page}&size=${size}`
+      : `/postback/rejectedposts`);
+      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
@@ -43,7 +47,7 @@ const Posts = () => {
   };
   useEffect(() => {
     getAllPosts();
-  }, [page, info]);
+  }, [page, info,url]);
   const postCols = [
     {
       id: "id",
@@ -165,10 +169,10 @@ const Posts = () => {
           <Button
             name="btn"
             onClick={() => {
-              navigate("/new-post");
+             url==="/postback"?navigate("/postback/rejected/orders"): navigate("/new-post");
             }}
           >
-            Bugungi pochta
+          {url==="/postback"?"Pochta yaratish": "Bugungi pochta"}
           </Button>
         </div>
       )}
@@ -223,7 +227,7 @@ const Posts = () => {
         />
       )}
 
-      {viewAllPosts && value?.length > 0 ? (
+      {!viewAllPosts && value?.length > 0 ? (
         <BasicTable
           columns={postCols}
           data={value}
