@@ -114,7 +114,7 @@ function NewPost() {
             {(order.orderStatus === "DELIVERING" ||
               order.orderStatus === "REJECTED_DELIVERING") && (
                 <Input
-                  type="checkbox"
+                  type='checkbox'
                   checked={ordersIdArr.includes(order.id)}
                   onClick={() => {
                     const index = ordersIdArr.includes(order.id);
