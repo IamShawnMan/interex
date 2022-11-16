@@ -356,7 +356,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	if (region.name === "Samarqand viloyati") {
 	  const orderStatuses = Object.values(statusOrder).slice(5, 8)
 	  queryBuilder.queryOptions.where = {
-		...queryBuilder.queryOptions.where,
 		regionId: {
 			[Op.eq]: regionId
 		},
@@ -365,7 +364,8 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		},
 		orderStatus: {
 		   [Op.in]: orderStatuses
-		}
+		},
+		...queryBuilder.queryOptions.where
 	  };
 	  deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
 	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
@@ -396,13 +396,13 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	} else {
 		const orderStatuses = Object.values(statusOrder).slice(5, 8)
 		queryBuilder.queryOptions.where = {
-			...queryBuilder.queryOptions.where,
 			regionId: {
 				[Op.eq]: regionId
 			},
 			orderStatus: {
 				[Op.in]: orderStatuses
-			}
+			},
+			...queryBuilder.queryOptions.where,
 		}
 	  deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
 	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
@@ -488,7 +488,10 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		  [Op.notIn]: [101, 106],
 		},
 		orderStatus: {
-			[Op.eq]: statusOrder.STATUS_DELIVERED
+			[Op.or]: [
+				statusOrder.STATUS_PENDING,
+				statusOrder.STATUS_DELIVERED
+			]
 		},
 		...queryBuilder.queryOptions.where,
 	  };
@@ -527,7 +530,10 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 				[Op.eq]: regionId
 			},
 			orderStatus: {
-				[Op.in]: orderStatuses
+				[Op.or]: [
+					statusOrder.STATUS_PENDING,
+					statusOrder.STATUS_DELIVERED
+				]
 			},
 			...queryBuilder.queryOptions.where,
 		}
@@ -540,7 +546,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
   
 	res.json({
 		status: "success",
-		message: "Yetkazib berilgan buyurtmalar",
+		message: "Kunlik yetkazib beriladigan buyurtmalar",
 		error: null, 
 		data: {
 			...ordersOneDay,
