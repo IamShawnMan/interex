@@ -48,7 +48,9 @@ function NewPost() {
     {
       id: "postTotalPrice",
       Header: "Post umumiy narxi",
-      accessor: "postTotalPrice",
+      accessor: (posts) => {
+        return <>{`${posts.postTotalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
     },
   ];
 
@@ -100,7 +102,9 @@ function NewPost() {
     {
       id: "totalPrice",
       Header: "Umumiy narx",
-      accessor: "totalPrice",
+      accessor: (order) => {
+        return <>{`${order.totalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
     },
     {
       id: "action",

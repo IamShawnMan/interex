@@ -39,7 +39,9 @@ function RejectedOrders() {
     {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
-      accessor: "deliveryPrice",
+      accessor: (order) => {
+        return <>{`${order.deliveryPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
     },
     {
       id: "totalPrice",
