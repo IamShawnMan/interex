@@ -236,7 +236,12 @@ exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
   if (userRole === "COURIER") {
     queryBuilder.queryOptions.where = {
       postStatus: {
-        [Op.eq]: postStatuses.POST_REJECTED_NEW,
+        [Op.in]: [
+          postStatuses.POST_REJECTED_NEW,
+          postStatuses.POST_REJECTED_DELIVERING,
+          postStatuses.POST_REJECTED_DELIVERED,
+          postStatuses.POST_REJECTED_NOT_DELIVERED,
+        ],
       },
       regionId: {
         [Op.eq]: regionId,
