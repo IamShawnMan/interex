@@ -54,46 +54,43 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	}
 	const { userRole } = req.user;
 
-	let existedPackage = await PackageModel.findOne({
-		where: {
-			[Op.and]: [
-				{ storeOwnerId: { [Op.eq]: req.user.id } },
-				{ packageStatus: { [Op.eq]: statusPackage.STATUS_NEW } },
-			],
-		},
-		order: [["createdAt", "DESC"]],
-	});
-
-	if (!existedPackage) {
-		existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
-	}
-	const storeOwnerId = req.user.id;
-	const orders = req.body.orders;
-	orders?.forEach(async (order) => {
-		const newOrder = await OrderModel.create({
-			recipient: order.recipient,
-			regionId: order.regionId,
-			note: `${userRole}: ${order.note}`,
-			recipientPhoneNumber: order.recipientPhoneNumber,
-			districtId: order.districtId,
-			packageId: existedPackage.id,
-			storeOwnerId,
+  let existedPackage = await PackageModel.findOne({
+    where: {[Op.and]: [
+		{storeOwnerId: { [Op.eq]: req.user.id }},
+		{packageStatus: {[Op.eq]: statusPackage.STATUS_NEW}}
+	]},
+	order: [["createdAt", "DESC"]]
+  });
+  
+  if (!existedPackage) {
+    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
+  }
+  const storeOwnerId = req.user.id;
+  const orders = req.body.orders;
+  orders?.forEach(async (order) => {
+	  const newOrder = await OrderModel.create({
+		  recipient: order.recipient,
+      regionId: order.regionId,
+      note: `${userRole}: ${order.note}`,
+      recipientPhoneNumber: order.recipientPhoneNumber,
+      districtId: order.districtId,
+      packageId: existedPackage.id,
+      storeOwnerId,
+    });
+    let items = [];
+    let sum = 0;
+    order?.orderItems?.forEach((item) => {
+      items.push({
+		  productName: item.productName,
+		  quantity: item.quantity,
+		  orderItemTotalPrice: item.price,
+		  orderId: newOrder.id,
 		});
-		let items = [];
-		let sum = 0;
-		order?.orderItems?.forEach((item) => {
-			items.push({
-				productName: item.productName,
-				quantity: item.quantity,
-				price: item.price,
-				orderItemTotalPrice: item.quantity * item.price,
-				orderId: newOrder.id,
-			});
-		});
-		items?.forEach((item) => {
-			sum += item.orderItemTotalPrice;
-		});
-
+    });
+    items?.forEach((item) => {
+		sum += item.orderItemTotalPrice;
+    });
+	
 		await OrderItemModel.bulkCreate(items);
 		newOrder.totalPrice = sum;
 		newOrder.packageId = existedPackage.id;
@@ -101,7 +98,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		existedPackage.packageTotalPrice += newOrder.totalPrice;
 		await existedPackage.save();
 	});
-
 	res.status(201).json({
 		status: "success",
 		message: "yangi buyurtmalar qo`shildi",
