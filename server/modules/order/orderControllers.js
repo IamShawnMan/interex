@@ -289,7 +289,6 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 
 exports.getAllDeliveryPrice = (req, res, next) => {
 	const allPrice = Object.values(priceDelivery);
-
 	res.json(allPrice);
 };
 
@@ -395,7 +394,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	  });
 	} else {
 		const orderStatuses = Object.values(statusOrder).slice(4, 9)
-		console.log(orderStatuses);
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId
@@ -489,7 +487,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		  [Op.notIn]: [101, 106],
 		},
 		orderStatus: {
-			[Op.or]: [
+			[Op.in]: [
 				statusOrder.STATUS_PENDING,
 				statusOrder.STATUS_DELIVERED
 			]
@@ -512,7 +510,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		  },
 		},
 		orderStatus: {
-			[Op.or]: [
+			[Op.in]: [
 				statusOrder.STATUS_PENDING,
 				statusOrder.STATUS_DELIVERED
 			]
@@ -530,7 +528,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 				[Op.eq]: regionId
 			},
 			orderStatus: {
-				[Op.or]: [
+				[Op.in]: [
 					statusOrder.STATUS_PENDING,
 					statusOrder.STATUS_DELIVERED
 				]
@@ -570,8 +568,12 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{header: "Yaratilgan sana", key: "createdAt", width: 20},
 		{header: "O'zgartirilgan sana", key: "updatedAt", width: 20},
 	]
-	let orders = await OrderModel.findAndCountAll();
-	const ordersArr = Object.values(orders.rows.map(e => e.dataValues))
+	const queryBuilder = new QueryBuilder(req.query);
+	queryBuilder
+		.filter()
+	let downloadOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
+
+	const ordersArr = Object.values(downloadOrders.rows.map(e => e.dataValues))
 	let counter = 1;
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
