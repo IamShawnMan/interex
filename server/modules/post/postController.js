@@ -19,13 +19,10 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
     { model: Region, as: "region", attributes: ["name"] }
   ]
   if(userRole === "COURIER") {
+    const postStatusArr = Object.values(postStatuses).slice(1,5)
     queryBuilder.queryOptions.where = {
       postStatus: {
-        [Op.in]: [
-          postStatuses.POST_DELIVERING,
-          postStatuses.POST_DELIVERED,
-          postStatuses.POST_REJECTED_NEW,
-        ]
+        [Op.in]: postStatusArr
       },
       regionId: {
         [Op.eq]: regionId
@@ -323,9 +320,7 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
-  const {userRole} = req.user
   const { id } = req.params;
-  console.log(id);
   const queryBuilder = new QueryBuilder(req.query);
   const currentPostStatus = await Post.findByPk(id, {
     attributes: ["postStatus"],
@@ -349,8 +344,6 @@ exports.getOrdersInPost = catchAsync(async (req, res, next) => {
   ];
 
   let ordersInPost = await Order.findAndCountAll(queryBuilder.queryOptions);
-
-  console.log(ordersInPost);
 
   ordersInPost = queryBuilder.createPagination(ordersInPost);
 
@@ -417,7 +410,6 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 
 exports.getTodaysPost = catchAsync(async (req, res, next) => {
   const { regionId } = req.user;
-
   const queryBuilder = new QueryBuilder(req.query);
 
   queryBuilder
@@ -524,6 +516,33 @@ exports.recievePost = catchAsync(async (req, res, next) => {
       },
     }
   );
+  if (ordersArr.length > 0) {
+    await Post.update(
+      {
+        postStatus: postStatuses.POST_DELIVERED,
+      },
+      {
+        where: {
+          id: {
+            [Op.eq]: postId,
+          },
+        },
+      }
+    );
+  } else {
+    await Post.update(
+      {
+        postStatus: postStatuses.POST_NOT_DELIVERED,
+      },
+      {
+        where: {
+          id: {
+            [Op.eq]: postId,
+          },
+        },
+      }
+    );
+  }
   res.json({
     status: "sucess",
     message: "Buyurtmalar va pochtalar o'zgartirildi",
