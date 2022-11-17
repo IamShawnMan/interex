@@ -268,14 +268,24 @@ exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
 
 exports.getAllRejectedOrdersInPost = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const rejectedOrdersInPost = await Order.findAndCountAll({
-    where: {
-      postBackId: {
-        [Op.eq]: id,
-      },
+  const queryBuilder = new QueryBuilder(req.query);
+
+  queryBuilder.queryOptions.include = [
+    { model: Region, as: "region", attributes: ["name"] },
+    { model: District, as: "district", attributes: ["name"] },
+  ];
+  queryBuilder.queryOptions.where = {
+    ...queryBuilder.queryOptions.where,
+    postBackId: {
+      [Op.eq]: id,
     },
-    include: [{ model: District, as: "district", attributes: ["name"] }],
-  });
+    orderStatus: {
+      [Op.eq]: orderStatuses.STATUS_REJECTED_DELIVERING
+    }
+  }
+  let rejectedOrdersInPost = await Order.findAndCountAll(queryBuilder.queryOptions);
+  rejectedOrdersInPost = queryBuilder.createPagination(rejectedOrdersInPost);
+  
   res.json({
     status: "success",
     message: "Qaytarib yuborilgan pochtadadagi buyurtmalar",
