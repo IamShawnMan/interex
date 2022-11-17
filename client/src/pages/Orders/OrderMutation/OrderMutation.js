@@ -66,7 +66,7 @@ function OrderMutation() {
       append({
         recipient: "",
         note: "",
-        recipientPhoneNumber: "",
+        recipientPhoneNumber: "+998",
         regionId: "",
         districtId: "",
         orderItems: [],

@@ -64,6 +64,7 @@ const UserMutation = () => {
   useEffect(() => {
     getAllUserRoles();
     getAllRegions();
+    reset({ phoneNumber:"+998"})
     if (isUpdate) {
       getById();
     }

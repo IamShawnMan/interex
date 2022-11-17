@@ -9,6 +9,8 @@ const userRoles = require("../../core/constants/userRole");
 const postStatuses = require("../../core/constants/postStatus");
 const orderStatuses = require("../../core/constants/orderStatus");
 const District = require("../district/District");
+const PackageBack = require("../packageBack/PackageBack")
+const statusPackage = require("../../core/constants/packageStatus")
 
 exports.rejectedOrdersBeforeSend = catchAsync(async (req, res, next) => {
   const { regionId } = req.user;
@@ -370,6 +372,89 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
     );
   }
 
+  let storeOwnerIdArr = []
+  const rejectDelevired = await Order.findAll(
+    {
+      where: {
+        postBackId: {
+          [Op.eq]: postBackId,
+        },
+        orderStatus: {[Op.eq]: orderStatuses.STATUS_REJECTED_DELIVERED}
+      },
+    }
+  );
+  rejectDelevired?.map(order=>{
+    if(!storeOwnerIdArr.includes(order.storeOwnerId)){
+      storeOwnerIdArr.push(order.storeOwnerId)
+    }
+  })
+  
+
+  storeOwnerIdArr?.map(async(storeId)=>{
+    let existPackageBack = await PackageBack.findOne({where: {[Op.and]: [
+      {storeOwnerId: {[Op.eq]: storeId}},
+      {packageStatus: {[Op.eq]: statusPackage.STATUS_REJ_NEW} }
+    ]} })
+    if(!existPackageBack){
+    existPackageBack = await PackageBack.create({storeOwnerId: storeId})
+    } 
+
+    await Order.update(
+      {
+        packageBackId: existPackageBack.id,
+      },
+      {
+        where: {[Op.and]:[
+          {storeOwnerId: {
+            [Op.eq]: storeId,
+          }},
+          {orderStatus: {[Op.eq]: orderStatuses.STATUS_REJECTED_DELIVERED}},
+          {postBackId: {
+            [Op.eq]: postBackId,
+          }},
+        ]
+        },
+      }
+      );
+
+      const packageBackSum = await Order.sum(
+        "totalPrice",
+        {
+          where: {[Op.and]:[
+            {storeOwnerId: {
+              [Op.eq]: storeId,
+            }},
+            {orderStatus: {[Op.eq]: orderStatuses.STATUS_REJECTED_DELIVERED}},
+            {postBackId: {
+              [Op.eq]: postBackId,
+            }},
+          ]
+          },
+        }
+        );
+
+        const totalDeliveryPricePackageBack = await Order.sum(
+          "deliveryPrice",
+          {
+            where: {[Op.and]:[
+              {storeOwnerId: {
+                [Op.eq]: storeId,
+              }},
+              {orderStatus: {[Op.eq]: orderStatuses.STATUS_REJECTED_DELIVERED}},
+              {postBackId: {
+                [Op.eq]: postBackId,
+              }},
+            ]
+            },
+          }
+          );
+
+          const totalPrice = packageBackSum - totalDeliveryPricePackageBack
+
+        existPackageBack.packageTotalPrice += totalPrice
+        existPackageBack.save()
+    })
+    
   res.json({
     status: "sucess",
     message: "Qaytarib yuborilgan pochta qabul qilindi",

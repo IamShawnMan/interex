@@ -13,6 +13,7 @@ import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 import { formatDate } from "../../utils/dateFormatter";
 import PostSendCourier from "./PostSendCourier";
+import styles from "./Posts.module.css";
 const Posts = () => {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState([]);
@@ -95,6 +96,7 @@ const Posts = () => {
               size="small"
               name="btn"
               onClick={() => {
+                url==="/postback"?navigate(`/postback/rejectedposts/${post.id}`):
                 navigate(`/posts/${post.id}/orders`);
               }}
             >
@@ -200,11 +202,19 @@ const Posts = () => {
       )}
       {!viewAllPosts && user.userRole === "ADMIN" ? (
         <>
+        {console.log(regionValue)}
           {regionValue?.length > 0 ? (
-            <>
-              <p>Viloyatlar</p>
-              <BasicTable columns={regionCols} data={regionValue} />
-            </>
+            // <>
+            //   <p>Viloyatlar</p>
+            //   <BasicTable columns={regionCols} data={regionValue} />
+            // </>
+            <div className={styles.div}>
+            {regionValue.map((e)=>
+              <div className={styles.divbox}>
+                <Link style={{fontSize:"2rem"}} to={`/posts/${e.id}/regionorders`}>{e.name}</Link>
+              </div>
+            )}
+            </div>
           ) : (
             <p
               style={{ width: "50%", margin: "2rem auto", textAlign: "center" }}
