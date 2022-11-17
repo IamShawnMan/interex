@@ -2,6 +2,7 @@ const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const userRole = require("../../core/constants/userRole");
+const userTariff = require("../../core/constants/userTariff")
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const { Op } = require("sequelize");
@@ -134,7 +135,19 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
 		message: "Barcha foydalanuvchi rollari",
 		error: null,
 		data: {
-			roles,
+			roles
+		},
+	});
+});
+
+exports.getTariff = catchAsync(async (req, res, next) => {
+	const tariffs = Object.values(userTariff)
+	res.status(200).json({
+		status: "success",
+		message: "Barcha tariflar",
+		error: null,
+		data: {
+			tariffs
 		},
 	});
 });
@@ -185,30 +198,3 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 	});
 });
 
-exports.getAdmins = catchAsync(async (req, res, next) => {
-	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder
-		.filter()
-		.limitFields()
-		.paginate()
-		.search(["phoneNumber", "firstName", "lastName"])
-		.sort()
-	
-	queryBuilder.queryOptions.where.userRole = { [Op.eq]: "ADMIN" };
-	queryBuilder.queryOptions.attributes = ["firstName", "lastName", "phoneNumber"]
-
-	let allAdmins = await User.findAndCountAll(queryBuilder.queryOptions)
-
-	if (!allAdmins) {
-		return next(new AppError("Foydalanuvchilar mavjud emas", 404));
-	}
-	allAdmins = queryBuilder.createPagination(allAdmins);
-	res.json({
-		status: "success",
-		message: "All admins",
-		error: null,
-		data: {
-			...allAdmins
-		}
-	})
-}) 

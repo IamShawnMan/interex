@@ -162,7 +162,7 @@ function Orders() {
       id: "totalPrice",
       Header: "Mahsulotning narxi",
       accessor: (order) => {
-        return <>{`${order.totalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+        return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
       },
     },
     {

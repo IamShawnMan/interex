@@ -155,7 +155,6 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 			{packageId: {[Op.eq]: existedPackage.id}},
 			{orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}}
 		]}})
-		console.log(isNewOrders)
 		if(isNewOrders === 0){
 			
 			await existedPackage.update({packageStatus: statusPackage.STATUS_OLD})
@@ -353,7 +352,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	});
   
 	if (region?.name === "Samarqand viloyati") {
-	  const orderStatuses = Object.values(statusOrder).slice(4, 9)
+	  const orderStatuses = Object.values(statusOrder).slice(4, 12)
 	  queryBuilder.queryOptions.where = {
 		regionId: {
 			[Op.eq]: regionId
@@ -372,7 +371,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		return order.dataValues.id;
 	  });
 	} else if (region?.name === "Navoiy viloyati") {
-      const orderStatuses = Object.values(statusOrder).slice(4, 9)
+      const orderStatuses = Object.values(statusOrder).slice(4, 12)
 	  queryBuilder.queryOptions.where = {
 		[Op.or]: {
 			regionId: {
@@ -393,7 +392,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		return order.dataValues.id;
 	  });
 	} else {
-		const orderStatuses = Object.values(statusOrder).slice(4, 9)
+		const orderStatuses = Object.values(statusOrder).slice(4, 12)
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId
@@ -575,6 +574,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 
 	const ordersArr = Object.values(downloadOrders.rows.map(e => e.dataValues))
 	let counter = 1;
+	test = ["Hello"]
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
 		worksheet.addRow(order)
