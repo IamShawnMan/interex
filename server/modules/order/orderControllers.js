@@ -357,10 +357,9 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 
-	if (region.name === "Samarqand viloyati") {
-		const orderStatuses = Object.values(statusOrder).slice(5, 8);
+	if (region?.name === "Samarqand viloyati") {
+		const orderStatuses = Object.values(statusOrder).slice(4, 9);
 		queryBuilder.queryOptions.where = {
-			...queryBuilder.queryOptions.where,
 			regionId: {
 				[Op.eq]: regionId,
 			},
@@ -370,29 +369,27 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 			orderStatus: {
 				[Op.in]: orderStatuses,
 			},
+			...queryBuilder.queryOptions.where,
 		};
 		deliveredOrders = await OrderModel.findAndCountAll(
 			queryBuilder.queryOptions
 		);
 		deliveredOrders = queryBuilder.createPagination(deliveredOrders);
-		ordersArrInPost = deliveredOrders.content.map((order) => {
+		deliveredOrdersArrInPost = deliveredOrders.content.map((order) => {
 			return order.dataValues.id;
 		});
-	} else if (region.name === "Navoiy viloyati") {
-		const orderStatuses = Object.values(statusOrder).slice(5, 8);
+	} else if (region?.name === "Navoiy viloyati") {
+		const orderStatuses = Object.values(statusOrder).slice(4, 9);
 		queryBuilder.queryOptions.where = {
-			...queryBuilder.queryOptions.where,
 			[Op.or]: {
 				regionId: {
 					[Op.eq]: regionId,
 				},
-				districtId: {
-					[Op.in]: [101, 106],
-				},
-				// orderStatus: {
-				// 	[Op.in]: orderStatuses,
-				// },
 			},
+			orderStatus: {
+				[Op.in]: orderStatuses,
+			},
+			...queryBuilder.queryOptions.where,
 		};
 		deliveredOrders = await OrderModel.findAndCountAll(
 			queryBuilder.queryOptions
@@ -402,8 +399,20 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 			return order.dataValues.id;
 		});
 	} else {
-		req.query.regionId = regionId;
-		queryBuilder.filter();
+		const orderStatuses = Object.values(statusOrder).slice(4, 9);
+		console.log(orderStatuses);
+		queryBuilder.queryOptions.where = {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+			districtId: {
+				[Op.notIn]: [101, 106],
+			},
+			orderStatus: {
+				[Op.in]: orderStatuses,
+			},
+			...queryBuilder.queryOptions.where,
+		};
 		deliveredOrders = await OrderModel.findAndCountAll(
 			queryBuilder.queryOptions
 		);
@@ -488,6 +497,44 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 
 	if (region.name === "Samarqand viloyati") {
 		queryBuilder.queryOptions.where = {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+			districtId: {
+				[Op.notIn]: [101, 106],
+			},
+			orderStatus: {
+				[Op.or]: [statusOrder.STATUS_PENDING, statusOrder.STATUS_DELIVERED],
+			},
+			...queryBuilder.queryOptions.where,
+		};
+		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+		oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
+			return order.dataValues.id;
+		});
+	} else if (region.name === "Navoiy viloyati") {
+		queryBuilder.queryOptions.where = {
+			[Op.or]: {
+				regionId: {
+					[Op.eq]: regionId,
+				},
+				districtId: {
+					[Op.in]: [101, 106],
+				},
+			},
+			orderStatus: {
+				[Op.or]: [statusOrder.STATUS_PENDING, statusOrder.STATUS_DELIVERED],
+			},
+			...queryBuilder.queryOptions.where,
+		};
+		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+		oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
+			return order.dataValues.id;
+		});
+	} else {
+		queryBuilder.queryOptions.where = {
 			...queryBuilder.queryOptions.where,
 			regionId: {
 				[Op.eq]: regionId,
@@ -504,45 +551,11 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		ordersArrInPost = ordersOneDay.content.map((order) => {
 			return order.dataValues.id;
 		});
-	} else if (region.name === "Navoiy viloyati") {
-		queryBuilder.queryOptions.where = {
-			...queryBuilder.queryOptions.where,
-			[Op.or]: {
-				regionId: {
-					[Op.eq]: regionId,
-				},
-				districtId: {
-					[Op.in]: [101, 106],
-				},
-				orderStatus: {
-					[Op.eq]: [statusOrder.STATUS_PENDING, statusOrder.STATUS_DELIVERED],
-				},
-			},
-		};
-		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
-		ordersArrInPost = ordersOneDay.content.map((order) => {
-			return order.dataValues.id;
-		});
-	} else {
-		req.query.regionId = regionId;
-		req.query.where = {
-			...req.query.where,
-			orderStatus: {
-				[Op.in]: [statusOrder.STATUS_DELIVERED, statusOrder.STATUS_PENDING],
-			},
-		};
-		queryBuilder.filter();
-		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
-		ordersArrInPost = ordersOneDay.content.map((order) => {
-			return order.dataValues.id;
-		});
 	}
 
 	res.json({
 		status: "success",
-		message: "Yetkazib berilgan buyurtmalar",
+		message: "Kunlik yetkazib beriladigan buyurtmalar",
 		error: null,
 		data: {
 			...ordersOneDay,

@@ -325,6 +325,7 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 exports.getOrdersInPost = catchAsync(async (req, res, next) => {
   const {userRole} = req.user
   const { id } = req.params;
+  console.log(id);
   const queryBuilder = new QueryBuilder(req.query);
   const currentPostStatus = await Post.findByPk(id, {
     attributes: ["postStatus"],

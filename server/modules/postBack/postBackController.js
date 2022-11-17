@@ -234,9 +234,10 @@ exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
     { model: Region, as: "region", attributes: ["name"] },
   ];
   if (userRole === "COURIER") {
+    const rejectedPosts = Object.values(postStatuses).slice(4)
     queryBuilder.queryOptions.where = {
       postStatus: {
-        [Op.eq]: postStatuses.POST_REJECTED_NEW,
+        [Op.in]: rejectedPosts,
       },
       regionId: {
         [Op.eq]: regionId,
@@ -245,13 +246,10 @@ exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
     };
   }
   if (userRole === "ADMIN") {
+    const rejectedPosts = Object.values(postStatuses).slice(5)
     queryBuilder.queryOptions.where = {
       postStatus: {
-        [Op.in]: [
-          postStatuses.POST_REJECTED_DELIVERING,
-          postStatuses.POST_REJECTED_DELIVERED,
-          postStatuses.POST_REJECTED_NOT_DELIVERED,
-        ],
+        [Op.in]: rejectedPosts,
       },
       ...queryBuilder.queryOptions.where,
     };

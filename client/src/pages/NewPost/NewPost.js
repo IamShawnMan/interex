@@ -48,7 +48,9 @@ function NewPost() {
     {
       id: "postTotalPrice",
       Header: "Post umumiy narxi",
-      accessor: "postTotalPrice",
+      accessor: (posts) => {
+        return <>{`${posts.postTotalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
     },
   ];
 
@@ -100,7 +102,9 @@ function NewPost() {
     {
       id: "totalPrice",
       Header: "Umumiy narx",
-      accessor: "totalPrice",
+      accessor: (order) => {
+        return <>{`${order.totalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
     },
     {
       id: "action",
@@ -111,10 +115,10 @@ function NewPost() {
             {order.orderStatus === "DELIVERED" && (
               <Button type="button" size="btnSmall" name="dots" />
             )}
-            {order.orderStatus === "DELIVERING" ||
-              (order.orderStatus === "REJECTED_DELIVERING" && (
+            {(order.orderStatus === "DELIVERING" ||
+              order.orderStatus === "REJECTED_DELIVERING") && (
                 <Input
-                  type="checkbox"
+                  type='checkbox'
                   checked={ordersIdArr.includes(order.id)}
                   onClick={() => {
                     const index = ordersIdArr.includes(order.id);
@@ -128,7 +132,7 @@ function NewPost() {
                     }
                   }}
                 />
-              ))}
+              )}
           </>
         );
       },
