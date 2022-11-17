@@ -395,7 +395,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	  });
 	} else {
 		const orderStatuses = Object.values(statusOrder).slice(4, 9)
-		console.log(orderStatuses);
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId
