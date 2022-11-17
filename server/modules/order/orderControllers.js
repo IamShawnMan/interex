@@ -11,9 +11,9 @@ const priceDelivery = require("../../core/constants/deliveryPrice");
 const RegionModel = require("../region/Region");
 const DistrictModel = require("../district/District");
 const UserModel = require("../user/User");
-const statusPackage = require('../../core/constants/packageStatus')
-const excelJS = require("exceljs")
-const Region = require("../region/regions.json")
+const statusPackage = require("../../core/constants/packageStatus");
+const excelJS = require("exceljs");
+const Region = require("../region/regions.json");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -45,14 +45,14 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
-  const validationErrors = validationResult(req);
-  if (!validationErrors.isEmpty()) {
-    let err = new AppError("Validatsiya xatosi", 403);
-    err.isOperational = false;
-    err.errors = validationErrors;
-    return next(err);
-  }
-  const {userRole} = req.user
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		let err = new AppError("Validatsiya xatosi", 403);
+		err.isOperational = false;
+		err.errors = validationErrors;
+		return next(err);
+	}
+	const { userRole } = req.user;
 
   let existedPackage = await PackageModel.findOne({
     where: {[Op.and]: [
@@ -147,18 +147,20 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 		} else {
 			await orderById.update({ deliveryPrice: null });
 		}
-		const existedPackage = await PackageModel.findByPk(orderById.packageId)
+		const existedPackage = await PackageModel.findByPk(orderById.packageId);
 
-		const isNewOrders = await OrderModel.count({where: {[Op.and]: [
-			{packageId: {[Op.eq]: existedPackage.id}},
-			{orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}}
-		]}})
-		console.log(isNewOrders)
-		if(isNewOrders === 0){
-			
-			await existedPackage.update({packageStatus: statusPackage.STATUS_OLD})
+		const isNewOrders = await OrderModel.count({
+			where: {
+				[Op.and]: [
+					{ packageId: { [Op.eq]: existedPackage.id } },
+					{ orderStatus: { [Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED } },
+				],
+			},
+		});
+		console.log(isNewOrders);
+		if (isNewOrders === 0) {
+			await existedPackage.update({ packageStatus: statusPackage.STATUS_OLD });
 		}
-
 	}
 	res.status(203).json({
 		status: "success",
@@ -291,9 +293,9 @@ exports.getAllDeliveryPrice = (req, res, next) => {
 };
 
 exports.getAllOrderStatus = (req, res, next) => {
-	const {userRole} = req.user
+	const { userRole } = req.user;
 	let allOrderStatus = Object.values(statusOrder);
-	if(userRole === "COURIER") {
+	if (userRole === "COURIER") {
 		allOrderStatus = Object.values(statusOrder).slice(4, 9);
 	}
 	res.json({
@@ -326,117 +328,128 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
-	let deliveredOrders = [];
-	let deliveredOrdersArrInPost = [];
-  
+	let allOrders = [];
+	let ordersArrInPost = [];
+
 	queryBuilder.queryOptions.include = [
-	  { model: RegionModel, as: "region", attributes: ["name"] },
-	  { model: DistrictModel, as: "district", attributes: ["name"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
 	];
-  
+
 	queryBuilder
-	  .filter()
-	  .paginate()
-	  .limitFields()
-	  .search(["recipientPhoneNumber", "recipient"])
-	  .sort();
-  
+		.filter()
+		.paginate()
+		.limitFields()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
+
 	const region = await RegionModel.findOne({
-	  attributes: ["id", "name"],
-	  where: {
-		id: {
-		  [Op.eq]: regionId,
-		},
-	  },
-	});
-  
-	if (region?.name === "Samarqand viloyati") {
-	  const orderStatuses = Object.values(statusOrder).slice(4, 9)
-	  queryBuilder.queryOptions.where = {
-		regionId: {
-			[Op.eq]: regionId
-		},
-		districtId: {
-		  [Op.notIn]: [101, 106],
-		},
-		orderStatus: {
-		   [Op.in]: orderStatuses
-		},
-		...queryBuilder.queryOptions.where
-	  };
-	  deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
-	  deliveredOrdersArrInPost = deliveredOrders.content.map((order) => {
-		return order.dataValues.id;
-	  });
-	} else if (region?.name === "Navoiy viloyati") {
-      const orderStatuses = Object.values(statusOrder).slice(4, 9)
-	  queryBuilder.queryOptions.where = {
-		[Op.or]: {
-			regionId: {
-				[Op.eq]: regionId
+		attributes: ["id", "name"],
+		where: {
+			id: {
+				[Op.eq]: regionId,
 			},
-			districtId: {
-				[Op.in]: [101, 106]
-			}
 		},
-		orderStatus: {
-			[Op.in]: orderStatuses
-		},
-		...queryBuilder.queryOptions.where
-	}
-	  deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
-	  ordersArrInPost = deliveredOrders.content.map((order) => {
-		return order.dataValues.id;
-	  });
-	} else {
-		const orderStatuses = Object.values(statusOrder).slice(4, 9)
+	});
+
+	if (region?.name === "Samarqand viloyati") {
+		const orderStatuses = Object.values(statusOrder).slice(4, 9);
 		queryBuilder.queryOptions.where = {
 			regionId: {
-				[Op.eq]: regionId
+				[Op.eq]: regionId,
+			},
+			districtId: {
+				[Op.notIn]: [101, 106],
 			},
 			orderStatus: {
-				[Op.in]: orderStatuses
+				[Op.in]: orderStatuses,
 			},
 			...queryBuilder.queryOptions.where,
-		}
-	  deliveredOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-	  deliveredOrders = queryBuilder.createPagination(deliveredOrders);
-	  ordersArrInPost = deliveredOrders.content.map((order) => {
-		return order.dataValues.id;
-	  });
+		};
+		deliveredOrders = await OrderModel.findAndCountAll(
+			queryBuilder.queryOptions
+		);
+		deliveredOrders = queryBuilder.createPagination(deliveredOrders);
+		deliveredOrdersArrInPost = deliveredOrders.content.map((order) => {
+			return order.dataValues.id;
+		});
+	} else if (region?.name === "Navoiy viloyati") {
+		const orderStatuses = Object.values(statusOrder).slice(4, 9);
+		queryBuilder.queryOptions.where = {
+			[Op.or]: {
+				regionId: {
+					[Op.eq]: regionId,
+				},
+			},
+			orderStatus: {
+				[Op.in]: orderStatuses,
+			},
+			...queryBuilder.queryOptions.where,
+		};
+		deliveredOrders = await OrderModel.findAndCountAll(
+			queryBuilder.queryOptions
+		);
+		deliveredOrders = queryBuilder.createPagination(deliveredOrders);
+		ordersArrInPost = deliveredOrders.content.map((order) => {
+			return order.dataValues.id;
+		});
+	} else {
+		const orderStatuses = Object.values(statusOrder).slice(4, 9);
+		queryBuilder.queryOptions.where = {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+			districtId: {
+				[Op.notIn]: [101, 106],
+			},
+			orderStatus: {
+				[Op.in]: orderStatuses,
+			},
+			...queryBuilder.queryOptions.where,
+		};
+		deliveredOrders = await OrderModel.findAndCountAll(
+			queryBuilder.queryOptions
+		);
+		deliveredOrders = queryBuilder.createPagination(deliveredOrders);
+		ordersArrInPost = deliveredOrders.content.map((order) => {
+			return order.dataValues.id;
+		});
 	}
-  
+
 	res.json({
 		status: "success",
 		message: "Yetkazib berilgan buyurtmalar",
-		error: null, 
+		error: null,
 		data: {
 			...deliveredOrders,
-			deliveredOrdersArrInPost,
-		}
-	})
-})
+			ordersArrInPost,
+		},
+	});
+});
 
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
-	const {regionId, userRole} = req.user
-	const {id} = req.params
-	const {orderStatus, note} = req.body
+	const { regionId, userRole } = req.user;
+	const { id } = req.params;
+	const { orderStatus, note } = req.body;
 	const postOrdersById = await OrderModel.findByPk(id, {
 		where: {
 			regionId: {
-				[Op.eq]: regionId
-			} 
-		}
-	})
-	const postOrderStatuses = Object.values(statusOrder).slice(6, 9)
-	const postOrderStatusChange = postOrderStatuses.find(e => e === orderStatus)
-	if(postOrdersById.dataValues.orderStatus === "DELIVERED" 
-	|| postOrdersById.dataValues.orderStatus === "PENDING") {
+				[Op.eq]: regionId,
+			},
+		},
+	});
+	const postOrderStatuses = Object.values(statusOrder).slice(6, 9);
+	const postOrderStatusChange = postOrderStatuses.find(
+		(e) => e === orderStatus
+	);
+	if (
+		postOrdersById.dataValues.orderStatus === "DELIVERED" ||
+		postOrdersById.dataValues.orderStatus === "PENDING"
+	) {
 		await postOrdersById.update({
-			orderStatus: postOrderStatusChange, note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`
-		})
+			orderStatus: postOrderStatusChange,
+			note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`,
+		});
 	}
 
 	res.status(203).json({
@@ -444,154 +457,151 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 		message: "Post orderining statusi o'zgardi",
 		error: null,
 		data: {
-			note
-		}
-	})
-})
+			note,
+		},
+	});
+});
 
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
-	const {regionId} = req.user
+	const { regionId } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
-	let ordersOneDay = [];
-	let oneDayOrdersArrInPost = [];
-  
+	let allOrders = [];
+	let ordersArrInPost = [];
+
 	queryBuilder.queryOptions.include = [
-	  { model: RegionModel, as: "region", attributes: ["name"] },
-	  { model: DistrictModel, as: "district", attributes: ["name"] },
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
 	];
-  
+
 	queryBuilder
-	  .filter()
-	  .paginate()
-	  .limitFields()
-	  .search(["recipientPhoneNumber", "recipient"])
-	  .sort();
-  
+		.filter()
+		.paginate()
+		.limitFields()
+		.search(["recipientPhoneNumber", "recipient"])
+		.sort();
+
 	const region = await RegionModel.findOne({
-	  attributes: ["id", "name"],
-	  where: {
-		id: {
-		  [Op.eq]: regionId,
+		attributes: ["id", "name"],
+		where: {
+			id: {
+				[Op.eq]: regionId,
+			},
 		},
-	  },
 	});
-  
+
 	if (region.name === "Samarqand viloyati") {
-	  queryBuilder.queryOptions.where = {
-		regionId: {
-		  [Op.eq]: regionId,
-		},
-		districtId: {
-		  [Op.notIn]: [101, 106],
-		},
-		orderStatus: {
-			[Op.in]: [
-				statusOrder.STATUS_PENDING,
-				statusOrder.STATUS_DELIVERED
-			]
-		},
-		...queryBuilder.queryOptions.where,
-	  };
-	  ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-	  ordersOneDay = queryBuilder.createPagination(ordersOneDay);
-	  oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
-		return order.dataValues.id;
-	  });
+		queryBuilder.queryOptions.where = {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+			districtId: {
+				[Op.notIn]: [101, 106],
+			},
+			orderStatus: {
+				[Op.in]: [statusOrder.STATUS_PENDING, statusOrder.STATUS_DELIVERED],
+			},
+			...queryBuilder.queryOptions.where,
+		};
+		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+		oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
+			return order.dataValues.id;
+		});
 	} else if (region.name === "Navoiy viloyati") {
-	  queryBuilder.queryOptions.where = {
-		[Op.or]: {
-		  regionId: {
-			[Op.eq]: regionId,
-		  },
-		  districtId: {
-			[Op.in]: [101, 106],
-		  },
-		},
-		orderStatus: {
-			[Op.in]: [
-				statusOrder.STATUS_PENDING,
-				statusOrder.STATUS_DELIVERED
-			]
-		},
-		...queryBuilder.queryOptions.where,
-	  };
-	  ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-	  ordersOneDay = queryBuilder.createPagination(ordersOneDay);
-	  oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
-		return order.dataValues.id;
-	  });
+		queryBuilder.queryOptions.where = {
+			[Op.or]: {
+				regionId: {
+					[Op.eq]: regionId,
+				},
+				districtId: {
+					[Op.in]: [101, 106],
+				},
+			},
+			orderStatus: {
+				[Op.in]: [statusOrder.STATUS_PENDING, statusOrder.STATUS_DELIVERED],
+			},
+			...queryBuilder.queryOptions.where,
+		};
+		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+		oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
+			return order.dataValues.id;
+		});
 	} else {
 		queryBuilder.queryOptions.where = {
 			regionId: {
-				[Op.eq]: regionId
+				[Op.eq]: regionId,
+			},
+			districtId: {
+				[Op.notIn]: [101, 106],
 			},
 			orderStatus: {
-				[Op.in]: [
-					statusOrder.STATUS_PENDING,
-					statusOrder.STATUS_DELIVERED
-				]
+				[Op.in]: [statusOrder.STATUS_PENDING, statusOrder.STATUS_DELIVERED],
 			},
 			...queryBuilder.queryOptions.where,
-		}
-	  ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
-	  ordersOneDay = queryBuilder.createPagination(ordersOneDay);
-	  oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
-		return order.dataValues.id;
-	  });
+		};
+		ordersOneDay = await OrderModel.findAndCountAll(queryBuilder.queryOptions);
+		ordersOneDay = queryBuilder.createPagination(ordersOneDay);
+		oneDayOrdersArrInPost = ordersOneDay.content.map((order) => {
+			return order.dataValues.id;
+		});
 	}
-  
 	res.json({
 		status: "success",
 		message: "Kunlik yetkazib beriladigan buyurtmalar",
-		error: null, 
+		error: null,
 		data: {
 			...ordersOneDay,
-			oneDayOrdersArrInPost,
-		}
-	})
-})
+			ordersArrInPost,
+		},
+	});
+});
 
 exports.exportOrders = catchAsync(async (req, res, next) => {
 	const workbook = new excelJS.Workbook();
 	const worksheet = workbook.addWorksheet("orders");
-	const path = "./files"
+	const path = "./files";
 	worksheet.columns = [
-		{header: "No", key: "s_no", width: 20},
-		{header: "Haridor", key: "recipient", width: 20},
-		{header: "Telefon raqami", key: "recipientPhoneNumber", width: 20},
-		{header: "Izoh", key: "note", width: 70},
-		{header: "Holati", key: "orderStatus", width: 30},
-		{header: "Yetkazish narxi", key: "deliveryPrice", width: 20},
-		{header: "Umumiy narxi", key: "totalPrice", width: 20},
-		{header: "Yaratilgan sana", key: "createdAt", width: 20},
-		{header: "O'zgartirilgan sana", key: "updatedAt", width: 20},
-	]
+		{ header: "No", key: "s_no", width: 20 },
+		{ header: "Haridor", key: "recipient", width: 20 },
+		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
+		{ header: "Izoh", key: "note", width: 70 },
+		{ header: "Holati", key: "orderStatus", width: 30 },
+		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
+		{ header: "Umumiy narxi", key: "totalPrice", width: 20 },
+		{ header: "Yaratilgan sana", key: "createdAt", width: 20 },
+		{ header: "O'zgartirilgan sana", key: "updatedAt", width: 20 },
+	];
 	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder
-		.filter()
-	let downloadOrders = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
+	queryBuilder.filter();
+	let downloadOrders = await OrderModel.findAndCountAll(
+		queryBuilder.queryOptions
+	);
 
-	const ordersArr = Object.values(downloadOrders.rows.map(e => e.dataValues))
+	const ordersArr = Object.values(downloadOrders.rows.map((e) => e.dataValues));
 	let counter = 1;
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
-		worksheet.addRow(order)
+		worksheet.addRow(order);
 		counter++;
-	})
+	});
 	worksheet.getRow(1).eachCell((cell) => {
-		cell.font = {bold: true}
-	})
+		cell.font = { bold: true };
+	});
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {
 			cell.alignment = {
-				horizontal: "center"
-			}
-		})
-	})
-	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  	res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
-	const data = await workbook.xlsx.writeFile(`${path}/orders.xlsx`)
+				horizontal: "center",
+			};
+		});
+	});
+	res.setHeader(
+		"Content-Type",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	);
+	res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+	const data = await workbook.xlsx.writeFile(`${path}/orders.xlsx`);
 	return workbook.xlsx.write(res).then(() => {
-      res.status(200).end();
-    });
-})
+		res.status(200).end();
+	});
+});
