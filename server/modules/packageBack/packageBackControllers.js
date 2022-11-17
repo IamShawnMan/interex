@@ -5,6 +5,8 @@ const QueryBuilder = require("../../core/utils/QueryBuilder")
 const OrderModel = require("../order/Order")
 const statusOrder = require("../../core/constants/orderStatus")
 const statusPackages = require("../../core/constants/packageStatus")
+const Region = require("../region/Region")
+const District = require("../district/District")
 exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
     const {id} = req.user
     
@@ -38,6 +40,11 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         packageBackId: {[Op.eq]: id}, 
         storeOwnerId: {[Op.eq]: userId}
     }
+
+    queryBuilder.queryOptions.include = [
+        {model: Region, as: "region", attributes: ["name"] },
+        {model: District, as: "district", attributes: ["name"]}
+    ]
 
     const allOrderbyPackageBack = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
 
