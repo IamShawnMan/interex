@@ -425,7 +425,7 @@ function Orders() {
               type="submit" 
               size="small"
               name="btn"
-              disabled={value.length===0}
+              disabled={value?.length===0}
               onClick={
                 url.split("/")[2] === "rejected"
                   ? postRejectedCreateOrUpdateFn

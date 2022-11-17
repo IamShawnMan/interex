@@ -575,7 +575,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 
 	const ordersArr = Object.values(downloadOrders.rows.map(e => e.dataValues))
 	let counter = 1;
-	let test = ["Hello"]
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
 		worksheet.addRow(order)
