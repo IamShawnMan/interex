@@ -19,11 +19,10 @@ const OrderItem = sequelize.define(
       defaultValue: 1,
       allowNull: false,
     },
-    price: {
+    orderItemTotalPrice: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    orderItemTotalPrice: DataTypes.INTEGER,
   },
   { underscored: true }
 );
