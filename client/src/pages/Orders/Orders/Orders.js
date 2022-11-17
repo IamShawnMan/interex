@@ -367,14 +367,14 @@ function Orders() {
   };
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
-      <Button
+    {url!=="/postback/rejected/orders"&&  <Button
         type="button"
         name="btn"
         btnStyle={{ width: "9rem",marginBottom:".5rem"}}
         onClick={() => getFile()}
       >
         Download
-      </Button>
+      </Button>}
       <div>
         {isStoreOwner && (
           <Button
@@ -388,7 +388,7 @@ function Orders() {
             Buyurtma
           </Button>
         )}
-        {isCourier && (
+        {isCourier &&url!=="/postback/rejected/orders"&& (
           <div style={{ display: "flex", gap: "2rem", width: "50%" }}>
             <Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
               Bugungilar
@@ -399,12 +399,12 @@ function Orders() {
           </div>
         )}
       </div>
-      <Filter filterFn={filterFn} url={url} />
+     {url!=="/postback/rejected/orders"&& <Filter filterFn={filterFn} url={url} />}
       {value?.length > 0 ? (
         <BasicTable
           columns={cols}
           data={value}
-          pagination={pagination}
+          pagination={url==="/orders"&&pagination}
           url={url}
         />
       ) : (
@@ -422,9 +422,10 @@ function Orders() {
             url.split("/")[3] === "regionorders" ||
             url.split("/")[2] === "rejected") && (
             <Button
-              type="submit"
+              type="submit" 
               size="small"
               name="btn"
+              disabled={value.length===0}
               onClick={
                 url.split("/")[2] === "rejected"
                   ? postRejectedCreateOrUpdateFn
