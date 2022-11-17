@@ -95,6 +95,7 @@ const Posts = () => {
               size="small"
               name="btn"
               onClick={() => {
+                url==="/postback/:id/orders"?navigate(`/postback/${post.id}/orders`):
                 navigate(`/posts/${post.id}/orders`);
               }}
             >

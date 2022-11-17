@@ -46,7 +46,7 @@ function Orders() {
   useEffect(() => {
     filterFn();
     getPrices();
-  }, [page, info, regionId, districtId, storeOwnerId, createdAt,url]);
+  }, [page, info, regionId, districtId, storeOwnerId, createdAt,url,orderStatus]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
