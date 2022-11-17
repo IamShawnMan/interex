@@ -46,7 +46,7 @@ function Orders() {
   useEffect(() => {
     filterFn();
     getPrices();
-  }, [page, info, regionId, districtId, storeOwnerId, createdAt,url,orderStatus]);
+  }, [page, info, orderStatus, regionId, districtId, storeOwnerId, createdAt,url]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
@@ -404,7 +404,7 @@ function Orders() {
         <BasicTable
           columns={cols}
           data={value}
-          pagination={pagination}
+          pagination={url==="/orders"&&pagination}
           url={url}
         />
       ) : (

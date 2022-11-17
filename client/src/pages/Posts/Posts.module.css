@@ -1,0 +1,23 @@
+.div{
+    margin-top:1rem;
+    display: flex;
+    flex-wrap: wrap;
+    height:200px;
+    gap:1px;
+    justify-content:space-evenly
+}
+.divbox{
+    width:30%;
+    height:100%;
+    background-image: url(./box.jpg);
+    border-radius: 0px;
+background-position: center;
+background-repeat: no-repeat; 
+background-size: cover;
+/* text-align: center; */
+/* padding: 1rem; */
+/* font-size:1rem; */
+display: flex;
+align-items: center;
+justify-content: center;
+}
