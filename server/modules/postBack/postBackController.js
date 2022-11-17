@@ -269,7 +269,6 @@ exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
 exports.getAllRejectedOrdersInPost = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const queryBuilder = new QueryBuilder(req.query);
-  queryBuilder.limitFields().filter().paginate().search(["note"]);
 
   queryBuilder.queryOptions.include = [
     { model: Region, as: "region", attributes: ["name"] },
