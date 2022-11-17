@@ -46,7 +46,7 @@ function Orders() {
   useEffect(() => {
     filterFn();
     getPrices();
-  }, [page, info, regionId, districtId, storeOwnerId, createdAt]);
+  }, [page, info, orderStatus, regionId, districtId, storeOwnerId, createdAt,url]);
   const getPrices = async () => {
     const res = await http({
       url: "/orders/devprice",
@@ -54,6 +54,7 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
+    console.log(data);
     setValue(data?.data?.content);
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost);
@@ -83,8 +84,19 @@ function Orders() {
   };
 
   const getFile = async () => {
+    const dateCreatedAt = new Date(createdAt ? createdAt : "");
     http({
-      url: "orders/download",
+    url: `orders/download?page=${page}&size=${size}${
+      orderStatus ? `&orderStatus=${orderStatus}` : ""
+    }${regionId ? `&regionId=${regionId}` : ""}${
+      districtId ? `&districtId=${districtId}` : ""
+    }${
+      !isStoreOwner
+        ? storeOwnerId
+          ? `&storeOwnerId=${storeOwnerId}`
+          : ""
+        : ""
+    }${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
       method: "GET",
       responseType: "blob",
     }).then((res) => {
@@ -327,7 +339,7 @@ function Orders() {
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
-    navigate("/posts");
+    navigate("/postback");
   };
   const filterFn = async () => {
     const dateCreatedAt = new Date(createdAt ? createdAt : "");
@@ -358,7 +370,7 @@ function Orders() {
       <Button
         type="button"
         name="btn"
-        btnStyle={{ width: "9rem", margin: "1rem 0"}}
+        btnStyle={{ width: "9rem",marginBottom:".5rem"}}
         onClick={() => getFile()}
       >
         Download
@@ -381,7 +393,7 @@ function Orders() {
             <Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
               Bugungilar
             </Button>
-            <Button style={{ width: "13rem" }} name="btn" onClick={filterFn}>
+            <Button style={{ width: "13rem" }} name="btn" onClick={url==="/postback/rejected/orders"?()=>{navigate("/postback")}:filterFn}>
               Hammasi
             </Button>
           </div>

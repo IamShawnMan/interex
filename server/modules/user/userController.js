@@ -19,7 +19,6 @@ const findById = async (id, next) => {
 
 exports.getUsers = catchAsync(async (req, res, next) => {
 	const { id } = req.user;
-	console.log(req.user);
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
 		.filter()

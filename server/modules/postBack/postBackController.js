@@ -175,7 +175,6 @@ exports.sendRejectedPost = catchAsync(async (req, res, next) => {
 
 exports.getTodaysRejectedPost = catchAsync(async (req, res, next) => {
   const { regionId } = req.user;
-
   const queryBuilder = new QueryBuilder(req.query);
 
   queryBuilder

@@ -45,6 +45,7 @@ function App() {
         {isAuth && <Route path="/orders" element={<Orders />} />}
         {isAuth && <Route path="/orders/myorders" element={<Orders />} />}
         {isAuth && <Route path="/orders/delivered" element={<Orders />} />}
+        {isAuth && <Route path="/orders/delivered" element={<Orders />} />}
         {isAuth && (
           <Route path="/orders/delivered/daily" element={<Orders />} />
         )}
