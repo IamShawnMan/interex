@@ -42,6 +42,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         packageBackId: {[Op.eq]: id}, 
         storeOwnerId: {[Op.eq]: userId}
     }
+    const packagestatus = {...statusPackages.STATUS_REJ_NEW, ...statusPackages.STATUS_REJ_OLD}
 
     queryBuilder.queryOptions.include = [
         {model: Region, as: "region", attributes: ["name"] },
@@ -58,7 +59,8 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         message: "qaytgan paketlar ichidagi buyurtmalar",
         errors: null,
         data: {...allOrderbyPackageBack,
-                orderIdArr
+                orderIdArr,
+                packagestatus
         }
     })
 })
