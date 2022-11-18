@@ -33,7 +33,6 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 		...queryBuilder.queryOptions,
 	});
 	allOrders = queryBuilder.createPagination(allOrders);
-
 	res.json({
 		status: "success",
 		message: "Barcha buyurtmalar",
@@ -295,7 +294,7 @@ exports.getAllOrderStatus = (req, res, next) => {
 	const { userRole } = req.user;
 	let allOrderStatus = Object.values(statusOrder);
 	if (userRole === "COURIER") {
-		allOrderStatus = Object.values(statusOrder).slice(4, 9);
+		allOrderStatus = Object.values(statusOrder).slice(4, 12);
 	}
 	res.json({
 		status: "success",
@@ -327,7 +326,7 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
-	let allOrders = [];
+	let deliveredOrders = [];
 	let ordersArrInPost = [];
 
 	queryBuilder.queryOptions.include = [
@@ -352,7 +351,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	});
 
 	if (region?.name === "Samarqand viloyati") {
-		const orderStatuses = Object.values(statusOrder).slice(4, 9);
+		const orderStatuses = Object.values(statusOrder).slice(4, 12);
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId,
@@ -373,7 +372,8 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 			return order.dataValues.id;
 		});
 	} else if (region?.name === "Navoiy viloyati") {
-		const orderStatuses = Object.values(statusOrder).slice(4, 9);
+		const orderStatuses = Object.values(statusOrder).slice(4, 12);
+		console.log(orderStatuses);
 		queryBuilder.queryOptions.where = {
 			[Op.or]: {
 				regionId: {
@@ -396,7 +396,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 			return order.dataValues.id;
 		});
 	} else {
-		const orderStatuses = Object.values(statusOrder).slice(4, 9);
+		const orderStatuses = Object.values(statusOrder).slice(4, 12);
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId,
@@ -464,7 +464,7 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
-	let allOrders = [];
+	let ordersOneDay = [];
 	let ordersArrInPost = [];
 
 	queryBuilder.queryOptions.include = [
@@ -559,7 +559,6 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 exports.exportOrders = catchAsync(async (req, res, next) => {
 	const workbook = new excelJS.Workbook();
 	const worksheet = workbook.addWorksheet("orders");
-	const path = "./files";
 	worksheet.columns = [
 		{ header: "No", key: "s_no", width: 20 },
 		{ header: "Haridor", key: "recipient", width: 20 },
@@ -584,6 +583,12 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.addRow(order);
 		counter++;
 	});
+	const endRow = worksheet.lastRow._number + 1
+	worksheet.mergeCells(`D${endRow}:E${endRow}`)
+	worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:"
+	worksheet.getCell(`D${endRow}`).alignment = {horizontal: "center"}
+	worksheet.getCell(`F${endRow}`).value = {formula: `SUM(F2:F${endRow - 1})`}
+	worksheet.getCell(`G${endRow}`).value = {formula: `SUM(G2:G${endRow - 1})`}
 	worksheet.getRow(1).eachCell((cell) => {
 		cell.font = { bold: true };
 	});
@@ -598,8 +603,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		"Content-Type",
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 	);
-	res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
-	const data = await workbook.xlsx.writeFile(`${path}/orders.xlsx`);
+	res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
 	return workbook.xlsx.write(res).then(() => {
 		res.status(200).end();
 	});

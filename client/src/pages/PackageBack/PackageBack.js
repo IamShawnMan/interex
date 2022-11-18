@@ -22,8 +22,8 @@ function PackageBack() {
         url: `/packageback?page=${page}&size=${size}`
       });
       console.log(res);
-      setPackages(res.data.data);
-      // setPackages(res.data.data.content);
+      // setPackages(res.data.data);
+      setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
       console.log(error);

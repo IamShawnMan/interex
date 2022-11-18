@@ -4,6 +4,7 @@ const {hash} = require("bcrypt")
 const userRole = require("../../core/constants/userRole")
 const Region = require("../region/Region");
 const userStatus = require("../../core/constants/userStatus")
+const userTariff = require("../../core/constants/userTariff")
 
 const User = sequelize.define("user", {
     id: {
@@ -53,6 +54,10 @@ const User = sequelize.define("user", {
     chatId: {
         type: DataTypes.INTEGER
     },
+    tariff: {
+        type: DataTypes.ENUM(Object.values(userTariff)),
+        defaultValue: null
+    }
 }, {
     underscored: true,
     hooks: {
