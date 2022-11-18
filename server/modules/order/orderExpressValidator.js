@@ -29,7 +29,7 @@ exports.creatingOrderValidator = [
     .notEmpty()
     .withMessage("Tovar miqdori bo'sh bo'lishi mumkin emas")
     .isInt({min: 0, max: 50000000})
-    .withMessage("Tovar qiymati kamida 0 dan ko`pi bilan 50 mln gacha bo`lishi kerak"),
+    .withMessage("Tovar qiymati kamida 0 so`m dan ko`pi bilan 50 mln so`mgacha bo`lishi kerak"),
     
 ];
 
