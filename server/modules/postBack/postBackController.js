@@ -293,7 +293,7 @@ exports.getAllRejectedOrdersInPost = catchAsync(async (req, res, next) => {
     message: "Qaytarib yuborilgan pochtadadagi buyurtmalar",
     error: null,
     data: {
-      rejectedOrdersInPost,
+      ...rejectedOrdersInPost,
     },
   });
 });

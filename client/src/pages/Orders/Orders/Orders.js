@@ -367,7 +367,7 @@ function Orders() {
   };
   return (
     <Layout pageName="Jo'natmalar Ro'yxati">
-    {url!=="/postback/rejected/orders"&&  <Button
+    {(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&&  <Button
         type="button"
         name="btn"
         btnStyle={{ width: "9rem",marginBottom:".5rem"}}
@@ -388,7 +388,7 @@ function Orders() {
             Buyurtma
           </Button>
         )}
-        {isCourier &&url!=="/postback/rejected/orders"&& (
+        {isCourier &&(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&& (
           <div style={{ display: "flex", gap: "2rem", width: "50%" }}>
             <Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
               Bugungilar
@@ -399,12 +399,12 @@ function Orders() {
           </div>
         )}
       </div>
-     {url!=="/postback/rejected/orders"&& <Filter filterFn={filterFn} url={url} />}
+     {(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&& <Filter filterFn={filterFn} url={url} />}
       {value?.length > 0 ? (
         <BasicTable
           columns={cols}
           data={value}
-          pagination={url==="/orders"&&pagination}
+          pagination={(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&&pagination}
           url={url}
         />
       ) : (
