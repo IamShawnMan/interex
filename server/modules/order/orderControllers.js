@@ -33,7 +33,6 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 		...queryBuilder.queryOptions,
 	});
 	allOrders = queryBuilder.createPagination(allOrders);
-
 	res.json({
 		status: "success",
 		message: "Barcha buyurtmalar",
@@ -560,7 +559,6 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 exports.exportOrders = catchAsync(async (req, res, next) => {
 	const workbook = new excelJS.Workbook();
 	const worksheet = workbook.addWorksheet("orders");
-	const path = "./files";
 	worksheet.columns = [
 		{ header: "No", key: "s_no", width: 20 },
 		{ header: "Haridor", key: "recipient", width: 20 },
@@ -580,12 +578,17 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 
 	const ordersArr = Object.values(downloadOrders.rows.map((e) => e.dataValues));
 	let counter = 1;
-	test = ["Hello"]
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
 		worksheet.addRow(order);
 		counter++;
 	});
+	const endRow = worksheet.lastRow._number + 1
+	worksheet.mergeCells(`D${endRow}:E${endRow}`)
+	worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:"
+	worksheet.getCell(`D${endRow}`).alignment = {horizontal: "center"}
+	worksheet.getCell(`F${endRow}`).value = {formula: `SUM(F2:F${endRow - 1})`}
+	worksheet.getCell(`G${endRow}`).value = {formula: `SUM(G2:G${endRow - 1})`}
 	worksheet.getRow(1).eachCell((cell) => {
 		cell.font = { bold: true };
 	});
@@ -600,8 +603,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		"Content-Type",
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 	);
-	res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
-	const data = await workbook.xlsx.writeFile(`${path}/orders.xlsx`);
+	res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
 	return workbook.xlsx.write(res).then(() => {
 		res.status(200).end();
 	});
