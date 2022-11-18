@@ -247,223 +247,209 @@ function Orders() {
 										Sotildi
 									</Button>
 
-									<Button
-										disabled={
-											order.orderStatus === "SOLD" ||
-											order.orderStatus === "REJECTED" ||
-											order.orderStatus === "PENDING" ||
-											order.orderStatus === "NOT_DELIVERED"
-												? true
-												: false
-										}
-										size="small"
-										name="btn"
-										onClick={() => {
-											setInfo({ id: order.id, status: "PENDING" });
-										}}
-									>
-										Kutilmoqda
-									</Button>
-									<Button
-										disabled={
-											order.orderStatus === "SOLD" ||
-											order.orderStatus === "REJECTED" ||
-											order.orderStatus === "NOT_DELIVERED"
-												? true
-												: false
-										}
-										size="small"
-										name="btn"
-										onClick={() => {
-											setInfo({ id: order.id, status: "REJECTED" });
-										}}
-									>
-										Qaytdi
-									</Button>
-								</>
-							)}
-						<Button
-							size="small"
-							name="btn"
-							onClick={() => {
-								setInfo(order.id);
-							}}
-						>
-							Ma'lumot
-						</Button>
-						{ordersIdArr && (
-							<Input
-								disabled={postStatus && postStatus !== "NEW"}
-								type="checkbox"
-								checked={ordersIdArr.includes(order.id)}
-								onClick={() => {
-									const index = ordersIdArr.includes(order.id);
-									if (index) {
-										let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
-										setOrdersIdArr(orderIsArr);
-									} else {
-										setOrdersIdArr((prev) => [...prev, order.id]);
-									}
-								}}
-							></Input>
-						)}
-					</div>
-				);
-			},
-		},
-	];
-	const postCreateOrUpdateFn = async () => {
-		try {
-			const res = await http({
-				url: url
-					? url.split("/")[3] === "regionorders"
-						? "posts/new"
-						: "posts/new/customized"
-					: "",
-				data: url
-					? url.split("/")[3] === "regionorders"
-						? { regionId: id, ordersArr: ordersIdArr }
-						: { postId: id, ordersArr: ordersIdArr }
-					: "",
-				method: url
-					? url.split("/")[3] === "regionorders"
-						? "POST"
-						: "PUT"
-					: "",
-			});
-			toast.success(res.data.message);
-		} catch (error) {
-			toast.error(error?.response?.data?.message);
-		}
-		navigate("/posts");
-	};
-	const postRejectedCreateOrUpdateFn = async () => {
-		try {
-			const res = await http({
-				url: "/postback/new/rejected",
-				data: { ordersArr: ordersIdArr },
-				method: "POST",
-			});
-			toast.success(res.data.message);
-		} catch (error) {
-			toast.error(error?.response?.data?.message);
-		}
-		navigate("/postback");
-	};
-	const filterFn = async () => {
-		const dateCreatedAt = new Date(createdAt ? createdAt : "");
-		try {
-			const res = await http({
-				url: `${url}?page=${page}&size=${size}${
-					orderStatus ? `&orderStatus=${orderStatus}` : ""
-				}${regionId ? `&regionId=${regionId}` : ""}${
-					districtId ? `&districtId=${districtId}` : ""
-				}${
-					!isStoreOwner
-						? storeOwnerId
-							? `&storeOwnerId=${storeOwnerId}`
-							: ""
-						: ""
-				}${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
-			});
-			getAllOrders(res.data);
-		} catch (error) {
-			toast.error(error?.response?.data?.message);
-		}
-	};
-	const closeHandler = () => {
-		setInfo(false);
-	};
-	return (
-		<Layout pageName="Jo'natmalar Ro'yxati">
-			{url !== "/postback/rejected/orders" && (
-				<Button
-					type="button"
-					name="btn"
-					btnStyle={{ width: "9rem", marginBottom: ".5rem" }}
-					onClick={() => getFile()}
-				>
-					Download
-				</Button>
-			)}
-			<div>
-				{isStoreOwner && (
-					<Button
-						name="iconText"
-						iconName="plus"
-						onClick={() => {
-							navigate("/orders/new");
-						}}
-						btnStyle={{ width: "13rem" }}
-					>
-						Buyurtma
-					</Button>
-				)}
-				{isCourier && url !== "/postback/rejected/orders" && (
-					<div style={{ display: "flex", gap: "2rem", width: "50%" }}>
-						<Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
-							Bugungilar
-						</Button>
-						<Button
-							style={{ width: "13rem" }}
-							name="btn"
-							onClick={
-								url === "/postback/rejected/orders"
-									? () => {
-											navigate("/postback");
-									  }
-									: filterFn
-							}
-						>
-							Hammasi
-						</Button>
-					</div>
-				)}
-			</div>
-			{url !== "/postback/rejected/orders" && (
-				<Filter filterFn={filterFn} url={url} />
-			)}
-			{value?.length > 0 ? (
-				<BasicTable
-					columns={cols}
-					data={value}
-					pagination={url === "/orders" && pagination}
-					url={url}
-				/>
-			) : (
-				<p>Malumotlar yoq</p>
-			)}
-			{info && typeof info !== "object" && (
-				<OrderInfo id={info} onClose={closeHandler} />
-			)}
-			{info && typeof info === "object" && (
-				<PostSendCourier id={info} url={url} onClose={closeHandler} />
-			)}
-			<div style={{ display: "flex", gap: 1 }}>
-				{(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
-					(postStatus === "NEW" ||
-						url.split("/")[3] === "regionorders" ||
-						url.split("/")[2] === "rejected") && (
-						<Button
-							type="submit"
-							size="small"
-							name="btn"
-							disabled={value?.length === 0}
-							onClick={
-								url.split("/")[2] === "rejected"
-									? postRejectedCreateOrUpdateFn
-									: postCreateOrUpdateFn
-							}
-						>
-							{url.split("/")[3] === "regionorders" ||
-							url.split("/")[2] === "rejected"
-								? "create"
-								: "update"}
-						</Button>
-					)}
-			</div>
-		</Layout>
-	);
+                  <Button
+                    disabled={
+                      order.orderStatus === "SOLD" ||
+                      order.orderStatus === "REJECTED" ||
+                      order.orderStatus === "PENDING" ||
+                      order.orderStatus === "NOT_DELIVERED"
+                        ? true
+                        : false
+                    }
+                    size="small"
+                    name="btn"
+                    onClick={() => {
+                      setInfo({ id: order.id, status: "PENDING" });
+                    }}
+                  >
+                    Kutilmoqda
+                  </Button>
+                  <Button
+                    disabled={
+                      order.orderStatus === "SOLD" ||
+                      order.orderStatus === "REJECTED" ||
+                      order.orderStatus === "NOT_DELIVERED"
+                        ? true
+                        : false
+                    }
+                    size="small"
+                    name="btn"
+                    onClick={() => {
+                      setInfo({ id: order.id, status: "REJECTED" });
+                    }}
+                  >
+                    Qaytdi
+                  </Button>
+                </>
+              )}
+            <Button
+              size="small"
+              name="btn"
+              onClick={() => {
+                setInfo(order.id);
+              }}
+            >
+              Ma'lumot
+            </Button>
+            {ordersIdArr && (
+              <Input
+                disabled={postStatus && postStatus !== "NEW"}
+                type="checkbox"
+                checked={ordersIdArr.includes(order.id)}
+                onClick={() => {
+                  const index = ordersIdArr.includes(order.id);
+                  if (index) {
+                    let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
+                    setOrdersIdArr(orderIsArr);
+                  } else {
+                    setOrdersIdArr((prev) => [...prev, order.id]);
+                  }
+                }}
+              ></Input>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+  const postCreateOrUpdateFn = async () => {
+    try {
+      const res = await http({
+        url: url
+          ? url.split("/")[3] === "regionorders"
+            ? "posts/new"
+            : "posts/new/customized"
+          : "",
+        data: url
+          ? url.split("/")[3] === "regionorders"
+            ? { regionId: id, ordersArr: ordersIdArr }
+            : { postId: id, ordersArr: ordersIdArr }
+          : "",
+        method: url
+          ? url.split("/")[3] === "regionorders"
+            ? "POST"
+            : "PUT"
+          : "",
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+    navigate("/posts");
+  };
+  const postRejectedCreateOrUpdateFn = async () => {
+    try {
+      const res = await http({
+        url: "/postback/new/rejected",
+        data: { ordersArr: ordersIdArr },
+        method: "POST",
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+    navigate("/postback");
+  };
+  const filterFn = async () => {
+    const dateCreatedAt = new Date(createdAt ? createdAt : "");
+    try {
+      const res = await http({
+        url: `${url}?page=${page}&size=${size}${
+          orderStatus ? `&orderStatus=${orderStatus}` : ""
+        }${regionId ? `&regionId=${regionId}` : ""}${
+          districtId ? `&districtId=${districtId}` : ""
+        }${
+          !isStoreOwner
+            ? storeOwnerId
+              ? `&storeOwnerId=${storeOwnerId}`
+              : ""
+            : ""
+        }${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
+      });
+      getAllOrders(res.data);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+  const closeHandler = () => {
+    setInfo(false);
+  };
+  return (
+    <Layout pageName="Jo'natmalar Ro'yxati">
+    {(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&&  <Button
+        type="button"
+        name="btn"
+        btnStyle={{ width: "9rem",marginBottom:".5rem"}}
+        onClick={() => getFile()}
+      >
+        Download
+      </Button>}
+      <div>
+        {isStoreOwner && (
+          <Button
+            name="iconText"
+            iconName="plus"
+            onClick={() => {
+              navigate("/orders/new");
+            }}
+            btnStyle={{ width: "13rem" }}
+          >
+            Buyurtma
+          </Button>
+        )}
+        {isCourier &&(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&& (
+          <div style={{ display: "flex", gap: "2rem", width: "50%" }}>
+            <Button style={{ width: "13rem" }} name="btn" onClick={dailyOrders}>
+              Bugungilar
+            </Button>
+            <Button style={{ width: "13rem" }} name="btn" onClick={url==="/postback/rejected/orders"?()=>{navigate("/postback")}:filterFn}>
+              Hammasi
+            </Button>
+          </div>
+        )}
+      </div>
+     {(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&& <Filter filterFn={filterFn} url={url} />}
+      {value?.length > 0 ? (
+        <BasicTable
+          columns={cols}
+          data={value}
+          pagination={(url==="/orders"||url==="/orders/delivered"||url==="/orders/myorders")&&pagination}
+          url={url}
+        />
+      ) : (
+        <p>Malumotlar yoq</p>
+      )}
+      {info && typeof info !== "object" && (
+        <OrderInfo id={info} onClose={closeHandler} />
+      )}
+      {info && typeof info === "object" && (
+        <PostSendCourier id={info} url={url} onClose={closeHandler} />
+      )}
+      <div style={{ display: "flex", gap: 1 }}>
+        {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
+          (postStatus === "NEW" ||
+            url.split("/")[3] === "regionorders" ||
+            url.split("/")[2] === "rejected") && (
+            <Button
+              type="submit" 
+              size="small"
+              name="btn"
+              disabled={value.length===0}
+              onClick={
+                url.split("/")[2] === "rejected"
+                  ? postRejectedCreateOrUpdateFn
+                  : postCreateOrUpdateFn
+              }
+            >
+              {url.split("/")[3] === "regionorders" ||
+              url.split("/")[2] === "rejected"
+                ? "create"
+                : "update"}
+            </Button>
+          )}
+      </div>
+    </Layout>
+  );
 }
 
 export default Orders;
