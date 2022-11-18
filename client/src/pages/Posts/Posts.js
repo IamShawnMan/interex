@@ -33,10 +33,6 @@ const Posts = () => {
             ? `/posts?page=${page}&size=${size}`
             : `/postback/rejectedposts`,
       });
-      console.log(url === "/posts"
-      ? `/posts?page=${page}&size=${size}`
-      : `/postback/rejectedposts`);
-      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
@@ -46,7 +42,7 @@ const Posts = () => {
   };
   useEffect(() => {
     getAllPosts();
-  }, [page, info,url]);
+  }, [page, info, url]);
   const postCols = [
     {
       id: "id",
@@ -94,8 +90,9 @@ const Posts = () => {
               size="small"
               name="btn"
               onClick={() => {
-                url==="/postback"?navigate(`/postback/rejectedposts/${post.id}`):
-                navigate(`/posts/${post.id}/orders`);
+                url === "/postback"
+                  ? navigate(`/postback/rejectedposts/${post.id}`)
+                  : navigate(`/posts/${post.id}/orders`);
               }}
             >
               Ma'lumot
@@ -147,10 +144,12 @@ const Posts = () => {
           <Button
             name="btn"
             onClick={() => {
-             url==="/postback"?navigate("/postback/rejected/orders"): navigate("/new-post");
+              url === "/postback"
+                ? navigate("/postback/rejected/orders")
+                : navigate("/new-post");
             }}
           >
-          {url==="/postback"?"Pochta yaratish": "Bugungi pochta"}
+            {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
           </Button>
         </div>
       )}
