@@ -40,6 +40,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     const packageBackStatus = packageBackbyId.packageStatus
     const queryBuilder = new QueryBuilder(req.query)
 
+    queryBuilder.limitFields().search(["id"]).
     queryBuilder.queryOptions.where = {
         ...queryBuilder.queryOptions.where, 
         packageBackId: {[Op.eq]: id}, 
