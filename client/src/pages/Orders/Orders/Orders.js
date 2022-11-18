@@ -171,7 +171,7 @@ function Orders() {
 			id: "totalPrice",
 			Header: "Mahsulotning narxi",
 			accessor: (order) => {
-				return <>{`${order.totalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+				return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
 			},
 		},
 		{
@@ -434,7 +434,7 @@ function Orders() {
               type="submit" 
               size="small"
               name="btn"
-              disabled={value.length===0}
+              disabled={value?.length===0}
               onClick={
                 url.split("/")[2] === "rejected"
                   ? postRejectedCreateOrUpdateFn
