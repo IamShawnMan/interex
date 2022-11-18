@@ -35,10 +35,6 @@ const Posts = () => {
             ? `/posts?page=${page}&size=${size}`
             : `/postback/rejectedposts`,
       });
-      console.log(url === "/posts"
-      ? `/posts?page=${page}&size=${size}`
-      : `/postback/rejectedposts`);
-      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
@@ -48,7 +44,7 @@ const Posts = () => {
   };
   useEffect(() => {
     getAllPosts();
-  }, [page, info,url]);
+  }, [page, info, url]);
   const postCols = [
     {
       id: "id",
@@ -96,8 +92,9 @@ const Posts = () => {
               size="small"
               name="btn"
               onClick={() => {
-                url==="/postback"?navigate(`/postback/rejectedposts/${post.id}`):
-                navigate(`/posts/${post.id}/orders`);
+                url === "/postback"
+                  ? navigate(`/postback/rejectedposts/${post.id}`)
+                  : navigate(`/posts/${post.id}/orders`);
               }}
             >
               Ma'lumot
@@ -171,10 +168,12 @@ const Posts = () => {
           <Button
             name="btn"
             onClick={() => {
-             url==="/postback"?navigate("/postback/rejected/orders"): navigate("/new-post");
+              url === "/postback"
+                ? navigate("/postback/rejected/orders")
+                : navigate("/new-post");
             }}
           >
-          {url==="/postback"?"Pochta yaratish": "Bugungi pochta"}
+            {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
           </Button>
         </div>
       )}
@@ -202,18 +201,22 @@ const Posts = () => {
       )}
       {!viewAllPosts && user.userRole === "ADMIN" ? (
         <>
-        {console.log(regionValue)}
           {regionValue?.length > 0 ? (
             // <>
             //   <p>Viloyatlar</p>
             //   <BasicTable columns={regionCols} data={regionValue} />
             // </>
             <div className={styles.div}>
-            {regionValue.map((e)=>
-              <div className={styles.divbox}>
-                <Link style={{fontSize:"2rem"}} to={`/posts/${e.id}/regionorders`}>{e.name}</Link>
-              </div>
-            )}
+              {regionValue.map((e) => (
+                <div key={e.id} className={styles.divbox}>
+                  <Link
+                    style={{ fontSize: "2rem" }}
+                    to={`/posts/${e.id}/regionorders`}
+                  >
+                    {e.name}
+                  </Link>
+                </div>
+              ))}
             </div>
           ) : (
             <p

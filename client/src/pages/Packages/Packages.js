@@ -58,7 +58,6 @@ function Package() {
       Header: "Sanasi",
       accessor: (order) => {
         const dateNew = new Date(order.createdAt);
-        console.log(dateNew);
         return (
           <>
             {dateNew.getDate()}/{dateNew.getMonth() + 1}/{dateNew.getFullYear()}
