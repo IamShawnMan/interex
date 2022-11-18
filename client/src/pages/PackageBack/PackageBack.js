@@ -4,8 +4,8 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 import { Link, useSearchParams } from "react-router-dom";
 import Button from "../../components/Form/FormComponents/Button/Button";
-import styles from "./Packages.module.css";
-function Package() {
+// import styles from "./Packages.module.css";
+function PackageBack() {
   const [packages, setPackages] = useState(null);
   const [sNew, setSNew] = useState(true);
   const [pagination, setPagination] = useState({});
@@ -19,10 +19,7 @@ function Package() {
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url:
-          sNew === false
-            ? `/packages?page=${page}&size=${size}`
-            : `/packages/daily?page=${page}&size=${size}`,
+        url: `/packages?page=${page}&size=${size}`
       });
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
@@ -71,7 +68,7 @@ function Package() {
       Header: "Tugmalar",
       accessor: (pack) => {
         return (
-          <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
+          <Link to={`/packageback/${pack.id}/orders`} >
             <Button name="btn"> Ochish</Button>
           </Link>
         );
@@ -93,7 +90,7 @@ function Package() {
         <BasicTable
           columns={packageCols}
           data={packages}
-          url="/packages"
+          url="/packageback"
           pagination={pagination}
         />
       ) : (
@@ -103,4 +100,4 @@ function Package() {
   );
 }
 
-export default Package;
+export default PackageBack;

@@ -66,10 +66,7 @@ exports.receiveOrdersinPackageBack = catchAsync(async(req,res,next)=>{
     const {id} = req.params
     const userId = req.user.id
     const orderIdArray = req.body.orderIdArr
-
     const packageBackbyId = await PackageBackModel.findByPk(id)
-    
-
     await OrderModel.update({orderStatus: statusOrder.STATUS_REJECTED_NOT_EXIST}, {where: {
         [Op.and]: [
             {packageBackId: {[Op.eq]: id}},
@@ -77,7 +74,7 @@ exports.receiveOrdersinPackageBack = catchAsync(async(req,res,next)=>{
             {id: {[Op.notIn]: orderIdArray }},
             {orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}}
         ]
-    }} )
+    }})
     await OrderModel.update({orderStatus: statusOrder.STATUS_REJECTED_ACCEPTED}, {where: {
         [Op.and]: [
             {id: {[Op.in]: orderIdArray }},
@@ -86,7 +83,6 @@ exports.receiveOrdersinPackageBack = catchAsync(async(req,res,next)=>{
             {orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}}
         ]
     }} )
-
     const countOrdersInPackage = await OrderModel.count({where: {[Op.and]: [
         {packageBackId: {[Op.eq]: packageBackbyId.id}},
         {orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}}
