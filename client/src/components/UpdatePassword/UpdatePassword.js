@@ -48,8 +48,8 @@ function UpdatePassword({ id }) {
   return (
     <form onSubmit={handleSubmit(passwordSubmit)}>
       <input
-        type="password"
-        placeholder="Yabgi Parol"
+        type="text"
+        placeholder="Yangi Parol"
         {...register("password")}
       />
       <input

@@ -276,13 +276,14 @@ exports.getAllRejectedOrdersInPost = catchAsync(async (req, res, next) => {
 		{ model: Region, as: "region", attributes: ["name"] },
 		{ model: District, as: "district", attributes: ["name"] },
 	];
+	const rejectedOrders = Object.values(orderStatuses).slice(9, 12)
 	queryBuilder.queryOptions.where = {
 		...queryBuilder.queryOptions.where,
 		postBackId: {
 			[Op.eq]: id,
 		},
 		orderStatus: {
-			[Op.eq]: orderStatuses.STATUS_REJECTED_DELIVERING,
+			[Op.in]: rejectedOrders,
 		},
 	};
 	let rejectedOrdersInPost = await Order.findAndCountAll(

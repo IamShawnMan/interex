@@ -199,7 +199,7 @@ function Orders() {
 										O'zgartirish
 									</Button>
 								)}
-								{isAdmin && id && (
+								{(isAdmin||isStoreOwner) && id && (
 									<>
 										<Button
 											name="btn"
