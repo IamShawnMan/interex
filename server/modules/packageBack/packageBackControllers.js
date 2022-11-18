@@ -35,6 +35,8 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     let orderIdArr = [] 
     const queryBuilder = new QueryBuilder(req.query)
 
+
+    const packageBackbyId = PackageBackModel.findByPk(id)
     queryBuilder.queryOptions.where = {
         ...queryBuilder.queryOptions.where, 
         packageBackId: {[Op.eq]: id}, 
@@ -51,12 +53,14 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     allOrderbyPackageBack.rows?.map(order=>{
         orderIdArr.push(order.id)
     })
+    console.log(packageBackbyId.packageStatus);
     res.status(200).json({
         status: "success",
         message: "qaytgan paketlar ichidagi buyurtmalar",
         errors: null,
         data: {...allOrderbyPackageBack,
-                orderIdArr
+                orderIdArr,
+                ...packageBackbyId.packageStatus
         }
     })
 })
