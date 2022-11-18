@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Layout from "../../components/Layout/Layout";
@@ -7,8 +7,9 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 import { formatDate } from "../../utils/dateFormatter";
 import styles from "./Rejected-Orders.module.css";
-
+import { toast } from "react-toastify";
 function RejectedOrders() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [info, setInfo] = useState(false);
   const [postStatus, setPostStatus] = useState(null);
@@ -99,12 +100,21 @@ function RejectedOrders() {
   const getByIdPostOrders = async () => {
     try {
       const res = await http(`/postback/rejectedposts/${id}`);
-      setValue(res?.data?.data?.rejectedOrdersInPost?.rows);
-      setOrdersIdArr(res?.data?.data?.rejectedOrdersInPost?.rows);
+      setValue(res?.data?.data?.content);
+      setOrdersIdArr(res?.data?.data?.content.map((o) => o.id));
     } catch (error) {}
   };
   const updatePostAndOrdersStatusHandler = async () => {
-    console.log(ordersIdArr);
+    try {
+      const res = await http({
+        url: "/postback/new/receiverejectedpost",
+        data: { ordersArr: ordersIdArr, postBackId: id },
+        method: "PUT",
+      });
+      navigate("/orders");
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
   };
   const closeHandler = () => {
     setInfo(false);

@@ -4,7 +4,7 @@
     flex-wrap: wrap;
     height:200px;
     gap:1px;
-    justify-content:space-evenly
+    justify-content:space-evenly;
 }
 .divbox{
     width:30%;

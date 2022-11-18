@@ -13,11 +13,9 @@ import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 import { formatDate } from "../../utils/dateFormatter";
 import PostSendCourier from "./PostSendCourier";
-import styles from "./Posts.module.css";
 const Posts = () => {
   const { user } = useContext(AppContext);
   const [value, setValue] = useState([]);
-  const [regionValue, setRegionValue] = useState([]);
   const [pagination, setPagination] = useState({});
   const [info, setInfo] = useState(null);
   const [viewAllPosts, setViewAllPosts] = useState(false);
@@ -35,10 +33,6 @@ const Posts = () => {
             ? `/posts?page=${page}&size=${size}`
             : `/postback/rejectedposts`,
       });
-      console.log(url === "/posts"
-      ? `/posts?page=${page}&size=${size}`
-      : `/postback/rejectedposts`);
-      console.log(res);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
@@ -48,7 +42,7 @@ const Posts = () => {
   };
   useEffect(() => {
     getAllPosts();
-  }, [page, info,url]);
+  }, [page, info, url]);
   const postCols = [
     {
       id: "id",
@@ -96,8 +90,9 @@ const Posts = () => {
               size="small"
               name="btn"
               onClick={() => {
-                url==="/postback"?navigate(`/postback/rejectedposts/${post.id}`):
-                navigate(`/posts/${post.id}/orders`);
+                url === "/postback"
+                  ? navigate(`/postback/rejectedposts/${post.id}`)
+                  : navigate(`/posts/${post.id}/orders`);
               }}
             >
               Ma'lumot
@@ -124,19 +119,7 @@ const Posts = () => {
       },
     },
   ];
-  const getAllRegions = async () => {
-    try {
-      const res = await http({
-        url: `/posts/new/regions`,
-      });
-      setRegionValue(res.data.data);
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
-  useEffect(() => {
-    user.userRole !== "COURIER" && getAllRegions();
-  }, []);
+
 
   if (user.userRole !== "COURIER") {
     postCols.splice(0, 1);
@@ -153,17 +136,7 @@ const Posts = () => {
     });
   }
 
-  const regionCols = [
-    {
-      id: "region",
-      Header: "Viloyat",
-      accessor: (region) => {
-        return (
-          <Link to={`/posts/${region.id}/regionorders`}>{region.name}</Link>
-        );
-      },
-    },
-  ];
+
   return (
     <Layout pageName="Postlar">
       {user.userRole === "COURIER" && (
@@ -171,10 +144,12 @@ const Posts = () => {
           <Button
             name="btn"
             onClick={() => {
-             url==="/postback"?navigate("/postback/rejected/orders"): navigate("/new-post");
+              url === "/postback"
+                ? navigate("/postback/rejected/orders")
+                : navigate("/new-post");
             }}
           >
-          {url==="/postback"?"Pochta yaratish": "Bugungi pochta"}
+            {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
           </Button>
         </div>
       )}
@@ -198,35 +173,18 @@ const Posts = () => {
           >
             {viewAllPosts ? "Hamma po'chtalar" : "Hamma po'chtalarni yashirish"}
           </Button>
+          <Button
+            name="btn"
+            type="button"
+            onClick={() => {
+              navigate("/post/create");
+            }}
+          >
+            Pochta Yaratish
+          </Button>
         </div>
       )}
-      {!viewAllPosts && user.userRole === "ADMIN" ? (
-        <>
-        {console.log(regionValue)}
-          {regionValue?.length > 0 ? (
-            // <>
-            //   <p>Viloyatlar</p>
-            //   <BasicTable columns={regionCols} data={regionValue} />
-            // </>
-            <div className={styles.div}>
-            {regionValue.map((e)=>
-              <div className={styles.divbox}>
-                <Link style={{fontSize:"2rem"}} to={`/posts/${e.id}/regionorders`}>{e.name}</Link>
-              </div>
-            )}
-            </div>
-          ) : (
-            <p
-              style={{ width: "50%", margin: "2rem auto", textAlign: "center" }}
-            >
-              Yuborilishi kerak bo'lgan po'chtalar yo'q
-            </p>
-          )}
-        </>
-      ) : (
-        ""
-      )}
-
+     
       {info && (
         <PostSendCourier
           id={info}
