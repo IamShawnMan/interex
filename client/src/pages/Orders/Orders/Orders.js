@@ -119,95 +119,95 @@ function Orders() {
     });
   };
 
-  const cols = [
-    {
-      id: "id",
-      Header: "ID",
-      accessor: "id",
-    },
-    {
-      Header: "Manzil",
-      accessor: (order) => {
-        return (
-          <>
-            {order.region.name}
-            <br />
-            {order.district.name}
-          </>
-        );
-      },
-    },
-    { id: "status", Header: "Holati", accessor: "orderStatus" },
-    {
-      id: "deliveryPrice",
-      Header: "Yetkazish narxi",
-      accessor: (order) => {
-        return (
-          <>
-            {order.orderStatus === "NEW" && id && (
-              <Select
-                data={price?.map((e) => {
-                  return { id: e, name: e };
-                })}
-                onChange={async (e) => {
-                  const res = await http({
-                    url: `orders/${order.id}/devprice`,
-                    method: "PATCH",
-                    data: { deliveryPrice: e.target.value },
-                  });
-                }}
-              >
-                Narxi
-              </Select>
-            )}
-            {order.status !== "NEW" &&
-              order.deliveryPrice?.toLocaleString("Ru-Ru")}
-          </>
-        );
-      },
-    },
-    {
-      id: "totalPrice",
-      Header: "Mahsulotning narxi",
-      accessor: (order) => {
-        return <>{`${order.totalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
-      },
-    },
-    {
-      id: "updatedAt",
-      Header: "Oxirgi o'zgarish",
-      accessor: (order) => {
-        return formatDate(order.updatedAt);
-      },
-    },
-    {
-      Header: "Tugma",
-      accessor: (order) => {
-        return (
-          <div className={styles.actionContainer}>
-            {((isAdmin && url.split("/")[1] !== "posts") || isStoreOwner) && (
-              <div className={styles.actionContainer}>
-                {user.userRole === "STORE_OWNER" && (
-                  <Button
-                    size="small"
-                    disabled={order.orderStatus !== "NEW" ? true : false}
-                    name="btn"
-                    onClick={() => {
-                      navigate(`/orders/${order.id}`);
-                    }}
-                  >
-                    O'zgartirish
-                  </Button>
-                )}
-                {isAdmin && id && (
-                  <>
-                    <Button
-                      name="btn"
-                      disabled={order.orderStatus === "NEW" ? false : true}
-                      onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
-                    >
-                      Qabul qilindi
-                    </Button>
+	const cols = [
+		{
+			id: "id",
+			Header: "ID",
+			accessor: "id",
+		},
+		{
+			Header: "Manzil",
+			accessor: (order) => {
+				return (
+					<>
+						{order.region.name}
+						<br />
+						{order.district.name}
+					</>
+				);
+			},
+		},
+		{ id: "status", Header: "Holati", accessor: "orderStatus" },
+		{
+			id: "deliveryPrice",
+			Header: "Yetkazish narxi",
+			accessor: (order) => {
+				return (
+					<>
+						{order.orderStatus === "NEW" && id && (
+							<Select
+								data={price?.map((e) => {
+									return { id: e, name: e };
+								})}
+								onChange={async (e) => {
+									const res = await http({
+										url: `orders/${order.id}/devprice`,
+										method: "PATCH",
+										data: { deliveryPrice: e.target.value },
+									});
+								}}
+							>
+								Narxi
+							</Select>
+						)}
+						{order.status !== "NEW" &&
+							order.deliveryPrice?.toLocaleString("Ru-Ru")}
+					</>
+				);
+			},
+		},
+		{
+			id: "totalPrice",
+			Header: "Mahsulotning narxi",
+			accessor: (order) => {
+				return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
+			},
+		},
+		{
+			id: "updatedAt",
+			Header: "Oxirgi o'zgarish",
+			accessor: (order) => {
+				return formatDate(order.updatedAt);
+			},
+		},
+		{
+			Header: "Tugma",
+			accessor: (order) => {
+				return (
+					<div className={styles.actionContainer}>
+						{((isAdmin && url.split("/")[1] !== "posts") || isStoreOwner) && (
+							<div className={styles.actionContainer}>
+								{user.userRole === "STORE_OWNER" && (
+									<Button
+										size="small"
+										disabled={order.orderStatus !== "NEW" ? true : false}
+										name="btn"
+										onClick={() => {
+											navigate(`/orders/${order.id}`);
+										}}
+									>
+										O'zgartirish
+									</Button>
+								)}
+								{isAdmin && id && (
+									<>
+										<Button
+											name="btn"
+											disabled={order.orderStatus === "NEW" ? false : true}
+											onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
+										>
+											Qabul qilindi
+										</Button>
 
                     <Button
                       disabled={order.orderStatus === "NEW" ? false : true}
@@ -461,7 +461,7 @@ function Orders() {
               type="submit"
               size="small"
               name="btn"
-              disabled={value.length === 0}
+              disabled={value?.length===0}
               onClick={
                 url.split("/")[2] === "rejected"
                   ? postRejectedCreateOrUpdateFn

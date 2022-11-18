@@ -17,6 +17,7 @@ import OrderInfo from "./pages/Orders/OrderInfo/OrderInfo";
 import NewPost from "./pages/NewPost/NewPost";
 import RejectedPosts from "./pages/Rejected-Posts/Rejected-Posts";
 import RejectedOrders from "./pages/Rejected-Orders/Rejected-Orders";
+import PostCreate from "./pages/Posts/PostCreate";
 function App() {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
@@ -62,6 +63,7 @@ function App() {
         {isAuth && <Route path="/orders/info/:id" element={<OrderInfo />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
         {isAuth && <Route path="/posts" element={<Posts />} />}
+        {isAuth && <Route path="/post/create" element={<PostCreate />} />}
         {isAuth && <Route path="/postback" element={<Posts />} />}
         {isAuth && <Route path="/new-post" element={<NewPost />} />}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
