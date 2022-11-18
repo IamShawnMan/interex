@@ -18,6 +18,7 @@ import NewPost from "./pages/NewPost/NewPost";
 import RejectedPosts from "./pages/Rejected-Posts/Rejected-Posts";
 import RejectedOrders from "./pages/Rejected-Orders/Rejected-Orders";
 import PostCreate from "./pages/Posts/PostCreate";
+import PackageBack from "./pages/PackageBack/PackageBack";
 function App() {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
@@ -53,6 +54,7 @@ function App() {
         {isAuth && <Route path="/posts/:id/orders" element={<Orders />} />}
         {isAuth && <Route path="/postback/rejectedposts/:id" element={<Orders />} />}
         {isAuth && <Route path="/packages/:id/orders" element={<Orders />} />}
+        {isAuth && <Route path="/packageback/:id/orders" element={<Orders />} />}
         {isAuth && (
           <Route path="/posts/:id/regionorders" element={<Orders />} />
         )}
@@ -62,6 +64,7 @@ function App() {
         {isAuth && <Route path="/orders/:id" element={<OrderMutation />} />}
         {isAuth && <Route path="/orders/info/:id" element={<OrderInfo />} />}
         {isAuth && <Route path="/packages" element={<Packages />} />}
+        {isAuth && <Route path="/packageback" element={<PackageBack />} />}
         {isAuth && <Route path="/posts" element={<Posts />} />}
         {isAuth && <Route path="/post/create" element={<PostCreate />} />}
         {isAuth && <Route path="/postback" element={<Posts />} />}
