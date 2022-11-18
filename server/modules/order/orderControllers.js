@@ -379,6 +379,9 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 				regionId: {
 					[Op.eq]: regionId,
 				},
+				districtId: {
+					[Op.in]: [101, 106],
+				},
 			},
 			orderStatus: {
 				[Op.in]: orderStatuses,
@@ -397,9 +400,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId,
-			},
-			districtId: {
-				[Op.notIn]: [101, 106],
 			},
 			orderStatus: {
 				[Op.in]: orderStatuses,
