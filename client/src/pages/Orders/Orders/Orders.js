@@ -65,7 +65,7 @@ function Orders() {
   const getAllOrders = async (data) => {
     console.log(data);
     if(url==="/packageback/1/orders"){
-      setValue(data?.data?.rows);
+      setValue(data?.data?.allOrderbyPackageBack);
 
     }else{
       
@@ -73,7 +73,7 @@ function Orders() {
     }
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost||data?.data?.orderIdArr);
-    setPostStatus(data?.data?.currentPostStatus?.postStatus);
+    setPostStatus(data?.data?.currentPostStatus?.postStatus||data.data.packageBackStatus);
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -491,11 +491,11 @@ function Orders() {
             >
               {url.split("/")[3] === "regionorders" ||
               url.split("/")[2] === "rejected"
-                ? "create"
-                : "update"}
+                ? "Pochta Yaratmoq"
+                : "Yangilamoq"}
             </Button>
           )}
-           { isStoreOwner&&id&&(
+           { isStoreOwner&&id&&postStatus==="REJECTED_NEW"&&(
             <Button
               type="submit"
               size="small"
