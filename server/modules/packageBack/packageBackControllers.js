@@ -8,10 +8,12 @@ const statusPackages = require("../../core/constants/packageStatus")
 const Region = require("../region/Region")
 const District = require("../district/District")
 exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
-    const {id} = req.user
-    
+    const {id} = req.user    
 
     const queryBuilder = new QueryBuilder(req.query)
+
+    queryBuilder.limitFields().paginate().search(["id"]).sort().
+    
     if(req.query.new === "new")
     queryBuilder.queryOptions.where = {...queryBuilder.queryOptions.where, 
         storeOwnerId: {[Op.eq]: id}, packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}    
@@ -19,13 +21,13 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
         storeOwnerId: {[Op.eq]: id}
     }
     
-        const allPackage = await PackageBackModel.findAll(queryBuilder.queryOptions)
-
+        let allPackage = await PackageBackModel.findAndCountAll(queryBuilder.queryOptions)
+        allPackage = queryBuilder.createPagination(allPackage)
     res.status(200).json({
         status: "succes",
         message: "barcha qaytgan buyurtmalar ro`yhati",
         error: null,
-        data: allPackage
+        data: {...allPackage}
     })
 })
 
