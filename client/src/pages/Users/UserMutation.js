@@ -150,7 +150,7 @@ const UserMutation = () => {
             <>
               <Input
                 id="password"
-                type="password"
+                type="text"
                 placeholder="password"
                 register={register.bind(null, "password")}
                 error={errors.password?.message}
