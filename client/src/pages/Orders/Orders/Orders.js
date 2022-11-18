@@ -63,9 +63,16 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
-    setValue(data?.data?.content);
+    console.log(data);
+    if(url==="/packageback/1/orders"){
+      setValue(data?.data?.rows);
+
+    }else{
+      
+      setValue(data?.data?.content);
+    }
     setPagination(data?.data?.pagination);
-    setOrdersIdArr(data?.data?.ordersArrInPost);
+    setOrdersIdArr(data?.data?.ordersArrInPost||data?.data?.orderIdArr);
     setPostStatus(data?.data?.currentPostStatus?.postStatus);
   };
   const changeOrderStatus = async (id, status) => {
@@ -199,7 +206,7 @@ function Orders() {
 										O'zgartirish
 									</Button>
 								)}
-								{(isAdmin||isStoreOwner) && id && (
+								{(isAdmin) && id && (
 									<>
 										<Button
 											name="btn"
@@ -349,6 +356,20 @@ function Orders() {
     }
     navigate("/postback");
   };
+
+  const packageRejected = async () => {
+    try {
+      const res = await http({
+        url: `/packageback/${id}/orders`,
+        data: { orderIdArr: ordersIdArr },
+        method: "PUT",
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+    navigate("/packageback");
+  };
   const filterFn = async () => {
     const dateCreatedAt = new Date(createdAt ? createdAt : "");
     try {
@@ -388,7 +409,7 @@ function Orders() {
         </Button>
       )}
       <div>
-        {isStoreOwner && (
+        {isStoreOwner &&url==="/orders/myorders"&& (
           <Button
             name="iconText"
             iconName="plus"
@@ -472,6 +493,17 @@ function Orders() {
               url.split("/")[2] === "rejected"
                 ? "create"
                 : "update"}
+            </Button>
+          )}
+           { isStoreOwner&&id&&(
+            <Button
+              type="submit"
+              size="small"
+              name="btn"
+              disabled={value?.length===0}
+              onClick={packageRejected}
+            >
+             Qabul Qildim
             </Button>
           )}
       </div>
