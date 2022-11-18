@@ -34,6 +34,7 @@ function Input({
           disabled={disabled}
           style={style}
           type={type ? type : "text"}
+          onWheel={() => document.activeElement.blur()}
           placeholder={placeholder ? placeholder : ""}
           id={id ? id : ""}
           defaultValue={defaultValue}
