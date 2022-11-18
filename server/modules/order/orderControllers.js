@@ -83,7 +83,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       items.push({
 		  productName: item.productName,
 		  quantity: item.quantity,
-		  orderItemTotalPrice: item.price,
+		  orderItemTotalPrice: +item.price,
 		  orderId: newOrder.id,
 		});
     });
@@ -238,8 +238,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		items.push({
 			productName: item.productName,
 			quantity: item.quantity,
-			price: item.price,
-			orderItemTotalPrice: +item.quantity * +item.price,
+			orderItemTotalPrice: +item.price,
 			orderId: orderById.id,
 		});
 	});
