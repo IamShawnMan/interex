@@ -83,7 +83,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       items.push({
 		  productName: item.productName,
 		  quantity: item.quantity,
-		  orderItemTotalPrice: item.price,
+		  orderItemTotalPrice: +item.price,
 		  orderId: newOrder.id,
 		});
     });
@@ -238,8 +238,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 		items.push({
 			productName: item.productName,
 			quantity: item.quantity,
-			price: item.price,
-			orderItemTotalPrice: +item.quantity * +item.price,
+			orderItemTotalPrice: +item.price,
 			orderId: orderById.id,
 		});
 	});
@@ -380,6 +379,9 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 				regionId: {
 					[Op.eq]: regionId,
 				},
+				districtId: {
+					[Op.in]: [101, 106],
+				},
 			},
 			orderStatus: {
 				[Op.in]: orderStatuses,
@@ -398,9 +400,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId,
-			},
-			districtId: {
-				[Op.notIn]: [101, 106],
 			},
 			orderStatus: {
 				[Op.in]: orderStatuses,
