@@ -28,12 +28,9 @@ const OrderInfo = ({ id, onClose }) => {
       },
     },
     { id: "productName", Header: "Maxsulot nomi", accessor: "productName" },
-    { id: "quantity", Header: "Soni", accessor: "quantity" },
-    {
-      id: "price",
-      Header: "Narxi",
-      accessor: "price",
-    },
+    { id: "quantity", Header: "Soni",	accessor: (order) => {
+      return <>{`${order.quantity.toLocaleString("Ru-Ru")} so'm`}</>;
+    },},
     {
       id: "Total Price",
       Header: "Umumiy narxi",
