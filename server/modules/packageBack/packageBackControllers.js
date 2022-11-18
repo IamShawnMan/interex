@@ -36,7 +36,8 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     const userId = req.user.id
     let orderIdArr = [] 
 
-    const packageBackbyId = PackageBackModel.findByPk(id)
+    const packageBackbyId = await PackageBackModel.findByPk(id)
+    const packageBackStatus = packageBackbyId.packageStatus
     const queryBuilder = new QueryBuilder(req.query)
 
     queryBuilder.queryOptions.where = {
@@ -44,13 +45,12 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         packageBackId: {[Op.eq]: id}, 
         storeOwnerId: {[Op.eq]: userId}
     }
-    const packagestatus = {...statusPackages.STATUS_REJ_NEW, ...statusPackages.STATUS_REJ_OLD}
 
     queryBuilder.queryOptions.include = [
         {model: Region, as: "region", attributes: ["name"] },
         {model: District, as: "district", attributes: ["name"]}
     ]
-
+    const allOrderbyPackageBack = await OrderModel.findAll(queryBuilder.queryOptions)
     allOrderbyPackageBack.rows?.map(order=>{
         orderIdArr.push(order.id)
     })
@@ -60,7 +60,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         errors: null,
         data: {...allOrderbyPackageBack,
                 orderIdArr,
-                ...packageBackbyId.packageStatus
+                packageBackStatus
             }
     })
 })
