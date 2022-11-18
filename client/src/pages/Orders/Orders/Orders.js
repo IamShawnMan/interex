@@ -491,8 +491,8 @@ function Orders() {
             >
               {url.split("/")[3] === "regionorders" ||
               url.split("/")[2] === "rejected"
-                ? "create"
-                : "update"}
+                ? "Pochta Yaratmoq"
+                : "Yangilamoq"}
             </Button>
           )}
            { isStoreOwner&&id&&postStatus==="REJECTED_NEW"&&(
