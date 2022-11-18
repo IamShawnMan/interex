@@ -64,6 +64,17 @@ function Sidebar(props) {
           <DashboardIcon classname={styles.sidebarLinkSvg} />
           {open && <p className="h6">Buyurtmalar</p>}
         </Link>
+        {user.userRole === "STORE_OWNER" && (
+          <Link
+            to={"/packageback"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            }`}
+          >
+            <DashboardIcon classname={styles.sidebarLinkSvg} />
+            {open && <p className="h6">Paketlar</p>}
+          </Link>
+        )}
         {user.userRole === "ADMIN" && (
           <Link
             to={"/packages"}

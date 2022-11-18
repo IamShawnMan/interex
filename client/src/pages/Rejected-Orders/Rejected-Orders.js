@@ -125,6 +125,7 @@ function RejectedOrders() {
         <>
           <BasicTable columns={cols} data={value} />
           <Button
+            disabled={value[0].orderStatus==="REJECTED_NOT_DELIVERED"||value[0].orderStatus==="REJECTED_DELIVERED"}
             btnStyle={{ width: "13rem" }}
             name="btn"
             type="button"

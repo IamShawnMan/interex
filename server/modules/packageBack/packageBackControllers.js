@@ -8,10 +8,12 @@ const statusPackages = require("../../core/constants/packageStatus")
 const Region = require("../region/Region")
 const District = require("../district/District")
 exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
-    const {id} = req.user
-    
+    const {id} = req.user    
 
     const queryBuilder = new QueryBuilder(req.query)
+
+    queryBuilder.limitFields().paginate().search(["id"]).sort()
+    
     if(req.query.new === "new")
     queryBuilder.queryOptions.where = {...queryBuilder.queryOptions.where, 
         storeOwnerId: {[Op.eq]: id}, packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}    
@@ -19,22 +21,25 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
         storeOwnerId: {[Op.eq]: id}
     }
     
-        const allPackage = await PackageBackModel.findAll(queryBuilder.queryOptions)
-
+        let allPackage = await PackageBackModel.findAndCountAll(queryBuilder.queryOptions)
+        allPackage = queryBuilder.createPagination(allPackage)
     res.status(200).json({
         status: "succes",
         message: "barcha qaytgan buyurtmalar ro`yhati",
         error: null,
-        data: allPackage
+        data: {...allPackage}
     })
 })
-
 exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     const {id} = req.params
     const userId = req.user.id
     let orderIdArr = [] 
+
+    const packageBackbyId = await PackageBackModel.findByPk(id)
+    const packageBackStatus = packageBackbyId.packageStatus
     const queryBuilder = new QueryBuilder(req.query)
 
+    queryBuilder.limitFields().search(["id"])
     queryBuilder.queryOptions.where = {
         ...queryBuilder.queryOptions.where, 
         packageBackId: {[Op.eq]: id}, 
@@ -45,9 +50,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         {model: Region, as: "region", attributes: ["name"] },
         {model: District, as: "district", attributes: ["name"]}
     ]
-
-    const allOrderbyPackageBack = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
-
+    const allOrderbyPackageBack = await OrderModel.findAll(queryBuilder.queryOptions)
     allOrderbyPackageBack.rows?.map(order=>{
         orderIdArr.push(order.id)
     })
@@ -55,12 +58,12 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         status: "success",
         message: "qaytgan paketlar ichidagi buyurtmalar",
         errors: null,
-        data: {...allOrderbyPackageBack,
-                orderIdArr
-        }
+        data: {allOrderbyPackageBack,
+                orderIdArr,
+                packageBackStatus
+            }
     })
 })
-
 
 exports.receiveOrdersinPackageBack = catchAsync(async(req,res,next)=>{
     const {id} = req.params
