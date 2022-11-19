@@ -83,6 +83,7 @@ exports.createUsers = catchAsync(async (req, res, next) => {
 		err.errors = validationErrors;
 		return next(err);
 	}
+	console.log(req.body)
 	if (req.body.userRole === userRole.SUPER_ADMIN) {
 		return next(
 			new AppError("Faqat bitta Super admin ro'yxatdan o'tishi mumkin")

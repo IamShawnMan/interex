@@ -30,7 +30,7 @@ router
 	.put(roleMiddleware(["STORE_OWNER"]),
 		orderValidator.updatedOrderValidator, orderControllers.updateOrder)
 	.patch(
-		roleMiddleware(["ADMIN", "COURER"]),
+		roleMiddleware(["ADMIN"]),
 		orderControllers.changeOrderStatus
 	);
 router

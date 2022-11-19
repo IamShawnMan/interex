@@ -3,6 +3,7 @@ const sequelize = require("../../core/config/database/database");
 const Region = require("../region/Region");
 const Order = require("../order/Order");
 const postStatus = require("../../core/constants/postStatus");
+const postStatusUz = require("../../core/constants/postStatusUz");
 
 const PostBack = sequelize.define("postBack", {
 	id: {
@@ -22,6 +23,10 @@ const PostBack = sequelize.define("postBack", {
 	postStatus: {
 		type: DataTypes.ENUM(Object.values(postStatus)),
 		defaultValue: postStatus.POST_REJECTED_NEW,
+	},
+	postStatusUz: {
+		type: DataTypes.ENUM(Object.values(postStatusUz)),
+		defaultValue: postStatusUz.POCHTA_OTKAZ_YANGI,
 	},
 },{
 	underscored: true

@@ -29,6 +29,7 @@ module.exports = catchAsync(async () => {
 			username: "myusername",
 			password: "19981998",
 			userRole: "SUPER_ADMIN",
+			userRoleUz: "RAHBAR"
 		};
 		const createdUser = await User.create(superAdminInfo);
 	}
