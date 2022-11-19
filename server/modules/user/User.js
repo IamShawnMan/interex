@@ -2,6 +2,7 @@ const {DataTypes} = require("sequelize")
 const sequelize = require("../../core/config/database/database")
 const {hash} = require("bcrypt")
 const userRole = require("../../core/constants/userRole")
+const userRoleUz = require("../../core/constants/userRoleUz")
 const Region = require("../region/Region");
 const userStatus = require("../../core/constants/userStatus")
 const userTariff = require("../../core/constants/userTariff")
@@ -39,6 +40,10 @@ const User = sequelize.define("user", {
     },
     userRole: {
         type: DataTypes.ENUM(Object.values(userRole)),
+        allowNull: false
+    },
+    userRoleUz: {
+        type: DataTypes.ENUM(Object.values(userRoleUz)),
         allowNull: false
     },
     regionId: {

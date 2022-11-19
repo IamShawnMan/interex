@@ -1,4 +1,4 @@
-exports.SUPER_ADMIN = "SUPER_ADMIN"
+exports.RAHBAR = "RAHBAR"
 exports.ADMIN = "ADMIN"
 exports.FIRMA = "FIRMA"
 exports.KURIER = "KURIER"

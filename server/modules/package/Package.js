@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../core/config/database/database");
 const UserModel = require("../user/User");
 const statusPackages = require("../../core/constants/packageStatus")
+const statusPackagesUz = require("../../core/constants/packageStatusUz")
 const Package = sequelize.define(
   "package",
   {
@@ -17,7 +18,12 @@ const Package = sequelize.define(
     packageStatus: {
       type: DataTypes.ENUM(Object.values(statusPackages)),
       defaultValue: statusPackages.STATUS_NEW
+    },
+    packageStatusUz: {
+      type: DataTypes.ENUM(Object.values(statusPackagesUz)),
+      defaultValue: statusPackagesUz.STATUS_YANGI
     }
+
   },
   { underscored: true }
 );

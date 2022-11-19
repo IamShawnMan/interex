@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../core/config/database/database");
 const orderStatus = require("../../core/constants/orderStatus");
+const orderStatusUz = require("../../core/constants/orderStatusUz");
 const RegiomModel = require("../region/Region");
 const PackageModel = require("../package/Package");
 const DistrictModel = require("../district/District");
@@ -26,6 +27,11 @@ const Order = sequelize.define(
 		orderStatus: {
 			type: DataTypes.ENUM(Object.values(orderStatus)),
 			defaultValue: orderStatus.STATUS_NEW,
+			allowNull: false,
+		},
+		orderStatusUz: {
+			type: DataTypes.ENUM(Object.values(orderStatusUz)),
+			defaultValue: orderStatusUz.STATUS_YANGI,
 			allowNull: false,
 		},
 		deliveryPrice: DataTypes.INTEGER,

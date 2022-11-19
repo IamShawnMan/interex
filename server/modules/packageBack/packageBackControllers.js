@@ -4,9 +4,12 @@ const catchAsync = require("../../core/utils/catchAsync")
 const QueryBuilder = require("../../core/utils/QueryBuilder")
 const OrderModel = require("../order/Order")
 const statusOrder = require("../../core/constants/orderStatus")
+const statusOrderUz = require("../../core/constants/orderStatusUz")
 const statusPackages = require("../../core/constants/packageStatus")
+const statusPackagesUz = require("../../core/constants/packageStatusUz")
 const Region = require("../region/Region")
 const District = require("../district/District")
+
 exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
     const {id} = req.user    
 
@@ -70,15 +73,15 @@ exports.receiveOrdersinPackageBack = catchAsync(async(req,res,next)=>{
     const userId = req.user.id
     const orderIdArray = req.body.orderIdArr
     const packageBackbyId = await PackageBackModel.findByPk(id)
-    await OrderModel.update({orderStatus: statusOrder.STATUS_REJECTED_NOT_EXIST}, {where: {
+    await OrderModel.update({orderStatus: statusOrder.STATUS_REJECTED_NOT_EXIST, orderStatusUz: statusOrderUz.STATUS_OTKAZ_OLMADI}, {where: {
         [Op.and]: [
             {packageBackId: {[Op.eq]: id}},
             {storeOwnerId: {[Op.eq]: userId}},
             {id: {[Op.notIn]: orderIdArray }},
-            {orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}}
+            {orderStatus: {[Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED}} 
         ]
     }})
-    await OrderModel.update({orderStatus: statusOrder.STATUS_REJECTED_ACCEPTED}, {where: {
+    await OrderModel.update({orderStatus: statusOrder.STATUS_REJECTED_ACCEPTED, orderStatusUz: statusOrderUz.STATUS_OTKAZ_OLDI}, {where: {
         [Op.and]: [
             {id: {[Op.in]: orderIdArray }},
             {storeOwnerId: {[Op.eq]: userId}},
@@ -93,7 +96,8 @@ exports.receiveOrdersinPackageBack = catchAsync(async(req,res,next)=>{
 
     if(countOrdersInPackage === 0){
         packageBackbyId.packageStatus = statusPackages.STATUS_REJ_OLD
-        packageBackbyId.save()
+        packageBackbyId.packageStatusUz = statusPackagesUz.STATUS_OTKAZ_ESKI
+        await packageBackbyId.save()
     }
 
 

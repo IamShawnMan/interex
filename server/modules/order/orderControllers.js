@@ -7,11 +7,13 @@ const { validationResult } = require("express-validator");
 const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const statusOrder = require("../../core/constants/orderStatus");
+const statusOrderUz = require("../../core/constants/orderStatusUz");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 const RegionModel = require("../region/Region");
 const DistrictModel = require("../district/District");
 const UserModel = require("../user/User");
 const statusPackage = require("../../core/constants/packageStatus");
+const statusPackageUz = require("../../core/constants/packageStatusUz");
 const excelJS = require("exceljs");
 const Region = require("../region/regions.json");
 
@@ -132,14 +134,15 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { orderStatus } = req.body;
 	let orderById = await OrderModel.findByPk(id);
-	const orderStatusVariables = Object.values(statusOrder).slice(1, 3);
+	
+	let orderStatusUz
+	orderStatus === statusOrder.STATUS_ACCEPTED? orderStatusUz = statusOrderUz.STATUS_ADMIN_OLDI: orderStatusUz = "OLDI" 
+	orderStatus === statusOrder.STATUS_NOT_EXIST? orderStatusUz = statusOrderUz.STATUS_ADMIN_TOPILMADI: orderStatusUz = "TOPILMADI" 
 	if (userRole === "ADMIN") {
-		const changeOrderStatus = orderStatusVariables.find(
-			(e) => e === orderStatus
-		);
+		
 		const dprice = orderById.deliveryPrice;
 		orderById = await orderById.update({
-			orderStatus: changeOrderStatus,
+			orderStatus, orderStatusUz
 		});
 		if (orderById.orderStatus === statusOrder.STATUS_ACCEPTED) {
 			await orderById.update({ deliveryPrice: dprice || 50000 });
@@ -158,7 +161,7 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 		});
 		console.log(isNewOrders);
 		if (isNewOrders === 0) {
-			await existedPackage.update({ packageStatus: statusPackage.STATUS_OLD });
+			await existedPackage.update({ packageStatus: statusPackage.STATUS_OLD, packageStatusUz: statusPackageUz.STATUS_ESKI });
 		}
 	}
 	res.status(203).json({
@@ -170,7 +173,10 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 });
 
 exports.adminOrderStatus = catchAsync(async (req, res, next) => {
-	const orderStatusVariables = Object.values(statusOrder).slice(1, 3);
+	let orderStatusVariables = [
+		statusOrder.STATUS_ACCEPTED, 
+		statusOrder.STATUS_NOT_EXIST
+	]
 	res.json(orderStatusVariables);
 });
 
@@ -292,9 +298,27 @@ exports.getAllDeliveryPrice = (req, res, next) => {
 
 exports.getAllOrderStatus = (req, res, next) => {
 	const { userRole } = req.user;
-	let allOrderStatus = Object.values(statusOrder);
+
+	let allOrderStatus = []
+	
+	let orderStatus = Object.values(statusOrder);
+	let orderStatusUz = Object.values(statusOrderUz)
+	
 	if (userRole === "COURIER") {
-		allOrderStatus = Object.values(statusOrder).slice(4, 12);
+		orderStatus.slice(4, 12);
+		orderStatusUz.slice(4, 12);
+		
+		orderStatus?.forEach((_,i)=>{
+			allOrderStatus.push({
+				id: i+1, uz: orderStatusUz[i], en: orderStatus[i]
+			})
+		})
+	}else{
+		orderStatus?.forEach((_,i)=>{
+			allOrderStatus.push({
+				id: i+1, uz: orderStatusUz[i], en: orderStatus[i]
+			})
+		})
 	}
 	res.json({
 		status: "success",
@@ -349,9 +373,9 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 			},
 		},
 	});
-
+	const orderStatuses = Object.values(statusOrder).slice(4, 12);
 	if (region?.name === "Samarqand viloyati") {
-		const orderStatuses = Object.values(statusOrder).slice(4, 12);
+		
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId,
@@ -372,8 +396,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 			return order.dataValues.id;
 		});
 	} else if (region?.name === "Navoiy viloyati") {
-		const orderStatuses = Object.values(statusOrder).slice(4, 12);
-		console.log(orderStatuses);
 		queryBuilder.queryOptions.where = {
 			[Op.or]: {
 				regionId: {
@@ -465,7 +487,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
 	let ordersOneDay = [];
-	let ordersArrInPost = [];
+	let oneDayOrdersArrInPost = [];
 
 	queryBuilder.queryOptions.include = [
 		{ model: RegionModel, as: "region", attributes: ["name"] },
@@ -551,7 +573,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		error: null,
 		data: {
 			...ordersOneDay,
-			ordersArrInPost,
+			oneDayOrdersArrInPost,
 		},
 	});
 });
