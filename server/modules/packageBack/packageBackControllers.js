@@ -30,7 +30,6 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
         data: {...allPackage}
     })
 })
-
 exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     const {id} = req.params
     const userId = req.user.id
@@ -59,13 +58,12 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         status: "success",
         message: "qaytgan paketlar ichidagi buyurtmalar",
         errors: null,
-        data: {...allOrderbyPackageBack,
+        data: {allOrderbyPackageBack,
                 orderIdArr,
                 packageBackStatus
             }
     })
 })
-
 
 exports.receiveOrdersinPackageBack = catchAsync(async(req,res,next)=>{
     const {id} = req.params

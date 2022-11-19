@@ -19,8 +19,10 @@ function PackageBack() {
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url: `/packages?page=${page}&size=${size}`
+        url: `/packageback?page=${page}&size=${size}`
       });
+      console.log(res);
+      // setPackages(res.data.data);
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
