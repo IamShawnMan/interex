@@ -42,7 +42,7 @@ const Order = sequelize.define(
 		createdAt: { type: DataTypes.DATE, field: 'created_at' },
 		updatedAt: { type: DataTypes.DATE, field: 'updated_at' }
 	},
-	{ underscored: true , timestamps: true,}
+	{ underscored: true , timestamps: true}
 );
 
 RegiomModel.hasMany(Order, { as: "orders", foreignKey: "regionId" });
