@@ -23,7 +23,9 @@ router
 router
 	.route("/status")
 	.get(orderControllers.getAllOrderStatus)
-router.route("/devprice").get(orderControllers.getAllDeliveryPrice);
+router
+	.route("/devprice")
+	.get(orderControllers.getAllDeliveryPrice);
 router
 	.route("/:id")
 	.get(orderControllers.getOrderById)

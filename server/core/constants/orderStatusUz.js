@@ -1,4 +1,4 @@
-exports.STATUS_YANGI = "NEW";
+exports.STATUS_YANGI = "YANGI";
 exports.STATUS_ADMIN_OLDI = "OLDI";
 exports.STATUS_ADMIN_TOPILMADI = "TOPILMADI";
 exports.STATUS_YULDA = "YO`LDA";
