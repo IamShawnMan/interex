@@ -158,7 +158,6 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 				],
 			},
 		});
-		console.log(isNewOrders);
 		if (isNewOrders === 0) {
 			await existedPackage.update({ packageStatus: statusPackage.STATUS_OLD, packageStatusUz: statusPackageUz.STATUS_ESKI });
 		}
