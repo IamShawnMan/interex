@@ -12,7 +12,7 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
 
     const queryBuilder = new QueryBuilder(req.query)
 
-    queryBuilder.limitFields().paginate().search(["id"]).sort().
+    queryBuilder.limitFields().paginate().search(["id"]).sort()
     
     if(req.query.new === "new")
     queryBuilder.queryOptions.where = {...queryBuilder.queryOptions.where, 
@@ -40,7 +40,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     const packageBackStatus = packageBackbyId.packageStatus
     const queryBuilder = new QueryBuilder(req.query)
 
-    queryBuilder.limitFields().search(["id"]).
+    queryBuilder.limitFields().search(["id"])
     queryBuilder.queryOptions.where = {
         ...queryBuilder.queryOptions.where, 
         packageBackId: {[Op.eq]: id}, 
