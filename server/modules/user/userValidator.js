@@ -1,9 +1,14 @@
 const { body } = require("express-validator");
+const userRole = require("../../core/constants/userRole")
+const userRoleUz = require("../../core/constants/userRoleUz")
 const User = require("./User");
 const {Op} = require("sequelize")
 exports.createValidator = [
 	body("userRole")
-    .custom(async(value) => {
+    .custom(async(value, {req}) => {
+		value === userRole.STORE_OWNER? req.body.userRoleUz = userRoleUz.FIRMA: null 
+		value === userRole.ADMIN? req.body.userRoleUz = userRoleUz.ADMIN: null 
+		value === userRole.COURIER? req.body.userRoleUz = userRoleUz.KURIER: null 
       if(value === "Foydalanuvchi mansabi" || value === "" || value === undefined){
         throw new Error("Foydalanuvchi mansabi kiritilmadi")
       }
@@ -71,6 +76,9 @@ exports.createValidator = [
 exports.updateValidator = [
 	body("userRole")
     .custom(async(value) => {
+		value === userRole.STORE_OWNER? req.body.userRoleUz = userRoleUz.FIRMA: null 
+		value === userRole.ADMIN? req.body.userRoleUz = userRoleUz.ADMIN: null 
+		value === userRole.COURIER? req.body.userRoleUz = userRoleUz.KURIER: null 
       if(value === "Foydalanuvchi mansabi" || value === "" || value === undefined){
         throw new Error("Foydalanuvchi mansabi kiritilmadi")
       }

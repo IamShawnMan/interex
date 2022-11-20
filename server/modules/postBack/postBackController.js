@@ -7,7 +7,9 @@ const Order = require("../order/Order");
 const Region = require("../region/Region");
 const userRoles = require("../../core/constants/userRole");
 const postStatuses = require("../../core/constants/postStatus");
+const postStatusesUz = require("../../core/constants/postStatusUz");
 const orderStatuses = require("../../core/constants/orderStatus");
+const orderStatusesUz = require("../../core/constants/orderStatusUz");
 const District = require("../district/District");
 const PackageBack = require("../packageBack/PackageBack");
 const statusPackage = require("../../core/constants/packageStatus");
@@ -118,6 +120,7 @@ exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
 		{
 			postBackId: newRejectedPost.id,
 			orderStatus: orderStatuses.STATUS_REJECTED_DELIVERING,
+			orderStatusUz: orderStatusesUz.STATUS_OTKAZ_YULDA
 		},
 		{
 			where: {
@@ -159,8 +162,11 @@ exports.sendRejectedPost = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER &&
 		postStatus === postStatuses.POST_REJECTED_DELIVERING
 	) {
+		let postStatusUz
+		postStatus === postStatuses.POST_REJECTED_DELIVERING? postStatusUz = postStatusesUz.POCHTA_OTKAZ_YULDA: postStatusUz = "OTKAZ YO`LDA"
 		await getRejectedPostById.update({
 			postStatus: postStatus,
+			postStatusUz: postStatusUz,
 			note: note,
 		});
 	}
@@ -318,6 +324,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		await Order.update(
 			{
 				orderStatus: orderStatuses.STATUS_REJECTED_NOT_DELIVERED,
+				orderStatusUz: orderStatusesUz.STATUS_OTKAZ_BORMADI,
 			},
 			{
 				where: {
@@ -335,6 +342,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 	const updateRejectedOrders = await Order.update(
 		{
 			orderStatus: orderStatuses.STATUS_REJECTED_DELIVERED,
+			orderStatusUz: orderStatusesUz.STATUS_OTKAZ_BORDI,
 		},
 		{
 			where: {
@@ -351,6 +359,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		await PostBack.update(
 			{
 				postStatus: postStatuses.POST_REJECTED_DELIVERED,
+				postStatusUz: postStatusesUz.POCHTA_OTKAZ_YETDI,
 			},
 			{
 				where: {
@@ -364,6 +373,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		await PostBack.update(
 			{
 				postStatus: postStatuses.POST_REJECTED_NOT_DELIVERED,
+				postStatusUz: postStatusesUz.POCHTA_OTKAZ_BORMADI,
 			},
 			{
 				where: {
