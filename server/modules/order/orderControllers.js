@@ -136,8 +136,7 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 	let orderById = await OrderModel.findByPk(id);
 	
 	let orderStatusUz
-	orderStatus === statusOrder.STATUS_ACCEPTED? orderStatusUz = statusOrderUz.STATUS_ADMIN_OLDI: orderStatusUz = "OLDI" 
-	orderStatus === statusOrder.STATUS_NOT_EXIST? orderStatusUz = statusOrderUz.STATUS_ADMIN_TOPILMADI: orderStatusUz = "TOPILMADI" 
+	orderStatus === statusOrder.STATUS_ACCEPTED ? orderStatusUz = statusOrderUz.STATUS_ADMIN_OLDI: orderStatusUz = statusOrderUz.STATUS_ADMIN_TOPILMADI;
 	if (userRole === "ADMIN") {
 		
 		const dprice = orderById.deliveryPrice;
@@ -159,7 +158,6 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 				],
 			},
 		});
-		console.log(isNewOrders);
 		if (isNewOrders === 0) {
 			await existedPackage.update({ packageStatus: statusPackage.STATUS_OLD, packageStatusUz: statusPackageUz.STATUS_ESKI });
 		}

@@ -476,8 +476,7 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 exports.recievePost = catchAsync(async (req, res, next) => {
 	const { postStatus, ordersArr, postId } = req.body;
 	let postStatusUz
-	postStatus === postStatuses.POST_NOT_DELIVERED? postStatusUz = postStatusesUz.POCHTA_YETIB_BORMADI: postStatusUz = "YETIB BORMADI"
-	postStatus === postStatuses.POST_DELIVERED? postStatusUz = postStatusesUz.POCHTA_YETIB_BORDI: postStatusUz = "YETIB BORDI"
+	postStatus === postStatuses.POST_DELIVERED? postStatusUz = postStatusesUz.POCHTA_YETIB_BORDI: postStatusUz = postStatusesUz.POCHTA_YETIB_BORMADI
 	
 	const postInfo = await Post.update(
 		{
