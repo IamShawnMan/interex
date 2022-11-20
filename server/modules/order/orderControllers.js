@@ -465,7 +465,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);
 	let ordersOneDay = [];
-	let ordersArrInPost = [];
+	let oneDayOrdersArrInPost = [];
 
 	queryBuilder.queryOptions.include = [
 		{ model: RegionModel, as: "region", attributes: ["name"] },
@@ -551,7 +551,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		error: null,
 		data: {
 			...ordersOneDay,
-			ordersArrInPost,
+			oneDayOrdersArrInPost,
 		},
 	});
 });
