@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import Input from "../../Form/FormComponents/Input/Input";
@@ -10,10 +10,12 @@ import Arrow from "../../../assets/icons/Arrow";
 import AppContext from "../../../context/AppContext";
 import ArrowForBtn from "../../../assets/icons/ArrowForBtn";
 import http from "../../../utils/axios-instance";
+import { toast } from "react-toastify";
 
 function Navbar(props) {
   const { user, onReset } = useContext(AppContext);
   const [show, setShow] = useState(false);
+  const [notification, setNotification] = useState(false);
   const [arrowChange, setArrowChange] = useState(true);
   const navigate = useNavigate();
   const activeAndNotActiveHandler = () => {
@@ -25,9 +27,24 @@ function Navbar(props) {
     onReset();
     navigate("/");
   };
-
+  useEffect(() => {
+    getNotifications()
+  },[])
   const modalShow = () => {
     setShow(!show);
+  };
+  const getNotifications = async () => {
+    try {
+       const res = await http({
+      url: "/postback/rejected/count",
+    });
+    toast.success("Hech Qanday Eslatmalar Yoq")
+    setNotification(null)
+    } catch (error) {
+      toast.error(error.response.data.message)
+      setNotification(error.response.data.message)
+    }
+   
   };
 
   return (
@@ -48,8 +65,8 @@ function Navbar(props) {
       </div> */}
       <div></div>
       <div className={styles.userInfo}>
-        <div className={styles.RoundNotificationSvg}>
-          <RoundNotifications classname={styles.RoundNotificationSvg} classRed={styles.notification} />
+        <div className={styles.RoundNotificationSvg} onClick={getNotifications}>
+          <RoundNotifications classname={styles.RoundNotificationSvg} classRed={notification&&styles.notification} />
         </div>
         <div className={styles.SmsIcon}>
           <SmsIcon classname={styles.SmsIcon} />
