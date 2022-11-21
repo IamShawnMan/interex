@@ -46,7 +46,7 @@ function Sidebar(props) {
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Adminlar</p>}
+            {open && <p className="h6">Foydalanuvchilar</p>}
           </Link>
         )}
         <Link

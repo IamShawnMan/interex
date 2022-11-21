@@ -402,10 +402,10 @@ function Orders() {
         <Button
           type="button"
           name="btn"
-          btnStyle={{ width: "9rem", marginBottom: ".5rem" }}
+          btnStyle={{ width: "13rem", marginBottom: ".5rem" }}
           onClick={() => getFile()}
         >
-          Download
+          Yuklab olish
         </Button>
       )}
       <div>
