@@ -31,7 +31,7 @@ function NewPost() {
     {
       id: "status",
       Header: "Post holati",
-      accessor: "postStatus",
+      accessor: "postStatusUz",
     },
     {
       id: "note",
@@ -73,7 +73,7 @@ function NewPost() {
     {
       id: "orderStatus",
       Header: "Holati",
-      accessor: "orderStatus",
+      accessor: "orderStatusUz",
     },
     {
       id: "district",

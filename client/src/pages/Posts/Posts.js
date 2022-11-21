@@ -64,7 +64,7 @@ const Posts = () => {
     {
       id: "postStatus",
       Header: "Pochta holati",
-      accessor: "postStatus",
+      accessor: "postStatusUz",
     },
 
     {
