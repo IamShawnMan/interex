@@ -21,7 +21,6 @@ function PackageBack() {
       const res = await http({
         url: `/packageback?page=${page}&size=${size}${sNew?"&new=new":""}`
       });
-      console.log(res);
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
@@ -70,7 +69,7 @@ function PackageBack() {
       accessor: (pack) => {
         return (
           <Link to={`/packageback/${pack.id}/orders`} >
-            <Button name="btn"> Ochish</Button>
+            <Button name="btn">Ochish</Button>
           </Link>
         );
       },

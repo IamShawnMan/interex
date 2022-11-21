@@ -25,13 +25,14 @@ const Posts = () => {
   const size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
+  const [search,setSearch]= useState(null)
   const getAllPosts = async () => {
     try {
       const res = await http({
         url:
-          url === "/posts"
-            ? `/posts?page=${page}&size=${size}`
-            : `/postback/rejectedposts`,
+          url === `/posts${search?`&search=${search}`:""}`
+            ? `/posts?page=${page}&size=${size}${search?`&search=${search}`:""}`
+            : `/postback/rejectedposts${search?`?search=${search}`:""}`,
       });
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
@@ -42,7 +43,7 @@ const Posts = () => {
   };
   useEffect(() => {
     getAllPosts();
-  }, [page, info, url]);
+  }, [page, info, url,search]);
   const postCols = [
     {
       id: "id",
@@ -138,7 +139,7 @@ const Posts = () => {
 
 
   return (
-    <Layout pageName="Postlar">
+    <Layout pageName="Postlar" setSearch={setSearch}>
       {user.userRole === "COURIER" && (
         <div style={{ width: "25rem" }}>
           <Button

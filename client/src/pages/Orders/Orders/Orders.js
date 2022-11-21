@@ -41,6 +41,7 @@ function Orders() {
   const districtId = searchParams.get("districtId") || "";
   const storeOwnerId = !isStoreOwner ? searchParams.get("storeOwnerId") : "";
   const { id } = useParams();
+  const [search,setSearch]=useState(null)
   const navigate = useNavigate();
   const url = location.pathname;
   useEffect(() => {
@@ -55,6 +56,7 @@ function Orders() {
     storeOwnerId,
     createdAt,
     url,
+    search
   ]);
   const getPrices = async () => {
     const res = await http({
@@ -372,7 +374,7 @@ function Orders() {
       const res = await http({
         url: `${url}?page=${page}&size=${size}${
           orderStatus ? `&orderStatus=${orderStatus}` : ""
-        }${regionId ? `&regionId=${regionId}` : ""}${
+        }${regionId ? `&regionId=${regionId}` : ""}${search ? `&search=${search}` : ""}${
           districtId ? `&districtId=${districtId}` : ""
         }${
           !isStoreOwner
@@ -391,7 +393,7 @@ function Orders() {
     setInfo(false);
   };
   return (
-    <Layout pageName="Jo'natmalar Ro'yxati">
+    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch}>
       {(url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (

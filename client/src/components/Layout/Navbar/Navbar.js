@@ -28,23 +28,22 @@ function Navbar(props) {
     navigate("/");
   };
   useEffect(() => {
-    getNotifications()
-  },[])
+    getNotifications();
+  }, []);
   const modalShow = () => {
     setShow(!show);
   };
   const getNotifications = async (click) => {
     try {
-       const res = await http({
-      url: "/postback/rejected/count",
-    });
-    click&&toast.success("Hech Qanday Eslatmalar Yo'q")
-    setNotification(null)
+      const res = await http({
+        url: "/postback/rejected/count",
+      });
+      click && toast.success("Hech Qanday Eslatmalar Yo'q");
+      setNotification(null);
     } catch (error) {
-      toast.error(error.response.data.message)
-      setNotification(error.response.data.message)
+      toast.error(error.response.data.message);
+      setNotification(error.response.data.message);
     }
-   
   };
 
   return (
@@ -57,16 +56,29 @@ function Navbar(props) {
       >
         <ArrowForBtn />
       </div>
-      {/* <div className={styles.formControl}>
-        <Input plascholder={"Search"} />
+
+
+
+      <div className={styles.formControl}>
+        <Input onChange={(e)=>{props.setSearch(e.target.value)}} plascholder={"Search"}/>
         <div className={styles.searchSvg}>
           <SearchIcon classname={styles.searchSvg} />
         </div>
-      </div> */}
-      <div></div>
+      </div>
+      <div>
+      </div>
+
+
+
       <div className={styles.userInfo}>
-        <div className={styles.RoundNotificationSvg} onClick={()=>getNotifications(true)}>
-          <RoundNotifications classname={styles.RoundNotificationSvg} classRed={notification&&styles.notification} />
+        <div
+          className={styles.RoundNotificationSvg}
+          onClick={() => getNotifications(true)}
+        >
+          <RoundNotifications
+            classname={styles.RoundNotificationSvg}
+            classRed={notification && styles.notification}
+          />
         </div>
         <div className={styles.SmsIcon}>
           <SmsIcon classname={styles.SmsIcon} />
