@@ -478,8 +478,12 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 	const oldStatus = postOrdersById.orderStatus;
-	console.log(oldStatus);
+	let orderStatusUz
+	orderStatus === statusOrder.STATUS_SOLD ? orderStatusUz = statusOrderUz.STATUS_SOTILDI: ""
+	orderStatus === statusOrder.STATUS_PENDING ? orderStatusUz = statusOrderUz.STATUS_KUTILMOQDA: ""
+	orderStatus === statusOrder.STATUS_REJECTED ? orderStatusUz = statusOrderUz.STATUS_OTKAZ: ""
 	const postOrderStatuses = Object.values(statusOrder).slice(6, 9);
+	const postOrderStatusesUz = Object.values(statusOrderUz).slice(6, 9);
 	const postOrderStatusChange = postOrderStatuses.find(
 		(e) => e === orderStatus
 	);

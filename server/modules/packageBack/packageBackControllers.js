@@ -26,13 +26,11 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
                 {packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}
             ]
         }    
-        console.log(queryBuilder.queryOptions.where,"fdsfsfdsfdsf")
          }else{
             queryBuilder.queryOptions.where = {
                 storeOwnerId: {[Op.eq]: id},
                 // ...queryBuilder.queryOptions.where,
     }
-    console.log(queryBuilder.queryOptions.where,"fdsfsfdsfdsf")
          }
     }else{
         if(req.query.new === "new"){
@@ -44,7 +42,6 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
     queryBuilder.queryOptions.include = [
         {model: User, as: "storeOwner", attributes: ["storeName"]}
     ]
-    console.log(queryBuilder.queryOptions);
     let allPackage = await PackageBackModel.findAndCountAll(queryBuilder.queryOptions)
         allPackage = queryBuilder.createPagination(allPackage)
     res.status(200).json({
