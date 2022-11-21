@@ -49,7 +49,7 @@ function UpdatePassword({ id }) {
     <form onSubmit={handleSubmit(passwordSubmit)}>
       <input
         type="text"
-        placeholder="Yangi Parol"
+        placeholder="Yangi parol"
         {...register("password")}
       />
       <input
@@ -58,7 +58,7 @@ function UpdatePassword({ id }) {
         {...register("username")}
       />
       {errors.password && <p>{errors.password.message}</p>}
-      <button>Save password</button>
+      <button>Parolni saqlash</button>
     </form>
   );
 }

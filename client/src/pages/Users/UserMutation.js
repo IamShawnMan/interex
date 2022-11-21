@@ -29,7 +29,7 @@ const UserMutation = () => {
 	const admin = role === "ADMIN";
 	const storeOwner = role === "STORE_OWNER";
 	const courier = role === "COURIER";
-	console.log(regions);
+
 	const yupResolverObject = () => {
 		if (role) {
 			if (isUpdate) {
@@ -84,7 +84,6 @@ const UserMutation = () => {
     const res = await http({
       url: "/users/tariffs ",
     });
-	console.log(res);
     setTarifs(res.data?.data?.tariffs);
   };
   const getById = async () => {
@@ -111,7 +110,6 @@ const UserMutation = () => {
       navigate("/users");
     } catch (error) {
 		console.log(error);
-      console.log(error.response.data.message);
       return error.response.data.message.map((error) => toast.error(error));
     }
   };
@@ -211,7 +209,7 @@ const UserMutation = () => {
           )}
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
-						{!isUpdate ? "Create Accaunt" : "Update User"}
+						{!isUpdate ? "Akkaunt yaratish" : "Akkountni o'zgartirish"}
 					</Button>
 				</form>
 			</Layout>

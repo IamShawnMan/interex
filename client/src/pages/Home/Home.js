@@ -20,7 +20,7 @@ function Home() {
 						cursor: "pointer",
 					}}
 				>
-					{!updatePassword ? "UpdatePassword" : "Paroldan chiqish"}
+					{!updatePassword ? "Parolni o'zgartirish" : "Paroldan chiqish"}
 				</p>
 				{updatePassword && <UpdatePassword id={user.id} />}
 			</div>

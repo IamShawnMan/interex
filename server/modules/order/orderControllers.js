@@ -483,12 +483,15 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	const postOrderStatusChange = postOrderStatuses.find(
 		(e) => e === orderStatus
 	);
+	const postOrderStatusChangeUz = postOrderStatusesUz.find(
+		(e) => e === orderStatusUz
+	);
 	if (
-		postOrdersById.dataValues.orderStatus === "DELIVERED" ||
-		postOrdersById.dataValues.orderStatus === "PENDING"
+		postOrdersById.orderStatus === "DELIVERED" ||
+		postOrdersById.orderStatus === "PENDING"
 	) {
 		await postOrdersById.update({
-			orderStatus: postOrderStatusChange,
+			orderStatus: postOrderStatusChange, orderStatusUz: postOrderStatusChangeUz,
 			note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`,
 		});
 	}
@@ -612,7 +615,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Haridor", key: "recipient", width: 20 },
 		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
 		{ header: "Izoh", key: "note", width: 70 },
-		{ header: "Holati", key: "orderStatus", width: 30 },
+		{ header: "Holati", key: "orderStatusUz", width: 30 },
 		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
 		{ header: "Umumiy narxi", key: "totalPrice", width: 20 },
 		{ header: "Yaratilgan sana", key: "createdAt", width: 20 },
