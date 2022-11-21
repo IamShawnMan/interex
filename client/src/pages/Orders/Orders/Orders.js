@@ -64,13 +64,9 @@ function Orders() {
   };
   const getAllOrders = async (data) => {
     console.log(data);
-    if(url==="/packageback/1/orders"){
-      setValue(data?.data?.allOrderbyPackageBack);
 
-    }else{
-      
-      setValue(data?.data?.content);
-    }
+      setValue(data?.data?.content||data?.data?.allOrderbyPackageBack.rows);
+    
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost||data?.data?.orderIdArr);
     setPostStatus(data?.data?.currentPostStatus?.postStatus||data.data.packageBackStatus);

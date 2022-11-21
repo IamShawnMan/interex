@@ -53,7 +53,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
         {model: Region, as: "region", attributes: ["name"] },
         {model: District, as: "district", attributes: ["name"]}
     ]
-    const allOrderbyPackageBack = await OrderModel.findAll(queryBuilder.queryOptions)
+    const allOrderbyPackageBack = await OrderModel.findAndCountAll(queryBuilder.queryOptions)
     allOrderbyPackageBack.rows?.map(order=>{
         orderIdArr.push(order.id)
     })
