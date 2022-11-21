@@ -7,6 +7,6 @@ router
     .get(roleMiddleware(["SUPER_ADMIN", "ADMIN", "STORE_OWNER"]), packageControllers.getAllPackages)
 router
     .route("/:id/orders")
-    .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), packageControllers.getOrdersByPackage)
+    .get(roleMiddleware(["SUPER_ADMIN", "ADMIN", "STORE_OWNER"]), packageControllers.getOrdersByPackage)
 
 module.exports = router;

@@ -173,7 +173,6 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 		}
 	}
 	const orderForTracking = await Order.findByPk(id);
-	console.log(orderForTracking);
 	await Tracking.create({
 		orderId: id,
 		fromStatus: statusOrder.STATUS_NEW,
@@ -515,6 +514,7 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
 
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
