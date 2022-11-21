@@ -1,5 +1,5 @@
 const Post = require("./Post");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
@@ -9,6 +9,7 @@ const userRoles = require("../../core/constants/userRole");
 const postStatuses = require("../../core/constants/postStatus");
 const orderStatuses = require("../../core/constants/orderStatus");
 const District = require("../district/District");
+const Tracking = require("../tracking/Tracking");
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
 	const { userRole, regionId } = req.user;
@@ -243,6 +244,15 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 			},
 		}
 	);
+
+	ordersArr.map(async (id) => {
+		await Tracking.create({
+			orderId: id,
+			fromStatus: orderStatuses.STATUS_ACCEPTED,
+			toStatus: orderStatuses.STATUS_DELIVERING,
+		});
+	});
+
 	const orderArrSum = await Order.sum("totalPrice", {
 		where: {
 			id: {
@@ -302,6 +312,14 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 			},
 		}
 	);
+
+	await Tracking.create({
+		orderId: {
+			[Op.notIn]: ordersArr,
+		},
+		fromStatus: orderStatuses.STATUS_DELIVERING,
+		toStatus: orderStatuses.STATUS_ACCEPTED,
+	});
 
 	if (ordersArr.length < 1) {
 		await Post.destroy({
@@ -508,6 +526,14 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 				},
 			}
 		);
+
+		await Tracking.create({
+			orderId:{
+				[Op.notIn]: ordersArr
+			},
+			fromStatus: orderStatuses.STATUS_DELIVERING,
+			toStatus: orderStatuses.STATUS_NOT_DELIVERED
+		})
 	}
 
 	const updatedOrders = await Order.update(
@@ -525,6 +551,15 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 			},
 		}
 	);
+
+	ordersArr.map(async id=>{
+		await Tracking.create({
+			orderId: id,
+			fromStatus: orderStatuses.STATUS_DELIVERING,
+			toStatus: orderStatuses.STATUS_DELIVERED
+		})
+	})
+
 	if (ordersArr.length > 0) {
 		await Post.update(
 			{

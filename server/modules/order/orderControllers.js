@@ -14,6 +14,8 @@ const UserModel = require("../user/User");
 const statusPackage = require("../../core/constants/packageStatus");
 const excelJS = require("exceljs");
 const Region = require("../region/regions.json");
+const Order = require("./Order");
+const Tracking = require("../tracking/Tracking");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -54,43 +56,45 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	}
 	const { userRole } = req.user;
 
-  let existedPackage = await PackageModel.findOne({
-    where: {[Op.and]: [
-		{storeOwnerId: { [Op.eq]: req.user.id }},
-		{packageStatus: {[Op.eq]: statusPackage.STATUS_NEW}}
-	]},
-	order: [["createdAt", "DESC"]]
-  });
-  
-  if (!existedPackage) {
-    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
-  }
-  const storeOwnerId = req.user.id;
-  const orders = req.body.orders;
-  orders?.forEach(async (order) => {
-	  const newOrder = await OrderModel.create({
-		  recipient: order.recipient,
-      regionId: order.regionId,
-      note: `${userRole}: ${order.note}`,
-      recipientPhoneNumber: order.recipientPhoneNumber,
-      districtId: order.districtId,
-      packageId: existedPackage.id,
-      storeOwnerId,
-    });
-    let items = [];
-    let sum = 0;
-    order?.orderItems?.forEach((item) => {
-      items.push({
-		  productName: item.productName,
-		  quantity: item.quantity,
-		  orderItemTotalPrice: +item.price,
-		  orderId: newOrder.id,
+	let existedPackage = await PackageModel.findOne({
+		where: {
+			[Op.and]: [
+				{ storeOwnerId: { [Op.eq]: req.user.id } },
+				{ packageStatus: { [Op.eq]: statusPackage.STATUS_NEW } },
+			],
+		},
+		order: [["createdAt", "DESC"]],
+	});
+
+	if (!existedPackage) {
+		existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
+	}
+	const storeOwnerId = req.user.id;
+	const orders = req.body.orders;
+	orders?.forEach(async (order) => {
+		const newOrder = await OrderModel.create({
+			recipient: order.recipient,
+			regionId: order.regionId,
+			note: `${userRole}: ${order.note}`,
+			recipientPhoneNumber: order.recipientPhoneNumber,
+			districtId: order.districtId,
+			packageId: existedPackage.id,
+			storeOwnerId,
 		});
-    });
-    items?.forEach((item) => {
-		sum += item.orderItemTotalPrice;
-    });
-	
+		let items = [];
+		let sum = 0;
+		order?.orderItems?.forEach((item) => {
+			items.push({
+				productName: item.productName,
+				quantity: item.quantity,
+				orderItemTotalPrice: +item.price,
+				orderId: newOrder.id,
+			});
+		});
+		items?.forEach((item) => {
+			sum += item.orderItemTotalPrice;
+		});
+
 		await OrderItemModel.bulkCreate(items);
 		newOrder.totalPrice = sum;
 		newOrder.packageId = existedPackage.id;
@@ -162,6 +166,13 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 			await existedPackage.update({ packageStatus: statusPackage.STATUS_OLD });
 		}
 	}
+	const orderForTracking = await Order.findByPk(id);
+	console.log(orderForTracking);
+	await Tracking.create({
+		orderId: id,
+		fromStatus: statusOrder.STATUS_NEW,
+		toStatus: orderForTracking.orderStatus,
+	});
 	res.status(203).json({
 		status: "success",
 		message: "order statusi o`zgardi",
@@ -438,6 +449,8 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 			},
 		},
 	});
+	const oldStatus = postOrdersById.orderStatus;
+	console.log(oldStatus);
 	const postOrderStatuses = Object.values(statusOrder).slice(6, 9);
 	const postOrderStatusChange = postOrderStatuses.find(
 		(e) => e === orderStatus
@@ -580,7 +593,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 
 	const ordersArr = Object.values(downloadOrders.rows.map((e) => e.dataValues));
 	let counter = 1;
-	test = ["Hello"]
+	test = ["Hello"];
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
 		worksheet.addRow(order);
