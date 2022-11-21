@@ -30,8 +30,8 @@ function Select({
             </option>
             {data ? (
               data.map((e) => (
-                <option className={styles.option} key={e.id} value={e.id}>
-                  {e.name}
+                <option className={styles.option} key={e.id} value={e.name ? e.id : e.en}>
+                  {e.name ? e.name: e.uz}
                 </option>
               ))
             ) : (

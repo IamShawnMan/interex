@@ -26,13 +26,13 @@ const UserMutation = () => {
   const { id } = useParams();
   const isUpdate = id !== "new";
   const admin = role === "ADMIN";
-  const storeOwner = role === "FIRMA";
-  const courier = role === "KURIER";
-  const userRoles = roles
-    ? roles.map((e) => {
-        return { id: e, name: e };
-      })
-    : [];
+  const storeOwner = role === "STORE_OWNER";
+  const courier = role === "COURIER";
+  // const userRoles = roles
+  //   ? roles.map((e) => {
+  //       return { id: e, name: e };
+  //     })
+  //   : [];
   const yupResolverObject = () => {
     if (role) {
       if (isUpdate) {
@@ -74,8 +74,7 @@ const UserMutation = () => {
     const res = await http({
       url: "/users/roles",
     });
-    console.log(res.data.data.roles.map(e => e.uz));
-    setRoles(res.data?.data?.roles.map(e => e.uz));
+    setRoles(res.data?.data?.roles);
   };
   const getAllRegions = async () => {
     const res = await http({
@@ -117,7 +116,7 @@ const UserMutation = () => {
         <form onSubmit={handleSubmit(formSubmit)} className="form">
           <Select
             register={register.bind(null, "userRole")}
-            data={userRoles}
+            data={roles}
             onChange={(e) => setRole(e.target.value)}
             error={errors.userRole?.message}
           >
