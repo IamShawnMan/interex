@@ -66,7 +66,7 @@ exports.createValidator = [
 	body("tariff")
 		.custom(async(value, {req}) => {
 			if(req.body.userRole === "COURIER") {
-				if(value === undefined) {
+				if(value === undefined || value.trim() === "") {
 					throw new Error("Tarif tanlanmadi")
 				}
 			} 
@@ -127,7 +127,7 @@ exports.updateValidator = [
 	body("tariff")
 		.custom(async(value, {req}) => {
 			if(req.body.userRole === "COURIER") {
-				if(value === undefined) {
+				if(value === undefined || value.trim() === "") {
 					throw new Error("Tarif tanlanmadi")
 				}
 			} 
