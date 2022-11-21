@@ -30,10 +30,11 @@ const Posts = () => {
     try {
       const res = await http({
         url:
-          url === `/posts${search?`&search=${search}`:""}`
+          url === `/posts`
             ? `/posts?page=${page}&size=${size}${search?`&search=${search}`:""}`
             : `/postback/rejectedposts${search?`?search=${search}`:""}`,
       });
+      console.log(res.data.data);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
