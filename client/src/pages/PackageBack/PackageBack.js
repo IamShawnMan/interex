@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../components/Form/FormComponents/Button/Button";
 // import styles from "./Packages.module.css";
 function PackageBack() {
@@ -12,6 +12,7 @@ function PackageBack() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
+  const navigate =useNavigate()
   useEffect(() => {
     getAllPackages();
   }, [page, sNew]);
@@ -19,10 +20,8 @@ function PackageBack() {
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url: `/packageback?page=${page}&size=${size}`
+        url: `/packageback?page=${page}&size=${size}${sNew?"&new=new":""}`
       });
-      console.log(res);
-      // setPackages(res.data.data);
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
@@ -44,7 +43,7 @@ function PackageBack() {
     {
       id: "status",
       Header: "Holati",
-      accessor: "packageStatus",
+      accessor: "packageStatusUz",
     },
     {
       id: "totalPrice",
@@ -71,7 +70,7 @@ function PackageBack() {
       accessor: (pack) => {
         return (
           <Link to={`/packageback/${pack.id}/orders`} >
-            <Button name="btn"> Ochish</Button>
+            <Button name="btn">\Ochish</Button>
           </Link>
         );
       },
@@ -86,6 +85,9 @@ function PackageBack() {
         </Button>
         <Button name="btn" onClick={() => setSNew(false)}>
           Barchasi
+        </Button> 
+        <Button name="btn" onClick={() => navigate("/packages")}>
+        Paketlar
         </Button>
       </div>
       {packages?.length > 0 ? (

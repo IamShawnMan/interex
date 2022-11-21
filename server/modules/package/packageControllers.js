@@ -10,15 +10,40 @@ const statusPackages = require("../../core/constants/packageStatus")
 
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
+	console.log(13 ,"qator");
+	const userId = req.user.id 
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter().paginate().limitFields().sort();
 	
+	if(req.user.userRole === "STORE_OWNER"){
+		console.log(19,"qator");
+		if(req.query.new === "new"){
+			queryBuilder.queryOptions.where = {
+				packageStatus: {[Op.eq]: statusPackages.STATUS_NEW},
+				storeOwnerId: {[Op.eq]: userId},
+				// ...queryBuilder.queryOptions.where
+				}
+		}else{
+			queryBuilder.queryOptions.where = {
+				storeOwnerId: {[Op.eq]: userId},
+				// ...queryBuilder.queryOptions.where
+				}
+	}
+	}else{
+		if(req.query.new === "new"){
+		console.log(33,"qator");
+		queryBuilder.queryOptions.where = {
+			packageStatus: {[Op.eq]: statusPackages.STATUS_NEW},
+			}
+	}}
 	queryBuilder.queryOptions.include = {
 		model: UserModel,
 		as: "storeOwner",
 		attributes: ["firstName", "lastName", "storeName"],
 	}
+	console.log(queryBuilder.queryOptions);
 	let allPackages = await PackageModel.findAndCountAll(queryBuilder.queryOptions);
+
 	allPackages = queryBuilder.createPagination(allPackages);
 
 	res.status(200).json({
@@ -30,33 +55,6 @@ exports.getAllPackages = catchAsync(async (req, res, next) => {
 		},
 	});
 });
-
-exports.getDailyPackages = catchAsync(async(req,res,next)=>{
-	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.filter().paginate().limitFields().sort();
-	
-	queryBuilder.queryOptions.include = {
-		model: UserModel,
-		as: "storeOwner",
-		attributes: ["firstName", "lastName", "storeName"],
-	}
-
-	queryBuilder.queryOptions.where = {
-	packageStatus: {[Op.eq]: statusPackages.STATUS_NEW},
-	...queryBuilder.queryOptions.where
-	}
-	let dailyPackages = await PackageModel.findAndCountAll(queryBuilder.queryOptions);
-	dailyPackages = queryBuilder.createPagination(dailyPackages);
-
-	res.status(200).json({
-		status: "success",
-		message: "Kunlik paketlarni ro`yhati",
-		errors: null,
-		data: {
-			...dailyPackages,
-		},
-	});
-})
 
 exports.getOrdersByPackage = catchAsync(async (req, res, next) => {
 	const { id } = req.params;

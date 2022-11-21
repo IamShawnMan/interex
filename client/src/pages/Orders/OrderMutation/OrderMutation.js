@@ -73,7 +73,6 @@ function OrderMutation() {
       });
   }, [regionId]);
   useEffect(() => {
-    let defaultValue = {};
     isUpdate && updateData && append({ ...updateData });
   }, [updateData]);
   const formSubmit = async (data) => {
@@ -144,7 +143,7 @@ function OrderMutation() {
                   append({
                     recipient: "",
                     note: "",
-                    recipientPhoneNumber: "",
+                    recipientPhoneNumber: "+998",
                     regionId: "",
                     districtId: "",
                     orderItems: [],
