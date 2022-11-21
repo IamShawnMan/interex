@@ -29,7 +29,7 @@ const PackageBack = sequelize.define(
 );
 
 
-UserModel.hasOne(PackageBack, { as: "packageBack", foreignKey: "storeOwnerId" });
+UserModel.hasMany(PackageBack, { as: "packageBack", foreignKey: "storeOwnerId" });
 PackageBack.belongsTo(UserModel, { as: "storeOwner" });
 
 PackageBack.hasMany(OrderModel, {as: "rejOrders", foreignKey: "packageBackId"})
