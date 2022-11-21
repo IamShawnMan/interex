@@ -63,19 +63,19 @@ exports.createValidator = [
 			}
 		  } 
 		}),
-	// body("tariff")
-	// 	.custom(async(value, {req}) => {
-	// 		if(req.body.userRole === "COURIER") {
-	// 			if(value === undefined) {
-	// 				throw new Error("Tarif tanlanmadi")
-	// 			}
-	// 		} 
-	// 	}),
+	body("tariff")
+		.custom(async(value, {req}) => {
+			if(req.body.userRole === "COURIER") {
+				if(value === undefined || value.trim() === "") {
+					throw new Error("Tarif tanlanmadi")
+				}
+			} 
+		}),
 ];
 
 exports.updateValidator = [
 	body("userRole")
-    .custom(async(value) => {
+    .custom(async(value, {req}) => {
 		value === userRole.STORE_OWNER? req.body.userRoleUz = userRoleUz.FIRMA: null 
 		value === userRole.ADMIN? req.body.userRoleUz = userRoleUz.ADMIN: null 
 		value === userRole.COURIER? req.body.userRoleUz = userRoleUz.KURIER: null 
@@ -127,7 +127,7 @@ exports.updateValidator = [
 	body("tariff")
 		.custom(async(value, {req}) => {
 			if(req.body.userRole === "COURIER") {
-				if(value === undefined) {
+				if(value === undefined || value.trim() === "") {
 					throw new Error("Tarif tanlanmadi")
 				}
 			} 

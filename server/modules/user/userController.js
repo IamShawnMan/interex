@@ -104,7 +104,6 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 		err.errors = validationErrors;
 		return next(err);
 	}
-
 	const { id } = req.params;
 	const userById = await findById(id);
 	if (!userById) {

@@ -490,3 +490,27 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
+exports.countRejectedOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
+	const countOrders = await Order.count({
+		where: {
+			regionId: {
+				[Op.eq]: regionId
+			},
+			orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_REJECTED
+			}
+		}
+	})
+	if(countOrders > 14) {
+		return next(new AppError("Sizning qayatrilgan buyurtmalaringiz soni belgilangan miqdordan oshib ketdi"))
+	}
+	res.json({
+		status: "success",
+		message: "Rad etilgan buyurtmalar",
+		data: {
+			countOrders
+		}
+	})
+})
