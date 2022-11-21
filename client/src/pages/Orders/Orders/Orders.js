@@ -63,10 +63,17 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
-    setValue(data?.data?.content);
+    console.log(data);
+    if(url==="/packageback/1/orders"){
+      setValue(data?.data?.allOrderbyPackageBack);
+
+    }else{
+      
+      setValue(data?.data?.content);
+    }
     setPagination(data?.data?.pagination);
-    setOrdersIdArr(data?.data?.ordersArrInPost);
-    setPostStatus(data?.data?.currentPostStatus?.postStatus);
+    setOrdersIdArr(data?.data?.ordersArrInPost||data?.data?.orderIdArr);
+    setPostStatus(data?.data?.currentPostStatus?.postStatus||data.data.packageBackStatus);
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -137,7 +144,7 @@ function Orders() {
 				);
 			},
 		},
-		{ id: "status", Header: "Holati", accessor: "orderStatus" },
+		{ id: "status", Header: "Holati", accessor: "orderStatusUz" },
 		{
 			id: "deliveryPrice",
 			Header: "Yetkazish narxi",
@@ -199,7 +206,7 @@ function Orders() {
 										O'zgartirish
 									</Button>
 								)}
-								{isAdmin && id && (
+								{(isAdmin) && id && (
 									<>
 										<Button
 											name="btn"
@@ -349,6 +356,20 @@ function Orders() {
     }
     navigate("/postback");
   };
+
+  const packageRejected = async () => {
+    try {
+      const res = await http({
+        url: `/packageback/${id}/orders`,
+        data: { orderIdArr: ordersIdArr },
+        method: "PUT",
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+    navigate("/packageback");
+  };
   const filterFn = async () => {
     const dateCreatedAt = new Date(createdAt ? createdAt : "");
     try {
@@ -381,14 +402,14 @@ function Orders() {
         <Button
           type="button"
           name="btn"
-          btnStyle={{ width: "9rem", marginBottom: ".5rem" }}
+          btnStyle={{ width: "13rem", marginBottom: ".5rem" }}
           onClick={() => getFile()}
         >
-          Download
+          Yuklab olish
         </Button>
       )}
       <div>
-        {isStoreOwner && (
+        {isStoreOwner &&url==="/orders/myorders"&& (
           <Button
             name="iconText"
             iconName="plus"
@@ -470,8 +491,19 @@ function Orders() {
             >
               {url.split("/")[3] === "regionorders" ||
               url.split("/")[2] === "rejected"
-                ? "create"
-                : "update"}
+                ? "Pochta Yaratmoq"
+                : "Yangilamoq"}
+            </Button>
+          )}
+           { isStoreOwner&&id&&postStatus==="REJECTED_NEW"&&(
+            <Button
+              type="submit"
+              size="small"
+              name="btn"
+              disabled={value?.length===0}
+              onClick={packageRejected}
+            >
+             Qabul Qildim
             </Button>
           )}
       </div>

@@ -7,7 +7,9 @@ const Order = require("../order/Order");
 const Region = require("../region/Region");
 const userRoles = require("../../core/constants/userRole");
 const postStatuses = require("../../core/constants/postStatus");
+const postStatusesUz = require("../../core/constants/postStatusUz");
 const orderStatuses = require("../../core/constants/orderStatus");
+const orderStatusesUz = require("../../core/constants/orderStatusUz");
 const District = require("../district/District");
 const PackageBack = require("../packageBack/PackageBack");
 const statusPackage = require("../../core/constants/packageStatus");
@@ -118,6 +120,7 @@ exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
 		{
 			postBackId: newRejectedPost.id,
 			orderStatus: orderStatuses.STATUS_REJECTED_DELIVERING,
+			orderStatusUz: orderStatusesUz.STATUS_OTKAZ_YULDA
 		},
 		{
 			where: {
@@ -159,8 +162,11 @@ exports.sendRejectedPost = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER &&
 		postStatus === postStatuses.POST_REJECTED_DELIVERING
 	) {
+		let postStatusUz
+		postStatus === postStatuses.POST_REJECTED_DELIVERING? postStatusUz = postStatusesUz.POCHTA_OTKAZ_YULDA: postStatusUz = "OTKAZ YO`LDA"
 		await getRejectedPostById.update({
 			postStatus: postStatus,
+			postStatusUz: postStatusUz,
 			note: note,
 		});
 	}
@@ -276,13 +282,14 @@ exports.getAllRejectedOrdersInPost = catchAsync(async (req, res, next) => {
 		{ model: Region, as: "region", attributes: ["name"] },
 		{ model: District, as: "district", attributes: ["name"] },
 	];
+	const rejectedOrders = Object.values(orderStatuses).slice(9, 12)
 	queryBuilder.queryOptions.where = {
 		...queryBuilder.queryOptions.where,
 		postBackId: {
 			[Op.eq]: id,
 		},
 		orderStatus: {
-			[Op.eq]: orderStatuses.STATUS_REJECTED_DELIVERING,
+			[Op.in]: rejectedOrders,
 		},
 	};
 	let rejectedOrdersInPost = await Order.findAndCountAll(
@@ -317,6 +324,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		await Order.update(
 			{
 				orderStatus: orderStatuses.STATUS_REJECTED_NOT_DELIVERED,
+				orderStatusUz: orderStatusesUz.STATUS_OTKAZ_BORMADI,
 			},
 			{
 				where: {
@@ -334,6 +342,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 	const updateRejectedOrders = await Order.update(
 		{
 			orderStatus: orderStatuses.STATUS_REJECTED_DELIVERED,
+			orderStatusUz: orderStatusesUz.STATUS_OTKAZ_BORDI,
 		},
 		{
 			where: {
@@ -350,6 +359,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		await PostBack.update(
 			{
 				postStatus: postStatuses.POST_REJECTED_DELIVERED,
+				postStatusUz: postStatusesUz.POCHTA_OTKAZ_YETDI,
 			},
 			{
 				where: {
@@ -363,6 +373,7 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		await PostBack.update(
 			{
 				postStatus: postStatuses.POST_REJECTED_NOT_DELIVERED,
+				postStatusUz: postStatusesUz.POCHTA_OTKAZ_BORMADI,
 			},
 			{
 				where: {
@@ -479,3 +490,27 @@ exports.receiveRejectedOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
+exports.countRejectedOrders = catchAsync(async (req, res, next) => {
+	const {regionId} = req.user
+	const countOrders = await Order.count({
+		where: {
+			regionId: {
+				[Op.eq]: regionId
+			},
+			orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_REJECTED
+			}
+		}
+	})
+	if(countOrders > 14) {
+		return next(new AppError("Sizning qayatrilgan buyurtmalaringiz soni belgilangan miqdordan oshib ketdi"))
+	}
+	res.json({
+		status: "success",
+		message: "Rad etilgan buyurtmalar",
+		data: {
+			countOrders
+		}
+	})
+})

@@ -7,6 +7,7 @@ const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const { Op } = require("sequelize");
 const { hash } = require("bcrypt");
+const userRoleUz = require("../../core/constants/userRoleUz")
 
 const findById = async (id, next) => {
 	const byId = await User.findByPk(id, {
@@ -103,7 +104,6 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 		err.errors = validationErrors;
 		return next(err);
 	}
-
 	const { id } = req.params;
 	const userById = await findById(id);
 	if (!userById) {
@@ -129,7 +129,16 @@ exports.updateUsers = catchAsync(async (req, res, next) => {
 });
 
 exports.getUserRole = catchAsync(async (req, res, next) => {
-	const roles = Object.values(userRole).slice(1);
+	let roles = []
+	const rolesUz = Object.values(userRoleUz).slice(1);
+	const rolesEn = Object.values(userRole).slice(1);
+	rolesEn?.forEach((_,i)=>{
+		roles.push({
+			id: i+1,
+			uz: rolesUz[i],
+			en: rolesEn[i]
+		})
+	})
 	res.status(200).json({
 		status: "success",
 		message: "Barcha foydalanuvchi rollari",

@@ -59,7 +59,7 @@ function Users() {
       Header: "Passport raqam",
       accessor: "passportNumber",
     },
-    { id: "status", Header: "Mansabi", accessor: "userRole" },
+    { id: "status", Header: "Mansabi", accessor: "userRoleUz" },
   ];
   const superAdminAction = [
     {

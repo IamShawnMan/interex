@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../core/config/database/database");
 const orderStatus = require("../../core/constants/orderStatus");
+const orderStatusUz = require("../../core/constants/orderStatusUz");
 const RegiomModel = require("../region/Region");
 const PackageModel = require("../package/Package");
 const DistrictModel = require("../district/District");
@@ -28,6 +29,11 @@ const Order = sequelize.define(
 			defaultValue: orderStatus.STATUS_NEW,
 			allowNull: false,
 		},
+		orderStatusUz: {
+			type: DataTypes.ENUM(Object.values(orderStatusUz)),
+			defaultValue: orderStatusUz.STATUS_YANGI,
+			allowNull: false,
+		},
 		deliveryPrice: DataTypes.INTEGER,
 		totalPrice: {
 			type: DataTypes.INTEGER,
@@ -36,7 +42,7 @@ const Order = sequelize.define(
 		createdAt: { type: DataTypes.DATE, field: 'created_at' },
 		updatedAt: { type: DataTypes.DATE, field: 'updated_at' }
 	},
-	{ underscored: true , timestamps: true,}
+	{ underscored: true , timestamps: true}
 );
 
 RegiomModel.hasMany(Order, { as: "orders", foreignKey: "regionId" });

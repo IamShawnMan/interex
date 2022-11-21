@@ -28,13 +28,13 @@ const OrderInfo = ({ id, onClose }) => {
       },
     },
     { id: "productName", Header: "Maxsulot nomi", accessor: "productName" },
-    { id: "quantity", Header: "Soni",	accessor: (order) => {
-      return <>{`${order.quantity.toLocaleString("Ru-Ru")} so'm`}</>;
-    },},
+    { id: "quantity", Header: "Soni",	accessor:"quantity"},
     {
       id: "Total Price",
       Header: "Umumiy narxi",
-      accessor: "orderItemTotalPrice",
+      accessor: (order) => {
+        return <>{`${order.orderItemTotalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
     },
   ];
 
@@ -53,11 +53,11 @@ const OrderInfo = ({ id, onClose }) => {
 
           <li className="h6">
             <p className="bold inline-block">Mahsulot narxi:</p>{" "}
-            <span>{value?.totalPrice}</span>
+            <span>{value?.totalPrice.toLocaleString("Ru-Ru")} so'm</span>
           </li>
           <li className="h6">
             <p className="bold inline-block">Mahsulot holati:</p>{" "}
-            {value?.orderStatus}
+            {value?.orderStatusUz}
           </li>
           <li className="h6">
             <p className="bold inline-block"> Viloyat:</p>
