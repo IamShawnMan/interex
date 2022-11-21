@@ -144,7 +144,7 @@ function Orders() {
 				);
 			},
 		},
-		{ id: "status", Header: "Holati", accessor: "orderStatus" },
+		{ id: "status", Header: "Holati", accessor: "orderStatusUz" },
 		{
 			id: "deliveryPrice",
 			Header: "Yetkazish narxi",

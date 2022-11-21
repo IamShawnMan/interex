@@ -57,7 +57,7 @@ const OrderInfo = ({ id, onClose }) => {
           </li>
           <li className="h6">
             <p className="bold inline-block">Mahsulot holati:</p>{" "}
-            {value?.orderStatus}
+            {value?.orderStatusUz}
           </li>
           <li className="h6">
             <p className="bold inline-block"> Viloyat:</p>

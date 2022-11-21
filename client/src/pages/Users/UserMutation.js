@@ -23,16 +23,12 @@ const UserMutation = () => {
 	const [role, setRole] = useState(null);
 	const [roles, setRoles] = useState(null);
 	const [regions, setRegions] = useState(null);
+	const [tarifs, setTarifs] = useState(null);
 	const { id } = useParams();
 	const isUpdate = id !== "new";
 	const admin = role === "ADMIN";
 	const storeOwner = role === "STORE_OWNER";
 	const courier = role === "COURIER";
-	// const userRoles = roles
-	// 	? roles.map((e) => {
-	// 		return { id: e, name: e.uz };
-	// 	})
-	// 	: [];
 	console.log(regions);
 	const yupResolverObject = () => {
 		if (role) {
@@ -62,67 +58,75 @@ const UserMutation = () => {
 		resolver: yupResolver(yupResolverObject()),
 	});
 
-	useEffect(() => {
-		getAllUserRoles();
-		getAllRegions();
-		reset({ phoneNumber: "+998" })
-		if (isUpdate) {
-			getById();
-		}
-	}, []);
+  useEffect(() => {
+    getAllUserRoles();
+    getAllRegions();
+	getAllTarifs()
+    reset({ phoneNumber:"+998"})
+    if (isUpdate) {
+      getById();
+    }
+  }, []);
 
-	const getAllUserRoles = async () => {
-		const res = await http({
-			url: "/users/roles",
-		});
-		setRoles(res.data?.data?.roles);
-	};
-	const getAllRegions = async () => {
-		const res = await http({
-			url: "/regions",
-		});
-		setRegions(res.data?.data?.content);
-	};
-
-	const getById = async () => {
-		const res = await http({
-			url: `/users/${id}`,
-		});
-		const user = res.data.data.userById;
-		if (user.userRole === "COURIER") {
-			setRole("COURIER");
-		} else if (user.userRole === "STORE_OWNER") {
-			setRole("STORE_OWNER");
-		}
-		reset(user);
-	};
-	const formSubmit = async (data) => {
-		console.log(data);
-		try {
-			const res = await http({
-				url: isUpdate ? `/users/${id}` : "/users",
-				method: isUpdate ? "PUT" : "POST",
-				data,
-			});
-			toast.success(res.data.message);
-			navigate("/users");
-		} catch (error) {
-			console.log(error.response.data.message);
-			return error.response.data.message.map((error) => toast.error(error));
-		}
-	};
-	return (
-		<>
-			<Layout>
-				<form onSubmit={handleSubmit(formSubmit)} className="form">
-					<Select
-						register={register.bind(null, "userRole")}
-						data={roles}
-						onChange={(e) => setRole(e.target.value)}
-						error={errors.userRole?.message}
-					>
-						Foydalanuvchi mansabi
-					</Select>
+  const getAllUserRoles = async () => {
+    const res = await http({
+      url: "/users/roles",
+    });
+    setRoles(res.data?.data?.roles);
+  };
+  const getAllRegions = async () => {
+    const res = await http({
+      url: "/regions",
+    });
+    setRegions(res.data?.data?.content);
+  };
+  const getAllTarifs = async () => {
+    const res = await http({
+      url: "/users/tariffs ",
+    });
+	console.log(res);
+    setTarifs(res.data?.data?.tariffs);
+  };
+  const getById = async () => {
+    const res = await http({
+      url: `/users/${id}`,
+    });
+    const user = res.data.data.userById;
+    if (user.userRole === "COURIER") {
+      setRole("COURIER");
+    } else if (user.userRole === "STORE_OWNER") {
+      setRole("STORE_OWNER");
+    }
+    reset(user);
+  };
+  const formSubmit = async (data) => {
+    console.log(data);
+    try {
+      const res = await http({
+        url: isUpdate ? `/users/${id}` : "/users",
+        method: isUpdate ? "PUT" : "POST",
+        data,
+      });
+      toast.success(res.data.message);
+      navigate("/users");
+    } catch (error) {
+		console.log(error);
+      console.log(error.response.data.message);
+      return error.response.data.message.map((error) => toast.error(error));
+    }
+  };
+  return (
+    <>
+      <Layout>
+        <form onSubmit={handleSubmit(formSubmit)} className="form">
+          <Select
+            register={register.bind(null, "userRole")}
+            data={roles}
+            onChange={(e) => setRole(e.target.value)}
+            error={errors.userRole?.message}
+          >
+            Foydalanuvchi mansabi
+          </Select>
 
 					<Input
 						id="text"
@@ -184,15 +188,27 @@ const UserMutation = () => {
 						/>
 					)}
 
-					{role === "COURIER" && (
-						<Select
-							register={register.bind(null, "regionId")}
-							data={regions}
-							error={errors.regionId?.message}
-						>
-							Viloyatlar
-						</Select>
-					)}
+          {role === "COURIER" && (
+			<>
+            <Select
+              register={register.bind(null, "regionId")}
+              data={regions}
+              error={errors.regionId?.message}
+            >
+              Viloyatlar
+            </Select>
+			{console.log(tarifs)}
+			<Select
+              register={register.bind(null, "tariff")}
+              data={tarifs?.map((e)=>{
+				return { id: e, name: e };
+			  })}
+              error={errors.tariff?.message}
+            >
+              Tariflar
+            </Select>
+			</>
+          )}
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
 						{!isUpdate ? "Create Accaunt" : "Update User"}

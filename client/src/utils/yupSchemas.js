@@ -84,6 +84,7 @@ export const courierSchema = yup.object().shape({
     .min(6, "Parol 6 ta belgidan kop bolishi kerak")
     .max(20, "Parol 20 ta belgidan kam bolishi kerak"),
   regionId: yup.string().trim().required("Region bo'sh bo'lishi mumkin emas"),
+  tariff: yup.string().trim().required("Tariff bo'sh bo'lishi mumkin emas"),
 });
 export const storeOwnerSchemaUpdate = yup.object().shape({
   firstName: yup
