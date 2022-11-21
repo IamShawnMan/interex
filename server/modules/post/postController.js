@@ -237,7 +237,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		{
 			postId: newPost.id,
 			orderStatus: orderStatuses.STATUS_DELIVERING,
-			orderStatusUz: orderStatusesUz.STATUS_YULDA
+			orderStatusUz: orderStatusesUz.STATUS_YULDA,
 		},
 		{
 			where: {
@@ -423,8 +423,10 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 		userRole === userRoles.ADMIN &&
 		postStatus === postStatuses.POST_DELIVERING
 	) {
-		let postStatusUz
-		postStatus === postStatuses.POST_DELIVERING? postStatusUz = postStatusesUz.POCHTA_YULDA: postStatusUz = "YO`LDA"
+		let postStatusUz;
+		postStatus === postStatuses.POST_DELIVERING
+			? (postStatusUz = postStatusesUz.POCHTA_YULDA)
+			: (postStatusUz = "YO`LDA");
 		await getPostById.update({
 			postStatus: postStatus,
 			postStatusUz: postStatusUz,
@@ -493,9 +495,11 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 
 exports.recievePost = catchAsync(async (req, res, next) => {
 	const { postStatus, ordersArr, postId } = req.body;
-	let postStatusUz
-	postStatus === postStatuses.POST_DELIVERED? postStatusUz = postStatusesUz.POCHTA_YETIB_BORDI: postStatusUz = postStatusesUz.POCHTA_YETIB_BORMADI
-	
+	let postStatusUz;
+	postStatus === postStatuses.POST_DELIVERED
+		? (postStatusUz = postStatusesUz.POCHTA_YETIB_BORDI)
+		: (postStatusUz = postStatusesUz.POCHTA_YETIB_BORMADI);
+
 	const postInfo = await Post.update(
 		{
 			postStatus: postStatus,
@@ -539,13 +543,21 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 			}
 		);
 
-		await Tracking.create({
-			orderId:{
-				[Op.notIn]: ordersArr
-			},
-			fromStatus: orderStatuses.STATUS_DELIVERING,
-			toStatus: orderStatuses.STATUS_NOT_DELIVERED
-		})
+		ordersNotInArr.map(async (order) => {
+			await Tracking.create({
+				orderId: order.id,
+				fromStatus: orderStatuses.STATUS_DELIVERING,
+				toStatus: orderStatuses.STATUS_NOT_DELIVERED,
+			});
+		});
+
+		// await Tracking.create({
+		// 	orderId: {
+		// 		[Op.notIn]: ordersArr,
+		// 	},
+		// 	fromStatus: orderStatuses.STATUS_DELIVERING,
+		// 	toStatus: orderStatuses.STATUS_NOT_DELIVERED,
+		// });
 	}
 
 	const updatedOrders = await Order.update(
@@ -565,13 +577,13 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 		}
 	);
 
-	ordersArr.map(async id=>{
+	ordersArr.map(async (id) => {
 		await Tracking.create({
 			orderId: id,
 			fromStatus: orderStatuses.STATUS_DELIVERING,
-			toStatus: orderStatuses.STATUS_DELIVERED
-		})
-	})
+			toStatus: orderStatuses.STATUS_DELIVERED,
+		});
+	});
 
 	if (ordersArr.length > 0) {
 		await Post.update(
@@ -592,7 +604,6 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 			{
 				postStatus: postStatuses.POST_NOT_DELIVERED,
 				postStatusUz: postStatusesUz.POCHTA_YETIB_BORMADI,
-
 			},
 			{
 				where: {

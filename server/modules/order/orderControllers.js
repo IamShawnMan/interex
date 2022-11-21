@@ -118,6 +118,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 			{ model: DistrictModel, as: "district", attributes: ["name"] },
 			{ model: RegionModel, as: "region", attributes: ["name"] },
 			{ model: OrderItemModel, as: "items" },
+			{ model: Tracking, as: "tracking" },
 		],
 	});
 
@@ -491,6 +492,12 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 			note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`,
 		});
 	}
+
+	await Tracking.create({
+		orderId: id,
+		fromStatus: oldStatus,
+		toStatus: orderStatus,
+	});
 
 	res.status(203).json({
 		status: "success",
