@@ -173,7 +173,7 @@ exports.sendRejectedPost = catchAsync(async (req, res, next) => {
 
 	res.json({
 		status: "success",
-		message: "Rejected Pochta jo'natildi",
+		message: "Otkaz bo'lgan pochta jo'natildi",
 		error: null,
 		data: {
 			note,

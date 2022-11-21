@@ -19,10 +19,8 @@ function PackageBack() {
   const getAllPackages = async () => {
     try {
       const res = await http({
-        url: `/packageback?page=${page}&size=${size}`
+        url: `/packageback?page=${page}&size=${size}${sNew?"&new=new":""}`
       });
-      console.log(res);
-      // setPackages(res.data.data);
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
@@ -44,7 +42,7 @@ function PackageBack() {
     {
       id: "status",
       Header: "Holati",
-      accessor: "packageStatus",
+      accessor: "packageStatusUz",
     },
     {
       id: "totalPrice",
@@ -71,7 +69,7 @@ function PackageBack() {
       accessor: (pack) => {
         return (
           <Link to={`/packageback/${pack.id}/orders`} >
-            <Button name="btn"> Ochish</Button>
+            <Button name="btn">Ochish</Button>
           </Link>
         );
       },

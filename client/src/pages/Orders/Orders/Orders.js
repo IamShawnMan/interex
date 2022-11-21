@@ -41,6 +41,7 @@ function Orders() {
   const districtId = searchParams.get("districtId") || "";
   const storeOwnerId = !isStoreOwner ? searchParams.get("storeOwnerId") : "";
   const { id } = useParams();
+  const [search,setSearch]=useState(null)
   const navigate = useNavigate();
   const url = location.pathname;
   useEffect(() => {
@@ -55,6 +56,7 @@ function Orders() {
     storeOwnerId,
     createdAt,
     url,
+    search
   ]);
   const getPrices = async () => {
     const res = await http({
@@ -64,12 +66,9 @@ function Orders() {
   };
   const getAllOrders = async (data) => {
     console.log(data);
-    if(url==="/packageback/1/orders"){
-      setValue(data?.data?.allOrderbyPackageBack);
 
-    }else{
-      setValue(data?.data?.content);
-    }
+      setValue(data?.data?.content||data?.data?.allOrderbyPackageBack.rows);
+    
     setPagination(data?.data?.pagination);
     setOrdersIdArr(data?.data?.ordersArrInPost||data?.data?.orderIdArr);
     setPostStatus(data?.data?.currentPostStatus?.postStatus||data.data.packageBackStatus);
@@ -298,7 +297,7 @@ function Orders() {
             </Button>
             {ordersIdArr && (url.split("/")[1] === "postback" || id) && (
               <Input
-                disabled={postStatus && postStatus !== "NEW"}
+                disabled={postStatus && postStatus==="NEW"}
                 type="checkbox"
                 checked={ordersIdArr.includes(order.id)}
                 onClick={() => {
@@ -375,7 +374,7 @@ function Orders() {
       const res = await http({
         url: `${url}?page=${page}&size=${size}${
           orderStatus ? `&orderStatus=${orderStatus}` : ""
-        }${regionId ? `&regionId=${regionId}` : ""}${
+        }${regionId ? `&regionId=${regionId}` : ""}${search ? `&search=${search}` : ""}${
           districtId ? `&districtId=${districtId}` : ""
         }${
           !isStoreOwner
@@ -394,7 +393,7 @@ function Orders() {
     setInfo(false);
   };
   return (
-    <Layout pageName="Jo'natmalar Ro'yxati">
+    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch}>
       {(url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (

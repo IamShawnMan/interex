@@ -48,7 +48,7 @@ const OrderInfo = ({ id, onClose }) => {
           </li>
           <li className="h6">
             <p className="bold inline-block"> Xaridor telefon raqami:</p>
-            <span>{phoneNumberFormat(value?.recipientPhoneNumber)}</span>
+            <span><a href={`tel:${value?.recipientPhoneNumber}`}>{phoneNumberFormat(value?.recipientPhoneNumber)}</a></span>
           </li>
 
           <li className="h6">

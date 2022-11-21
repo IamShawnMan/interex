@@ -45,7 +45,7 @@ function Package() {
     {
       id: "status",
       Header: "Holati",
-      accessor: "packageStatus",
+      accessor: "packageStatusUz",
     },
     {
       id: "totalPrice",
