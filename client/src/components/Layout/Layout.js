@@ -20,7 +20,7 @@ function Layout(props) {
           !arrowChange ? styles.containerFull : ""
         }`}
       >
-        <Navbar sidebarActiveHandle={sidebarActiveHandle} />
+        <Navbar sidebarActiveHandle={sidebarActiveHandle} setSearch={props.setSearch}/>
         <div className={styles.layoutBox}>
           <div className={styles.pathRoad}>
             <h1 className={`h2 ${styles.pageName}`}>{props.pageName}</h1>
