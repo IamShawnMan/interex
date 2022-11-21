@@ -7,6 +7,6 @@ router
     .get(roleMiddleware(["STORE_OWNER", "ADMIN"]), packageBackControllers.getAllPackageBack)
 router
     .route("/:id/orders")
-    .get(roleMiddleware(["STORE_OWNER", "ADMIN "]), packageBackControllers.getOrdersbyPackageBack)
+    .get(roleMiddleware(["STORE_OWNER", "ADMIN"]), packageBackControllers.getOrdersbyPackageBack)
     .put(roleMiddleware(["STORE_OWNER"]), packageBackControllers.receiveOrdersinPackageBack)
 module.exports = router;
