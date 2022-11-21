@@ -49,7 +49,7 @@ function Navbar(props) {
       <div></div>
       <div className={styles.userInfo}>
         <div className={styles.RoundNotificationSvg}>
-          <RoundNotifications classname={styles.RoundNotificationSvg} />
+          <RoundNotifications classname={styles.RoundNotificationSvg} classRed={styles.notification} />
         </div>
         <div className={styles.SmsIcon}>
           <SmsIcon classname={styles.SmsIcon} />
