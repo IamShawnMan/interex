@@ -106,8 +106,8 @@ function Users() {
     <Layout pageName="Foydalanuvchilar">
       {user.userRole === "SUPER_ADMIN" && (
         <Link style={{ width: "10rem", display: "block" }} to="/users/new">
-          <Button size="small" name="btn">
-            Add User
+          <Button size="iconSmall" name="btn">
+            Foydalanuvchi qo'shish
           </Button>
         </Link>
       )}

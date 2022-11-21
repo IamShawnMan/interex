@@ -9,6 +9,7 @@ const statusPackages = require("../../core/constants/packageStatus")
 const statusPackagesUz = require("../../core/constants/packageStatusUz")
 const Region = require("../region/Region")
 const District = require("../district/District")
+const User = require('../user/User')
 
 exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
     const {id} = req.user    
@@ -23,6 +24,9 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
     queryBuilder.queryOptions.where = {...queryBuilder.queryOptions.where,
         storeOwnerId: {[Op.eq]: id}
     }
+    queryBuilder.queryOptions.include = [
+        {model: User, as: "storeOwner", attributes: ["storeName"]}
+    ]
     
         let allPackage = await PackageBackModel.findAndCountAll(queryBuilder.queryOptions)
         allPackage = queryBuilder.createPagination(allPackage)

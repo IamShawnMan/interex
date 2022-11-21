@@ -68,7 +68,6 @@ function Orders() {
       setValue(data?.data?.allOrderbyPackageBack);
 
     }else{
-      
       setValue(data?.data?.content);
     }
     setPagination(data?.data?.pagination);
@@ -491,8 +490,8 @@ function Orders() {
             >
               {url.split("/")[3] === "regionorders" ||
               url.split("/")[2] === "rejected"
-                ? "Pochta Yaratmoq"
-                : "Yangilamoq"}
+                ? "Pochta yaratish"
+                : "Yangilash"}
             </Button>
           )}
            { isStoreOwner&&id&&postStatus==="REJECTED_NEW"&&(
@@ -503,7 +502,7 @@ function Orders() {
               disabled={value?.length===0}
               onClick={packageRejected}
             >
-             Qabul Qildim
+             Qabul qildim
             </Button>
           )}
       </div>
