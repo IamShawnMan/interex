@@ -23,6 +23,7 @@ const UserMutation = () => {
   const [role, setRole] = useState(null);
   const [roles, setRoles] = useState(null);
   const [regions, setRegions] = useState(null);
+  const [tarifs, setTarifs] = useState(null);
   const { id } = useParams();
   const isUpdate = id !== "new";
   const admin = role === "ADMIN";
@@ -64,7 +65,8 @@ const UserMutation = () => {
   useEffect(() => {
     getAllUserRoles();
     getAllRegions();
-    reset({ phoneNumber:"+998"})
+    getAllTarifs()
+    reset({ phoneNumber: "+998" });
     if (isUpdate) {
       getById();
     }
@@ -74,6 +76,7 @@ const UserMutation = () => {
     const res = await http({
       url: "/users/roles",
     });
+    console.log(res);
     setRoles(res.data?.data?.roles);
   };
   const getAllRegions = async () => {
@@ -82,7 +85,13 @@ const UserMutation = () => {
     });
     setRegions(res.data?.data?.content);
   };
-
+  const getAllTarifs = async () => {
+    const res = await http({
+      url: "/users/tariffs",
+    });
+    console.log(res);
+    setTarifs(res.data?.data?.tariffs);
+  };
   const getById = async () => {
     const res = await http({
       url: `/users/${id}`,
@@ -110,13 +119,17 @@ const UserMutation = () => {
       return error.response.data.message.map((error) => toast.error(error));
     }
   };
+  console.log(role);
+  console.log(errors);
   return (
     <>
       <Layout>
         <form onSubmit={handleSubmit(formSubmit)} className="form">
           <Select
             register={register.bind(null, "userRole")}
-            data={userRoles}
+            data={userRoles?.map((e) => {
+              return { id: e.id.id, name: e.name.uz,value: e.name.en };
+            })}
             onChange={(e) => setRole(e.target.value)}
             error={errors.userRole?.message}
           >
@@ -184,13 +197,24 @@ const UserMutation = () => {
           )}
 
           {role === "COURIER" && (
-            <Select
+            <>
+             <Select
               register={register.bind(null, "regionId")}
               data={regions}
               error={errors.regionId?.message}
             >
               Viloyatlar
             </Select>
+            {/* <Select
+            register={register.bind(null, "regionId")}
+              data={tarifs?.map((e) => {
+                return { id: e, name: e };
+              })}
+              error={errors.regionId?.message}
+            >
+            </Select> */}
+            </>
+           
           )}
 
           <Button type="submit" size="small" name="btn" className="btnLogin">

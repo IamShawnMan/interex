@@ -11,6 +11,7 @@ function Select({
   id,
   placeholder,
 }) {
+  console.log(data);
   return (
     <div className={styles.formControl}>
       <div className={styles.selectContainer}>
