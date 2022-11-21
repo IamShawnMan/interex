@@ -155,7 +155,7 @@ export const courierSchemaUpdate = yup.object().shape({
 
 
 export const defaultSchema = yup.object().shape({
-  userRole: yup
+  userRoleUz: yup
     .string()
     .trim()
     .required("user mansabi bo'sh bo'lishi mumkin emas"),})

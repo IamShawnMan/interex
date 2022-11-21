@@ -26,8 +26,8 @@ const UserMutation = () => {
   const { id } = useParams();
   const isUpdate = id !== "new";
   const admin = role === "ADMIN";
-  const storeOwner = role === "STORE_OWNER";
-  const courier = role === "COURIER";
+  const storeOwner = role === "FIRMA";
+  const courier = role === "KURIER";
   const userRoles = roles
     ? roles.map((e) => {
         return { id: e, name: e };
@@ -74,7 +74,8 @@ const UserMutation = () => {
     const res = await http({
       url: "/users/roles",
     });
-    setRoles(res.data?.data?.roles);
+    console.log(res.data.data.roles.map(e => e.uz));
+    setRoles(res.data?.data?.roles.map(e => e.uz));
   };
   const getAllRegions = async () => {
     const res = await http({
