@@ -33,12 +33,12 @@ function Navbar(props) {
   const modalShow = () => {
     setShow(!show);
   };
-  const getNotifications = async () => {
+  const getNotifications = async (click) => {
     try {
        const res = await http({
       url: "/postback/rejected/count",
     });
-    toast.success("Hech Qanday Eslatmalar Yoq")
+    click&&toast.success("Hech Qanday Eslatmalar Yo'q")
     setNotification(null)
     } catch (error) {
       toast.error(error.response.data.message)
@@ -65,7 +65,7 @@ function Navbar(props) {
       </div> */}
       <div></div>
       <div className={styles.userInfo}>
-        <div className={styles.RoundNotificationSvg} onClick={getNotifications}>
+        <div className={styles.RoundNotificationSvg} onClick={()=>getNotifications(true)}>
           <RoundNotifications classname={styles.RoundNotificationSvg} classRed={notification&&styles.notification} />
         </div>
         <div className={styles.SmsIcon}>

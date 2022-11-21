@@ -299,7 +299,7 @@ function Orders() {
             </Button>
             {ordersIdArr && (url.split("/")[1] === "postback" || id) && (
               <Input
-                disabled={postStatus && postStatus !== "NEW"}
+                disabled={postStatus && postStatus==="NEW"}
                 type="checkbox"
                 checked={ordersIdArr.includes(order.id)}
                 onClick={() => {

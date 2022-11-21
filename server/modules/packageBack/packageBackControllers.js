@@ -57,6 +57,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     allOrderbyPackageBack.rows?.map(order=>{
         orderIdArr.push(order.id)
     })
+    console.log(orderIdArr);
     res.status(200).json({
         status: "success",
         message: "qaytgan paketlar ichidagi buyurtmalar",
