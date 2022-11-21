@@ -4,13 +4,9 @@ const router = require("express").Router()
 
 router
     .route("/")
-    .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), packageControllers.getAllPackages)
-router
-    .route("/daily")
-    .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), packageControllers.getDailyPackages)
+    .get(roleMiddleware(["SUPER_ADMIN", "ADMIN", "STORE_OWNER"]), packageControllers.getAllPackages)
 router
     .route("/:id/orders")
     .get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), packageControllers.getOrdersByPackage)
-
 
 module.exports = router;

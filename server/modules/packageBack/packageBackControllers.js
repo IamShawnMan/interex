@@ -17,18 +17,35 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
     const queryBuilder = new QueryBuilder(req.query)
 
     queryBuilder.limitFields().paginate().search(["id"]).sort()
-    
-    if(req.query.new === "new")
-    queryBuilder.queryOptions.where = {...queryBuilder.queryOptions.where, 
-        storeOwnerId: {[Op.eq]: id}, packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}    
-    queryBuilder.queryOptions.where = {...queryBuilder.queryOptions.where,
-        storeOwnerId: {[Op.eq]: id}
+    queryBuilder.queryOptions.where={}
+    if(req.user.userRole === "STORE_OWNER"){
+         if(req.query.new === "new"){
+            console.log("newga gkrdi");
+             queryBuilder.queryOptions.where = {[Op.and]: [
+                {storeOwnerId: {[Op.eq]: id}},
+                {packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}
+            ]
+        }    
+        console.log(queryBuilder.queryOptions.where,"fdsfsfdsfdsf")
+         }else{
+            queryBuilder.queryOptions.where = {
+                storeOwnerId: {[Op.eq]: id},
+                // ...queryBuilder.queryOptions.where,
     }
+    console.log(queryBuilder.queryOptions.where,"fdsfsfdsfdsf")
+         }
+    }else{
+        if(req.query.new === "new"){
+        queryBuilder.queryOptions.where = {
+            // ...queryBuilder.queryOptions.where, 
+            packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}    
+             }}
+   
     queryBuilder.queryOptions.include = [
         {model: User, as: "storeOwner", attributes: ["storeName"]}
     ]
-    
-        let allPackage = await PackageBackModel.findAndCountAll(queryBuilder.queryOptions)
+    console.log(queryBuilder.queryOptions);
+    let allPackage = await PackageBackModel.findAndCountAll(queryBuilder.queryOptions)
         allPackage = queryBuilder.createPagination(allPackage)
     res.status(200).json({
         status: "succes",
@@ -37,8 +54,9 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
         data: {...allPackage}
     })
 })
+
 exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
-    const {id} = req.params
+    const {id} = req.params 
     const userId = req.user.id
     let orderIdArr = [] 
 
@@ -47,11 +65,18 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     const queryBuilder = new QueryBuilder(req.query)
 
     queryBuilder.limitFields().search(["id"])
-    queryBuilder.queryOptions.where = {
-        ...queryBuilder.queryOptions.where, 
-        packageBackId: {[Op.eq]: id}, 
-        storeOwnerId: {[Op.eq]: userId}
+    if(req.user.userRole === "STORE_OWNER"){
+        queryBuilder.queryOptions.where = {
+            ...queryBuilder.queryOptions.where, 
+            packageBackId: {[Op.eq]: id}, 
+            storeOwnerId: {[Op.eq]: userId}
+        }
+    }else{
+        queryBuilder.queryOptions.where = {
+            ...queryBuilder.queryOptions.where, 
+            packageBackId: {[Op.eq]: id}}
     }
+    
 
     queryBuilder.queryOptions.include = [
         {model: Region, as: "region", attributes: ["name"] },
@@ -61,7 +86,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     allOrderbyPackageBack.rows?.map(order=>{
         orderIdArr.push(order.id)
     })
-    console.log(orderIdArr);
+    console.log(orderIdArr)
     res.status(200).json({
         status: "success",
         message: "qaytgan paketlar ichidagi buyurtmalar",

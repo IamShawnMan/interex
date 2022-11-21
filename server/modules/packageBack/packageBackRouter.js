@@ -4,9 +4,9 @@ const router = require("express").Router()
 
 router
     .route("/")
-    .get(roleMiddleware(["STORE_OWNER"]), packageBackControllers.getAllPackageBack)
+    .get(roleMiddleware(["STORE_OWNER", "ADMIN"]), packageBackControllers.getAllPackageBack)
 router
     .route("/:id/orders")
-    .get(roleMiddleware(["STORE_OWNER"]), packageBackControllers.getOrdersbyPackageBack)
+    .get(roleMiddleware(["STORE_OWNER", "ADMIN "]), packageBackControllers.getOrdersbyPackageBack)
     .put(roleMiddleware(["STORE_OWNER"]), packageBackControllers.receiveOrdersinPackageBack)
 module.exports = router;

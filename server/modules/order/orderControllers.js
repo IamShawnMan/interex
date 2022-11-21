@@ -16,6 +16,8 @@ const statusPackage = require("../../core/constants/packageStatus");
 const statusPackageUz = require("../../core/constants/packageStatusUz");
 const excelJS = require("exceljs");
 const Region = require("../region/regions.json");
+const Order = require("./Order");
+const Tracking = require("../tracking/Tracking");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
@@ -55,43 +57,45 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	}
 	const { userRole } = req.user;
 
-  let existedPackage = await PackageModel.findOne({
-    where: {[Op.and]: [
-		{storeOwnerId: { [Op.eq]: req.user.id }},
-		{packageStatus: {[Op.eq]: statusPackage.STATUS_NEW}}
-	]},
-	order: [["createdAt", "DESC"]]
-  });
-  
-  if (!existedPackage) {
-    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
-  }
-  const storeOwnerId = req.user.id;
-  const orders = req.body.orders;
-  orders?.forEach(async (order) => {
-	  const newOrder = await OrderModel.create({
-		  recipient: order.recipient,
-      regionId: order.regionId,
-      note: `${userRole}: ${order.note}`,
-      recipientPhoneNumber: order.recipientPhoneNumber,
-      districtId: order.districtId,
-      packageId: existedPackage.id,
-      storeOwnerId,
-    });
-    let items = [];
-    let sum = 0;
-    order?.orderItems?.forEach((item) => {
-      items.push({
-		  productName: item.productName,
-		  quantity: item.quantity,
-		  orderItemTotalPrice: +item.price,
-		  orderId: newOrder.id,
+	let existedPackage = await PackageModel.findOne({
+		where: {
+			[Op.and]: [
+				{ storeOwnerId: { [Op.eq]: req.user.id } },
+				{ packageStatus: { [Op.eq]: statusPackage.STATUS_NEW } },
+			],
+		},
+		order: [["createdAt", "DESC"]],
+	});
+
+	if (!existedPackage) {
+		existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
+	}
+	const storeOwnerId = req.user.id;
+	const orders = req.body.orders;
+	orders?.forEach(async (order) => {
+		const newOrder = await OrderModel.create({
+			recipient: order.recipient,
+			regionId: order.regionId,
+			note: `${userRole}: ${order.note}`,
+			recipientPhoneNumber: order.recipientPhoneNumber,
+			districtId: order.districtId,
+			packageId: existedPackage.id,
+			storeOwnerId,
 		});
-    });
-    items?.forEach((item) => {
-		sum += item.orderItemTotalPrice;
-    });
-	
+		let items = [];
+		let sum = 0;
+		order?.orderItems?.forEach((item) => {
+			items.push({
+				productName: item.productName,
+				quantity: item.quantity,
+				orderItemTotalPrice: +item.price,
+				orderId: newOrder.id,
+			});
+		});
+		items?.forEach((item) => {
+			sum += item.orderItemTotalPrice;
+		});
+
 		await OrderItemModel.bulkCreate(items);
 		newOrder.totalPrice = sum;
 		newOrder.packageId = existedPackage.id;
@@ -114,6 +118,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 			{ model: DistrictModel, as: "district", attributes: ["name"] },
 			{ model: RegionModel, as: "region", attributes: ["name"] },
 			{ model: OrderItemModel, as: "items" },
+			{ model: Tracking, as: "tracking" },
 		],
 	});
 
@@ -134,14 +139,16 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { orderStatus } = req.body;
 	let orderById = await OrderModel.findByPk(id);
-	
-	let orderStatusUz
-	orderStatus === statusOrder.STATUS_ACCEPTED ? orderStatusUz = statusOrderUz.STATUS_ADMIN_OLDI: orderStatusUz = statusOrderUz.STATUS_ADMIN_TOPILMADI;
+
+	let orderStatusUz;
+	orderStatus === statusOrder.STATUS_ACCEPTED
+		? (orderStatusUz = statusOrderUz.STATUS_ADMIN_OLDI)
+		: (orderStatusUz = statusOrderUz.STATUS_ADMIN_TOPILMADI);
 	if (userRole === "ADMIN") {
-		
 		const dprice = orderById.deliveryPrice;
 		orderById = await orderById.update({
-			orderStatus, orderStatusUz
+			orderStatus,
+			orderStatusUz,
 		});
 		if (orderById.orderStatus === statusOrder.STATUS_ACCEPTED) {
 			await orderById.update({ deliveryPrice: dprice || 50000 });
@@ -159,9 +166,19 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 			},
 		});
 		if (isNewOrders === 0) {
-			await existedPackage.update({ packageStatus: statusPackage.STATUS_OLD, packageStatusUz: statusPackageUz.STATUS_ESKI });
+			await existedPackage.update({
+				packageStatus: statusPackage.STATUS_OLD,
+				packageStatusUz: statusPackageUz.STATUS_ESKI,
+			});
 		}
 	}
+	const orderForTracking = await Order.findByPk(id);
+	console.log(orderForTracking);
+	await Tracking.create({
+		orderId: id,
+		fromStatus: statusOrder.STATUS_NEW,
+		toStatus: orderForTracking.orderStatus,
+	});
 	res.status(203).json({
 		status: "success",
 		message: "order statusi o`zgardi",
@@ -172,9 +189,9 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 
 exports.adminOrderStatus = catchAsync(async (req, res, next) => {
 	let orderStatusVariables = [
-		statusOrder.STATUS_ACCEPTED, 
-		statusOrder.STATUS_NOT_EXIST
-	]
+		statusOrder.STATUS_ACCEPTED,
+		statusOrder.STATUS_NOT_EXIST,
+	];
 	res.json(orderStatusVariables);
 });
 
@@ -297,26 +314,30 @@ exports.getAllDeliveryPrice = (req, res, next) => {
 exports.getAllOrderStatus = (req, res, next) => {
 	const { userRole } = req.user;
 
-	let allOrderStatus = []
-	
+	let allOrderStatus = [];
+
 	let orderStatus = Object.values(statusOrder);
-	let orderStatusUz = Object.values(statusOrderUz)
-	
+	let orderStatusUz = Object.values(statusOrderUz);
+
 	if (userRole === "COURIER") {
-		orderStatus = orderStatus.slice(4, 12);
-		orderStatusUz = orderStatusUz.slice(4, 12);
-		
-		orderStatus?.forEach((_,i)=>{
+		orderStatus.slice(4, 12);
+		orderStatusUz.slice(4, 12);
+
+		orderStatus?.forEach((_, i) => {
 			allOrderStatus.push({
-				id: i+1, uz: orderStatusUz[i], en: orderStatus[i]
-			})
-		})
-	}else{
-		orderStatus?.forEach((_,i)=>{
+				id: i + 1,
+				uz: orderStatusUz[i],
+				en: orderStatus[i],
+			});
+		});
+	} else {
+		orderStatus?.forEach((_, i) => {
 			allOrderStatus.push({
-				id: i+1, uz: orderStatusUz[i], en: orderStatus[i]
-			})
-		})
+				id: i + 1,
+				uz: orderStatusUz[i],
+				en: orderStatus[i],
+			});
+		});
 	}
 	res.json({
 		status: "success",
@@ -373,7 +394,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 	});
 	const orderStatuses = Object.values(statusOrder).slice(4, 12);
 	if (region?.name === "Samarqand viloyati") {
-		
 		queryBuilder.queryOptions.where = {
 			regionId: {
 				[Op.eq]: regionId,
@@ -457,13 +477,9 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 			},
 		},
 	});
-	let orderStatusUz
-	orderStatus === statusOrder.STATUS_SOLD ? orderStatusUz = statusOrderUz.STATUS_SOTILDI: ""
-	orderStatus === statusOrder.STATUS_PENDING ? orderStatusUz = statusOrderUz.STATUS_KUTILMOQDA: ""
-	orderStatus === statusOrder.STATUS_REJECTED ? orderStatusUz = statusOrderUz.STATUS_OTKAZ: ""
-	console.log(orderStatus);
-	const postOrderStatuses = Object.values(statusOrder).slice(6, 9)
-	const postOrderStatusesUz = Object.values(statusOrderUz).slice(6, 9)
+	const oldStatus = postOrdersById.orderStatus;
+	console.log(oldStatus);
+	const postOrderStatuses = Object.values(statusOrder).slice(6, 9);
 	const postOrderStatusChange = postOrderStatuses.find(
 		(e) => e === orderStatus
 	);
@@ -479,6 +495,12 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 			note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`,
 		});
 	}
+
+	await Tracking.create({
+		orderId: id,
+		fromStatus: oldStatus,
+		toStatus: orderStatus,
+	});
 
 	res.status(203).json({
 		status: "success",
@@ -612,12 +634,12 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.addRow(order);
 		counter++;
 	});
-	const endRow = worksheet.lastRow._number + 1
-	worksheet.mergeCells(`D${endRow}:E${endRow}`)
-	worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:"
-	worksheet.getCell(`D${endRow}`).alignment = {horizontal: "center"}
-	worksheet.getCell(`F${endRow}`).value = {formula: `SUM(F2:F${endRow - 1})`}
-	worksheet.getCell(`G${endRow}`).value = {formula: `SUM(G2:G${endRow - 1})`}
+	const endRow = worksheet.lastRow._number + 1;
+	worksheet.mergeCells(`D${endRow}:E${endRow}`);
+	worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:";
+	worksheet.getCell(`D${endRow}`).alignment = { horizontal: "center" };
+	worksheet.getCell(`F${endRow}`).value = { formula: `SUM(F2:F${endRow - 1})` };
+	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(G2:G${endRow - 1})` };
 	worksheet.getRow(1).eachCell((cell) => {
 		cell.font = { bold: true };
 	});
