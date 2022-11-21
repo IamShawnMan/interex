@@ -32,11 +32,11 @@ function Filter({ url }) {
     const res = await http({
       url: "/orders/status",
     });
+    
     setStatuses(
-      res.data.data.allOrderStatus.map((e) => {
-        return { id: e, name: e };
-      })
+      res.data.data.allOrderStatus
     );
+    console.log(res.data)
   };
   const getAllRegions = async () => {
     const res = await http({
