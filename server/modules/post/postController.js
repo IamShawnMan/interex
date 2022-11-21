@@ -1,5 +1,5 @@
 const Post = require("./Post");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
@@ -11,6 +11,7 @@ const postStatusesUz = require("../../core/constants/postStatusUz");
 const orderStatuses = require("../../core/constants/orderStatus");
 const orderStatusesUz = require("../../core/constants/orderStatusUz");
 const District = require("../district/District");
+const Tracking = require("../tracking/Tracking");
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
 	const { userRole, regionId } = req.user;
@@ -236,7 +237,7 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 		{
 			postId: newPost.id,
 			orderStatus: orderStatuses.STATUS_DELIVERING,
-			orderStatusUz: orderStatusesUz.STATUS_YULDA
+			orderStatusUz: orderStatusesUz.STATUS_YULDA,
 		},
 		{
 			where: {
@@ -246,6 +247,15 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 			},
 		}
 	);
+
+	ordersArr.map(async (id) => {
+		await Tracking.create({
+			orderId: id,
+			fromStatus: orderStatuses.STATUS_ACCEPTED,
+			toStatus: orderStatuses.STATUS_DELIVERING,
+		});
+	});
+
 	const orderArrSum = await Order.sum("totalPrice", {
 		where: {
 			id: {
@@ -306,6 +316,14 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 			},
 		}
 	);
+
+	await Tracking.create({
+		orderId: {
+			[Op.notIn]: ordersArr,
+		},
+		fromStatus: orderStatuses.STATUS_DELIVERING,
+		toStatus: orderStatuses.STATUS_ACCEPTED,
+	});
 
 	if (ordersArr.length < 1) {
 		await Post.destroy({
@@ -405,8 +423,10 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 		userRole === userRoles.ADMIN &&
 		postStatus === postStatuses.POST_DELIVERING
 	) {
-		let postStatusUz
-		postStatus === postStatuses.POST_DELIVERING? postStatusUz = postStatusesUz.POCHTA_YULDA: postStatusUz = "YO`LDA"
+		let postStatusUz;
+		postStatus === postStatuses.POST_DELIVERING
+			? (postStatusUz = postStatusesUz.POCHTA_YULDA)
+			: (postStatusUz = "YO`LDA");
 		await getPostById.update({
 			postStatus: postStatus,
 			postStatusUz: postStatusUz,
@@ -475,9 +495,11 @@ exports.getTodaysPost = catchAsync(async (req, res, next) => {
 
 exports.recievePost = catchAsync(async (req, res, next) => {
 	const { postStatus, ordersArr, postId } = req.body;
-	let postStatusUz
-	postStatus === postStatuses.POST_DELIVERED? postStatusUz = postStatusesUz.POCHTA_YETIB_BORDI: postStatusUz = postStatusesUz.POCHTA_YETIB_BORMADI
-	
+	let postStatusUz;
+	postStatus === postStatuses.POST_DELIVERED
+		? (postStatusUz = postStatusesUz.POCHTA_YETIB_BORDI)
+		: (postStatusUz = postStatusesUz.POCHTA_YETIB_BORMADI);
+
 	const postInfo = await Post.update(
 		{
 			postStatus: postStatus,
@@ -520,6 +542,22 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 				},
 			}
 		);
+
+		ordersNotInArr.map(async (order) => {
+			await Tracking.create({
+				orderId: order.id,
+				fromStatus: orderStatuses.STATUS_DELIVERING,
+				toStatus: orderStatuses.STATUS_NOT_DELIVERED,
+			});
+		});
+
+		// await Tracking.create({
+		// 	orderId: {
+		// 		[Op.notIn]: ordersArr,
+		// 	},
+		// 	fromStatus: orderStatuses.STATUS_DELIVERING,
+		// 	toStatus: orderStatuses.STATUS_NOT_DELIVERED,
+		// });
 	}
 
 	const updatedOrders = await Order.update(
@@ -538,6 +576,15 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 			},
 		}
 	);
+
+	ordersArr.map(async (id) => {
+		await Tracking.create({
+			orderId: id,
+			fromStatus: orderStatuses.STATUS_DELIVERING,
+			toStatus: orderStatuses.STATUS_DELIVERED,
+		});
+	});
+
 	if (ordersArr.length > 0) {
 		await Post.update(
 			{
@@ -557,7 +604,6 @@ exports.recievePost = catchAsync(async (req, res, next) => {
 			{
 				postStatus: postStatuses.POST_NOT_DELIVERED,
 				postStatusUz: postStatusesUz.POCHTA_YETIB_BORMADI,
-
 			},
 			{
 				where: {
