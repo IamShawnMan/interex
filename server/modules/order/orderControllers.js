@@ -477,20 +477,24 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 	const oldStatus = postOrdersById.orderStatus;
+	let orderStatusUz
+	orderStatus === statusOrder.STATUS_SOLD ? orderStatusUz = statusOrderUz.STATUS_SOTILDI: ""
+	orderStatus === statusOrder.STATUS_PENDING ? orderStatusUz = statusOrderUz.STATUS_KUTILMOQDA: ""
+	orderStatus === statusOrder.STATUS_REJECTED ? orderStatusUz = statusOrderUz.STATUS_OTKAZ: ""
 	const postOrderStatuses = Object.values(statusOrder).slice(6, 9);
+	const postOrderStatusesUz = Object.values(statusOrderUz).slice(6, 9);
 	const postOrderStatusChange = postOrderStatuses.find(
 		(e) => e === orderStatus
+	);
+	const postOrderStatusChangeUz = postOrderStatusesUz.find(
+		(e) => e === orderStatusUz
 	);
 	if (
 		postOrdersById.orderStatus === "DELIVERED" ||
 		postOrdersById.orderStatus === "PENDING"
 	) {
-		let orderStatusUz
-		orderStatus === statusOrder.STATUS_SOLD? orderStatusUz = statusOrderUz.STATUS_SOTILDI: null
-		orderStatus === statusOrder.STATUS_PENDING? orderStatusUz = statusOrderUz.STATUS_KUTILMOQDA: null
-		orderStatus === statusOrder.STATUS_REJECTED? orderStatusUz = statusOrderUz.STATUS_OTKAZ: null
 		await postOrdersById.update({
-			orderStatus: postOrderStatusChange, orderStatusUz,
+			orderStatus: postOrderStatusChange, orderStatusUz: postOrderStatusChangeUz,
 			note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`,
 		});
 	}
@@ -510,6 +514,7 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
 
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
