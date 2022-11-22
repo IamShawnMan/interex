@@ -21,9 +21,7 @@
 }
 .btnBox {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  justify-content:space-around
 }
 .btnContainer {
   display: flex;

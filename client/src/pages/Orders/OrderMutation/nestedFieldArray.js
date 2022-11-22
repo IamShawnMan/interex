@@ -81,7 +81,7 @@ function OrderItems(props) {
         className={styles.btnIconTextContainer}
         onClick={() => append({ productName: "", quantity: "", price: "" })}
       >
-        <Button type="button" name="icon" iconName="plus">
+        <Button type="button" btnStyle={{backgroundColor:"green"}} name="icon" iconName="plus">
           Mahsulot
         </Button>
       </div>

@@ -244,6 +244,8 @@ function Orders() {
                         ? true
                         : false
                     }
+                    btnStyle={{backgroundColor:"green"}}
+
                     onClick={() => {
                       setInfo({ id: order.id, status: "SOLD" });
                     }}
@@ -262,6 +264,8 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
+                    btnStyle={{backgroundColor:  "rgb(255, 200, 0)"}}
+
                     onClick={() => {
                       setInfo({ id: order.id, status: "PENDING" });
                     }}
@@ -278,6 +282,7 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
+                    btnStyle={{backgroundColor:"red"}}
                     onClick={() => {
                       setInfo({ id: order.id, status: "REJECTED" });
                     }}
@@ -397,14 +402,17 @@ function Orders() {
       {(url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (
+          <div style={{display:"flex",justifyContent: "end"}}>
         <Button
           type="button"
           name="btn"
-          btnStyle={{ width: "13rem", marginBottom: ".5rem" }}
+          btnStyle={{ width: "13rem"}}
           onClick={() => getFile()}
         >
           Yuklab olish
         </Button>
+
+          </div>
       )}
       <div>
         {isStoreOwner &&url==="/orders/myorders"&& (
@@ -414,7 +422,7 @@ function Orders() {
             onClick={() => {
               navigate("/orders/new");
             }}
-            btnStyle={{ width: "13rem" }}
+            btnStyle={{ width: "13rem", marginBottom:"1rem"}}
           >
             Buyurtma
           </Button>
