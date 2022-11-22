@@ -57,18 +57,18 @@ function Navbar(props) {
         <ArrowForBtn />
       </div>
 
-
-
       <div className={styles.formControl}>
-        <Input onChange={(e)=>{props.setSearch(e.target.value)}} plascholder={"Search"}/>
+        <Input
+          onChange={(e) => {
+            props.setSearch(e.target.value);
+          }}
+          plascholder={"Search"}
+        />
         <div className={styles.searchSvg}>
           <SearchIcon classname={styles.searchSvg} />
         </div>
       </div>
-      <div>
-      </div>
-
-
+      <div></div>
 
       <div className={styles.userInfo}>
         <div
@@ -84,7 +84,9 @@ function Navbar(props) {
           <SmsIcon classname={styles.SmsIcon} />
         </div>
         <div className={styles.userMenu} onClick={modalShow}>
-          <p className={`h6`}>{`${user.firstName} ${user.lastName}`}</p>
+          <p
+            className={`h6 ${styles.fulName}`}
+          >{`${user.firstName} ${user.lastName}`}</p>
           <div className={styles.arrowSvg}>
             <Arrow classname={styles.arrowSvg} />
           </div>

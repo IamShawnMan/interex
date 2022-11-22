@@ -1,4 +1,5 @@
 .layout {
+  /* position: relative; */
   overflow: hidden;
 }
 .layoutBox {
@@ -46,4 +47,27 @@
 
 .goBack:hover {
   color: blue;
+}
+
+@media (max-width: 980px) {
+  .containerFull {
+    width: 100%;
+    left: 0%;
+  }
+  .containerTablet {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0%;
+    transition: all 600ms ease-in-out;
+  }
+  .hiddenContainer {
+    display: none;
+  }
+  .layout {
+    overflow: hidden;
+  }
 }
