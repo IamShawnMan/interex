@@ -415,6 +415,54 @@ function Orders() {
   };
   return (
     <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch}>
+            {url==="/new-post"&&<div style={{ width: "100%", display: "flex", gap: "1rem" }}>
+        {console.log(url)}
+        {user.userRole === "COURIER" && (
+          <div style={{ width: "100%" }}>
+            <Button
+              disabled={
+                url === "/new-post" || url === "/postback/rejected/orders"
+                  ? true
+                  : false
+              }
+              name="btn"
+              onClick={() => {
+                url === "/postback"
+                  ? navigate("/postback/rejected/orders")
+                  : navigate("/new-post");
+              }}
+            >
+              {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
+            </Button>
+          </div>
+        )}
+        {user.userRole === "COURIER" && (
+          <div style={{ width: "100%" }}>
+            <Button
+              disabled={url === "/posts"}
+              name="btn"
+              onClick={() => {
+                navigate("/posts");
+              }}
+            >
+              Hamma pochtalar
+            </Button>
+          </div>
+        )}
+        {user.userRole === "COURIER" && (
+          <div style={{ width: "100%" }}>
+            <Button
+              disabled={url === "/postback"}
+              name="btn"
+              onClick={() => {
+                navigate("/postback");
+              }}
+            >
+              Qaytgan pochtalar
+            </Button>
+          </div>
+        )}
+      </div>}
       {(url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (

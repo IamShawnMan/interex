@@ -6,7 +6,7 @@ import Input from "../../components/Form/FormComponents/Input/Input";
 import http from "../../utils/axios-instance";
 import { useForm } from "react-hook-form";
 import { formatDate } from "../../utils/dateFormatter";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
 
 function NewPost() {
@@ -15,7 +15,8 @@ function NewPost() {
   const [postData, setPostData] = useState([]);
   const [orderData, setOrderData] = useState([]);
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const url = location.pathname;
   useEffect(() => {
     getNewPost();
   }, []);
@@ -154,9 +155,23 @@ function NewPost() {
 
   return (
     <Layout pageName="Yangi kelgan Pochtalar">
-      {user.userRole === "COURIER" && (
-        <div style={{ width: "25rem" }}>
+      <div style={{width:"100%",display: "flex",gap:"1rem"}}>
+          {user.userRole === "COURIER" && (
+        <div style={{width:"100%"}}>
           <Button
+          disabled={url==="/new-post"}
+            name="btn"
+            onClick={() => { navigate("/new-post");
+            }}
+          >
+             Bugungi pochta
+          </Button>
+        </div>
+      )}
+      {user.userRole === "COURIER" && (
+        <div style={{width:"100%"}} >
+          <Button
+          disabled={url==="/posts"}
             name="btn"
             onClick={() => {
               navigate("/posts");
@@ -166,6 +181,21 @@ function NewPost() {
           </Button>
         </div>
       )}
+       {user.userRole === "COURIER" && (
+        <div style={{width:"100%"}}>
+          <Button
+          disabled={url==="/postback"}
+
+            name="btn"
+            onClick={() => {
+              navigate("/postback");
+            }}
+          >
+           Qaytgan pochtalar
+          </Button>
+        </div>
+      )}
+      </div>
       {orderData.length > 0 ? (
         <>
           {postData && <BasicTable columns={postCols} data={postData} />}
