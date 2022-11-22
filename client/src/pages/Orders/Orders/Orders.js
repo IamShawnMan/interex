@@ -273,7 +273,7 @@ function Orders() {
                         ? true
                         : false
                     }
-                    btnStyle={{backgroundColor:"green"}}
+                    btnStyle={{backgroundColor:order.orderStatus !== "SOLD"?"green":""}}
 
                     onClick={() => {
                       setInfo({ id: order.id, status: "SOLD",postId:id });
@@ -293,7 +293,7 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
-                    btnStyle={{backgroundColor:  "rgb(255, 200, 0)"}}
+                    btnStyle={{backgroundColor:order.orderStatus !== "PENDING"?  "rgb(255, 200, 0)":""}}
 
                     onClick={() => {
                       setInfo({ id: order.id, status: "PENDING",postId:id });
@@ -311,7 +311,7 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
-                    btnStyle={{backgroundColor:"red"}}
+                    btnStyle={{backgroundColor:order.orderStatus !== "REJECTED"?"red":""}}
                     onClick={() => {
                       setInfo({ id: order.id, status: "REJECTED",postId:id });
                     }}
