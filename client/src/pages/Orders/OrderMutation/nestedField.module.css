@@ -10,10 +10,12 @@
 }
 
 .btnIconTextContainer {
-  width: 13rem;
+  width: 6rem;
   margin: 0.5rem;
   position: absolute;
-  
+  bottom: 1rem;
+  right: 0%;
+  transform: translate(0%, 150%);
 }
 .trashBtn {
   width: 17rem;
@@ -23,9 +25,10 @@
   .itemContainer{
     display: block;
   }
-  .btnIconTextContainer{
-    display: block;
-    position:absolute;
-    right: 0;
-  }
+   .btnIconTextContainer{
+      
+   }
+   .trashBtn{
+   width: 10rem
+   }
 }
