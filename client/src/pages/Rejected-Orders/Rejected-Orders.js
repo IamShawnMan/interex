@@ -52,7 +52,7 @@ function RejectedOrders() {
       },
     },
 
-    { id: "status", Header: "Holati", accessor: "orderStatus" },
+    { id: "status", Header: "Holati", accessor: "orderStatusUz" },
     {
       id: "updatedAt",
       Header: "Oxirgi o'zgarish",

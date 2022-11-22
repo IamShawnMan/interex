@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import styles from "./Packages.module.css";
 function Package() {
@@ -12,6 +12,8 @@ function Package() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
+  const location = useLocation();
+  const url = location.pathname;
   const navigate=useNavigate()
   useEffect(() => {
     getAllPackages();
@@ -78,17 +80,22 @@ function Package() {
   ];
 
   return (
-    <Layout>
+    <Layout>  <div style={{ display: "flex", gap: "1rem", width: "22rem",marginBottom: "1rem"}}>
+    <Button name="btn" btnStyle={{color:url==="/packages"?"pink":""}} onClick={() => navigate("/packages")}>
+    Paketlar
+    </Button>
+    <Button name="btn" btnStyle={{color:url==="/packagback"?"pink":""}} onClick={() => navigate("/packageback")}>
+      Qaytarilgan Paketlar
+    </Button>
+    </div>
       <div style={{ display: "flex", gap: "1rem", width: "22rem" }}>
-        <Button name="btn" onClick={() => setSNew(true)}>
+        <Button name="btn" btnStyle={{color:sNew?"pink":""}}onClick={() => setSNew(true)}>
           Yangi
         </Button>
-        <Button name="btn" onClick={() => setSNew(false)}>
+        <Button name="btn" btnStyle={{color:!sNew?"pink":""}} onClick={() => setSNew(false)}>
           Barchasi
         </Button>
-        <Button name="btn" onClick={() => navigate("/packageback")}>
-          Qaytarilgan Paketlar
-        </Button>
+      
       </div>
       {packages?.length > 0 ? (
         <BasicTable

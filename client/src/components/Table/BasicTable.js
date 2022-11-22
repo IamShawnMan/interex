@@ -55,6 +55,7 @@ export const BasicTable = ({ columns, data, pagination, url }) => {
                 {row.cells.map((cell) => {
                   return (
                     <td
+                    
                       data-label={cell.column.Header}
                       className={styles.td}
                       key={cell.column.id}

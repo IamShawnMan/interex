@@ -149,7 +149,7 @@ function Orders() {
 			accessor: (order) => {
 				return (
 					<>
-						{order.orderStatus === "NEW" && id && (
+						{order.orderStatus === "NEW" && id &&isAdmin&& (
 							<Select
 								data={price?.map((e) => {
 									return { id: e, name: e };

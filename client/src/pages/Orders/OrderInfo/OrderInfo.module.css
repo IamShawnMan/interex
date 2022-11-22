@@ -1,0 +1,19 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ellipse{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+height: 64px;
+border-radius:50%;
+background: rgba(122, 122, 122, 0.4);
+}
+.rectangle{
+    width: 64px;
+height: 5px;
+background: rgba(122, 122, 122, 0.4);
+}
