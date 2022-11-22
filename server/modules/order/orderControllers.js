@@ -55,7 +55,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		err.errors = validationErrors;
 		return next(err);
 	}
-	const { userRole } = req.user;
+	const { userRoleUz } = req.user;
 
 	let existedPackage = await PackageModel.findOne({
 		where: {
@@ -76,7 +76,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		const newOrder = await OrderModel.create({
 			recipient: order.recipient,
 			regionId: order.regionId,
-			note: `${userRole}: ${order.note}`,
+			note: `${userRoleUz}: ${order.note}`,
 			recipientPhoneNumber: order.recipientPhoneNumber,
 			districtId: order.districtId,
 			packageId: existedPackage.id,
@@ -173,7 +173,6 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 		}
 	}
 	const orderForTracking = await Order.findByPk(id);
-	console.log(orderForTracking);
 	await Tracking.create({
 		orderId: id,
 		fromStatus: statusOrder.STATUS_NEW,
@@ -467,7 +466,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
-	const { regionId, userRole } = req.user;
+	const { regionId, userRoleUz } = req.user;
 	const { id } = req.params;
 	const { orderStatus, note } = req.body;
 	const postOrdersById = await OrderModel.findByPk(id, {
@@ -496,7 +495,7 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	) {
 		await postOrdersById.update({
 			orderStatus: postOrderStatusChange, orderStatusUz: postOrderStatusChangeUz,
-			note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`,
+			note: `${postOrdersById.dataValues.note} ${userRoleUz}: ${note}`,
 		});
 	}
 
@@ -619,6 +618,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Haridor", key: "recipient", width: 20 },
 		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
 		{ header: "Izoh", key: "note", width: 70 },
+		{ header: "Viloyati", width: 30 },
 		{ header: "Holati", key: "orderStatusUz", width: 30 },
 		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
 		{ header: "Umumiy narxi", key: "totalPrice", width: 20 },
@@ -627,16 +627,23 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
+	queryBuilder.queryOptions.include = [
+		{ model: RegionModel, as: "region", attributes: ["name"] },
+		{ model: DistrictModel, as: "district", attributes: ["name"] },
+	]
 	let downloadOrders = await OrderModel.findAndCountAll(
 		queryBuilder.queryOptions
 	);
 
-	const ordersArr = Object.values(downloadOrders.rows.map((e) => e.dataValues));
+	const ordersArr = Object.values(downloadOrders.rows.map((e) => e))
 	let counter = 1;
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
 		worksheet.addRow(order);
 		counter++;
+	});
+	ordersArr.forEach((order) => {
+		worksheet.addRow(order.region.name);
 	});
 	const endRow = worksheet.lastRow._number + 1;
 	worksheet.mergeCells(`D${endRow}:E${endRow}`);
