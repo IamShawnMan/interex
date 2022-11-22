@@ -5,7 +5,7 @@
   overflow: auto;
   left: 0;
   top: 0;
-  padding: 2rem 1.5rem;
+  padding: 2rem 1rem;
   transition: all 600ms ease-in-out;
   background-color: white;
 }
@@ -21,8 +21,13 @@
   padding: 2rem 0;
 }
 
-.headerLink {
+.headerA {
+  display: inline-block;
   text-decoration: none;
+}
+
+.headerLink {
+  text-align: center;
 }
 
 .sidebarTitle {
@@ -61,7 +66,7 @@
   display: flex;
   align-items: center;
   padding: 1rem 1.5rem;
-  gap: 2.4rem;
+  gap: 0.5rem;
 }
 
 .sidebarLink {
@@ -76,7 +81,13 @@
   background: #7d41ed;
   color: #fff;
 }
+.linkP_hidden {
+  display: none;
+}
 
+.linkP {
+  display: inline-block;
+}
 .sidebarLink:focus {
   background: #7d41ed;
   color: #fff;
@@ -87,4 +98,59 @@
 
 .displayNone {
   display: none;
+}
+
+.xButtonIcon {
+  position: absolute;
+  right: 3%;
+  top: 3rem;
+  cursor: pointer;
+  /* fill: #7d41ed; */
+  stroke: #7d41ed;
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .sidebarLinkSvg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .sidebar {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+    left: -110%;
+    top: 0;
+    padding: 2rem 1rem;
+    transition: all 600ms ease-in-out;
+    background-color: white;
+    z-index: 5;
+  }
+
+  .exit {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .sidebarLinkClouse {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    gap: 0.5rem;
+  }
+  .sidebarLinkSvg {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+  .linkP_hidden {
+    display: inline-block;
+  }
+
+  .xButtonIcon {
+    display: block;
+  }
 }
