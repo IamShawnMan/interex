@@ -41,7 +41,7 @@ function RejectedPosts() {
     {
       id: "postStatus",
       Header: "Holati",
-      accessor: "postStatus",
+      accessor: "postStatusUz",
     },
     {
       id: "updateAt",
