@@ -13,7 +13,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
       const res = await http({
         url:
           user.userRole === "ADMIN"
-            ? `posts/${id}/send`
+            ? `/posts/${id}/send`
             : `/postback/${id}/send/rejected`,
         method: "PUT",
         data: {
@@ -59,11 +59,13 @@ const PostSendCourier = ({ id, url, onClose }) => {
           size="small"
           btnStyle={{ marginTop: "10px" }}
           onClick={
-            (url === "/orders/delivered" && changeOrderStatusByCourier) ||
+            ((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && changeOrderStatusByCourier) ||
             ((url === "/postback" || url === "/posts") && sendPost)
           }
         >
-          {(url === "/orders/delivered" && `${id.status} Order`) ||
+          {console.log(id)}
+          {console.log(url)}
+          {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.status} Order`) ||
             ((url === "/postback" || url === "/posts") && "Send Post")}
         </Button>
       </div>

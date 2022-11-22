@@ -20,6 +20,7 @@ import Input from "../../../components/Form/FormComponents/Input/Input";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
+import Photo from "./photo.png"
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -274,7 +275,7 @@ function Orders() {
                     btnStyle={{backgroundColor:"green"}}
 
                     onClick={() => {
-                      setInfo({ id: order.id, status: "SOLD" });
+                      setInfo({ id: order.id, status: "SOLD",postId:id });
                     }}
                   >
                     Sotildi
@@ -294,7 +295,7 @@ function Orders() {
                     btnStyle={{backgroundColor:  "rgb(255, 200, 0)"}}
 
                     onClick={() => {
-                      setInfo({ id: order.id, status: "PENDING" });
+                      setInfo({ id: order.id, status: "PENDING",postId:id });
                     }}
                   >
                     Kutilmoqda
@@ -311,7 +312,7 @@ function Orders() {
                     name="btn"
                     btnStyle={{backgroundColor:"red"}}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "REJECTED" });
+                      setInfo({ id: order.id, status: "REJECTED",postId:id });
                     }}
                   >
                     Qaytdi
@@ -417,15 +418,15 @@ function Orders() {
       {(url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (
-          <div style={{display:"flex",justifyContent: "end"}}>
-        <Button
+          <div  onClick={() => getFile()}style={{display:"flex",justifyContent: "end",cursor:"pointer"}}>
+        {/* <Button
           type="button"
           name="btn"
           btnStyle={{ width: "13rem"}}
-          onClick={() => getFile()}
+         
         >
-          Yuklab olish
-        </Button>
+        </Button> */}
+         <img width="100" src={Photo} alt="" />
 
           </div>
       )}
