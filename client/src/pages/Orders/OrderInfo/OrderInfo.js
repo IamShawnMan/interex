@@ -3,7 +3,12 @@ import http from "../../../utils/axios-instance";
 import { BasicTable } from "../../../components/Table/BasicTable";
 import Modal from "../../../components/Modal/Modal";
 import styles from "../Orders/Orders.module.css";
+import stylesInfo from "./OrderInfo.module.css";
 import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
+import CarSVG from "./Car";
+import AdminSVG from "./Admin";
+import PostSVG from "./PostSVG";
+import ClockSVG from "./ClockSVG";
 
 const OrderInfo = ({ id, onClose }) => {
   const [value, setValue] = useState(null);
@@ -67,12 +72,26 @@ const OrderInfo = ({ id, onClose }) => {
             <p className="bold inline-block"> Tuman:</p>
             <span>{value?.district?.name}</span>
           </li>
+          <li className="h6">
+            <p className="bold inline-block"> Eslatma:</p>
+            <span>{value?.note}</span>
+          </li>
         </ul>
         {items?.length > 0 ? (
           <BasicTable columns={itemsCols} data={items} />
         ) : (
           <p>Malumotlar yoq</p>
         )}
+
+        <div className={stylesInfo.container}>
+          <div className={stylesInfo.ellipse}><CarSVG className={stylesInfo.svg}/></div>
+          <div className={stylesInfo.rectangle}></div>
+          <div className={stylesInfo.ellipse}><AdminSVG/></div>
+          <div className={stylesInfo.rectangle}></div>
+          <div className={stylesInfo.ellipse}><PostSVG/></div>
+          <div className={stylesInfo.rectangle}></div>
+          <div className={stylesInfo.ellipse}><ClockSVG/></div>
+        </div>
       </div>
     </Modal>
   );

@@ -7,6 +7,7 @@ import http from "../../../utils/axios-instance";
 import SettingIcon from "../../../assets/icons/SettingIcon";
 import Recruitment from "../../../assets/icons/Recruitment";
 import DashboardIcon from "../../../assets/icons/DashboardIcon";
+import XButtonIcon from "../../../assets/icons/XButtonIcon";
 
 function Sidebar(props) {
   const open = props.hasActive;
@@ -25,11 +26,17 @@ function Sidebar(props) {
   };
   return (
     <div className={`${styles.sidebar} ${!open ? styles.exit : ""}`}>
-      <Link to={"/"} className={styles.headerLink}>
-        <h1 className={`h1 ${styles.sidebarTitle}`}>
-          {open ? "InterEX Uz" : "IEX Uz"}
-        </h1>
-      </Link>
+      <div className={styles.xButtonIcon} onClick={props.sidebarActiveHandle}>
+        <XButtonIcon />
+      </div>
+      <div className={styles.headerLink}>
+        <Link to={"/"} className={styles.headerA}>
+          <h1 className={`h1 ${styles.sidebarTitle}`}>
+            {open ? "InterEX Uz" : "IEX Uz"}
+          </h1>
+        </Link>
+      </div>
+
       <div className={`${styles.mainMenu} ${styles.linksContainer}`}>
         <p
           className={`subtitle ${styles.subtitle} ${
@@ -46,7 +53,11 @@ function Sidebar(props) {
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Foydalanuvchilar</p>}
+            {
+              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+                Foydalanuvchilar
+              </p>
+            }
           </Link>
         )}
         <Link
@@ -62,7 +73,9 @@ function Sidebar(props) {
           }`}
         >
           <DashboardIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Buyurtmalar</p>}
+          <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+            Buyurtmalar
+          </p>
         </Link>
         {user.userRole === "STORE_OWNER" && (
           <Link
@@ -72,7 +85,9 @@ function Sidebar(props) {
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Paketlar</p>}
+            <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+              Paketlar
+            </p>
           </Link>
         )}
         {user.userRole === "ADMIN" && (
@@ -83,18 +98,22 @@ function Sidebar(props) {
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Paketlar</p>}
+            <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+              Paketlar
+            </p>
           </Link>
         )}
         {user.userRole === "ADMIN" && (
           <Link
-            to={"/posts"}
+            to={"/post/create"}
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
           >
             <DashboardIcon classname={styles.sidebarLinkSvg} />
-            {open && <p className="h6">Pochtalar</p>}
+            <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+              Pochtalar
+            </p>
           </Link>
         )}
         {user.userRole === "COURIER" && (
@@ -106,7 +125,9 @@ function Sidebar(props) {
               }`}
             >
               <DashboardIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Pochta</p>}
+              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+                Pochta
+              </p>
             </Link>
             <Link
               to="/postback/rejected/orders"
@@ -115,7 +136,9 @@ function Sidebar(props) {
               }`}
             >
               <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Pochta Yaratish</p>}
+              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+                Pochta Yaratish
+              </p>
             </Link>
             <Link
               to="/postback"
@@ -124,7 +147,9 @@ function Sidebar(props) {
               }`}
             >
               <UsersIcon classname={styles.sidebarLinkSvg} />
-              {open && <p className="h6">Mening pochtalarim</p>}
+              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+                Mening pochtalarim
+              </p>
             </Link>
           </>
         )}
@@ -134,7 +159,9 @@ function Sidebar(props) {
           }`}
         >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Department</p>}
+          <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+            Department
+          </p>
         </Link>
       </div>
       <div className={`${styles.other} ${styles.linksContainer}`}>
@@ -151,7 +178,9 @@ function Sidebar(props) {
           }`}
         >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Support</p>}
+          <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+            Support
+          </p>
         </Link>
         <Link
           className={`${styles.sidebarLink} ${
@@ -159,7 +188,9 @@ function Sidebar(props) {
           }`}
         >
           <SettingIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Settings</p>}
+          <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+            Settings
+          </p>
         </Link>
         <Link
           onClick={logoutHandle}
@@ -168,7 +199,9 @@ function Sidebar(props) {
           }`}
         >
           <UsersIcon classname={styles.sidebarLinkSvg} />
-          {open && <p className="h6">Log Out</p>}
+          <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+            Log Out
+          </p>
         </Link>
       </div>
     </div>

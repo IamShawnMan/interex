@@ -19,7 +19,7 @@ function OrderItems(props) {
         {fields.map((item, index) => (
           <li className={styles.itemContainer} key={item.id}>
             <div className="medium h6">{index + 1}</div>
-            <Input
+            <Input        
               type="text"
               register={props.register.bind(
                 null,
@@ -36,7 +36,8 @@ function OrderItems(props) {
             </Input>
             <Input
               type="number"
-              placeholder=""
+              placeholder=""     
+
               register={props.register.bind(
                 null,
                 `orders.${props.orderIndex}.orderItems.${index}.quantity`
@@ -80,7 +81,7 @@ function OrderItems(props) {
         className={styles.btnIconTextContainer}
         onClick={() => append({ productName: "", quantity: "", price: "" })}
       >
-        <Button type="button" name="iconText" iconName="plus">
+        <Button type="button" btnStyle={{backgroundColor:"green"}} name="icon" iconName="plus">
           Mahsulot
         </Button>
       </div>

@@ -61,7 +61,6 @@ class QueryBuilder {
 				this.queryOptions.attributes = newAttribute;
 			}
 		} else {
-			console.error("There is no fields property");
 		}
 		return this;
 	}

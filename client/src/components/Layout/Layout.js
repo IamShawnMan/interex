@@ -14,13 +14,19 @@ function Layout(props) {
   };
   return (
     <div className={styles.layout}>
-      <Sidebar hasActive={arrowChange} />
+      <Sidebar
+        sidebarActiveHandle={sidebarActiveHandle}
+        hasActive={arrowChange}
+      />
       <div
         className={`${styles.container} ${
           !arrowChange ? styles.containerFull : ""
-        }`}
+        } ${!arrowChange ? styles.hiddenContainer : styles.containerTablet}`}
       >
-        <Navbar sidebarActiveHandle={sidebarActiveHandle} setSearch={props.setSearch}/>
+        <Navbar
+          sidebarActiveHandle={sidebarActiveHandle}
+          setSearch={props.setSearch}
+        />
         <div className={styles.layoutBox}>
           <div className={styles.pathRoad}>
             <h1 className={`h2 ${styles.pageName}`}>{props.pageName}</h1>

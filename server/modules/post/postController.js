@@ -278,7 +278,8 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
 	const postByPk = await Post.findByPk(postId);
-
+    console.log(ordersArr);
+    console.log(postId);
 	const subtractingOrders = await Order.sum("totalPrice", {
 		where: {
 			orderStatus: {
@@ -317,13 +318,13 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 		}
 	);
 
-	await Tracking.create({
-		orderId: {
-			[Op.notIn]: ordersArr,
-		},
-		fromStatus: orderStatuses.STATUS_DELIVERING,
-		toStatus: orderStatuses.STATUS_ACCEPTED,
-	});
+	ordersNotInPost.map(async (order) => {
+		await Tracking.create({
+			orderId: order.id,
+			fromStatus: orderStatuses.STATUS_DELIVERING,
+			toStatus: orderStatuses.STATUS_ACCEPTED,
+		})
+	})
 
 	if (ordersArr.length < 1) {
 		await Post.destroy({

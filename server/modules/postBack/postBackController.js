@@ -277,20 +277,18 @@ exports.getAllRejectedPosts = catchAsync(async (req, res, next) => {
 exports.getAllRejectedOrdersInPost = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const queryBuilder = new QueryBuilder(req.query);
+	console.log(id);
 
 	queryBuilder.queryOptions.include = [
 		{ model: Region, as: "region", attributes: ["name"] },
 		{ model: District, as: "district", attributes: ["name"] },
 	];
-	const rejectedOrders = Object.values(orderStatuses).slice(9, 12)
 	queryBuilder.queryOptions.where = {
 		...queryBuilder.queryOptions.where,
 		postBackId: {
 			[Op.eq]: id,
 		},
-		orderStatus: {
-			[Op.in]: rejectedOrders,
-		},
+		
 	};
 	let rejectedOrdersInPost = await Order.findAndCountAll(
 		queryBuilder.queryOptions

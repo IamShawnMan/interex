@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Layout from "../../components/Layout/Layout";
@@ -8,6 +8,7 @@ import http from "../../utils/axios-instance";
 import { formatDate } from "../../utils/dateFormatter";
 import styles from "./Rejected-Orders.module.css";
 import { toast } from "react-toastify";
+import AppContext from "../../context/AppContext";
 function RejectedOrders() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -15,7 +16,10 @@ function RejectedOrders() {
   const [postStatus, setPostStatus] = useState(null);
   const [ordersIdArr, setOrdersIdArr] = useState(null);
   const [value, setValue] = useState([]);
+  const location = useLocation();
+  const { user } = useContext(AppContext);
 
+  const url = location.pathname;
   useEffect(() => {
     getByIdPostOrders();
   }, []);
@@ -52,7 +56,7 @@ function RejectedOrders() {
       },
     },
 
-    { id: "status", Header: "Holati", accessor: "orderStatus" },
+    { id: "status", Header: "Holati", accessor: "orderStatusUz" },
     {
       id: "updatedAt",
       Header: "Oxirgi o'zgarish",
@@ -100,6 +104,7 @@ function RejectedOrders() {
   const getByIdPostOrders = async () => {
     try {
       const res = await http(`/postback/rejectedposts/${id}`);
+      console.log(res);
       setValue(res?.data?.data?.content);
       setOrdersIdArr(res?.data?.data?.content.map((o) => o.id));
     } catch (error) {}
@@ -121,6 +126,7 @@ function RejectedOrders() {
   };
   return (
     <Layout>
+  
       {value.length > 0 ? (
         <>
           <BasicTable columns={cols} data={value} />

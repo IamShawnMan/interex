@@ -515,6 +515,7 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	});
 });
 
+
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
 	const { regionId } = req.user;
 	const queryBuilder = new QueryBuilder(req.query);

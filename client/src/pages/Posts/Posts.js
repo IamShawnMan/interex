@@ -25,14 +25,16 @@ const Posts = () => {
   const size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
-  const [search,setSearch]= useState(null)
+  const [search, setSearch] = useState(null);
   const getAllPosts = async () => {
     try {
       const res = await http({
         url:
           url === `/posts`
-            ? `/posts?page=${page}&size=${size}${search?`&search=${search}`:""}`
-            : `/postback/rejectedposts${search?`?search=${search}`:""}`,
+            ? `/posts?page=${page}&size=${size}${
+                search ? `&search=${search}` : ""
+              }`
+            : `/postback/rejectedposts${search ? `?search=${search}` : ""}`,
       });
       console.log(res.data.data);
       setValue(res.data.data.content);
@@ -44,7 +46,7 @@ const Posts = () => {
   };
   useEffect(() => {
     getAllPosts();
-  }, [page, info, url,search]);
+  }, [page, info, url, search]);
   const postCols = [
     {
       id: "id",
@@ -122,7 +124,6 @@ const Posts = () => {
     },
   ];
 
-
   if (user.userRole !== "COURIER") {
     postCols.splice(0, 1);
     postCols.unshift({
@@ -138,42 +139,77 @@ const Posts = () => {
     });
   }
 
-
   return (
     <Layout pageName="Postlar" setSearch={setSearch}>
-      {user.userRole === "COURIER" && (
-        <div style={{ width: "25rem" }}>
-          <Button
-            name="btn"
-            onClick={() => {
-              url === "/postback"
-                ? navigate("/postback/rejected/orders")
-                : navigate("/new-post");
-            }}
-          >
-            {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
-          </Button>
-        </div>
-      )}
+      <div style={{ width: "100%", display: "flex", gap: "1rem" }}>
+        {console.log(url)}
+        {user.userRole === "COURIER" && (
+          <div style={{ width: "100%" }}>
+            <Button
+              disabled={
+                url === "/new-post" || url === "/postback/rejected/orders"
+                  ? true
+                  : false
+              }
+              name="btn"
+              onClick={() => {
+                url === "/postback"
+                  ? navigate("/postback/rejected/orders")
+                  : navigate("/new-post");
+              }}
+            >
+              {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
+            </Button>
+          </div>
+        )}
+        {user.userRole === "COURIER" && (
+          <div style={{ width: "100%" }}>
+            <Button
+              disabled={url === "/posts"}
+              name="btn"
+              onClick={() => {
+                navigate("/posts");
+              }}
+            >
+              Hamma pochtalar
+            </Button>
+          </div>
+        )}
+        {user.userRole === "COURIER" && (
+          <div style={{ width: "100%" }}>
+            <Button
+              disabled={url === "/postback"}
+              name="btn"
+              onClick={() => {
+                navigate("/postback");
+              }}
+            >
+              Qaytgan pochtalar
+            </Button>
+          </div>
+        )}
+      </div>
       {user.userRole === "ADMIN" && (
-        <div style={{ width: "45rem", display: "flex", gap: "2rem" }}>
+        <div style={{ width: "100%", display: "flex", gap: "2rem" }}>
           <Button
             name="btn"
             type="button"
+            disabled={url === "/posts"}
+            onClick={() => {
+              navigate("/posts");
+            }}
+          >
+            Pochtalar
+          </Button>
+          <Button
+            name="btn"
+            type="button"
+            disabled={url === "/rejected/posts"}
             onClick={() => {
               navigate("/rejected/posts");
             }}
           >
-            Qaytarilgan po'chtalar
-          </Button>
-          <Button
-            name="btn"
-            type="button"
-            onClick={() => {
-              setViewAllPosts(!viewAllPosts);
-            }}
-          >
-            {viewAllPosts ? "Hamma po'chtalar" : "Hamma po'chtalarni yashirish"}
+            Qaytarilgan pochtalar
           </Button>
           <Button
             name="btn"
@@ -186,7 +222,7 @@ const Posts = () => {
           </Button>
         </div>
       )}
-     
+
       {info && (
         <PostSendCourier
           id={info}

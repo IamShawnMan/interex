@@ -20,7 +20,6 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
     queryBuilder.queryOptions.where={}
     if(req.user.userRole === "STORE_OWNER"){
          if(req.query.new === "new"){
-            console.log("newga gkrdi");
              queryBuilder.queryOptions.where = {[Op.and]: [
                 {storeOwnerId: {[Op.eq]: id}},
                 {packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}
@@ -29,13 +28,11 @@ exports.getAllPackageBack  = catchAsync(async (req,res,next)=>{
          }else{
             queryBuilder.queryOptions.where = {
                 storeOwnerId: {[Op.eq]: id},
-                // ...queryBuilder.queryOptions.where,
     }
          }
     }else{
         if(req.query.new === "new"){
         queryBuilder.queryOptions.where = {
-            // ...queryBuilder.queryOptions.where, 
             packageStatus: {[Op.eq]: statusPackages.STATUS_REJ_NEW}}    
              }}
    
@@ -56,6 +53,7 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     const {id} = req.params 
     const userId = req.user.id
     let orderIdArr = [] 
+    console.log("")
 
     const packageBackbyId = await PackageBackModel.findByPk(id)
     const packageBackStatus = packageBackbyId.packageStatus
@@ -83,7 +81,6 @@ exports.getOrdersbyPackageBack = catchAsync(async(req,res,next)=>{
     allOrderbyPackageBack.rows?.map(order=>{
         orderIdArr.push(order.id)
     })
-    console.log(orderIdArr)
     res.status(200).json({
         status: "success",
         message: "qaytgan paketlar ichidagi buyurtmalar",

@@ -14,3 +14,8 @@
   right: 0;
   transform: translate(0%, 80%);
 }
+@media (max-width: 650px){
+  .orderContainer{
+    display: block;
+  }
+}
