@@ -15,7 +15,8 @@ const UserModel = require("../user/User");
 const statusPackage = require("../../core/constants/packageStatus");
 const statusPackageUz = require("../../core/constants/packageStatusUz");
 const excelJS = require("exceljs");
-const Region = require("../region/regions.json");
+const regionsJSON = require("../region/regions.json");
+const districtsJSON = require("../district/districts.json");
 const Order = require("./Order");
 const Tracking = require("../tracking/Tracking");
 
@@ -613,29 +614,39 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 
 exports.exportOrders = catchAsync(async (req, res, next) => {
 	const workbook = new excelJS.Workbook();
-	const worksheet = workbook.addWorksheet("orders");
+	const worksheet = workbook.addWorksheet("orders", "region");
 	worksheet.columns = [
 		{ header: "No", key: "s_no", width: 20 },
+		{ header: "Viloyati", key: `regionId`, width: 30 },
+		{ header: "Tumani", key: `districtId`, width: 30 },
 		{ header: "Haridor", key: "recipient", width: 20 },
 		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
-		{ header: "Izoh", key: "note", width: 70 },
-		{ header: "Viloyati", width: 30 },
 		{ header: "Holati", key: "orderStatusUz", width: 30 },
 		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
 		{ header: "Umumiy narxi", key: "totalPrice", width: 20 },
 		{ header: "Yaratilgan sana", key: "createdAt", width: 20 },
 		{ header: "O'zgartirilgan sana", key: "updatedAt", width: 20 },
+		{ header: "Izoh", key: "note", width: 70 },
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
-	queryBuilder.queryOptions.include = [
-		{ model: RegionModel, as: "region", attributes: ["name"] },
-		{ model: DistrictModel, as: "district", attributes: ["name"] },
-	]
 	let downloadOrders = await OrderModel.findAndCountAll(
 		queryBuilder.queryOptions
 	);
 
+	downloadOrders.rows.forEach(order => {
+		regionsJSON.forEach(region => {
+			if(order.regionId == region.id){
+				order.regionId = region.name
+			}
+		})
+		districtsJSON.forEach(district => {
+			if(order.districtId == district.id) {
+				order.districtId = district.name
+			}
+		})
+	}
+	)
 	const ordersArr = Object.values(downloadOrders.rows.map((e) => e))
 	let counter = 1;
 	ordersArr.forEach((order) => {
@@ -643,15 +654,12 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.addRow(order);
 		counter++;
 	});
-	ordersArr.forEach((order) => {
-		worksheet.addRow(order.region.name);
-	});
 	const endRow = worksheet.lastRow._number + 1;
-	worksheet.mergeCells(`D${endRow}:E${endRow}`);
-	worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:";
-	worksheet.getCell(`D${endRow}`).alignment = { horizontal: "center" };
-	worksheet.getCell(`F${endRow}`).value = { formula: `SUM(F2:F${endRow - 1})` };
+	worksheet.mergeCells(`E${endRow}:F${endRow}`);
+	worksheet.getCell(`E${endRow}`).value = "UMUMIY NARX:";
+	worksheet.getCell(`E${endRow}`).alignment = { horizontal: "center" };
 	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(G2:G${endRow - 1})` };
+	worksheet.getCell(`H${endRow}`).value = { formula: `SUM(H2:H${endRow - 1})` };
 	worksheet.getRow(1).eachCell((cell) => {
 		cell.font = { bold: true };
 	});
