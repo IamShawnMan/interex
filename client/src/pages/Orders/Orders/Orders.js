@@ -214,7 +214,8 @@ function Orders() {
 			},
 		},
 		{
-			Header: "Tugma",
+      id:"tugma",
+			Header: "",
 			accessor: (order) => {
 				return (
 					<div className={styles.actionContainer}>

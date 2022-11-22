@@ -46,7 +46,7 @@ const OrderInfo = ({ id, onClose }) => {
   return (
     <Modal onClose={onClose}>
       <div className={styles.orderInfo}>
-        <ul style={{ listStyle: "none" }}>
+        <ul style={{ listStyle: "none",textAlign: "center" }}>
           <li className="h6">
             <p className="bold inline-block">Xaridor Ismi:</p>{" "}
             <span>{value?.recipient}</span>
@@ -78,7 +78,7 @@ const OrderInfo = ({ id, onClose }) => {
           </li>
         </ul>
         {items?.length > 0 ? (
-          <BasicTable columns={itemsCols} data={items} />
+          <BasicTable columns={itemsCols} style={{overflowY:"scroll"}} data={items} />
         ) : (
           <p>Malumotlar yoq</p>
         )}
