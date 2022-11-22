@@ -13,10 +13,19 @@
   width: 13rem;
   margin: 0.5rem;
   position: absolute;
-  bottom: 0%;
-  right: 14%;
-  transform: translate(0%, 150%);
+  
 }
 .trashBtn {
   width: 17rem;
+}
+
+@media (max-width: 650px){
+  .itemContainer{
+    display: block;
+  }
+  .btnIconTextContainer{
+    display: block;
+    position:absolute;
+    right: 0;
+  }
 }
