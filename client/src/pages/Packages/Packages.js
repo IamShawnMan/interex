@@ -80,22 +80,22 @@ function Package() {
   ];
 
   return (
-    <Layout>  <div style={{ display: "flex", gap: "1rem", width: "22rem",marginBottom: "1rem"}}>
-    <Button name="btn" btnStyle={{color:url==="/packages"?"pink":""}} onClick={() => navigate("/packages")}>
+    <Layout>  <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem"}}>
+    <Button name="btn" disabled={url==="/packages"} onClick={() => navigate("/packages")}>
     Paketlar
     </Button>
-    <Button name="btn" btnStyle={{color:url==="/packagback"?"pink":""}} onClick={() => navigate("/packageback")}>
+    <Button name="btn" disabled={url==="/packagback"} onClick={() => navigate("/packageback")}>
       Qaytarilgan Paketlar
     </Button>
+    
     </div>
-      <div style={{ display: "flex", gap: "1rem", width: "22rem" }}>
-        <Button name="btn" btnStyle={{color:sNew?"pink":""}}onClick={() => setSNew(true)}>
+      <div style={{ display: "flex", gap: "1rem", width: "100%" ,justifyContent:"center",alignItems: "center"}}>
+       <Button name="btn" disabled={sNew} btnStyle={{width: "25%"}}onClick={() => setSNew(true)}>
           Yangi
         </Button>
-        <Button name="btn" btnStyle={{color:!sNew?"pink":""}} onClick={() => setSNew(false)}>
+        <Button name="btn"disabled={!sNew}  btnStyle={{width: "25%"}} onClick={() => setSNew(false)}>
           Barchasi
         </Button>
-      
       </div>
       {packages?.length > 0 ? (
         <BasicTable

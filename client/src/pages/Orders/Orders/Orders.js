@@ -20,6 +20,7 @@ import Input from "../../../components/Form/FormComponents/Input/Input";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
+import Photo from "./photo.png"
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -125,10 +126,37 @@ function Orders() {
   };
 
 	const cols = [
+  
 		{
 			id: "id",
 			Header: "ID",
-			accessor: "id",
+			accessor: (order)=>{
+      const a=ordersIdArr?{display:"flex",justifyContent:"center",alignItems:"center"}:{display:"flex"}
+     return   <>
+     <div style={{...a,textAlign:"center"}}>
+    
+       { ordersIdArr && (url.split("/")[1] === "postback" || id) &&url!=="/posts/1/orders"&& (
+         <div>
+           <Input
+              type="checkbox"
+              checked={ordersIdArr.includes(order.id)}
+              onClick={() => {
+                const index = ordersIdArr.includes(order.id);
+                if (index) {
+                  let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
+                  setOrdersIdArr(orderIsArr);
+                } else {
+                  setOrdersIdArr((prev) => [...prev, order.id]);
+                }
+              }}
+              ></Input>
+
+          </div>)}
+              <p style={{textAligin:"center"}}>{order.id}</p>
+     </div>
+        </>
+
+      },
 		},
 		{
 			Header: "Manzil",
@@ -244,8 +272,10 @@ function Orders() {
                         ? true
                         : false
                     }
+                    btnStyle={{backgroundColor:"green"}}
+
                     onClick={() => {
-                      setInfo({ id: order.id, status: "SOLD" });
+                      setInfo({ id: order.id, status: "SOLD",postId:id });
                     }}
                   >
                     Sotildi
@@ -262,8 +292,10 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
+                    btnStyle={{backgroundColor:  "rgb(255, 200, 0)"}}
+
                     onClick={() => {
-                      setInfo({ id: order.id, status: "PENDING" });
+                      setInfo({ id: order.id, status: "PENDING",postId:id });
                     }}
                   >
                     Kutilmoqda
@@ -278,8 +310,9 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
+                    btnStyle={{backgroundColor:"red"}}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "REJECTED" });
+                      setInfo({ id: order.id, status: "REJECTED",postId:id });
                     }}
                   >
                     Qaytdi
@@ -295,28 +328,15 @@ function Orders() {
             >
               Ma'lumot
             </Button>
-            {ordersIdArr && (url.split("/")[1] === "postback" || id) && (
-              <Input
-                disabled={postStatus && postStatus==="NEW"}
-                type="checkbox"
-                checked={ordersIdArr.includes(order.id)}
-                onClick={() => {
-                  const index = ordersIdArr.includes(order.id);
-                  if (index) {
-                    let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
-                    setOrdersIdArr(orderIsArr);
-                  } else {
-                    setOrdersIdArr((prev) => [...prev, order.id]);
-                  }
-                }}
-              ></Input>
-            )}
+
           </div>
         );
       },
     },
   ];
   const postCreateOrUpdateFn = async () => {
+    console.log({ regionId: id, ordersArr: ordersIdArr });
+    console.log({ postId: id, ordersArr: ordersIdArr });
     try {
       const res = await http({
         url: url
@@ -337,9 +357,10 @@ function Orders() {
       });
       toast.success(res.data.message);
     } catch (error) {
+      console.log(error);
       toast.error(error?.response?.data?.message);
     }
-    navigate("/posts");
+    navigate("/post/create");
   };
   const postRejectedCreateOrUpdateFn = async () => {
     try {
@@ -397,14 +418,17 @@ function Orders() {
       {(url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (
-        <Button
+          <div  onClick={() => getFile()}style={{display:"flex",justifyContent: "end",cursor:"pointer"}}>
+        {/* <Button
           type="button"
           name="btn"
-          btnStyle={{ width: "13rem", marginBottom: ".5rem" }}
-          onClick={() => getFile()}
+          btnStyle={{ width: "13rem"}}
+         
         >
-          Yuklab olish
-        </Button>
+        </Button> */}
+         <img width="100" src={Photo} alt="" />
+
+          </div>
       )}
       <div>
         {isStoreOwner &&url==="/orders/myorders"&& (
@@ -414,7 +438,7 @@ function Orders() {
             onClick={() => {
               navigate("/orders/new");
             }}
-            btnStyle={{ width: "13rem" }}
+            btnStyle={{ width: "13rem", marginBottom:"1rem"}}
           >
             Buyurtma
           </Button>

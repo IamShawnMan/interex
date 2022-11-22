@@ -16,9 +16,8 @@ function Input({
   checked,
   onChange,
   value,
-  defaultValue,
+  defaultValue
 }) {
-  const [success, setSuccess] = useState(false);
   // console.log(checked);
   // useEffect(() => {})
   return (

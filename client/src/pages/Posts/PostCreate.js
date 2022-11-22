@@ -3,12 +3,15 @@ import React, { useContext, useEffect, useState } from "react";
 import AppContext from "../../context/AppContext";
 import styles from "./Posts.module.css";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout/Layout";
+import Button from "../../components/Form/FormComponents/Button/Button";
 const PostCreate = () => {
   const [regionValue, setRegionValue] = useState([]);
   const { user } = useContext(AppContext);
-
+  const location = useLocation();
+  const url = location.pathname;
+  const navigate = useNavigate();
     useEffect(() => {
         user.userRole !== "COURIER" && getAllRegions();
       }, []);
@@ -24,7 +27,38 @@ const PostCreate = () => {
       };
     return (
     <Layout pageName="Post Yaratish">
-
+  {user.userRole === "ADMIN" && ( <div style={{ width: "100%", display: "flex", gap: "2rem" }}>
+          <Button
+            name="btn"
+            type="button"
+            onClick={() => {
+              navigate("/posts");
+            }}
+          >
+           Pochtalar
+          </Button>
+      
+          <Button
+            name="btn"
+            type="button"
+            onClick={() => {
+              navigate("/rejected/posts");
+            }}
+          >
+           Qaytarilgan pochtalar
+          </Button>
+          <Button
+            name="btn"
+            type="button"
+            disabled={url==="/post/create"}
+            onClick={() => {
+              navigate("/post/create");
+            }}
+          >
+            Pochta Yaratish
+          </Button>
+        </div>
+      )}
     <>{ user.userRole === "ADMIN" ? (
         <>
         {console.log(regionValue)}

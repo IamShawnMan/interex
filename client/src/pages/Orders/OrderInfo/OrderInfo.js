@@ -72,6 +72,10 @@ const OrderInfo = ({ id, onClose }) => {
             <p className="bold inline-block"> Tuman:</p>
             <span>{value?.district?.name}</span>
           </li>
+          <li className="h6">
+            <p className="bold inline-block"> Eslatma:</p>
+            <span>{value?.note}</span>
+          </li>
         </ul>
         {items?.length > 0 ? (
           <BasicTable columns={itemsCols} data={items} />

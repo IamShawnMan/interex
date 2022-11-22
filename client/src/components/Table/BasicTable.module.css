@@ -29,12 +29,14 @@
   text-align: center;
 }
 .table .th {
-  font-size: .85em;
+  font-size: 1em;
   letter-spacing: .1em;
   text-transform: uppercase;
   background: #dfcffb;
   color: black;
-
+}
+.table .tr{
+  font-size: 1.5rem;
 }
 @media (max-width: 750px) {
   .table {

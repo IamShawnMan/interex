@@ -103,9 +103,10 @@ const OrderFieldArray = ({
       />
       <div
         className={styles.btnIconTextContainer}
+
         onClick={() => remove(index)}
       >
-        <Button type="button" name="iconText" iconName="trash">
+        <Button btnStyle={{width:"6rem",backgroundColor:"rgba(255, 0, 0, 0.575)"}} type="button" name="icon" iconName="trash">
           O'chirish
         </Button>
       </div>

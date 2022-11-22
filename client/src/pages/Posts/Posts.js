@@ -156,24 +156,26 @@ const Posts = () => {
         </div>
       )}
       {user.userRole === "ADMIN" && (
-        <div style={{ width: "45rem", display: "flex", gap: "2rem" }}>
-          <Button
+        <div style={{ width: "100%", display: "flex", gap: "2rem" }}>
+            <Button
             name="btn"
             type="button"
+            disabled={url==="/posts"}
             onClick={() => {
-              navigate("/rejected/posts");
+              navigate("/posts");
             }}
           >
-            Qaytarilgan po'chtalar
+           Pochtalar
           </Button>
           <Button
             name="btn"
             type="button"
+            disabled={url==="/rejected/posts"}
             onClick={() => {
-              setViewAllPosts(!viewAllPosts);
+              navigate("/rejected/posts");
             }}
           >
-            {viewAllPosts ? "Hamma po'chtalar" : "Hamma po'chtalarni yashirish"}
+            Qaytarilgan pochtalar
           </Button>
           <Button
             name="btn"
