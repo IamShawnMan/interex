@@ -105,7 +105,7 @@ function Sidebar(props) {
         )}
         {user.userRole === "ADMIN" && (
           <Link
-            to={"/posts"}
+            to={"/post/create"}
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}

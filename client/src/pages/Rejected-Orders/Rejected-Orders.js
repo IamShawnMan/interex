@@ -100,6 +100,7 @@ function RejectedOrders() {
   const getByIdPostOrders = async () => {
     try {
       const res = await http(`/postback/rejectedposts/${id}`);
+      console.log(res);
       setValue(res?.data?.data?.content);
       setOrdersIdArr(res?.data?.data?.content.map((o) => o.id));
     } catch (error) {}

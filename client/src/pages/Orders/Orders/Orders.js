@@ -125,10 +125,37 @@ function Orders() {
   };
 
 	const cols = [
+  
 		{
 			id: "id",
 			Header: "ID",
-			accessor: "id",
+			accessor: (order)=>{
+      const a=ordersIdArr?{display:"flex",justifyContent:"center",alignItems:"center"}:{display:"flex"}
+     return   <>
+     <div style={{...a,textAlign:"center"}}>
+    
+       { ordersIdArr && (url.split("/")[1] === "postback" || id) &&url!=="/posts/1/orders"&& (
+         <div>
+           <Input
+              type="checkbox"
+              checked={ordersIdArr.includes(order.id)}
+              onClick={() => {
+                const index = ordersIdArr.includes(order.id);
+                if (index) {
+                  let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
+                  setOrdersIdArr(orderIsArr);
+                } else {
+                  setOrdersIdArr((prev) => [...prev, order.id]);
+                }
+              }}
+              ></Input>
+
+          </div>)}
+              <p style={{textAligin:"center"}}>{order.id}</p>
+     </div>
+        </>
+
+      },
 		},
 		{
 			Header: "Manzil",
@@ -300,28 +327,15 @@ function Orders() {
             >
               Ma'lumot
             </Button>
-            {ordersIdArr && (url.split("/")[1] === "postback" || id) && (
-              <Input
-                disabled={postStatus && postStatus==="NEW"}
-                type="checkbox"
-                checked={ordersIdArr.includes(order.id)}
-                onClick={() => {
-                  const index = ordersIdArr.includes(order.id);
-                  if (index) {
-                    let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
-                    setOrdersIdArr(orderIsArr);
-                  } else {
-                    setOrdersIdArr((prev) => [...prev, order.id]);
-                  }
-                }}
-              ></Input>
-            )}
+
           </div>
         );
       },
     },
   ];
   const postCreateOrUpdateFn = async () => {
+    console.log({ regionId: id, ordersArr: ordersIdArr });
+    console.log({ postId: id, ordersArr: ordersIdArr });
     try {
       const res = await http({
         url: url
@@ -342,9 +356,10 @@ function Orders() {
       });
       toast.success(res.data.message);
     } catch (error) {
+      console.log(error);
       toast.error(error?.response?.data?.message);
     }
-    navigate("/posts");
+    navigate("/post/create");
   };
   const postRejectedCreateOrUpdateFn = async () => {
     try {
