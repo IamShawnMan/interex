@@ -223,6 +223,13 @@ function Orders() {
       accessor: (order) => {
         return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
       },
+    },  
+     {
+      id: "createdAt",
+      Header: "Yaratilgan sana",
+      accessor: (order) => {
+        return formatDate(order.createdAt);
+      },
     },
     {
       id: "updatedAt",
