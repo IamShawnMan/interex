@@ -15,7 +15,8 @@ const UserModel = require("../user/User");
 const statusPackage = require("../../core/constants/packageStatus");
 const statusPackageUz = require("../../core/constants/packageStatusUz");
 const excelJS = require("exceljs");
-const Region = require("../region/regions.json");
+const regionsJSON = require("../region/regions.json");
+const districtsJSON = require("../district/districts.json");
 const Order = require("./Order");
 const Tracking = require("../tracking/Tracking");
 
@@ -48,67 +49,67 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
-  const validationErrors = validationResult(req);
-  if (!validationErrors.isEmpty()) {
-    let err = new AppError("Validatsiya xatosi", 403);
-    err.isOperational = false;
-    err.errors = validationErrors;
-    return next(err);
-  }
-  const { userRole } = req.user;
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		let err = new AppError("Validatsiya xatosi", 403);
+		err.isOperational = false;
+		err.errors = validationErrors;
+		return next(err);
+	}
+	const { userRoleUz } = req.user;
 
-  let existedPackage = await PackageModel.findOne({
-    where: {
-      [Op.and]: [
-        { storeOwnerId: { [Op.eq]: req.user.id } },
-        { packageStatus: { [Op.eq]: statusPackage.STATUS_NEW } },
-      ],
-    },
-    order: [["createdAt", "DESC"]],
-  });
+	let existedPackage = await PackageModel.findOne({
+		where: {
+			[Op.and]: [
+				{ storeOwnerId: { [Op.eq]: req.user.id } },
+				{ packageStatus: { [Op.eq]: statusPackage.STATUS_NEW } },
+			],
+		},
+		order: [["createdAt", "DESC"]],
+	});
 
-  if (!existedPackage) {
-    existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
-  }
-  const storeOwnerId = req.user.id;
-  const orders = req.body.orders;
-  orders?.forEach(async (order) => {
-    const newOrder = await OrderModel.create({
-      recipient: order.recipient,
-      regionId: order.regionId,
-      note: `${userRole}: ${order.note}`,
-      recipientPhoneNumber: order.recipientPhoneNumber,
-      districtId: order.districtId,
-      packageId: existedPackage.id,
-      storeOwnerId,
-    });
-    let items = [];
-    let sum = 0;
-    order?.orderItems?.forEach((item) => {
-      items.push({
-        productName: item.productName,
-        quantity: item.quantity,
-        orderItemTotalPrice: +item.price,
-        orderId: newOrder.id,
-      });
-    });
-    items?.forEach((item) => {
-      sum += item.orderItemTotalPrice;
-    });
+	if (!existedPackage) {
+		existedPackage = await PackageModel.create({ storeOwnerId: req.user.id });
+	}
+	const storeOwnerId = req.user.id;
+	const orders = req.body.orders;
+	orders?.forEach(async (order) => {
+		const newOrder = await OrderModel.create({
+			recipient: order.recipient,
+			regionId: order.regionId,
+			note: `${userRoleUz}: ${order.note}`,
+			recipientPhoneNumber: order.recipientPhoneNumber,
+			districtId: order.districtId,
+			packageId: existedPackage.id,
+			storeOwnerId,
+		});
+		let items = [];
+		let sum = 0;
+		order?.orderItems?.forEach((item) => {
+			items.push({
+				productName: item.productName,
+				quantity: item.quantity,
+				orderItemTotalPrice: +item.price,
+				orderId: newOrder.id,
+			});
+		});
+		items?.forEach((item) => {
+			sum += item.orderItemTotalPrice;
+		});
 
-    await OrderItemModel.bulkCreate(items);
-    newOrder.totalPrice = sum;
-    newOrder.packageId = existedPackage.id;
-    await newOrder.save();
-    existedPackage.packageTotalPrice += newOrder.totalPrice;
-    await existedPackage.save();
-  });
-  res.status(201).json({
-    status: "success",
-    message: "yangi buyurtmalar qo`shildi",
-    errrors: null,
-    data: null,
-  });
+		await OrderItemModel.bulkCreate(items);
+		newOrder.totalPrice = sum;
+		newOrder.packageId = existedPackage.id;
+		await newOrder.save();
+		existedPackage.packageTotalPrice += newOrder.totalPrice;
+		await existedPackage.save();
+	});
+	res.status(201).json({
+		status: "success",
+		message: "yangi buyurtmalar qo`shildi",
+		errrors: null,
+		data: null,
+	});
 });
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
@@ -467,60 +468,53 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
-  const { regionId, userRole } = req.user;
-  const { id } = req.params;
-  const { orderStatus, note } = req.body;
-  const postOrdersById = await OrderModel.findByPk(id, {
-    where: {
-      regionId: {
-        [Op.eq]: regionId,
-      },
-    },
-  });
-  const oldStatus = postOrdersById.orderStatus;
-  let orderStatusUz;
-  orderStatus === statusOrder.STATUS_SOLD
-    ? (orderStatusUz = statusOrderUz.STATUS_SOTILDI)
-    : "";
-  orderStatus === statusOrder.STATUS_PENDING
-    ? (orderStatusUz = statusOrderUz.STATUS_KUTILMOQDA)
-    : "";
-  orderStatus === statusOrder.STATUS_REJECTED
-    ? (orderStatusUz = statusOrderUz.STATUS_OTKAZ)
-    : "";
-  const postOrderStatuses = Object.values(statusOrder).slice(6, 9);
-  const postOrderStatusesUz = Object.values(statusOrderUz).slice(6, 9);
-  const postOrderStatusChange = postOrderStatuses.find(
-    (e) => e === orderStatus
-  );
-  const postOrderStatusChangeUz = postOrderStatusesUz.find(
-    (e) => e === orderStatusUz
-  );
-  if (
-    postOrdersById.orderStatus === "DELIVERED" ||
-    postOrdersById.orderStatus === "PENDING"
-  ) {
-    await postOrdersById.update({
-      orderStatus: postOrderStatusChange,
-      orderStatusUz: postOrderStatusChangeUz,
-      note: `${postOrdersById.dataValues.note} ${userRole}: ${note}`,
-    });
-  }
+	const { regionId, userRoleUz } = req.user;
+	const { id } = req.params;
+	const { orderStatus, note } = req.body;
+	const postOrdersById = await OrderModel.findByPk(id, {
+		where: {
+			regionId: {
+				[Op.eq]: regionId,
+			},
+		},
+	});
+	const oldStatus = postOrdersById.orderStatus;
+	let orderStatusUz
+	orderStatus === statusOrder.STATUS_SOLD ? orderStatusUz = statusOrderUz.STATUS_SOTILDI: ""
+	orderStatus === statusOrder.STATUS_PENDING ? orderStatusUz = statusOrderUz.STATUS_KUTILMOQDA: ""
+	orderStatus === statusOrder.STATUS_REJECTED ? orderStatusUz = statusOrderUz.STATUS_OTKAZ: ""
+	const postOrderStatuses = Object.values(statusOrder).slice(6, 9);
+	const postOrderStatusesUz = Object.values(statusOrderUz).slice(6, 9);
+	const postOrderStatusChange = postOrderStatuses.find(
+		(e) => e === orderStatus
+	);
+	const postOrderStatusChangeUz = postOrderStatusesUz.find(
+		(e) => e === orderStatusUz
+	);
+	if (
+		postOrdersById.orderStatus === "DELIVERED" ||
+		postOrdersById.orderStatus === "PENDING"
+	) {
+		await postOrdersById.update({
+			orderStatus: postOrderStatusChange, orderStatusUz: postOrderStatusChangeUz,
+			note: `${postOrdersById.dataValues.note} ${userRoleUz}: ${note}`,
+		});
+	}
 
-  await Tracking.create({
-    orderId: id,
-    fromStatus: oldStatus,
-    toStatus: orderStatus,
-  });
+	await Tracking.create({
+		orderId: id,
+		fromStatus: oldStatus,
+		toStatus: orderStatus,
+	});
 
-  res.status(203).json({
-    status: "success",
-    message: "Post orderining statusi o'zgardi",
-    error: null,
-    data: {
-      note,
-    },
-  });
+	res.status(203).json({
+		status: "success",
+		message: "Post orderining statusi o'zgardi",
+		error: null,
+		data: {
+			note,
+		},
+	});
 });
 
 exports.getDailyOrders = catchAsync(async (req, res, next) => {
@@ -619,53 +613,69 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.exportOrders = catchAsync(async (req, res, next) => {
-  const workbook = new excelJS.Workbook();
-  const worksheet = workbook.addWorksheet("orders");
-  worksheet.columns = [
-    { header: "No", key: "s_no", width: 20 },
-    { header: "Haridor", key: "recipient", width: 20 },
-    { header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
-    { header: "Izoh", key: "note", width: 70 },
-    { header: "Holati", key: "orderStatusUz", width: 30 },
-    { header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
-    { header: "Umumiy narxi", key: "totalPrice", width: 20 },
-    { header: "Yaratilgan sana", key: "createdAt", width: 20 },
-    { header: "O'zgartirilgan sana", key: "updatedAt", width: 20 },
-  ];
-  const queryBuilder = new QueryBuilder(req.query);
-  queryBuilder.filter();
-  let downloadOrders = await OrderModel.findAndCountAll(
-    queryBuilder.queryOptions
-  );
+	const workbook = new excelJS.Workbook();
+	const worksheet = workbook.addWorksheet("orders", "region");
+	worksheet.columns = [
+		{ header: "No", key: "s_no", width: 20 },
+		{ header: "Viloyati", key: `regionId`, width: 30 },
+		{ header: "Tumani", key: `districtId`, width: 30 },
+		{ header: "Haridor", key: "recipient", width: 20 },
+		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
+		{ header: "Holati", key: "orderStatusUz", width: 30 },
+		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
+		{ header: "Umumiy narxi", key: "totalPrice", width: 20 },
+		{ header: "Yaratilgan sana", key: "createdAt", width: 20 },
+		{ header: "O'zgartirilgan sana", key: "updatedAt", width: 20 },
+		{ header: "Izoh", key: "note", width: 70 },
+	];
+	const queryBuilder = new QueryBuilder(req.query);
+	queryBuilder.filter();
+	let downloadOrders = await OrderModel.findAndCountAll(
+		queryBuilder.queryOptions
+	);
 
-  const ordersArr = Object.values(downloadOrders.rows.map((e) => e.dataValues));
-  let counter = 1;
-  ordersArr.forEach((order) => {
-    order.s_no = counter;
-    worksheet.addRow(order);
-    counter++;
-  });
-  const endRow = worksheet.lastRow._number + 1;
-  worksheet.mergeCells(`D${endRow}:E${endRow}`);
-  worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:";
-  worksheet.getCell(`D${endRow}`).alignment = { horizontal: "center" };
-  worksheet.getCell(`F${endRow}`).value = { formula: `SUM(F2:F${endRow - 1})` };
-  worksheet.getCell(`G${endRow}`).value = { formula: `SUM(G2:G${endRow - 1})` };
-  worksheet.getRow(1).eachCell((cell) => {
-    (cell.font = { bold: true })  });
-  worksheet.eachRow((row) => {
-    row.eachCell((cell) => {
-      cell.alignment = {
-        horizontal: "center",
-      };
-    });
-  });
-  res.setHeader(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
-  return workbook.xlsx.write(res).then(() => {
-    res.status(200).end();
-  });
+	downloadOrders.rows.forEach(order => {
+		regionsJSON.forEach(region => {
+			if(order.regionId == region.id){
+				order.regionId = region.name
+			}
+		})
+		districtsJSON.forEach(district => {
+			if(order.districtId == district.id) {
+				order.districtId = district.name
+			}
+		})
+	}
+	)
+	const ordersArr = Object.values(downloadOrders.rows.map((e) => e))
+	let counter = 1;
+	ordersArr.forEach((order) => {
+		order.s_no = counter;
+		worksheet.addRow(order);
+		counter++;
+	});
+	const endRow = worksheet.lastRow._number + 1;
+	worksheet.mergeCells(`E${endRow}:F${endRow}`);
+	worksheet.getCell(`E${endRow}`).value = "UMUMIY NARX:";
+	worksheet.getCell(`E${endRow}`).alignment = { horizontal: "center" };
+	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(G2:G${endRow - 1})` };
+	worksheet.getCell(`H${endRow}`).value = { formula: `SUM(H2:H${endRow - 1})` };
+	worksheet.getRow(1).eachCell((cell) => {
+		cell.font = { bold: true };
+	});
+	worksheet.eachRow((row) => {
+		row.eachCell((cell) => {
+			cell.alignment = {
+				horizontal: "center",
+			};
+		});
+	});
+	res.setHeader(
+		"Content-Type",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	);
+	res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
+	return workbook.xlsx.write(res).then(() => {
+		res.status(200).end();
+	});
 });

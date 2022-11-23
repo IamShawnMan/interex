@@ -18,6 +18,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.limitFields().filter().paginate().search(["note"]);
 
+	queryBuilder.queryOptions.order = [["createdAt", "desc"]]
 	queryBuilder.queryOptions.include = [
 		{ model: Region, as: "region", attributes: ["name"] },
 	];

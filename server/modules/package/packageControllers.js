@@ -16,7 +16,6 @@ exports.getAllPackages = catchAsync(async (req, res, next) => {
 	queryBuilder.filter().paginate().limitFields().sort();
 	
 	if(req.user.userRole === "STORE_OWNER"){
-		console.log(19,"qator");
 		if(req.query.new === "new"){
 			queryBuilder.queryOptions.where = {
 				packageStatus: {[Op.eq]: statusPackages.STATUS_NEW},
@@ -31,7 +30,6 @@ exports.getAllPackages = catchAsync(async (req, res, next) => {
 	}
 	}else{
 		if(req.query.new === "new"){
-		console.log(33,"qator");
 		queryBuilder.queryOptions.where = {
 			packageStatus: {[Op.eq]: statusPackages.STATUS_NEW},
 			}
@@ -41,7 +39,6 @@ exports.getAllPackages = catchAsync(async (req, res, next) => {
 		as: "storeOwner",
 		attributes: ["firstName", "lastName", "storeName"],
 	}
-	console.log(queryBuilder.queryOptions);
 	let allPackages = await PackageModel.findAndCountAll(queryBuilder.queryOptions);
 
 	allPackages = queryBuilder.createPagination(allPackages);
