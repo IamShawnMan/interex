@@ -20,6 +20,7 @@ const OrderInfo = ({ id, onClose }) => {
     const res = await http({
       url: `/orders/${id}`,
     });
+    console.log(res);
     setValue(res.data.data.orderById);
     setItems(res.data.data.orderById.items);
   };
@@ -78,6 +79,10 @@ const OrderInfo = ({ id, onClose }) => {
             <li className="h6">
               <p className="bold inline-block"> Tuman:</p>
               <span>{value?.district?.name}</span>
+            </li>
+            <li className="h6">
+              <p className="bold inline-block"> Firma Nomi:</p>
+              <span>{value?.storeOwner?.storeName}</span>
             </li>
             <li className="h6">
               <p className="bold inline-block"> Eslatma:</p>

@@ -119,6 +119,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 			{ model: RegionModel, as: "region", attributes: ["name"] },
 			{ model: OrderItemModel, as: "items" },
 			{ model: Tracking, as: "tracking" },
+			{model: UserModel, as: "storeOwner", attributes: ["storeName"]}
 		],
 	});
 
