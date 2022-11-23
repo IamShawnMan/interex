@@ -203,9 +203,7 @@ function Sidebar(props) {
         </div>
       </div>
       <div
-        className={`${styles.sidebarModal} ${
-          open ? styles.displayNone : styles.displayBlock
-        }`}
+        className={`${open ? styles.displayNone : styles.sidebarModal}`}
         onClick={props.sidebarActiveHandle}
       ></div>
     </>

@@ -92,7 +92,6 @@
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 2;
-  display: none;
 }
 
 .displayBlock {
@@ -127,6 +126,12 @@
   .sidebarLinkSvg {
     width: 1.8rem;
     height: 1.8rem;
+  }
+}
+
+@media (min-width: 981px) {
+  .sidebarModal {
+    display: none;
   }
 }
 
