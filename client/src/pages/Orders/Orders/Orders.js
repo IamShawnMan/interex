@@ -37,7 +37,7 @@ function Orders() {
   const location = useLocation();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
-  const createdAt = searchParams.get("createdAt") || "";
+  const createdAt = searchParams.get("createdAt[eq]") || "";
   const orderStatus = searchParams.get("orderStatus") || "";
   const regionId = searchParams.get("regionId") || "";
   const districtId = searchParams.get("districtId") || "";
@@ -67,7 +67,6 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
-    console.log(data);
 
     setValue(data?.data?.content || data?.data?.allOrderbyPackageBack.rows);
 
@@ -425,14 +424,18 @@ function Orders() {
           orderStatus ? `&orderStatus=${orderStatus}` : ""
         }${regionId ? `&regionId=${regionId}` : ""}${
           search ? `&search=${search}` : ""
-        }${districtId ? `&districtId=${districtId}` : ""}${
+        }${districtId ? `&districtId=${districtId}` : ""}
+        ${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}
+        ${
           !isStoreOwner
             ? storeOwnerId
               ? `&storeOwnerId=${storeOwnerId}`
               : ""
             : ""
-        }${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
+        }
+        `,
       });
+
       getAllOrders(res.data);
     } catch (error) {
       toast.error(error?.response?.data?.message);
