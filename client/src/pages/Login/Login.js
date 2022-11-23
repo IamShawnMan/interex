@@ -41,6 +41,7 @@ function Login() {
 		setTypeState(!typeState);
 	};
 	const login = async (data) => {
+
 		try {
 			const res = await http({
 				url: "/auth/login",
@@ -54,10 +55,11 @@ function Login() {
 				token: localStorage.getItem("token"),
 				isAuth: true,
 			});
-			toast.success(res.data.message);
 			navigate("/home");
 		} catch (error) {
 			console.log(error);
+
+			toast.error(error);
 			toast.error(error.response?.data?.message);
 		}
 	};

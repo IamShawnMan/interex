@@ -1,3 +1,6 @@
+.div{
+    
+}
 .container{
     display: flex;
     justify-content: center;
@@ -7,13 +10,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 64px;
-height: 64px;
+    width: 54px;
+height: 54px;
 border-radius:50%;
 background: rgba(122, 122, 122, 0.4);
 }
 .rectangle{
-    width: 64px;
+width: 54px;
 height: 5px;
 background: rgba(122, 122, 122, 0.4);
 }

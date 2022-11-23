@@ -78,7 +78,8 @@ const Posts = () => {
       },
     },
     {
-      Header: "Tugmalar",
+      id:"tugma",
+      Header: "",
       accessor: (post) => {
         return (
           <div
