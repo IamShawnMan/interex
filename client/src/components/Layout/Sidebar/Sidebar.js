@@ -119,59 +119,6 @@ function Sidebar(props) {
               </p>
             </Link>
           )}
-          {user.userRole === "COURIER" && (
-            <>
-              <Link
-                to={"/new-post"}
-                className={`${styles.sidebarLink} ${
-                  open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-                }`}
-              >
-                <DashboardIcon classname={styles.sidebarLinkSvg} />
-                <p
-                  className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
-                >
-                  Pochta
-                </p>
-              </Link>
-              <Link
-                to="/postback/rejected/orders"
-                className={`${styles.sidebarLink} ${
-                  open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-                }`}
-              >
-                <UsersIcon classname={styles.sidebarLinkSvg} />
-                <p
-                  className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
-                >
-                  Pochta Yaratish
-                </p>
-              </Link>
-              <Link
-                to="/postback"
-                className={`${styles.sidebarLink} ${
-                  open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-                }`}
-              >
-                <UsersIcon classname={styles.sidebarLinkSvg} />
-                <p
-                  className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
-                >
-                  Mening pochtalarim
-                </p>
-              </Link>
-            </>
-          )}
-          <Link
-            className={`${styles.sidebarLink} ${
-              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
-          >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
-            <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-              Department
-            </p>
-          </Link>
         </div>
         <div className={`${styles.other} ${styles.linksContainer}`}>
           <p
@@ -179,7 +126,7 @@ function Sidebar(props) {
               !open ? styles.displayNone : ""
             }`}
           >
-            OTHER
+            Boshqalar
           </p>
           <Link
             className={`${styles.sidebarLink} ${
@@ -188,7 +135,7 @@ function Sidebar(props) {
           >
             <UsersIcon classname={styles.sidebarLinkSvg} />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-              Support
+              Yordam
             </p>
           </Link>
           <Link
@@ -198,7 +145,7 @@ function Sidebar(props) {
           >
             <SettingIcon classname={styles.sidebarLinkSvg} />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-              Settings
+              Sozlamalar
             </p>
           </Link>
           <Link
@@ -209,7 +156,7 @@ function Sidebar(props) {
           >
             <UsersIcon classname={styles.sidebarLinkSvg} />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-              Log Out
+              Chiqish
             </p>
           </Link>
         </div>

@@ -15,7 +15,7 @@ const schema = object().shape({
     .of(
       object().shape({
         recipient: string().trim().required("Xaridor ismini kriting"),
-        note: string().trim().required("Izoh kriting"),
+        // note: string().trim().required("Izoh kriting"),
         recipientPhoneNumber: string()
           .trim()
           .required("Telefon raqamini kriting"),

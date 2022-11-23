@@ -20,7 +20,8 @@ import Input from "../../../components/Form/FormComponents/Input/Input";
 import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
-import Photo from "./photo.png"
+import Photo from "./photo.png";
+import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -36,13 +37,13 @@ function Orders() {
   const location = useLocation();
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
-  const createdAt = searchParams.get("createdAt") || "";
+  const createdAt = searchParams.get("createdAt[eq]") || "";
   const orderStatus = searchParams.get("orderStatus") || "";
   const regionId = searchParams.get("regionId") || "";
   const districtId = searchParams.get("districtId") || "";
   const storeOwnerId = !isStoreOwner ? searchParams.get("storeOwnerId") : "";
   const { id } = useParams();
-  const [search,setSearch]=useState(null)
+  const [search, setSearch] = useState(null);
   const navigate = useNavigate();
   const url = location.pathname;
   useEffect(() => {
@@ -57,7 +58,7 @@ function Orders() {
     storeOwnerId,
     createdAt,
     url,
-    search
+    search,
   ]);
   const getPrices = async () => {
     const res = await http({
@@ -66,13 +67,14 @@ function Orders() {
     setPrice(res.data);
   };
   const getAllOrders = async (data) => {
-    console.log(data);
 
-      setValue(data?.data?.content||data?.data?.allOrderbyPackageBack.rows);
-    
+    setValue(data?.data?.content || data?.data?.allOrderbyPackageBack.rows);
+
     setPagination(data?.data?.pagination);
-    setOrdersIdArr(data?.data?.ordersArrInPost||data?.data?.orderIdArr);
-    setPostStatus(data?.data?.currentPostStatus?.postStatus||data.data.packageBackStatus);
+    setOrdersIdArr(data?.data?.ordersArrInPost || data?.data?.orderIdArr);
+    setPostStatus(
+      data?.data?.currentPostStatus?.postStatus || data.data.packageBackStatus
+    );
   };
   const changeOrderStatus = async (id, status) => {
     try {
@@ -125,123 +127,139 @@ function Orders() {
     });
   };
 
-	const cols = [
-  
-		{
-			id: "id",
-			Header: "ID",
-			accessor: (order)=>{
-      const a=ordersIdArr?{display:"flex",justifyContent:"center",alignItems:"center"}:{display:"flex"}
-     return   <>
-     <div style={{...a,textAlign:"center"}}>
-    
-       { ordersIdArr && (url.split("/")[1] === "postback" || id) &&url!=="/posts/1/orders"&& (
-         <div>
-           <Input
-              type="checkbox"
-              checked={ordersIdArr.includes(order.id)}
-              onClick={() => {
-                const index = ordersIdArr.includes(order.id);
-                if (index) {
-                  let orderIsArr = ordersIdArr.filter((i) => i !== order.id);
-                  setOrdersIdArr(orderIsArr);
-                } else {
-                  setOrdersIdArr((prev) => [...prev, order.id]);
-                }
-              }}
-              ></Input>
-
-          </div>)}
-              <p style={{textAligin:"center"}}>{order.id}</p>
-     </div>
-        </>
-
+  const cols = [
+    {
+      id: "id",
+      Header: "ID",
+      accessor: (order) => {
+        const a = ordersIdArr
+          ? { display: "flex", justifyContent: "center", alignItems: "center" }
+          : { display: "flex" };
+        return (
+          <>
+            <div style={{ ...a, textAlign: "center" }}>
+              {ordersIdArr &&
+                (url.split("/")[1] === "postback" || id) &&
+                url !== "/posts/1/orders" && (
+                  <div>
+                    <Input
+                      type="checkbox"
+                      checked={ordersIdArr.includes(order.id)}
+                      onClick={() => {
+                        const index = ordersIdArr.includes(order.id);
+                        if (index) {
+                          let orderIsArr = ordersIdArr.filter(
+                            (i) => i !== order.id
+                          );
+                          setOrdersIdArr(orderIsArr);
+                        } else {
+                          setOrdersIdArr((prev) => [...prev, order.id]);
+                        }
+                      }}
+                    ></Input>
+                  </div>
+                )}
+              <p style={{ textAligin: "center" }}>{order.id}</p>
+            </div>
+          </>
+        );
       },
-		},
-		{
-			Header: "Manzil",
-			accessor: (order) => {
-				return (
-					<>
-						{order.region.name}
-						<br />
-						{order.district.name}
-					</>
-				);
-			},
-		},
-		{ id: "status", Header: "Holati", accessor: "orderStatusUz" },
-		{
-			id: "deliveryPrice",
-			Header: "Yetkazish narxi",
-			accessor: (order) => {
-				return (
-					<>
-						{order.orderStatus === "NEW" && id &&isAdmin&& (
-							<Select
-								data={price?.map((e) => {
-									return { id: e, name: e };
-								})}
-								onChange={async (e) => {
-									const res = await http({
-										url: `orders/${order.id}/devprice`,
-										method: "PATCH",
-										data: { deliveryPrice: e.target.value },
-									});
-								}}
-							>
-								Narxi
-							</Select>
-						)}
-						{order.status !== "NEW" &&
-							order.deliveryPrice?.toLocaleString("Ru-Ru")}
-					</>
-				);
-			},
-		},
-		{
-			id: "totalPrice",
-			Header: "Mahsulotning narxi",
-			accessor: (order) => {
-				return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
-			},
-		},
-		{
-			id: "updatedAt",
-			Header: "Oxirgi o'zgarish",
-			accessor: (order) => {
-				return formatDate(order.updatedAt);
-			},
-		},
-		{
-      id:"tugma",
-			Header: "",
-			accessor: (order) => {
-				return (
-					<div className={styles.actionContainer}>
-						{((isAdmin && url.split("/")[1] !== "posts") || isStoreOwner) && (
-							<div className={styles.actionContainer}>
-								{user.userRole === "STORE_OWNER" && (
-									<Button
-										size="small"
-										disabled={order.orderStatus !== "NEW" ? true : false}
-										name="btn"
-										onClick={() => {
-											navigate(`/orders/${order.id}`);
-										}}
-									>
-										O'zgartirish
-									</Button>
-								)}
-								{(isAdmin) && id && (
-									<>
-										<Button
-											name="btn"
-											disabled={order.orderStatus === "NEW" ? false : true}
-											onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
-										>
-											Qabul qilindi
-										</Button>
+    },
+    {
+      Header: "Manzil",
+      accessor: (order) => {
+        return (
+          <>
+            {order.region.name}
+            <br />
+            {order.district.name}
+          </>
+        );
+      },
+    },
+    { id: "status", Header: "Holati", accessor: "orderStatusUz" },
+    {
+      id: "phoneNumber",
+      Header: "Telefon Raqam",
+      accessor: (order) => {
+        return (
+          <a href={`tel:${order?.recipientPhoneNumber}`}>
+            <b>{phoneNumberFormat(order?.recipientPhoneNumber)}</b>
+          </a>
+        );
+      },
+    },
+    {
+      id: "deliveryPrice",
+      Header: "Yetkazish narxi",
+      accessor: (order) => {
+        return (
+          <>
+            {order.orderStatus === "NEW" && id && isAdmin && (
+              <Select
+                data={price?.map((e) => {
+                  return { id: e, name: e };
+                })}
+                onChange={async (e) => {
+                  const res = await http({
+                    url: `orders/${order.id}/devprice`,
+                    method: "PATCH",
+                    data: { deliveryPrice: e.target.value },
+                  });
+                }}
+              >
+                Narxi
+              </Select>
+            )}
+            {order.status !== "NEW" &&
+              order.deliveryPrice?.toLocaleString("Ru-Ru")}
+          </>
+        );
+      },
+    },
+    {
+      id: "totalPrice",
+      Header: "Mahsulotning narxi",
+      accessor: (order) => {
+        return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
+    },
+    {
+      id: "updatedAt",
+      Header: "Oxirgi o'zgarish",
+      accessor: (order) => {
+        return formatDate(order.updatedAt);
+      },
+    },
+    {
+      id: "tugma",
+      Header: "",
+      accessor: (order) => {
+        return (
+          <div className={styles.actionContainer}>
+            {((isAdmin && url.split("/")[1] !== "posts") || isStoreOwner) && (
+              <div className={styles.actionContainer}>
+                {user.userRole === "STORE_OWNER" && (
+                  <Button
+                    size="small"
+                    disabled={order.orderStatus !== "NEW" ? true : false}
+                    name="btn"
+                    onClick={() => {
+                      navigate(`/orders/${order.id}`);
+                    }}
+                  >
+                    O'zgartirish
+                  </Button>
+                )}
+                {isAdmin && id && (
+                  <>
+                    <Button
+                      name="btn"
+                      disabled={order.orderStatus === "NEW" ? false : true}
+                      onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
+                    >
+                      Qabul qilindi
+                    </Button>
 
                     <Button
                       disabled={order.orderStatus === "NEW" ? false : true}
@@ -273,10 +291,12 @@ function Orders() {
                         ? true
                         : false
                     }
-                    btnStyle={{backgroundColor:order.orderStatus !== "SOLD"?"green":""}}
-
+                    btnStyle={{
+                      backgroundColor:
+                        order.orderStatus !== "SOLD" ? "green" : "",
+                    }}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "SOLD",postId:id });
+                      setInfo({ id: order.id, status: "SOLD", postId: id });
                     }}
                   >
                     Sotildi
@@ -293,10 +313,14 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
-                    btnStyle={{backgroundColor:order.orderStatus !== "PENDING"?  "rgb(255, 200, 0)":""}}
-
+                    btnStyle={{
+                      backgroundColor:
+                        order.orderStatus !== "PENDING"
+                          ? "rgb(255, 200, 0)"
+                          : "",
+                    }}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "PENDING",postId:id });
+                      setInfo({ id: order.id, status: "PENDING", postId: id });
                     }}
                   >
                     Kutilmoqda
@@ -311,9 +335,12 @@ function Orders() {
                     }
                     size="small"
                     name="btn"
-                    btnStyle={{backgroundColor:order.orderStatus !== "REJECTED"?"red":""}}
+                    btnStyle={{
+                      backgroundColor:
+                        order.orderStatus !== "REJECTED" ? "red" : "",
+                    }}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "REJECTED",postId:id });
+                      setInfo({ id: order.id, status: "REJECTED", postId: id });
                     }}
                   >
                     Qaytdi
@@ -329,7 +356,6 @@ function Orders() {
             >
               Ma'lumot
             </Button>
-
           </div>
         );
       },
@@ -396,16 +422,20 @@ function Orders() {
       const res = await http({
         url: `${url}?page=${page}&size=${size}${
           orderStatus ? `&orderStatus=${orderStatus}` : ""
-        }${regionId ? `&regionId=${regionId}` : ""}${search ? `&search=${search}` : ""}${
-          districtId ? `&districtId=${districtId}` : ""
-        }${
+        }${regionId ? `&regionId=${regionId}` : ""}${
+          search ? `&search=${search}` : ""
+        }${districtId ? `&districtId=${districtId}` : ""}
+        ${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}
+        ${
           !isStoreOwner
             ? storeOwnerId
               ? `&storeOwnerId=${storeOwnerId}`
               : ""
             : ""
-        }${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
+        }
+        `,
       });
+
       getAllOrders(res.data);
     } catch (error) {
       toast.error(error?.response?.data?.message);
@@ -416,78 +446,82 @@ function Orders() {
   };
   return (
     <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch}>
-            {url==="/new-post"&&<div style={{ width: "100%", display: "flex", gap: "1rem" }}>
-        {console.log(url)}
-        {user.userRole === "COURIER" && (
-          <div style={{ width: "100%" }}>
-            <Button
-              disabled={
-                url === "/new-post" || url === "/postback/rejected/orders"
-                  ? true
-                  : false
-              }
-              name="btn"
-              onClick={() => {
-                url === "/postback"
-                  ? navigate("/postback/rejected/orders")
-                  : navigate("/new-post");
-              }}
-            >
-              {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
-            </Button>
-          </div>
-        )}
-        {user.userRole === "COURIER" && (
-          <div style={{ width: "100%" }}>
-            <Button
-              disabled={url === "/posts"}
-              name="btn"
-              onClick={() => {
-                navigate("/posts");
-              }}
-            >
-              Hamma pochtalar
-            </Button>
-          </div>
-        )}
-        {user.userRole === "COURIER" && (
-          <div style={{ width: "100%" }}>
-            <Button
-              disabled={url === "/postback"}
-              name="btn"
-              onClick={() => {
-                navigate("/postback");
-              }}
-            >
-              Qaytgan pochtalar
-            </Button>
-          </div>
-        )}
-      </div>}
+      {url === "/new-post" && (
+        <div style={{ width: "100%", display: "flex", gap: "1rem" }}>
+          {console.log(url)}
+          {user.userRole === "COURIER" && (
+            <div style={{ width: "100%" }}>
+              <Button
+                disabled={
+                  url === "/new-post" || url === "/postback/rejected/orders"
+                    ? true
+                    : false
+                }
+                name="btn"
+                onClick={() => {
+                  url === "/postback"
+                    ? navigate("/postback/rejected/orders")
+                    : navigate("/new-post");
+                }}
+              >
+                {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
+              </Button>
+            </div>
+          )}
+          {user.userRole === "COURIER" && (
+            <div style={{ width: "100%" }}>
+              <Button
+                disabled={url === "/posts"}
+                name="btn"
+                onClick={() => {
+                  navigate("/posts");
+                }}
+              >
+                Hamma pochtalar
+              </Button>
+            </div>
+          )}
+          {user.userRole === "COURIER" && (
+            <div style={{ width: "100%" }}>
+              <Button
+                disabled={url === "/postback"}
+                name="btn"
+                onClick={() => {
+                  navigate("/postback");
+                }}
+              >
+                Qaytgan pochtalar
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
       {(url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (
-          <div  onClick={() => getFile()}style={{display:"flex",justifyContent: "end",cursor:"pointer"}}>
-        {/* <Button
+        <div
+          onClick={() => getFile()}
+          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
+        >
+          {/* <Button
           type="button"
           name="btn"
           btnStyle={{ width: "13rem"}}
          
         >
         </Button> */}
-         <img width="100" src={Photo} alt="" />
-
-          </div>
+          <img width="100" src={Photo} alt="" />
+        </div>
       )}
       <div>
-        {isStoreOwner &&url==="/orders/myorders"&& (
+        {isStoreOwner && url === "/orders/myorders" && (
           <Button
             name="iconText"
             iconName="plus"
             onClick={() => {
               navigate("/orders/new");
             }}
-            btnStyle={{ width: "13rem", marginBottom:"1rem"}}
+            btnStyle={{ width: "13rem", marginBottom: "1rem" }}
           >
             Buyurtma
           </Button>
@@ -553,7 +587,7 @@ function Orders() {
               type="submit"
               size="small"
               name="btn"
-              disabled={value?.length===0}
+              disabled={value?.length === 0}
               onClick={
                 url.split("/")[2] === "rejected"
                   ? postRejectedCreateOrUpdateFn
@@ -566,17 +600,17 @@ function Orders() {
                 : "Yangilash"}
             </Button>
           )}
-           { isStoreOwner&&id&&postStatus==="REJECTED_NEW"&&(
-            <Button
-              type="submit"
-              size="small"
-              name="btn"
-              disabled={value?.length===0}
-              onClick={packageRejected}
-            >
-             Qabul qildim
-            </Button>
-          )}
+        {isStoreOwner && id && postStatus === "REJECTED_NEW" && (
+          <Button
+            type="submit"
+            size="small"
+            name="btn"
+            disabled={value?.length === 0}
+            onClick={packageRejected}
+          >
+            Qabul qildim
+          </Button>
+        )}
       </div>
     </Layout>
   );
