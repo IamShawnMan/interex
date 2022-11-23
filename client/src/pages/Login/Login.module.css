@@ -87,6 +87,7 @@ p {
 	cursor: pointer;
 	transform: translate(-90%, 20%);
 	display: inline-block;
+	
 }
 
 @media (max-width: 75rem) {
