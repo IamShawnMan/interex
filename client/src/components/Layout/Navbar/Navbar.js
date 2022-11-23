@@ -46,6 +46,11 @@ function Navbar(props) {
     }
   };
 
+  // show &&
+  //   document.addEventListener("click", () => {
+  //     setShow(!show);
+  //   });
+
   return (
     <div className={styles.navbar}>
       <div

@@ -64,9 +64,9 @@
     left: 0%;
     transition: all 600ms ease-in-out;
   }
-  .hiddenContainer {
+  /* .hiddenContainer {
     display: none;
-  }
+  } */
   .layout {
     overflow: hidden;
   }
