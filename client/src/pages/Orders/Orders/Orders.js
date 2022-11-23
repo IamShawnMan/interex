@@ -21,6 +21,7 @@ import Select from "../../../components/Form/FormComponents/Select/Select";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
 import Photo from "./photo.png"
+import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -171,6 +172,11 @@ function Orders() {
 			},
 		},
 		{ id: "status", Header: "Holati", accessor: "orderStatusUz" },
+    {id:"phoneNumber",Header: "Telefon Raqam", accessor:(order)=>{
+      return(  
+       <a href={`tel:${order?.recipientPhoneNumber}`}>
+    {phoneNumberFormat(order?.recipientPhoneNumber)}
+  </a>)}},
 		{
 			id: "deliveryPrice",
 			Header: "Yetkazish narxi",
