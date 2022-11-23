@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Input from "../../components/Form/FormComponents/Input/Input";
@@ -7,6 +8,7 @@ import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 const PostSendCourier = ({ id, url, onClose }) => {
   const [note, setNote] = useState(null);
+  const navigate = useNavigate();
   const { user } = useContext(AppContext);
   const sendPost = async () => {
     try {
@@ -22,6 +24,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
           note,
         },
       });
+      navigate("/orders/delivered")
       toast.success(res.data.message);
     } catch (error) {
       console.log(error);

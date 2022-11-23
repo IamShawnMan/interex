@@ -68,7 +68,8 @@ function Package() {
       },
     },
     {
-      Header: "Tugmalar",
+      id:"tugma",
+      Header: "",
       accessor: (pack) => {
         return (
           <Link to={`/packages/${pack.id}/orders`} className={styles.link}>
