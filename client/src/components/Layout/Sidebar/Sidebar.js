@@ -93,6 +93,46 @@ function Sidebar(props) {
               </p>
             </Link>
           )}
+          {user.userRole === "COURIER" && (
+          <>
+            <Link
+              to={"/new-post"}
+              className={`${styles.sidebarLink} ${
+                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+              }`}
+            >
+              <DashboardIcon classname={styles.sidebarLinkSvg} />
+              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+                Pochta
+              </p>
+            </Link>
+
+            <Link
+              to="/postback/rejected/orders"
+              className={`${styles.sidebarLink} ${
+                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+              }`}
+            >
+              <UsersIcon classname={styles.sidebarLinkSvg} />
+              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+                Pochta Yaratish
+              </p>
+            </Link>
+
+            <Link
+              to="/postback"
+              className={`${styles.sidebarLink} ${
+                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+              }`}
+            >
+              <UsersIcon classname={styles.sidebarLinkSvg} />
+              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+                Mening pochtalarim
+              </p>
+            </Link>
+          </>
+        )}
+
           {user.userRole === "ADMIN" && (
             <Link
               to={"/packages"}
@@ -119,6 +159,7 @@ function Sidebar(props) {
               </p>
             </Link>
           )}
+          
         </div>
         <div className={`${styles.other} ${styles.linksContainer}`}>
           <p
