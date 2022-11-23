@@ -53,7 +53,7 @@ function Users() {
         return `${user.firstName} ${user.lastName}`;
       },
     },
-    { id: "username", Header: "User Name", accessor: "username" },
+    { id: "username", Header: "Login", accessor: "username" },
     { id: "phoneNumber", Header: "Telefon raqam", accessor: (order) => {
       return (
         <a href={`tel:${order?.phoneNumber}`}>
