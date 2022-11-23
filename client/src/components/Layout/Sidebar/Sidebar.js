@@ -153,16 +153,7 @@ function Sidebar(props) {
             </Link>
           </>
         )}
-        <Link
-          className={`${styles.sidebarLink} ${
-            open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-          }`}
-        >
-          <UsersIcon classname={styles.sidebarLinkSvg} />
-          <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-            Department
-          </p>
-        </Link>
+      
       </div>
       <div className={`${styles.other} ${styles.linksContainer}`}>
         <p
@@ -170,7 +161,7 @@ function Sidebar(props) {
             !open ? styles.displayNone : ""
           }`}
         >
-          OTHER
+          Boshqalar
         </p>
         <Link
           className={`${styles.sidebarLink} ${
@@ -179,7 +170,7 @@ function Sidebar(props) {
         >
           <UsersIcon classname={styles.sidebarLinkSvg} />
           <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-            Support
+            Yordam
           </p>
         </Link>
         <Link
@@ -189,7 +180,7 @@ function Sidebar(props) {
         >
           <SettingIcon classname={styles.sidebarLinkSvg} />
           <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-            Settings
+            Sozlamalar
           </p>
         </Link>
         <Link
@@ -200,7 +191,7 @@ function Sidebar(props) {
         >
           <UsersIcon classname={styles.sidebarLinkSvg} />
           <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-            Log Out
+            Chiqish
           </p>
         </Link>
       </div>
