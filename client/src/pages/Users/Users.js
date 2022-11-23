@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Switch from "../../components/Form/FormComponents/Switch/Switch";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import AppContext from "../../context/AppContext";
+import { phoneNumberFormat } from "../../utils/phoneNumberFormatter";
 function Users() {
   const [value, setValue] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -53,7 +54,13 @@ function Users() {
       },
     },
     { id: "username", Header: "User Name", accessor: "username" },
-    { id: "phoneNumber", Header: "Telefon raqam", accessor: "phoneNumber" },
+    { id: "phoneNumber", Header: "Telefon raqam", accessor: (order) => {
+      return (
+        <a href={`tel:${order?.phoneNumber}`}>
+          <b>{phoneNumberFormat(order?.phoneNumber)}</b>
+        </a>
+      );
+    },},
     {
       id: "passportNumber",
       Header: "Passport raqam",
