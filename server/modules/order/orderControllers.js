@@ -646,7 +646,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.getCell(`F${endRow}`).value = { formula: `SUM(F2:F${endRow - 1})` };
 	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(G2:G${endRow - 1})` };
 	worksheet.getRow(1).eachCell((cell) => {
-		cell.font = { bold: true };
+		cell.font = { bold: true },
+		cell.fill = { fgColor: {argb:'cccccc'}}
 	});
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {

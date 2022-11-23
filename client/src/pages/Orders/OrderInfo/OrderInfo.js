@@ -81,7 +81,7 @@ const OrderInfo = ({ id, onClose }) => {
               <span>{value?.district?.name}</span>
             </li>
             <li className="h6">
-              <p className="bold inline-block"> Firma Nomi:</p>
+              <p className="bold inline-block"> Firma nomi:</p>
               <span>{value?.storeOwner?.storeName}</span>
             </li>
             <li className="h6">
