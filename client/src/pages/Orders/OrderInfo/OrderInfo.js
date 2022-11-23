@@ -33,64 +33,84 @@ const OrderInfo = ({ id, onClose }) => {
       },
     },
     { id: "productName", Header: "Maxsulot nomi", accessor: "productName" },
-    { id: "quantity", Header: "Soni",	accessor:"quantity"},
+    { id: "quantity", Header: "Soni", accessor: "quantity" },
     {
       id: "Total Price",
       Header: "Umumiy narxi",
       accessor: (order) => {
-        return <>{`${order.orderItemTotalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+        return (
+          <>{`${order.orderItemTotalPrice.toLocaleString("Ru-Ru")} so'm`}</>
+        );
       },
     },
   ];
 
   return (
     <Modal onClose={onClose}>
-      <div className={styles.orderInfo}>
-        <ul style={{ listStyle: "none",textAlign: "center" }}>
-          <li className="h6">
-            <p className="bold inline-block">Xaridor Ismi:</p>{" "}
-            <span>{value?.recipient}</span>
-          </li>
-          <li className="h6">
-            <p className="bold inline-block"> Xaridor telefon raqami:</p>
-            <span><a href={`tel:${value?.recipientPhoneNumber}`}>{phoneNumberFormat(value?.recipientPhoneNumber)}</a></span>
-          </li>
+      <div className="div">
+        <div className={styles.orderInfo}>
+          <ul style={{ listStyle: "none", textAlign: "center" }}>
+            <li className="h6">
+              <p className="bold inline-block">Xaridor Ismi:</p>{" "}
+              <span>{value?.recipient}</span>
+            </li>
+            <li className="h6">
+              <p className="bold inline-block"> Xaridor telefon raqami:</p>
+              <span>
+                <a href={`tel:${value?.recipientPhoneNumber}`}>
+                  {phoneNumberFormat(value?.recipientPhoneNumber)}
+                </a>
+              </span>
+            </li>
 
-          <li className="h6">
-            <p className="bold inline-block">Mahsulot narxi:</p>{" "}
-            <span>{value?.totalPrice.toLocaleString("Ru-Ru")} so'm</span>
-          </li>
-          <li className="h6">
-            <p className="bold inline-block">Mahsulot holati:</p>{" "}
-            {value?.orderStatusUz}
-          </li>
-          <li className="h6">
-            <p className="bold inline-block"> Viloyat:</p>
-            <span>{value?.region?.name}</span>
-          </li>
-          <li className="h6">
-            <p className="bold inline-block"> Tuman:</p>
-            <span>{value?.district?.name}</span>
-          </li>
-          <li className="h6">
-            <p className="bold inline-block"> Eslatma:</p>
-            <span>{value?.note}</span>
-          </li>
-        </ul>
-        {items?.length > 0 ? (
-          <BasicTable columns={itemsCols} style={{overflowY:"scroll"}} data={items} />
-        ) : (
-          <p>Malumotlar yoq</p>
-        )}
+            <li className="h6">
+              <p className="bold inline-block">Mahsulot narxi:</p>{" "}
+              <span>{value?.totalPrice.toLocaleString("Ru-Ru")} so'm</span>
+            </li>
+            <li className="h6">
+              <p className="bold inline-block">Mahsulot holati:</p>{" "}
+              {value?.orderStatusUz}
+            </li>
+            <li className="h6">
+              <p className="bold inline-block"> Viloyat:</p>
+              <span>{value?.region?.name}</span>
+            </li>
+            <li className="h6">
+              <p className="bold inline-block"> Tuman:</p>
+              <span>{value?.district?.name}</span>
+            </li>
+            <li className="h6">
+              <p className="bold inline-block"> Eslatma:</p>
+              <span>{value?.note}</span>
+            </li>
+          </ul>
+          {items?.length > 0 ? (
+            <BasicTable
+              columns={itemsCols}
+              style={{ overflowY: "scroll" }}
+              data={items}
+            />
+          ) : (
+            <p>Malumotlar yoq</p>
+          )}
 
-        <div className={stylesInfo.container}>
-          <div className={stylesInfo.ellipse}><CarSVG className={stylesInfo.svg}/></div>
-          <div className={stylesInfo.rectangle}></div>
-          <div className={stylesInfo.ellipse}><AdminSVG/></div>
-          <div className={stylesInfo.rectangle}></div>
-          <div className={stylesInfo.ellipse}><PostSVG/></div>
-          <div className={stylesInfo.rectangle}></div>
-          <div className={stylesInfo.ellipse}><ClockSVG/></div>
+          <div className={stylesInfo.container}>
+            <div className={stylesInfo.ellipse}>
+              <CarSVG className={stylesInfo.svg} />
+            </div>
+            <div className={stylesInfo.rectangle}></div>
+            <div className={stylesInfo.ellipse}>
+              <AdminSVG />
+            </div>
+            <div className={stylesInfo.rectangle}></div>
+            <div className={stylesInfo.ellipse}>
+              <PostSVG />
+            </div>
+            <div className={stylesInfo.rectangle}></div>
+            <div className={stylesInfo.ellipse}>
+              <ClockSVG />
+            </div>
+          </div>
         </div>
       </div>
     </Modal>
