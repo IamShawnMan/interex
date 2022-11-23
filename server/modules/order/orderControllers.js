@@ -22,13 +22,12 @@ const Tracking = require("../tracking/Tracking");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
   const queryBuilder = new QueryBuilder(req.query);
-  queryBuilder
+  queryBuilder      
     .filter()
     .paginate()
     .limitFields()
     .search(["recipientPhoneNumber", "recipient"])
     .sort();
-
   queryBuilder.queryOptions.include = [
     { model: UserModel, as: "storeOwner", attributes: ["storeName"] },
     { model: RegionModel, as: "region", attributes: ["name"] },
@@ -619,7 +618,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "No", key: "s_no", width: 20 },
 		{ header: "Viloyati", key: `regionId`, width: 30 },
 		{ header: "Tumani", key: `districtId`, width: 30 },
-		{ header: "Haridor", key: "recipient", width: 20 },
 		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
 		{ header: "Holati", key: "orderStatusUz", width: 30 },
 		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
@@ -634,9 +632,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		queryBuilder.queryOptions
 	);
 	let regionName = "Barcha viloyatlar"
-	let orderDate  
+	let orderDate = ""
+	req.query.createdAt ? orderDate = new Date(req.query.createdAt["eq"]).toLocaleString(): ""
 	downloadOrders.rows.forEach(order => {
-		console.log(req.query);
 		regionsJSON.forEach(region => {
 			if(order.regionId == region.id){
 				order.regionId = region.name
@@ -661,13 +659,14 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		counter++;
 	});
 	const endRow = worksheet.lastRow._number + 1;
-	worksheet.mergeCells(`E${endRow}:F${endRow}`);
-	worksheet.mergeCells("A2:K2");
+	worksheet.mergeCells(`D${endRow}:E${endRow}`);
+	worksheet.getCell(`A2`).value = `${orderDate}`
 	worksheet.getCell(`B2`).value = `${regionName}`
-	worksheet.getCell(`E${endRow}`).value = "UMUMIY NARX:";
-	worksheet.getCell(`E${endRow}`).alignment = { horizontal: "center" };
-	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(G2:G${endRow - 1})` };
-	worksheet.getCell(`H${endRow}`).value = { formula: `SUM(H2:H${endRow - 1})` };
+	worksheet.mergeCells("C2:J2");
+	worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:";
+	worksheet.getCell(`D${endRow}`).alignment = { horizontal: "center" };
+	worksheet.getCell(`F${endRow}`).value = { formula: `SUM(F2:F${endRow - 1})` };
+	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(H2:H${endRow - 1})` };
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {
 			cell.border = {
