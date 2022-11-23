@@ -132,12 +132,37 @@
     width: 100px;
   }
 
+  .userMenuModal {
+    left: -5rem;
+    width: 10rem;
+    bottom: -7rem;
+    padding: 0.5rem 0.5rem;
+  }
+
+  .userMenuModalItem {
+    margin: 0;
+  }
+
   .navbar {
-    padding: 1rem 13.8rem 1rem 3.2rem;
+    padding: 1rem 3rem 1rem 3.2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
     position: relative;
+  }
+
+  .formControl {
+    width: 45%;
+  }
+}
+
+@media (max-width: 480px) {
+  .userInfo {
+    gap: 1.5rem;
+  }
+
+  .formControl {
+    width: 50%;
   }
 }

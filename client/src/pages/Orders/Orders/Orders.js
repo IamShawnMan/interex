@@ -98,6 +98,18 @@ function Orders() {
     setValue(res.data.data.content);
     setPagination(res.data.data.pagination);
   };
+  const colorStatusFn=(status)=>{
+    if(status==="SOLD"){
+      return "green";
+    }
+    if(status==="REJECTED"){
+      return "red";
+    }
+    if(status==="PENDING"){
+      return "yellow";
+    }
+    return ""
+  }
 
   const getFile = async () => {
     const dateCreatedAt = new Date(createdAt ? createdAt : "");
@@ -135,6 +147,7 @@ function Orders() {
         const a = ordersIdArr
           ? { display: "flex", justifyContent: "center", alignItems: "center" }
           : { display: "flex" };
+         
         return (
           <>
             <div style={{ ...a, textAlign: "center" }}>
@@ -159,7 +172,7 @@ function Orders() {
                     ></Input>
                   </div>
                 )}
-              <p style={{ textAligin: "center" }}>{order.id}</p>
+              <p style={{ textAligin: "center"}}>{order.id}</p>
             </div>
           </>
         );
@@ -177,7 +190,26 @@ function Orders() {
         );
       },
     },
-    { id: "status", Header: "Holati", accessor: "orderStatusUz" },
+    { id: "status", Header: "Holati", accessor:(order)=>{
+      const colorStatusFn=()=>{
+        if(order.orderStatus==="SOLD"){
+          return "lightgreen";
+        }
+        if(order.orderStatus==="REJECTED"){
+          return "ligthred";
+        }
+        if(order.orderStatus==="PENDING"){
+          return "lightyellow";
+        }
+        return ""
+      }
+    
+      return(
+        <div style={{backgroundColor:colorStatusFn()}}>
+        <p> {order.orderStatusUz}</p>
+        </div>
+        )
+    } },
     {
       id: "phoneNumber",
       Header: "Telefon Raqam",
@@ -222,6 +254,13 @@ function Orders() {
       Header: "Mahsulotning narxi",
       accessor: (order) => {
         return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
+      },
+    },  
+     {
+      id: "createdAt",
+      Header: "Yaratilgan sana",
+      accessor: (order) => {
+        return formatDate(order.createdAt);
       },
     },
     {
