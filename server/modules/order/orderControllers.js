@@ -614,7 +614,7 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 
 exports.exportOrders = catchAsync(async (req, res, next) => {
 	const workbook = new excelJS.Workbook();
-	const worksheet = workbook.addWorksheet("orders", "region");
+	const worksheet = workbook.addWorksheet("orders");
 	worksheet.columns = [
 		{ header: "No", key: "s_no", width: 20 },
 		{ header: "Viloyati", key: `regionId`, width: 30 },
