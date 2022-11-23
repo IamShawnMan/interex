@@ -21,6 +21,7 @@ const Order = require("./Order");
 const Tracking = require("../tracking/Tracking");
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
+	console.log(req.query);
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder
 		.filter()
@@ -626,18 +627,23 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Umumiy narxi", key: "totalPrice", width: 20 },
 		{ header: "Yaratilgan sana", key: "createdAt", width: 20 },
 		{ header: "O'zgartirilgan sana", key: "updatedAt", width: 20 },
-		{ header: "Izoh", key: "note", width: 70 },
+		{ header: "Izoh", key: "note", width: 120 },
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
 	let downloadOrders = await OrderModel.findAndCountAll(
 		queryBuilder.queryOptions
 	);
-
+	let regionName = "Barcha viloyatlar"
+	let orderDate  
 	downloadOrders.rows.forEach(order => {
+		console.log(req.query);
 		regionsJSON.forEach(region => {
 			if(order.regionId == region.id){
 				order.regionId = region.name
+			}
+			if(req.query.regionId == region.id) {
+				regionName = region.name
 			}
 		})
 		districtsJSON.forEach(district => {
@@ -649,6 +655,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	)
 	const ordersArr = Object.values(downloadOrders.rows.map((e) => e))
 	let counter = 1;
+	worksheet.addRow()
 	ordersArr.forEach((order) => {
 		order.s_no = counter;
 		worksheet.addRow(order);
@@ -656,12 +663,37 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	});
 	const endRow = worksheet.lastRow._number + 1;
 	worksheet.mergeCells(`E${endRow}:F${endRow}`);
+	worksheet.mergeCells("A2:K2");
+	worksheet.getCell(`B2`).value = `${regionName}`
 	worksheet.getCell(`E${endRow}`).value = "UMUMIY NARX:";
 	worksheet.getCell(`E${endRow}`).alignment = { horizontal: "center" };
 	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(G2:G${endRow - 1})` };
 	worksheet.getCell(`H${endRow}`).value = { formula: `SUM(H2:H${endRow - 1})` };
+	worksheet.eachRow((row) => {
+		row.eachCell((cell) => {
+			cell.border = {
+				top: { style: "thin" },
+				left: { style: "thin" },
+				bottom: { style: "thin" },
+				right: { style: "thin" },
+			}
+		})
+	})
 	worksheet.getRow(1).eachCell((cell) => {
-		cell.font = { bold: true };
+		cell.font = { bold: true },
+		cell.fill = {
+			type: "pattern",
+			pattern: "solid",
+			fgColor: { argb: "ffa500" },
+		  }
+	});
+	worksheet.getRow(2).eachCell((cell) => {
+		cell.font = { bold: true },
+		cell.fill = {
+			type: "pattern",
+			pattern: "solid",
+			fgColor: { argb: "aaa9a7" },
+		  }
 	});
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {
