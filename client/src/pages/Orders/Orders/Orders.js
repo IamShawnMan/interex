@@ -196,10 +196,10 @@ function Orders() {
           return "lightgreen";
         }
         if(order.orderStatus==="REJECTED"){
-          return "ligthred";
+          return "red";
         }
         if(order.orderStatus==="PENDING"){
-          return "lightyellow";
+          return "yellow";
         }
         return ""
       }
