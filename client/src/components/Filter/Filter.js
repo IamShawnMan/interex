@@ -36,7 +36,6 @@ function Filter({ url }) {
     setStatuses(
       res.data.data.allOrderStatus
     );
-    console.log(res.data)
   };
   const getAllRegions = async () => {
     const res = await http({
@@ -65,6 +64,7 @@ function Filter({ url }) {
     );
   };
   const filterHandler = async (data) => {
+    console.log(data);
     navigate(
       `${url}?page=${page}&size=${size}${
         data?.status ? `&orderStatus=${data.status}` : ""
