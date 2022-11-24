@@ -63,10 +63,11 @@ const PostCreate = () => {
         <>
         {console.log(regionValue)}
           {regionValue?.length > 0 ? (
-            <div className={styles.div}>
+            <div className={styles.div} >
             {regionValue.map((e)=>
-              <div className={styles.divbox}>
-                <Link style={{fontSize:"2rem"}} to={`/posts/${e.id}/regionorders`}>{e.name}</Link>
+              <div className={styles.divbox}  onClick={() => {
+                navigate(`/posts/${e.id}/regionorders`);
+              }}>{e.name}
               </div>
             )}
             </div>

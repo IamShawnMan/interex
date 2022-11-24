@@ -27,6 +27,7 @@ function Navbar(props) {
     onReset();
     navigate("/");
   };
+  {console.log("navbar ishlado")}
   useEffect(() => {
     getNotifications();
   }, []);

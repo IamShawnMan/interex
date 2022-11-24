@@ -22,6 +22,7 @@ import OrderInfo from "../OrderInfo/OrderInfo";
 import PostSendCourier from "../../Posts/PostSendCourier";
 import Photo from "./photo.png";
 import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
+import AdminRejectedModal from "../AdminRejectedModal";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -31,6 +32,7 @@ function Orders() {
   const [value, setValue] = useState(null);
   const [ordersIdArr, setOrdersIdArr] = useState(null);
   const [info, setInfo] = useState(null);
+  const [info2, setInfo2] = useState(null);
   const [postStatus, setPostStatus] = useState(null);
   const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
@@ -98,18 +100,6 @@ function Orders() {
     setValue(res.data.data.content);
     setPagination(res.data.data.pagination);
   };
-  const colorStatusFn=(status)=>{
-    if(status==="SOLD"){
-      return "green";
-    }
-    if(status==="REJECTED"){
-      return "red";
-    }
-    if(status==="PENDING"){
-      return "yellow";
-    }
-    return ""
-  }
 
   const getFile = async () => {
     const dateCreatedAt = new Date(createdAt ? createdAt : "");
@@ -140,6 +130,17 @@ function Orders() {
   };
 
   const cols = [
+    {
+      id:"NO",
+      Header: "NO",
+      accessor: (order,i) => {
+        return (
+          <>
+           {i+1}
+          </>
+        );
+      },
+    },
     {
       id: "id",
       Header: "ID",
@@ -178,6 +179,7 @@ function Orders() {
         );
       },
     },
+  
     {
       Header: "Manzil",
       accessor: (order) => {
@@ -227,7 +229,9 @@ function Orders() {
       accessor: (order) => {
         return (
           <>
-            {order.orderStatus === "NEW" && id && isAdmin && (
+         {!isCourier&&
+          <div>
+              {order.orderStatus === "NEW" && id && isAdmin && (
               <Select
                 data={price?.map((e) => {
                   return { id: e, name: e };
@@ -245,27 +249,33 @@ function Orders() {
             )}
             {order.status !== "NEW" &&
               order.deliveryPrice?.toLocaleString("Ru-Ru")}
-          </>
+        
+          </div>}
+          {isCourier&&<div>
+             { user.tariff?.toLocaleString("Ru-Ru")}
+        
+            </div>}
+            </>
         );
       },
     },
     {
       id: "totalPrice",
-      Header: "Mahsulotning narxi",
+      Header: "Narxi",
       accessor: (order) => {
         return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
       },
     },  
      {
       id: "createdAt",
-      Header: "Yaratilgan sana",
+      Header: "Sana",
       accessor: (order) => {
         return formatDate(order.createdAt);
       },
     },
     {
       id: "updatedAt",
-      Header: "Oxirgi o'zgarish",
+      Header: "O'zgarish",
       accessor: (order) => {
         return formatDate(order.updatedAt);
       },
@@ -302,9 +312,8 @@ function Orders() {
 
                     <Button
                       disabled={order.orderStatus === "NEW" ? false : true}
-                      size="small"
                       name="btn"
-                      onClick={() => changeOrderStatus(order.id, "NOT_EXIST")}
+                      onClick={() =>setInfo2({id:order.id,status:"NOT_EXIST"}) }
                     >
                       Qabul qilinmadi
                     </Button>
@@ -457,10 +466,22 @@ function Orders() {
   };
   const filterFn = async () => {
     const dateCreatedAt = new Date(createdAt ? createdAt : "");
+    console.log(  page,
+      size,
+      orderStatus,
+      regionId,
+      districtId,
+      storeOwnerId,
+      createdAt,
+      search);
+
     try {
       const res = await http({
-        url: `${url}?page=${page}&size=${size}${
-          orderStatus ? `&orderStatus=${orderStatus}` : ""
+        url:`${url}?${page&&(url === "/orders" ||
+        url === "/orders/delivered" ||
+        url === "/orders/myorders")?`page=${page}`:""}${size&&(url === "/orders" ||
+        url === "/orders/delivered" ||
+        url === "/orders/myorders")?`&size=${size}`:""}${orderStatus ? `&orderStatus=${orderStatus}` : ""
         }${regionId ? `&regionId=${regionId}` : ""}${
           search ? `&search=${search}` : ""
         }${districtId ? `&districtId=${districtId}` : ""}
@@ -484,7 +505,7 @@ function Orders() {
     setInfo(false);
   };
   return (
-    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch}>
+    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch} info={info}>
       {url === "/new-post" && (
         <div style={{ width: "100%", display: "flex", gap: "1rem" }}>
           {console.log(url)}
@@ -542,13 +563,6 @@ function Orders() {
           onClick={() => getFile()}
           style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
         >
-          {/* <Button
-          type="button"
-          name="btn"
-          btnStyle={{ width: "13rem"}}
-         
-        >
-        </Button> */}
           <img width="100" src={Photo} alt="" />
         </div>
       )}
@@ -617,6 +631,9 @@ function Orders() {
       {info && typeof info === "object" && (
         <PostSendCourier id={info} url={url} onClose={closeHandler} />
       )}
+ {info2 && (
+        <AdminRejectedModal id={info2} filter={filterFn} onClose={()=>{setInfo2(false)}} />
+      )}
       <div style={{ display: "flex", gap: 1 }}>
         {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
           (postStatus === "NEW" ||
@@ -635,7 +652,7 @@ function Orders() {
             >
               {url.split("/")[3] === "regionorders" ||
               url.split("/")[2] === "rejected"
-                ? "Pochta yaratish"
+                ?url==="/postback/rejected/orders"?"Pochta Qaytarish": "Pochta yaratish"
                 : "Yangilash"}
             </Button>
           )}

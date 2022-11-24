@@ -162,7 +162,7 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
       where: {
         [Op.and]: [
           { packageId: { [Op.eq]: existedPackage.id } },
-          { orderStatus: { [Op.eq]: statusOrder.STATUS_REJECTED_DELIVERED } },
+          { orderStatus: { [Op.eq]: statusOrder.STATUS_NEW } },
         ],
       },
     });

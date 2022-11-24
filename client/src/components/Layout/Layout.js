@@ -24,6 +24,7 @@ function Layout(props) {
         } ${!arrowChange ? styles.hiddenContainer : styles.containerTablet}`}
       >
         <Navbar
+        info={props.info}
           sidebarActiveHandle={sidebarActiveHandle}
           setSearch={props.setSearch}
         />

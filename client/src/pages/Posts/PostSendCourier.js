@@ -24,7 +24,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
           note,
         },
       });
-      navigate("/orders/delivered")
       toast.success(res.data.message);
     } catch (error) {
       console.log(error);
