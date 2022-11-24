@@ -115,7 +115,7 @@ function Sidebar(props) {
             >
               <UsersIcon classname={styles.sidebarLinkSvg} />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-                Pochta Yaratish
+                Pochta Qaytarish
               </p>
             </Link>
 
