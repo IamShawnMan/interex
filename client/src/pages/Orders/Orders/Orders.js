@@ -505,7 +505,7 @@ function Orders() {
     setInfo(false);
   };
   return (
-    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch}>
+    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch} info={info}>
       {url === "/new-post" && (
         <div style={{ width: "100%", display: "flex", gap: "1rem" }}>
           {console.log(url)}
