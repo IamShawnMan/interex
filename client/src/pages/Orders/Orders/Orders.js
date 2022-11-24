@@ -150,7 +150,7 @@ function Orders() {
          
         return (
           <>
-            <div style={{ ...a, textAlign: "center" }}>
+            <div style={{ ...a, textAlign: "center",width: "100%",justifyContent: "center",alignItems: "center"}}>
               {ordersIdArr &&
                 (url.split("/")[1] === "postback" || id) &&
                 url !== "/posts/1/orders" && (
