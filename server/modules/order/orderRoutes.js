@@ -2,6 +2,7 @@ const router = require("express").Router();
 const roleMiddleware = require("../../core/middlewares/roleMiddleware");
 const orderControllers = require("./orderControllers");
 const orderValidator = require("./orderExpressValidator");
+const reportController = require("../report/reportController")
 
 router
 	.route("/")
@@ -12,7 +13,7 @@ router
 		orderValidator.creatingOrderValidator,
 		orderControllers.createOrder
 	);
-router.get("/download", orderControllers.exportOrders)
+router.get("/download", reportController.exportOrders)
 router
 	.get("/delivered", orderControllers.getDeliveredOrders) 
 	.get("/delivered/daily", orderControllers.getDailyOrders)
