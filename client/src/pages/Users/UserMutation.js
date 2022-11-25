@@ -129,7 +129,7 @@ const UserMutation = () => {
 					<Input
 						id="text"
 						type="text"
-						placeholder="firstName"
+						placeholder="Ismi"
 						register={register.bind(null, "firstName")}
 						error={errors.firstName?.message}
 					/>
@@ -137,7 +137,7 @@ const UserMutation = () => {
 					<Input
 						id="text"
 						type="text"
-						placeholder="lastName"
+						placeholder="Famailiyasi"
 						register={register.bind(null, "lastName")}
 						error={errors.lastName?.message}
 					/>
@@ -145,7 +145,7 @@ const UserMutation = () => {
 					<Input
 						id="text"
 						type="text"
-						placeholder="username"
+						placeholder="Login"
 						register={register.bind(null, "username")}
 						error={errors.username?.message}
 					/>
@@ -154,7 +154,7 @@ const UserMutation = () => {
 							<Input
 								id="password"
 								type="text"
-								placeholder="password"
+								placeholder="Parol"
 								register={register.bind(null, "password")}
 								error={errors.password?.message}
 							/>
@@ -164,7 +164,7 @@ const UserMutation = () => {
 					<Input
 						id="passportNumber"
 						type="text"
-						placeholder="PassportNumber"
+						placeholder="Passport Raqam"
 						register={register.bind(null, "passportNumber")}
 						error={errors.passportNumber?.message}
 					/>
@@ -172,7 +172,7 @@ const UserMutation = () => {
 					<Input
 						id="phoneNumber"
 						type="text"
-						placeholder="PhoneNumber"
+						placeholder="Telefon Raqam"
 						register={register.bind(null, "phoneNumber")}
 						error={errors.phoneNumber?.message}
 					/>
