@@ -14,9 +14,6 @@ const DistrictModel = require("../district/District");
 const UserModel = require("../user/User");
 const statusPackage = require("../../core/constants/packageStatus");
 const statusPackageUz = require("../../core/constants/packageStatusUz");
-const excelJS = require("exceljs");
-const regionsJSON = require("../region/regions.json");
-const districtsJSON = require("../district/districts.json");
 const Order = require("./Order");
 const Tracking = require("../tracking/Tracking");
 
@@ -320,8 +317,8 @@ exports.getAllOrderStatus = (req, res, next) => {
   let orderStatusUz = Object.values(statusOrderUz);
 
   if (userRole === "COURIER") {
-    orderStatus.slice(4, 12);
-    orderStatusUz.slice(4, 12);
+    orderStatus = orderStatus.slice(4, 12);
+    orderStatusUz = orderStatusUz.slice(4, 12);
 
     orderStatus?.forEach((_, i) => {
       allOrderStatus.push({
@@ -609,103 +606,4 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
       oneDayOrdersArrInPost,
     },
   });
-});
-
-exports.exportOrders = catchAsync(async (req, res, next) => {
-	const workbook = new excelJS.Workbook();
-	const worksheet = workbook.addWorksheet("orders");
-	worksheet.columns = [
-		{ header: "No", key: "s_no", width: 20 },
-		{ header: "Viloyati", key: `regionId`, width: 30 },
-		{ header: "Tumani", key: `districtId`, width: 30 },
-		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
-		{ header: "Holati", key: "orderStatusUz", width: 30 },
-		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
-		{ header: "Umumiy narxi", key: "totalPrice", width: 20 },
-		{ header: "Yaratilgan sana", key: "createdAt", width: 20 },
-		{ header: "O'zgartirilgan sana", key: "updatedAt", width: 20 },
-		{ header: "Izoh", key: "note", width: 120 },
-	];
-	const queryBuilder = new QueryBuilder(req.query);
-	queryBuilder.filter();
-	let downloadOrders = await OrderModel.findAndCountAll(
-		queryBuilder.queryOptions
-	);
-	let regionName = "Barcha viloyatlar"
-	let orderDate = ""
-	req.query.createdAt ? orderDate = new Date(req.query.createdAt["eq"]).toLocaleString(): ""
-	downloadOrders.rows.forEach(order => {
-		regionsJSON.forEach(region => {
-			if(order.regionId == region.id){
-				order.regionId = region.name
-			}
-			if(req.query.regionId == region.id) {
-				regionName = region.name
-			}
-		})
-		districtsJSON.forEach(district => {
-			if(order.districtId == district.id) {
-				order.districtId = district.name
-			}
-		})
-	}
-	)
-	const ordersArr = Object.values(downloadOrders.rows.map((e) => e))
-	let counter = 1;
-	worksheet.addRow()
-	ordersArr.forEach((order) => {
-		order.s_no = counter;
-		worksheet.addRow(order);
-		counter++;
-	});
-	const endRow = worksheet.lastRow._number + 1;
-	worksheet.mergeCells(`D${endRow}:E${endRow}`);
-	worksheet.getCell(`A2`).value = `${orderDate}`
-	worksheet.getCell(`B2`).value = `${regionName}`
-	worksheet.mergeCells("C2:J2");
-	worksheet.getCell(`D${endRow}`).value = "UMUMIY NARX:";
-	worksheet.getCell(`D${endRow}`).alignment = { horizontal: "center" };
-	worksheet.getCell(`F${endRow}`).value = { formula: `SUM(F2:F${endRow - 1})` };
-	worksheet.getCell(`G${endRow}`).value = { formula: `SUM(H2:H${endRow - 1})` };
-	worksheet.eachRow((row) => {
-		row.eachCell((cell) => {
-			cell.border = {
-				top: { style: "thin" },
-				left: { style: "thin" },
-				bottom: { style: "thin" },
-				right: { style: "thin" },
-			}
-		})
-	})
-	worksheet.getRow(1).eachCell((cell) => {
-		cell.font = { bold: true },
-		cell.fill = {
-			type: "pattern",
-			pattern: "solid",
-			fgColor: { argb: "ffa500" },
-		  }
-	});
-	worksheet.getRow(2).eachCell((cell) => {
-		cell.font = { bold: true },
-		cell.fill = {
-			type: "pattern",
-			pattern: "solid",
-			fgColor: { argb: "aaa9a7" },
-		  }
-	});
-	worksheet.eachRow((row) => {
-		row.eachCell((cell) => {
-			cell.alignment = {
-				horizontal: "center",
-			};
-		});
-	});
-	res.setHeader(
-		"Content-Type",
-		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-	);
-	res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
-	return workbook.xlsx.write(res).then(() => {
-		res.status(200).end();
-	});
 });
