@@ -1,19 +1,19 @@
-// const telegramBot = require("node-telegram-bot-api")
-// const TOKEN = process.env.TOKEN
-// const bot = new telegramBot(TOKEN)
-// const Order = require("../../modules/order/Order")
-// const regions = require("../../modules/region/regions.json")
-// const districts = require("../../modules/district/districts.json")
-// const User = require("../../modules/user/User")
-// const {Op} = require("sequelize")
-// const { compare } = require("bcrypt")
-// const OrderItem = require("../../modules/orderitem/OrderItem")
-// const Package = require("../../modules/package/Package")
-// const orderStatuses = require("../constants/orderStatus")
-// const postStatuses = require("../constants/postStatus")
-// const Post = require("../../modules/post/Post")
+const telegramBot = require("node-telegram-bot-api")
+const TOKEN = process.env.TOKEN
+const bot = new telegramBot(TOKEN)
+const Order = require("../../modules/order/Order")
+const regions = require("../../modules/region/regions.json")
+const districts = require("../../modules/district/districts.json")
+const User = require("../../modules/user/User")
+const {Op} = require("sequelize")
+const { compare } = require("bcrypt")
+const OrderItem = require("../../modules/orderitem/OrderItem")
+const Package = require("../../modules/package/Package")
+const orderStatuses = require("../constants/orderStatus")
+const postStatuses = require("../constants/postStatus")
+const Post = require("../../modules/post/Post")
 
-// const botTelegram = async(req, res, next) => { 
+const botTelegram = async(req, res, next) => { 
 
 // let regionArr = []
 
@@ -39,62 +39,62 @@
 // let lock2 = false
 // let lock3 = false
 
-// bot.onText(/\/start/, async(message) => {
-//         const option = {
-//                 "parse_mode": "Markdown",
-//                 "reply_markup": {
-//                     "one_time_keyboard": true,
-//                     "keyboard": [[{
-//                         text: "My phone number",
-//                         request_contact: true
-//                     }]]
-//                 }
-//             }
-//         bot.sendMessage(message.chat.id, "InterEx pochta tizimi botiga xush kelibsiz.Telefon raqamingizni yuboring", option)
-//         bot.once("message", async(message) => {
-//         const phoneNumber = `+${message.contact.phone_number}`
-//         const candidateUser = await User.findOne({
-//             where: {
-//                 phoneNumber: {
-//                     [Op.eq]: phoneNumber
-//                 }
-//             }
-//         })
-//         if(candidateUser) {
-//             await candidateUser.update({chatId: message.chat.id})
-//         }})})
-//         bot.onText(/\/yangilari/, async(message) => {
-//         let lock = false
-//         const candidate = await User.findOne({
-//             where: {
-//                 chatId: {
-//                     [Op.eq]: message.chat.id
-//                 }
-//             }
-//         })
-//         let allPosts = await Post.findAll({
-//             where: {
-//                 regionId: {
-//                     [Op.eq]: candidate.regionId
-//                 }
-//             },
-//             attributes: ["id", "note", "postTotalPrice", "postStatus"]
-//         }) 
-//         const allPostStatus = allPosts.filter(e => e.postStatus === postStatuses.POST_DELIVERING)
-//         let a = JSON.stringify(allPostStatus).replaceAll(",", "\n").replaceAll("{", "\n")
-//         .replaceAll("[", "").replaceAll("]", "").replaceAll("}", "")
-//                 if(!lock) {  
-//                     lock = true
-//                     if(allPostStatus.length === 0) {
-//                         bot.sendMessage(message.chat.id, "Sizga yangi junatma yo'q")
-//                     }
-//                     else {
-//                         bot.sendMessage(message.chat.id, "Sizga yangi junatma bor").then(() => {
-//                             bot.sendMessage(message.chat.id, `${a}`)
-//                         })
-//                     }   
-//                 } 
-//         })
+bot.onText(/\/start/, async(message) => {
+        const option = {
+                "parse_mode": "Markdown",
+                "reply_markup": {
+                    "one_time_keyboard": true,
+                    "keyboard": [[{
+                        text: "My phone number",
+                        request_contact: true
+                    }]]
+                }
+            }
+        bot.sendMessage(message.chat.id, "InterEx pochta tizimi botiga xush kelibsiz.Telefon raqamingizni yuboring", option)
+        bot.once("message", async(message) => {
+        const phoneNumber = `+${message.contact.phone_number}`
+        const candidateUser = await User.findOne({
+            where: {
+                phoneNumber: {
+                    [Op.eq]: phoneNumber
+                }
+            }
+        })
+        if(candidateUser) {
+            await candidateUser.update({chatId: message.chat.id})
+        }})})
+        bot.onText(/\/yangilari/, async(message) => {
+        let lock = false
+        const candidate = await User.findOne({
+            where: {
+                chatId: {
+                    [Op.eq]: message.chat.id
+                }
+            }
+        })
+        let allPosts = await Post.findAll({
+            where: {
+                regionId: {
+                    [Op.eq]: candidate.regionId
+                }
+            },
+            attributes: ["id", "note", "postTotalPrice", "postStatus"]
+        }) 
+        const allPostStatus = allPosts.filter(e => e.postStatus === postStatuses.POST_DELIVERING)
+        let a = JSON.stringify(allPostStatus).replaceAll(",", "\n").replaceAll("{", "\n")
+        .replaceAll("[", "").replaceAll("]", "").replaceAll("}", "")
+                if(!lock) {  
+                    lock = true
+                    if(allPostStatus.length === 0) {
+                        bot.sendMessage(message.chat.id, "Sizga yangi junatma yo'q")
+                    }
+                    else {
+                        bot.sendMessage(message.chat.id, "Sizga yangi junatma bor").then(() => {
+                            bot.sendMessage(message.chat.id, `${a}`)
+                        })
+                    }   
+                } 
+        })
         
 //     bot.sendMessage(message.chat.id, "Express pochta bot ga xush kelibsiz. Iltimos loginingizni kiriting")
 //     bot.on("message", async(message) => {
@@ -299,6 +299,6 @@
 //             })
 //         }
 //     }
-//     })   
-// }
-// module.exports = botTelegram
+    // })   
+}
+module.exports = botTelegram
