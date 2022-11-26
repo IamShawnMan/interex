@@ -12,11 +12,10 @@ const {Table, TableRow, TableCell, WidthType, Paragraph, TextRun, Document, Pack
 
 
 exports.getAllPackages = catchAsync(async (req, res, next) => {
-	console.log(13 ,"qator");
 	const userId = req.user.id 
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter().paginate().limitFields().sort();
-	
+	console.log(req.user)
 	if(req.user.userRole === "STORE_OWNER"){
 		if(req.query.new === "new"){
 			queryBuilder.queryOptions.where = {

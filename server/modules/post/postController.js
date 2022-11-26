@@ -12,6 +12,7 @@ const orderStatuses = require("../../core/constants/orderStatus");
 const orderStatusesUz = require("../../core/constants/orderStatusUz");
 const District = require("../district/District");
 const Tracking = require("../tracking/Tracking");
+const {validationResult} = require("express-validator")
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
 	const { userRole, regionId } = req.user;
@@ -413,11 +414,19 @@ exports.newPosts = catchAsync(async (req, res, next) => {
 });
 
 exports.sendPost = catchAsync(async (req, res, next) => {
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		let err = new AppError("Validatsiya xatosi", 403);
+		err.isOperational = false;
+		err.errors = validationErrors;
+		return next(err);
+	}
+
 	const { userRole } = req.user;
 	const { id } = req.params;
-	const { postStatus, note } = req.body;
+	const { postStatus, name, phone, avtoNumber, comment } = req.body;
 	const getPostById = await Post.findByPk(id);
-
+	const note = `ismi -${name}, tel - ${phone}, moshin - ${avtoNumber}, izoh - ${comment}`
 	if (!getPostById) {
 		return next(new AppError("This post not found", 404));
 	}

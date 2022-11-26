@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const postController = require("./postController");
+const postNoteValidator = require("./postNoteValidator")
 
 module.exports = router
 	.get("/", postController.getAllPosts)
@@ -14,4 +15,4 @@ module.exports = router
 	.put("/new/recieve", postController.recievePost)
 	.post("/new", postController.createPostForAllOrders)
 	.put("/new/customized", postController.createPostForCustomOrders)
-	.put("/:id/send", postController.sendPost);
+	.put("/:id/send", postNoteValidator.noteValidator, postController.sendPost);
