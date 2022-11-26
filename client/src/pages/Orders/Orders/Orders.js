@@ -410,8 +410,6 @@ function Orders() {
     },
   ];
   const postCreateOrUpdateFn = async () => {
-    console.log({ regionId: id, ordersArr: ordersIdArr });
-    console.log({ postId: id, ordersArr: ordersIdArr });
     try {
       const res = await http({
         url: url
