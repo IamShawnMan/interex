@@ -26,9 +26,7 @@ app.use("/api/v1/users", authMiddleware, userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/regions", authMiddleware, regionRouter);
 app.use("/api/v1/orders", authMiddleware, orderRoutes);
-app.use("/api/v1/packages", 
-// authMiddleware, 
-packageRoutes);
+app.use("/api/v1/packages", authMiddleware, packageRoutes);
 app.use("/api/v1/districts", authMiddleware, districtRouter);
 app.use("/api/v1/posts", authMiddleware, postsRoutes);
 app.use("/api/v1/postback", authMiddleware, postBackRouter);
