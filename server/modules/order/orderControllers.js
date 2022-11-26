@@ -70,7 +70,45 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 	const storeOwnerId = req.user.id;
 	const orders = req.body.orders;
 	orders?.forEach(async (order) => {
+    const regId = +order.regionId
+    const countOrders = await Order.count({where:{ regionId: {[Op.eq]: +order.regionId}}})
+    let regSeria
+    let id
+switch (regId) {case 1:
+    regSeria = 95 
+    break;  case 2:
+    regSeria = 60
+    break; case 3:
+    regSeria = 80
+    break; case 4:
+    regSeria = 25
+    break; case 5:
+    regSeria = 70
+    break; case 6:
+    regSeria = 85
+    break; case 7:
+    regSeria = 50
+    break; case 8:
+    regSeria = 30
+    break; case 9:
+    regSeria = 75
+    break; case 10:
+    regSeria = 20
+    break; case 11:
+    regSeria = 10
+    break; case 12:
+    regSeria = 40
+    break; case 13:
+    regSeria = 90
+    break; case 14:
+    regSeria = 01
+    break;
+  default: "buyurtma"
+    break;
+}
+    id = `${regSeria}-O-${countOrders + 1}`
 		const newOrder = await OrderModel.create({
+      id,
 			recipient: order.recipient,
 			regionId: order.regionId,
 			note: `${userRoleUz}: ${order.note}`,
@@ -100,6 +138,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 		existedPackage.packageTotalPrice += newOrder.totalPrice;
 		await existedPackage.save();
 	});
+
+  
 	res.status(201).json({
 		status: "success",
 		message: "yangi buyurtmalar qo`shildi",
