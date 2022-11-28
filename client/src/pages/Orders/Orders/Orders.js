@@ -665,18 +665,17 @@ function Orders() {
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (
         <div
-          onClick={() => getFile()}
-          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
+          style={{ display: "flex", justifyContent: "end" }}
         >
-          <img width="100" src={Photo} alt="" />
+          <img width="100" onClick={() => getFile()} style={{cursor: "pointer"}} src={Photo} alt="" />
         </div>
       )}
       {url === `/packages/${id}/orders` && (
         <div
-          onClick={() => getFileWord()}
-          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
+          style={{ display: "flex", justifyContent: "end" }}
         >
-          <h1>Word</h1>
+         
+          <h1 style={{cursor: "pointer"}} onClick={() => getFileWord()}>Word</h1>
          </div>
       )}
       <div>
