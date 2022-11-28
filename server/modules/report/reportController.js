@@ -7,6 +7,7 @@ const User = require("../user/User");
 const Order = require("../order/Order");
 const userRoles = require("../../core/constants/userRole")
 const {Op} = require("sequelize")
+const orderStatuses = require("../../core/constants/orderStatus")
 
 exports.exportOrders = catchAsync(async (req, res, next) => {
     const {regionId, userRole, id} = req.user
@@ -244,3 +245,32 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		res.status(200).end();
 	});
 });
+exports.getStatistics = catchAsync(async(req, res, next) => {
+	let allOrders = await Order.count()
+	let soldOrders = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD}
+		}
+	})
+	let rejectedOrders = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_REJECTED}
+		}
+	})
+	let allStores = await User.count({
+		where: {
+			userRole: {[Op.eq]: userRoles.STORE_OWNER}
+		}
+	})
+	res.json({
+		status: "success",
+		message: "Statistika uchun ma'lumotlar",
+		error: null,
+		data: {
+			allOrders,
+			soldOrders,
+			rejectedOrders,
+			allStores
+		}
+	})
+})

@@ -413,7 +413,6 @@ exports.newPosts = catchAsync(async (req, res, next) => {
 
 exports.sendPost = catchAsync(async (req, res, next) => {
 	const validationErrors = validationResult(req);
-	console.log(validationErrors);
 	if (!validationErrors.isEmpty()) {
 		let err = new AppError("Validatsiya xatosi", 403);
 		err.isOperational = false;

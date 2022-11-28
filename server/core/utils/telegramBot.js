@@ -1,6 +1,6 @@
 const telegramBot = require("node-telegram-bot-api")
 const TOKEN = process.env.TOKEN
-const bot = new telegramBot(TOKEN)
+const bot = new telegramBot(TOKEN, {polling: true})
 const Order = require("../../modules/order/Order")
 const regions = require("../../modules/region/regions.json")
 const districts = require("../../modules/district/districts.json")
@@ -52,7 +52,8 @@ bot.onText(/\/start/, async(message) => {
             }
         bot.sendMessage(message.chat.id, "InterEx pochta tizimi botiga xush kelibsiz.Telefon raqamingizni yuboring", option)
         bot.once("message", async(message) => {
-        const phoneNumber = `+${message.contact.phone_number}`
+        let phoneNumber
+        message.contact ? phoneNumber = `+${message.contact.phone_number}`: ""
         const candidateUser = await User.findOne({
             where: {
                 phoneNumber: {

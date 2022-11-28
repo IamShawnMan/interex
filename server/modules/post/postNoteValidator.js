@@ -9,5 +9,7 @@ exports.noteValidator = [
     body("avtoNumber")
     .notEmpty()
     .withMessage("Moshin raqami bo`sh bo`lmasligi kerak")
+    .matches(/^[0-9]{2}[A-Z]{1}[0-9]{3}[A-Z]{2}$/)
+    .withMessage("Moshin raqami xato kiritildi")
 ]
 
