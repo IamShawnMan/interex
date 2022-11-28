@@ -194,13 +194,16 @@ function Orders() {
                       }}></Input>
                   </div>
                 )}
-              <p style={{ textAligin: "center"}}>{order.id}</p>
+              <p style={{ textAligin: "center"}}>{i+1}</p>
             
           </>
         );
       },
     },
-  
+  {
+    Header: "Id",
+    accessor:"id"
+  },
     {
       Header: "Manzil",
       accessor: order => {

@@ -23,7 +23,7 @@ exports.getAllOrders = catchAsync(
       .filter()
       .paginate()
       .limitFields()
-      .search(["recipientPhoneNumber", "recipient"])
+      .search(["recipientPhoneNumber", "recipient","id"])
       .sort();
     queryBuilder.queryOptions.include = [
       {
