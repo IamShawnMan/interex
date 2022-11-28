@@ -426,8 +426,6 @@ function Orders() {
     },
   ];
   const postCreateOrUpdateFn = async () => {
-    console.log({ regionId: id, ordersArr: ordersIdArr });
-    console.log({ postId: id, ordersArr: ordersIdArr });
     try {
       const res = await http({
         url: url
@@ -501,6 +499,9 @@ function Orders() {
       //   }
       //   `,
       // });
+<<<<<<< HEAD
+      const res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`:""}`)
+=======
       let res
       // console.log(url);
       if((url === "/orders" || url === "/orders/delivered" ||   url === "/orders/myorders")){
@@ -511,6 +512,7 @@ function Orders() {
         res = await http(`${url?url:""}?${search?`search=${search}`:""}`)
       }
       console.log(res.data);
+>>>>>>> b1c3d04345b93bb8a1821f05b016e60ee66a0a52
 
       getAllOrders(res.data);
     } catch (error) {

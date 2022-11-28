@@ -154,7 +154,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
     worksheet.spliceColumns(9,1)
     totalPrice3()
   }
-  if(!req.query.regionId && !req.query.storeOwnerId && !req.query.createdAt && userRole === userRoles.ADMIN) {
+  if(!req.query.regionId && !req.query.storeOwnerId && !req.query.createdAt 
+	&& (userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) {
     totalPrice1()
   }
   if(!req.query.regionId && !req.query.createdAt && userRole === userRoles.COURIER) {
