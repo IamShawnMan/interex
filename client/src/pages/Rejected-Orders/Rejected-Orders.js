@@ -79,7 +79,7 @@ function RejectedOrders() {
             >
               Ma'lumot
             </Button>
-            {ordersIdArr && (
+            {ordersIdArr &&order.orderStatus==="REJECTED_DELIVERING"&& (
               <Input
                 disabled={postStatus && postStatus !== "NEW"}
                 type="checkbox"
@@ -130,15 +130,14 @@ function RejectedOrders() {
       {value.length > 0 ? (
         <>
           <BasicTable columns={cols} data={value} />
-          <Button
-            disabled={value[0].orderStatus==="REJECTED_NOT_DELIVERED"||value[0].orderStatus==="REJECTED_DELIVERED"}
+          {value[0].orderStatus==="REJECTED_DELIVERING"&&<Button
             btnStyle={{ width: "13rem" }}
             name="btn"
             type="button"
             onClick={updatePostAndOrdersStatusHandler}
           >
             Qabul qildim
-          </Button>
+          </Button>}
         </>
       ) : (
         <p>Ma'lumotlar yo'q</p>

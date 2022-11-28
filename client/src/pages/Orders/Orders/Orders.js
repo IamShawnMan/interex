@@ -47,6 +47,7 @@ function Orders() {
   const { id } = useParams();
   const [search, setSearch] = useState(null);
   const navigate = useNavigate();
+  console.log(location);
   const url = location.pathname;
   useEffect(() => {
     filterFn();
@@ -152,23 +153,7 @@ function Orders() {
       accessor: (order,i) => {
         return (
           <>
-           {i+1}
-          </>
-        );
-      },
-    },
-    {
-      id: "id",
-      Header: "ID",
-      accessor: (order) => {
-        const a = ordersIdArr
-          ? { display: "flex", justifyContent: "center", alignItems: "center" }
-          : { display: "flex" };
-         
-        return (
-          <>
-            <div style={{ ...a, textAlign: "center",width: "100%",justifyContent: "center",alignItems: "center"}}>
-              {ordersIdArr &&
+           {ordersIdArr &&
                 (url.split("/")[1] === "postback" || id) &&
                 url !== "/posts/1/orders" && (
                   <div>
@@ -189,11 +174,15 @@ function Orders() {
                     ></Input>
                   </div>
                 )}
-              <p style={{ textAligin: "center"}}>{order.id}</p>
-            </div>
+           {i+1}
           </>
         );
       },
+    },
+    {
+      id: "id",
+      Header: "ID",
+      accessor: "id"
     },
   
     {
