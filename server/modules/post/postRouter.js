@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const postController = require("./postController");
 const roleMiddleware = require("../../core/middlewares/roleMiddleware")
+const postNoteValidator = require("./postNoteValidator")
 
 module.exports = router
 	.get("/", roleMiddleware(["SUPER_ADMIN", "ADMIN", "COURIER"]), postController.getAllPosts)
@@ -15,4 +16,4 @@ module.exports = router
 	.put("/new/recieve", roleMiddleware(["COURIER"]), postController.recievePost)
 	.post("/new", roleMiddleware(["ADMIN", "COURIER"]), postController.createPostForAllOrders)
 	.put("/new/customized", roleMiddleware(["ADMIN", "COURIER"]), postController.createPostForCustomOrders)
-	.put("/:id/send", roleMiddleware(["ADMIN"]), postController.sendPost);
+	.put("/:id/send", roleMiddleware(["ADMIN"]), postNoteValidator.noteValidator, postController.sendPost);
