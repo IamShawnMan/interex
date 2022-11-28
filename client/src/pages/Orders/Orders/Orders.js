@@ -195,7 +195,7 @@ function Orders() {
                   </div>
                 )}
               <p style={{ textAligin: "center"}}>{order.id}</p>
-            </div>
+            
           </>
         );
       },
