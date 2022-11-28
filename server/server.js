@@ -16,11 +16,13 @@ const start = async () => {
   try {
     await database.authenticate();
     await database.sync({
-        // force: true,
+      // force: true,
       // alter: true,
     });
     app.listen(PORT, () => {
-      console.log(`Server ${process.env.NODE_ENV} started on port ${PORT}`);
+      console.log(
+        `Server ${process.env.NODE_ENV} started on port ${PORT}`
+      );
     });
 
     initialData();
