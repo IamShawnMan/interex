@@ -316,7 +316,7 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[0]
+                          orderArr[1]
                             .recipientPhoneNumber || null
                         }`,
                         bold: true,
@@ -340,7 +340,7 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[0].recipient || null
+                          orderArr[2].recipient || null
                         }`,
                         bold: true,
                       }),
