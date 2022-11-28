@@ -485,7 +485,16 @@ function Orders() {
       //   }
       //   `,
       // });
-      const res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt=${dateCreatedAt.toISOString()}`:""}`)
+      let res
+      // console.log(url);
+      if((url === "/orders" || url === "/orders/delivered" ||   url === "/orders/myorders")){
+        console.log("iffffffffffffffff");
+      res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`:""}`)
+      }else{
+        console.log("elseeeeeeeeeeeeeeee");
+        res = await http(`${url?url:""}?${search?`search=${search}`:""}`)
+      }
+      console.log(res.data);
 
       getAllOrders(res.data);
     } catch (error) {
