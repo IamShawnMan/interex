@@ -14,7 +14,7 @@ exports.noteValidator = [
       /^[0-9]{2}[A-Z]{1}[0-9]{3}[A-Z]{2}$/ ||
         /^[0-9]{5}[A-Z]{3}$/
     )
-    .withMessage("Moshin raqami xato kiritildi")
+    .withMessage("Moshina raqami xato kiritildi")
     .notEmpty()
-    .withMessage("Moshin raqami bo`sh bo`lmasligi kerak"),
+    .withMessage("Moshina raqami bo`sh bo`lmasligi kerak"),
 ];
