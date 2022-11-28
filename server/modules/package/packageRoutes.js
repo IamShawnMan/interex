@@ -8,5 +8,8 @@ router
 router
     .route("/:id/orders")
     .get(roleMiddleware(["SUPER_ADMIN", "ADMIN", "STORE_OWNER"]), packageControllers.getOrdersByPackage)
+router.
+route("/:id/download")
+.get(roleMiddleware(["ADMIN"]), packageControllers.downloadWord)
 
 module.exports = router;

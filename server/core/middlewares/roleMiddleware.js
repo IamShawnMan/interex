@@ -2,7 +2,6 @@ const AppError = require("../utils/AppError");
 
 
 const roleMiddleware = roles => {
-
   let selectedRoles;
   return (req, res, next) => {
     if (typeof roles === "string") {
@@ -10,7 +9,7 @@ const roleMiddleware = roles => {
     } else {
       selectedRoles = roles;
     }
-
+    console.log(req.user)
 		if (!selectedRoles.includes(req.user.userRole)) {
 			next(new AppError("Forbidden", 403));
 		} else {

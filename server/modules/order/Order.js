@@ -11,9 +11,8 @@ const Order = sequelize.define(
 	"order",
 	{
 		id: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.STRING,
 			primaryKey: true,
-			autoIncrement: true,
 		},
 		recipient: {
 			type: DataTypes.STRING,
