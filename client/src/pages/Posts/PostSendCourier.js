@@ -9,22 +9,7 @@ import Modal from "../../components/Modal/Modal";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 import * as yup from "yup";
-const scheme=yup.object().shape({
-  name: yup
-    .string()
-    .trim()
-    .required("Ism kiriting"),
-  phone: yup
-    .string()
-    .trim()
-    .required("Telefon raqamini kiritng"),
-    avtoNumber: yup
-    .string()
-    .trim()
-    .required("Mashina raqamini kiriting"),
-  comment: yup.string().trim().required("Eslatma kiritng"),
- 
-})
+
 const PostSendCourier = ({ id, url, onClose }) => {
   const navigate = useNavigate();
   const { user } = useContext(AppContext);
@@ -33,9 +18,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm({
-		resolver: yupResolver(scheme),
-	});
+	} = useForm();
   useEffect(() => {
    reset({phone:"+998"})
   },[])
@@ -80,9 +63,12 @@ const PostSendCourier = ({ id, url, onClose }) => {
   };
   return (
     <Modal onClose={onClose}>
+
+      {console.log(((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && "changeOrderStatusByCourier") ||
+      ((url === "/postback" || url === "/posts") && "sendPost"))}
         <form style={{padding: "20px"}} onSubmit={handleSubmit(((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && changeOrderStatusByCourier) ||
       ((url === "/postback" || url === "/posts") && sendPost))} className="form">
-					<Input
+				{	(url === "/postback" || url === "/posts")&&<><Input
 						id="text"
 						type="text"
 						placeholder="Ismi"
@@ -104,7 +90,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
 						register={register.bind(null, "avtoNumber")}
 						error={errors.avtoNumber?.message}
 					/>
-					
+					</>}
 					<Input
 						id="text"
 						type="text"
