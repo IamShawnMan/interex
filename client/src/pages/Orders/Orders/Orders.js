@@ -129,6 +129,22 @@ function Orders() {
     });
   };
 
+  const getFileWord = async () => {
+    http({
+      url: `packages/${id}/download`,
+      method: "GET",
+      responseType: "blob",
+    }).then((res) => {
+      const href = URL.createObjectURL(res.data);
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "packages.docx");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    });
+  };
   const cols = [
     {
       id:"NO",
@@ -565,6 +581,14 @@ function Orders() {
         >
           <img width="100" src={Photo} alt="" />
         </div>
+      )}
+       {(url === `/packages/${id}/orders`) && (
+        <div
+          onClick={() => getFileWord()}
+          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
+        >
+          <h1>Word</h1>
+         </div>
       )}
       <div>
         {isStoreOwner && url === "/orders/myorders" && (

@@ -15,4 +15,4 @@ module.exports = router
 	.put("/new/recieve", postController.recievePost)
 	.post("/new", postController.createPostForAllOrders)
 	.put("/new/customized", postController.createPostForCustomOrders)
-	.put("/:id/send", postNoteValidator.noteValidator, postController.sendPost);
+	.put("/:id/send", postNoteValidator.noteValidator,(req, res, next) =>{console.log(req.body); next()}, postController.sendPost);

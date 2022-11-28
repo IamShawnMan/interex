@@ -30,22 +30,7 @@ function Package() {
       console.log(error);
     }
   };
-  const getFile = async () => {
-    http({
-      url: `orders/download`,
-          method: "GET",
-      responseType: "blob",
-    }).then((res) => {
-      const href = URL.createObjectURL(res.data);
-      const link = document.createElement("a");
-      link.href = href;
-      link.setAttribute("download", "orders.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(href);
-    });
-  };
+
 
   const packageCols = [
     {
@@ -99,13 +84,7 @@ function Package() {
   return (
     <Layout>  <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem"}}>
           
-        <div
-          onClick={() => getFile()}
-          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
-        >
-          {/* <img width="100" src={Photo} alt="" /> */}
-          Word yuklab olmoq
-        </div>
+   
     <Button name="btn" disabled={url==="/packages"} onClick={() => navigate("/packages")}>
     Paketlar
     </Button>
