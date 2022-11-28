@@ -129,7 +129,6 @@ exports.downloadWord = catchAsync(
         { model: UserModel, as: "storeOwner" },
         { model: RegionModel, as: "region" },
         { model: DistrictModel, as: "district" },
-        { model: DistrictModel, as: "district" },
         { model: OrderItem, as: "items" },
       ],
       where: {
@@ -178,57 +177,71 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     children: [
                       new TextRun({
-                        text: "Xaridor",
-                        bold: true,
+                        text: "Xaridor: -",
                       }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${orderArr[0].recipient || null}`
-                      ),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].recipient || null
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("Viloyati"),
+                      new TextRun({
+                        text: "Viloyat: -",
+                      }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
+                      new TextRun({
+                        text: `${
                           orderArr[0].region?.name || null
-                        }`
-                      ),
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("summasi"),
+                      new TextRun("Summa: - "),
                       new TextRun("   "),
-                      new TextRun(
-                        `${orderArr[0].totalPrice || null}`
-                      ),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].totalPrice.toLocaleString(
+                            "RU-RU"
+                          ) || null
+                        } so\`m`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("Firma"),
+                      new TextRun("Firma: - "),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
+                      new TextRun({
+                        text: `${
                           orderArr[0].storeOwner
                             .storeName || null
-                        }`
-                      ),
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("tel Nomeri"),
+                      new TextRun({
+                        text: "Tel: - ",
+                      }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
+                      new TextRun({
+                        text: `${
                           orderArr[0]
                             .recipientPhoneNumber || null
-                        }`
-                      ),
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                 ],
@@ -243,57 +256,71 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     children: [
                       new TextRun({
-                        text: "Xaridor",
-                        bold: true,
+                        text: "Xaridor: -",
                       }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${orderArr[1].recipient || null}`
-                      ),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].recipient || null
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("Viloyati"),
+                      new TextRun({
+                        text: "Viloyat: -",
+                      }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
+                      new TextRun({
+                        text: `${
                           orderArr[1].region?.name || null
-                        }`
-                      ),
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("summasi"),
+                      new TextRun("Summa: - "),
                       new TextRun("   "),
-                      new TextRun(
-                        `${orderArr[1].totalPrice || null}`
-                      ),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].totalPrice.toLocaleString(
+                            "RU-RU"
+                          ) || null
+                        } so\`m`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("Firma"),
+                      new TextRun("Firma: - "),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
+                      new TextRun({
+                        text: `${
                           orderArr[1].storeOwner
-                            ?.storeName || null
-                        }`
-                      ),
+                            .storeName || null
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("tel Nomeri"),
+                      new TextRun({
+                        text: "Tel: - ",
+                      }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
-                          orderArr[1]
+                      new TextRun({
+                        text: `${
+                          orderArr[0]
                             .recipientPhoneNumber || null
-                        }`
-                      ),
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                 ],
@@ -308,60 +335,71 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     children: [
                       new TextRun({
-                        text: "Xaridor",
-                        bold: true,
+                        text: "Xaridor: -",
                       }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${orderArr[2].recipient || null}`
-                      ),
-                    ],
-                  }),
-                  new Paragraph({
-                    children: [
-                      new TextRun("Viloyati"),
-                      new TextRun("   "),
-                      new TextRun(
-                        `${
-                          orderArr[2].region?.name || null
-                        }`
-                      ),
-                    ],
-                  }),
-                  new Paragraph({
-                    children: [
-                      new TextRun("summasi"),
-                      new TextRun("   "),
-                      new TextRun(
-                        `${orderArr[2].totalPrice || null}`
-                      ),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].recipient || null
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
                       new TextRun({
-                        text: "Firma",
-                        bold: true,
+                        text: "Viloyat: -",
                       }),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
-                          orderArr[2].storeOwner
-                            ?.storeName || null
-                        }`
-                      ),
+                      new TextRun({
+                        text: `${
+                          orderArr[2].region?.name || null
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                   new Paragraph({
                     children: [
-                      new TextRun("tel Nomeri"),
+                      new TextRun("Summa: - "),
                       new TextRun("   "),
-                      new TextRun(
-                        `${
+                      new TextRun({
+                        text: `${
+                          orderArr[2].totalPrice.toLocaleString(
+                            "RU-RU"
+                          ) || null
+                        } so\`m`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    children: [
+                      new TextRun("Firma: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[2].storeOwner
+                            .storeName || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: "Tel: - ",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
                           orderArr[2]
                             .recipientPhoneNumber || null
-                        }`
-                      ),
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                 ],
