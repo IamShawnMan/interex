@@ -1,13 +1,14 @@
 const express = require("express");
+const roleMiddleware = require("../../core/middlewares/roleMiddleware");
 const router = express.Router();
 const postBackController = require("./postBackController");
 
 module.exports = router
-  .get("/rejected/orders", postBackController.rejectedOrdersBeforeSend)
-  .get("/rejected/coming", postBackController.getTodaysRejectedPost)
+  .get("/rejected/orders", roleMiddleware(["COURIER"]), postBackController.rejectedOrdersBeforeSend)
+  .get("/rejected/coming", roleMiddleware(["COURIER"]), postBackController.getTodaysRejectedPost)
   .get("/rejected/count", postBackController.countRejectedOrders)
-  .post("/new/rejected", postBackController.createPostForAllRejectedOrders)
-  .put("/:id/send/rejected", postBackController.sendRejectedPost)
-  .get("/rejectedposts", postBackController.getAllRejectedPosts)
-  .get("/rejectedposts/:id", postBackController.getAllRejectedOrdersInPost)
-  .put("/new/receiverejectedpost", postBackController.receiveRejectedOrders)
+  .post("/new/rejected", roleMiddleware(["COURIER"]), postBackController.createPostForAllRejectedOrders)
+  .put("/:id/send/rejected", roleMiddleware(["COURIER"]), postBackController.sendRejectedPost)
+  .get("/rejectedposts", roleMiddleware(["ADMIN", "COURIER"]), postBackController.getAllRejectedPosts)
+  .get("/rejectedposts/:id", roleMiddleware(["ADMIN", "COURIER"]), postBackController.getAllRejectedOrdersInPost)
+  .put("/new/receiverejectedpost", roleMiddleware(["ADMIN"]), postBackController.receiveRejectedOrders)
