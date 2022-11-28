@@ -49,6 +49,7 @@ function Orders() {
   const { id } = useParams();
   const [search, setSearch] = useState(null);
   const navigate = useNavigate();
+  console.log(location.search);
   const url = location.pathname;
   useEffect(() => {
     filterFn();
@@ -162,33 +163,10 @@ function Orders() {
     {
       id: "NO",
       Header: "NO",
-      accessor: (order, i) => {
-        return <>{i + 1}</>;
-      },
-    },
-    {
-      id: "id",
-      Header: "ID",
-      accessor: order => {
-        const a = ordersIdArr
-          ? {
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }
-          : { display: "flex" };
-
+      accessor: (order,i) => {
         return (
           <>
-            <div
-              style={{
-                ...a,
-                textAlign: "center",
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}>
-              {ordersIdArr &&
+           {ordersIdArr &&
                 (url.split("/")[1] === "postback" || id) &&
                 url !== "/posts/1/orders" && (
                   <div>
@@ -216,15 +194,16 @@ function Orders() {
                       }}></Input>
                   </div>
                 )}
-              <p style={{ textAligin: "center" }}>
-                {order.id}
-              </p>
-            </div>
+              <p style={{ textAligin: "center"}}>{i+1}</p>
+            
           </>
         );
       },
     },
-
+  {
+    Header: "Id",
+    accessor:"id"
+  },
     {
       Header: "Manzil",
       accessor: order => {
@@ -306,7 +285,7 @@ function Orders() {
                 {order.status !== "NEW" &&
                   order.deliveryPrice?.toLocaleString(
                     "Ru-Ru"
-                  )}
+                  )||0} so'm
               </div>
             )}
             {isCourier && (
@@ -686,25 +665,18 @@ function Orders() {
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (
         <div
-          onClick={() => getFile()}
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            cursor: "pointer",
-          }}>
-          <img width="100" src={Photo} alt="" />
+          style={{ display: "flex", justifyContent: "end" }}
+        >
+          <img width="100" onClick={() => getFile()} style={{cursor: "pointer"}} src={Photo} alt="" />
         </div>
       )}
       {url === `/packages/${id}/orders` && (
         <div
-          onClick={() => getFileWord()}
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            cursor: "pointer",
-          }}>
-          <h1>Word</h1>
-        </div>
+          style={{ display: "flex", justifyContent: "end" }}
+        >
+         
+          <h1 style={{cursor: "pointer"}} onClick={() => getFileWord()}>Word</h1>
+         </div>
       )}
       <div>
         {isStoreOwner && url === "/orders/myorders" && (
@@ -767,6 +739,7 @@ function Orders() {
               url === "/orders/myorders") &&
             pagination
           }
+          search={location.search}
           url={url}
         />
       ) : (

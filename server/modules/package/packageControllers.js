@@ -287,7 +287,7 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].totalPrice.toLocaleString(
+                          orderArr[1].totalPrice?.toLocaleString(
                             "RU-RU"
                           ) || null
                         } so\`m`,
@@ -301,8 +301,8 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].storeOwner
-                            .storeName || null
+                          orderArr[1]?.storeOwner
+                            ?.storeName || null
                         }`,
                         bold: true,
                       }),
@@ -366,7 +366,7 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[2].totalPrice.toLocaleString(
+                          orderArr[2].totalPrice?.toLocaleString(
                             "RU-RU"
                           ) || null
                         } so\`m`,
@@ -380,8 +380,8 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[2].storeOwner
-                            .storeName || null
+                          orderArr[2]?.storeOwner
+                            ?.storeName || null
                         }`,
                         bold: true,
                       }),

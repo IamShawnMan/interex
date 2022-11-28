@@ -5,11 +5,14 @@ import Modal from "../../../components/Modal/Modal";
 import styles from "../Orders/Orders.module.css";
 import stylesInfo from "./OrderInfo.module.css";
 import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
-import CarSVG from "./Car";
-import AdminSVG from "./Admin";
-import PostSVG from "./PostSVG";
-import ClockSVG from "./ClockSVG";
-
+import Admin from "./Admin.png";
+import AdminGreen from "./AdminGreen.png";
+import Car from "./Car.png";
+import CarYellow from "./CarYellow.png";
+import Clock from "./Clock.png";
+import ClockYellow from "./ClockYellow.png";
+import Pochta from "./Pochta.png";
+import PochtaQizil from "./PochtaQizil.png";
 const OrderInfo = ({ id, onClose }) => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(null);
@@ -82,7 +85,9 @@ const OrderInfo = ({ id, onClose }) => {
             </li>
             <li className="h6">
               <p className="bold inline-block"> Firma nomi:</p>
-              <span><b>  {value?.storeOwner?.storeName}</b></span>
+              <span>
+                <b> {value?.storeOwner?.storeName}</b>
+              </span>
             </li>
             <li className="h6">
               <p className="bold inline-block"> Eslatma:</p>
@@ -99,23 +104,58 @@ const OrderInfo = ({ id, onClose }) => {
             <p>Malumotlar yoq</p>
           )}
 
+          {/* 
+           <div className={stylesInfo.ellipse}>
+            <Tort />
+          </div>
+     */}
+
           <div className={stylesInfo.container}>
             <div className={stylesInfo.ellipse}>
-              <CarSVG className={stylesInfo.svg} />
+              <img
+                width="40"
+                src={value?.orderStatusUz === "YANGI" ? CarYellow : Car}
+                alt=""
+                className={stylesInfo.svg}
+              />
             </div>
             <div className={stylesInfo.rectangle}></div>
             <div className={stylesInfo.ellipse}>
-              <AdminSVG />
+              <img
+                width="40"
+                src={value?.orderStatusUz === "OLDI" ? AdminGreen : Admin}
+                alt=""
+                className={stylesInfo.svg}
+              />
             </div>
             <div className={stylesInfo.rectangle}></div>
             <div className={stylesInfo.ellipse}>
-              <PostSVG />
+              <img
+                width="40"
+                src={value?.orderStatusUz === "YO`LDA" ? PochtaQizil : Pochta}
+                alt=""
+                className={stylesInfo.svg}
+              />
             </div>
             <div className={stylesInfo.rectangle}></div>
             <div className={stylesInfo.ellipse}>
-              <ClockSVG />
+              <img
+                width="40"
+                src={value?.orderStatusUz === "BORDI" ? ClockYellow : Clock}
+                alt=""
+                className={stylesInfo.svg}
+              />
             </div>
           </div>
+
+
+          <div className={stylesInfo.container}>
+           <p className={stylesInfo.p}>Yangi</p>
+           <p className={stylesInfo.p}>Admin Oldi</p>
+           <p className={stylesInfo.p}>Admin Jonatdi</p>
+           <p className={stylesInfo.p}>Kurierda</p>
+          </div>
+
         </div>
       </div>
     </Modal>
