@@ -3,7 +3,7 @@ import { useTable } from "react-table";
 import styles from "./BasicTable.module.css";
 import Pagination from "../Pagination/Pagination";
 
-export const BasicTable = ({ columns, data, pagination, url ,style}) => {
+export const BasicTable = ({ columns, data, pagination, url ,style,search}) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
@@ -70,7 +70,7 @@ export const BasicTable = ({ columns, data, pagination, url ,style}) => {
           })}
         </tbody>
       </table>
-      {pagination && <Pagination pagination={pagination} url={url} />}
+      {pagination && <Pagination search={search} pagination={pagination} url={url} />}
     </div>
   ) : (
     <p>Malumotlar yoq</p>
