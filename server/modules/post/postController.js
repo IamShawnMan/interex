@@ -280,8 +280,6 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
 	const postByPk = await Post.findByPk(postId);
-    console.log(ordersArr);
-    console.log(postId);
 	const subtractingOrders = await Order.sum("totalPrice", {
 		where: {
 			orderStatus: {
@@ -415,6 +413,7 @@ exports.newPosts = catchAsync(async (req, res, next) => {
 
 exports.sendPost = catchAsync(async (req, res, next) => {
 	const validationErrors = validationResult(req);
+	console.log(validationErrors);
 	if (!validationErrors.isEmpty()) {
 		let err = new AppError("Validatsiya xatosi", 403);
 		err.isOperational = false;

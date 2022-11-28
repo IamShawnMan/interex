@@ -129,6 +129,22 @@ function Orders() {
     });
   };
 
+  const getFileWord = async () => {
+    http({
+      url: `packages/${id}/download`,
+      method: "GET",
+      responseType: "blob",
+    }).then((res) => {
+      const href = URL.createObjectURL(res.data);
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "packages.docx");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    });
+  };
   const cols = [
     {
       id:"NO",
@@ -410,8 +426,6 @@ function Orders() {
     },
   ];
   const postCreateOrUpdateFn = async () => {
-    console.log({ regionId: id, ordersArr: ordersIdArr });
-    console.log({ postId: id, ordersArr: ordersIdArr });
     try {
       const res = await http({
         url: url
@@ -485,7 +499,20 @@ function Orders() {
       //   }
       //   `,
       // });
-      const res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt=${dateCreatedAt.toISOString()}`:""}`)
+<<<<<<< HEAD
+      const res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`:""}`)
+=======
+      let res
+      // console.log(url);
+      if((url === "/orders" || url === "/orders/delivered" ||   url === "/orders/myorders")){
+        console.log("iffffffffffffffff");
+      res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`:""}`)
+      }else{
+        console.log("elseeeeeeeeeeeeeeee");
+        res = await http(`${url?url:""}?${search?`search=${search}`:""}`)
+      }
+      console.log(res.data);
+>>>>>>> b1c3d04345b93bb8a1821f05b016e60ee66a0a52
 
       getAllOrders(res.data);
     } catch (error) {
@@ -556,6 +583,14 @@ function Orders() {
         >
           <img width="100" src={Photo} alt="" />
         </div>
+      )}
+       {(url === `/packages/${id}/orders`) && (
+        <div
+          onClick={() => getFileWord()}
+          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
+        >
+          <h1>Word</h1>
+         </div>
       )}
       <div>
         {isStoreOwner && url === "/orders/myorders" && (
