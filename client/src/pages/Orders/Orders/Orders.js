@@ -285,7 +285,7 @@ function Orders() {
                 {order.status !== "NEW" &&
                   order.deliveryPrice?.toLocaleString(
                     "Ru-Ru"
-                  )}
+                  )||0} so'm
               </div>
             )}
             {isCourier && (
