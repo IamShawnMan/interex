@@ -580,6 +580,7 @@ function Orders() {
       //   }
       //   `,
       // });
+<<<<<<< HEAD
       let res;
       // console.log(url);
       if (
@@ -616,6 +617,15 @@ function Orders() {
         );
       }
       console.log(res.data);
+=======
+      let res
+      // console.log(url);
+      if((url === "/orders" || url === "/orders/delivered" ||   url === "/orders/myorders")){
+      res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`:""}`)
+      }else{
+        res = await http(`${url?url:""}?${search?`search=${search}`:""}`)
+      }
+>>>>>>> 2784c0ff7f09a383576ae18682bb0889ac488781
 
       getAllOrders(res.data);
     } catch (error) {
