@@ -420,22 +420,12 @@ exports.downloadWord = catchAsync(
                       }),
                     ],
                   }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "TOVARLAR",
-                        rightToLeft: true,
-                      }),
-                    ],
-                  }),
                 ],
               }),
             ],
           }),
         ],
       });
-      const parag = new Paragraph("");
       children.push(table);
     });
 
