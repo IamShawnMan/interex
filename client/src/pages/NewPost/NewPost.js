@@ -104,7 +104,7 @@ function NewPost() {
       id: "totalPrice",
       Header: "Umumiy narx",
       accessor: (order) => {
-        return <>{`${order.totalPrice.toLocaleString("Ru-Ru")} so'm`}</>;
+        return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
       },
     },
     {
