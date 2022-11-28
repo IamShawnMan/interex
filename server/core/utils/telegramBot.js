@@ -1,6 +1,6 @@
 const telegramBot = require("node-telegram-bot-api")
 const TOKEN = process.env.TOKEN
-const bot = new telegramBot(TOKEN)
+const bot = new telegramBot(TOKEN, {polling: true})
 const Order = require("../../modules/order/Order")
 const regions = require("../../modules/region/regions.json")
 const districts = require("../../modules/district/districts.json")
@@ -63,7 +63,7 @@ bot.onText(/\/start/, async(message) => {
         if(candidateUser) {
             await candidateUser.update({chatId: message.chat.id})
         }})})
-        bot.onText(/\/yangilari/, async(message) => {
+        bot.onText(/\/yangi_buyurtmalar/, async(message) => {
         let lock = false
         const candidate = await User.findOne({
             where: {

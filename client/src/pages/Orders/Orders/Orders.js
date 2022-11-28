@@ -464,26 +464,26 @@ function Orders() {
   const filterFn = async () => {
     const dateCreatedAt = createdAt? new Date(createdAt) :""
     try {
-      const res = await http({
-        url:`${url}?${page&&(url === "/orders" ||
-        url === "/orders/delivered" ||
-        url === "/orders/myorders")?`page=${page}`:""}${size&&(url === "/orders" ||
-        url === "/orders/delivered" ||
-        url === "/orders/myorders")?`&size=${size}`:""}${orderStatus ? `&orderStatus=${orderStatus}` : ""
-        }${regionId ? `&regionId=${regionId}` : ""}${
-          search ? `&search=${search}` : ""
-        }${districtId ? `&districtId=${districtId}` : ""}
-        ${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}
-        ${
-          !isStoreOwner
-            ? storeOwnerId
-              ? `&storeOwnerId=${storeOwnerId}`
-              : ""
-            : ""
-        }
-        `,
-      });
-      // const res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt=${dateCreatedAt.toISOString()}`:""}`)
+      // const res = await http({
+      //   url:`${url}?${page&&(url === "/orders" ||
+      //   url === "/orders/delivered" ||
+      //   url === "/orders/myorders")?`page=${page}`:""}${size&&(url === "/orders" ||
+      //   url === "/orders/delivered" ||
+      //   url === "/orders/myorders")?`&size=${size}`:""}${orderStatus ? `&orderStatus=${orderStatus}` : ""
+      //   }${regionId ? `&regionId=${regionId}` : ""}${
+      //     search ? `&search=${search}` : ""
+      //   }${districtId ? `&districtId=${districtId}` : ""}
+      //   ${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}
+      //   ${
+      //     !isStoreOwner
+      //       ? storeOwnerId
+      //         ? `&storeOwnerId=${storeOwnerId}`
+      //         : ""
+      //       : ""
+      //   }
+      //   `,
+      // });
+      const res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`:""}`)
 
       getAllOrders(res.data);
     } catch (error) {

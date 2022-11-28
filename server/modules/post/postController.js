@@ -279,8 +279,6 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
 	const postByPk = await Post.findByPk(postId);
-    console.log(ordersArr);
-    console.log(postId);
 	const subtractingOrders = await Order.sum("totalPrice", {
 		where: {
 			orderStatus: {

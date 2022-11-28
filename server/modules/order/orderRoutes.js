@@ -15,9 +15,9 @@ router
 	);
 router.get("/download", reportController.exportOrders)
 router
-	.get("/delivered", orderControllers.getDeliveredOrders) 
-	.get("/delivered/daily", orderControllers.getDailyOrders)
-	.put("/delivered/:id/status", orderControllers.changeStatusDeliveredOrders) 
+	.get("/delivered", roleMiddleware(["COURIER"]), orderControllers.getDeliveredOrders) 
+	.get("/delivered/daily", roleMiddleware(["COURIER"]), orderControllers.getDailyOrders)
+	.put("/delivered/:id/status", roleMiddleware(["COURIER"]), orderControllers.changeStatusDeliveredOrders) 
 router
 	.route("/myorders")
 	.get(roleMiddleware(["STORE_OWNER"]), orderControllers.getMyOrders)
