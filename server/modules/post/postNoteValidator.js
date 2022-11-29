@@ -1,15 +1,20 @@
-const {body} = require("express-validator")
+const { body } = require("express-validator");
 
 exports.noteValidator = [
-    body("phone")
+  body("name")
+    .notEmpty()
+    .withMessage("Xaydovchi ismi bo`sh bo`lmasligi kerak"),
+  body("phone")
     .notEmpty()
     .withMessage("Telefon raqam bo'sh bo'lishi mumkin emas")
     .matches(/^[+]998[0-9]{9}$/)
     .withMessage("Telefon raqam xato kiritildi"),
-    body("avtoNumber")
+  body("avtoNumber")
+    .matches(
+      /^[0-9]{2}[A-Z]{1}[0-9]{3}[A-Z]{2}$/ ||
+        /^[0-9]{5}[A-Z]{3}$/
+    )
+    .withMessage("Moshina raqami xato kiritildi")
     .notEmpty()
-    .withMessage("Moshin raqami bo`sh bo`lmasligi kerak")
-    .matches(/^[0-9]{2}[A-Z]{1}[0-9]{3}[A-Z]{2}$/)
-    .withMessage("Moshin raqami xato kiritildi")
-]
-
+    .withMessage("Moshina raqami bo`sh bo`lmasligi kerak"),
+];

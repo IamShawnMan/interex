@@ -43,7 +43,9 @@ function Orders() {
   const orderStatus = searchParams.get("orderStatus") || "";
   const regionId = searchParams.get("regionId") || "";
   const districtId = searchParams.get("districtId") || "";
-  const storeOwnerId = !isStoreOwner ? searchParams.get("storeOwnerId") : "";
+  const storeOwnerId = !isStoreOwner
+    ? searchParams.get("storeOwnerId")
+    : "";
   const { id } = useParams();
   const [search, setSearch] = useState(null);
   const navigate = useNavigate();
@@ -68,14 +70,19 @@ function Orders() {
     });
     setPrice(res.data);
   };
-  const getAllOrders = async (data) => {
-
-    setValue(data?.data?.content || data?.data?.allOrderbyPackageBack.rows);
+  const getAllOrders = async data => {
+    setValue(
+      data?.data?.content ||
+        data?.data?.allOrderbyPackageBack.rows
+    );
 
     setPagination(data?.data?.pagination);
-    setOrdersIdArr(data?.data?.ordersArrInPost || data?.data?.orderIdArr);
+    setOrdersIdArr(
+      data?.data?.ordersArrInPost || data?.data?.orderIdArr
+    );
     setPostStatus(
-      data?.data?.currentPostStatus?.postStatus || data.data.packageBackStatus
+      data?.data?.currentPostStatus?.postStatus ||
+        data.data.packageBackStatus
     );
   };
   const changeOrderStatus = async (id, status) => {
@@ -102,7 +109,9 @@ function Orders() {
   };
 
   const getFile = async () => {
-    const dateCreatedAt = new Date(createdAt ? createdAt : "");
+    const dateCreatedAt = new Date(
+      createdAt ? createdAt : ""
+    );
     http({
       url: `orders/download?page=${page}&size=${size}${
         orderStatus ? `&orderStatus=${orderStatus}` : ""
@@ -114,10 +123,14 @@ function Orders() {
             ? `&storeOwnerId=${storeOwnerId}`
             : ""
           : ""
-      }${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}`,
+      }${
+        createdAt
+          ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
+          : ""
+      }`,
       method: "GET",
       responseType: "blob",
-    }).then((res) => {
+    }).then(res => {
       const href = URL.createObjectURL(res.data);
       const link = document.createElement("a");
       link.href = href;
@@ -134,7 +147,7 @@ function Orders() {
       url: `packages/${id}/download`,
       method: "GET",
       responseType: "blob",
-    }).then((res) => {
+    }).then(res => {
       const href = URL.createObjectURL(res.data);
       const link = document.createElement("a");
       link.href = href;
@@ -147,58 +160,74 @@ function Orders() {
   };
   const cols = [
     {
-      id:"NO",
+      id: "NO",
       Header: "NO",
-      accessor: (order,i) => {
-        return (
-          <>
-           {i+1}
-          </>
-        );
+      accessor: (order, i) => {
+        return <>{i + 1}</>;
       },
     },
     {
       id: "id",
       Header: "ID",
-      accessor: (order) => {
+      accessor: order => {
         const a = ordersIdArr
-          ? { display: "flex", justifyContent: "center", alignItems: "center" }
+          ? {
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }
           : { display: "flex" };
-         
+
         return (
           <>
-            <div style={{ ...a, textAlign: "center",width: "100%",justifyContent: "center",alignItems: "center"}}>
+            <div
+              style={{
+                ...a,
+                textAlign: "center",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
               {ordersIdArr &&
                 (url.split("/")[1] === "postback" || id) &&
                 url !== "/posts/1/orders" && (
                   <div>
                     <Input
                       type="checkbox"
-                      checked={ordersIdArr.includes(order.id)}
+                      checked={ordersIdArr.includes(
+                        order.id
+                      )}
                       onClick={() => {
-                        const index = ordersIdArr.includes(order.id);
+                        const index = ordersIdArr.includes(
+                          order.id
+                        );
                         if (index) {
-                          let orderIsArr = ordersIdArr.filter(
-                            (i) => i !== order.id
-                          );
+                          let orderIsArr =
+                            ordersIdArr.filter(
+                              i => i !== order.id
+                            );
                           setOrdersIdArr(orderIsArr);
                         } else {
-                          setOrdersIdArr((prev) => [...prev, order.id]);
+                          setOrdersIdArr(prev => [
+                            ...prev,
+                            order.id,
+                          ]);
                         }
-                      }}
-                    ></Input>
+                      }}></Input>
                   </div>
                 )}
-              <p style={{ textAligin: "center"}}>{order.id}</p>
+              <p style={{ textAligin: "center" }}>
+                {order.id}
+              </p>
             </div>
           </>
         );
       },
     },
-  
+
     {
       Header: "Manzil",
-      accessor: (order) => {
+      accessor: order => {
         return (
           <>
             {order.region.name}
@@ -208,33 +237,41 @@ function Orders() {
         );
       },
     },
-    { id: "status", Header: "Holati", accessor:(order)=>{
-      const colorStatusFn=()=>{
-        if(order.orderStatus==="SOLD"){
-          return "lightgreen";
-        }
-        if(order.orderStatus==="REJECTED"){
-          return "red";
-        }
-        if(order.orderStatus==="PENDING"){
-          return "yellow";
-        }
-        return ""
-      }
-    
-      return(
-        <div style={{backgroundColor:colorStatusFn()}}>
-        <p> {order.orderStatusUz}</p>
-        </div>
-        )
-    } },
+    {
+      id: "status",
+      Header: "Holati",
+      accessor: order => {
+        const colorStatusFn = () => {
+          if (order.orderStatus === "SOLD") {
+            return "lightgreen";
+          }
+          if (order.orderStatus === "REJECTED") {
+            return "red";
+          }
+          if (order.orderStatus === "PENDING") {
+            return "yellow";
+          }
+          return "";
+        };
+
+        return (
+          <div style={{ backgroundColor: colorStatusFn() }}>
+            <p> {order.orderStatusUz}</p>
+          </div>
+        );
+      },
+    },
     {
       id: "phoneNumber",
       Header: "Telefon Raqam",
-      accessor: (order) => {
+      accessor: order => {
         return (
           <a href={`tel:${order?.recipientPhoneNumber}`}>
-            <b>{phoneNumberFormat(order?.recipientPhoneNumber)}</b>
+            <b>
+              {phoneNumberFormat(
+                order?.recipientPhoneNumber
+              )}
+            </b>
           </a>
         );
       },
@@ -242,77 +279,91 @@ function Orders() {
     {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
-      accessor: (order) => {
+      accessor: order => {
         return (
           <>
-         {!isCourier&&
-          <div>
-              {order.orderStatus === "NEW" && id && isAdmin && (
-              <Select
-                data={price?.map((e) => {
-                  return { id: e, name: e };
-                })}
-                onChange={async (e) => {
-                  const res = await http({
-                    url: `orders/${order.id}/devprice`,
-                    method: "PATCH",
-                    data: { deliveryPrice: e.target.value },
-                  });
-                }}
-              >
-                Narxi
-              </Select>
+            {!isCourier && (
+              <div>
+                {order.orderStatus === "NEW" &&
+                  id &&
+                  isAdmin && (
+                    <Select
+                      data={price?.map(e => {
+                        return { id: e, name: e };
+                      })}
+                      onChange={async e => {
+                        const res = await http({
+                          url: `orders/${order.id}/devprice`,
+                          method: "PATCH",
+                          data: {
+                            deliveryPrice: e.target.value,
+                          },
+                        });
+                      }}>
+                      Narxi
+                    </Select>
+                  )}
+                {order.status !== "NEW" &&
+                  order.deliveryPrice?.toLocaleString(
+                    "Ru-Ru"
+                  )}
+              </div>
             )}
-            {order.status !== "NEW" &&
-              order.deliveryPrice?.toLocaleString("Ru-Ru")}
-        
-          </div>}
-          {isCourier&&<div>
-             { user.tariff?.toLocaleString("Ru-Ru")}
-        
-            </div>}
-            </>
+            {isCourier && (
+              <div>
+                {user.tariff?.toLocaleString("Ru-Ru")}
+              </div>
+            )}
+          </>
         );
       },
     },
     {
       id: "totalPrice",
       Header: "Narxi",
-      accessor: (order) => {
-        return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
+      accessor: order => {
+        return (
+          <>{`${order.totalPrice?.toLocaleString(
+            "Ru-Ru"
+          )} so'm`}</>
+        );
       },
-    },  
-     {
+    },
+    {
       id: "createdAt",
       Header: "Sana",
-      accessor: (order) => {
+      accessor: order => {
         return formatDate(order.createdAt);
       },
     },
     {
       id: "updatedAt",
       Header: "O'zgarish",
-      accessor: (order) => {
+      accessor: order => {
         return formatDate(order.updatedAt);
       },
     },
     {
       id: "tugma",
       Header: "",
-      accessor: (order) => {
+      accessor: order => {
         return (
           <div className={styles.actionContainer}>
-            {((isAdmin && url.split("/")[1] !== "posts") || isStoreOwner) && (
+            {((isAdmin && url.split("/")[1] !== "posts") ||
+              isStoreOwner) && (
               <div className={styles.actionContainer}>
                 {user.userRole === "STORE_OWNER" && (
                   <Button
                     size="small"
-                    disabled={order.orderStatus !== "NEW" ? true : false}
+                    disabled={
+                      order.orderStatus !== "NEW"
+                        ? true
+                        : false
+                    }
                     name="btn"
                     onClick={() => {
                       navigate(`/orders/${order.id}`);
-                    }}
-                  >
+                    }}>
                     O'zgartirish
                   </Button>
                 )}
@@ -320,17 +371,33 @@ function Orders() {
                   <>
                     <Button
                       name="btn"
-                      disabled={order.orderStatus === "NEW" ? false : true}
-                      onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
-                    >
+                      disabled={
+                        order.orderStatus === "NEW"
+                          ? false
+                          : true
+                      }
+                      onClick={() =>
+                        changeOrderStatus(
+                          order.id,
+                          "ACCEPTED"
+                        )
+                      }>
                       Qabul qilindi
                     </Button>
 
                     <Button
-                      disabled={order.orderStatus === "NEW" ? false : true}
+                      disabled={
+                        order.orderStatus === "NEW"
+                          ? false
+                          : true
+                      }
                       name="btn"
-                      onClick={() =>setInfo2({id:order.id,status:"NOT_EXIST"}) }
-                    >
+                      onClick={() =>
+                        setInfo2({
+                          id: order.id,
+                          status: "NOT_EXIST",
+                        })
+                      }>
                       Qabul qilinmadi
                     </Button>
                   </>
@@ -357,12 +424,17 @@ function Orders() {
                     }
                     btnStyle={{
                       backgroundColor:
-                        order.orderStatus !== "SOLD" ? "green" : "",
+                        order.orderStatus !== "SOLD"
+                          ? "green"
+                          : "",
                     }}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "SOLD", postId: id });
-                    }}
-                  >
+                      setInfo({
+                        id: order.id,
+                        status: "SOLD",
+                        postId: id,
+                      });
+                    }}>
                     Sotildi
                   </Button>
 
@@ -384,9 +456,12 @@ function Orders() {
                           : "",
                     }}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "PENDING", postId: id });
-                    }}
-                  >
+                      setInfo({
+                        id: order.id,
+                        status: "PENDING",
+                        postId: id,
+                      });
+                    }}>
                     Kutilmoqda
                   </Button>
                   <Button
@@ -401,12 +476,17 @@ function Orders() {
                     name="btn"
                     btnStyle={{
                       backgroundColor:
-                        order.orderStatus !== "REJECTED" ? "red" : "",
+                        order.orderStatus !== "REJECTED"
+                          ? "red"
+                          : "",
                     }}
                     onClick={() => {
-                      setInfo({ id: order.id, status: "REJECTED", postId: id });
-                    }}
-                  >
+                      setInfo({
+                        id: order.id,
+                        status: "REJECTED",
+                        postId: id,
+                      });
+                    }}>
                     Qaytdi
                   </Button>
                 </>
@@ -416,8 +496,7 @@ function Orders() {
               name="btn"
               onClick={() => {
                 setInfo(order.id);
-              }}
-            >
+              }}>
               Ma'lumot
             </Button>
           </div>
@@ -478,7 +557,9 @@ function Orders() {
     navigate("/packageback");
   };
   const filterFn = async () => {
-    const dateCreatedAt = createdAt? new Date(createdAt) :""
+    const dateCreatedAt = createdAt
+      ? new Date(createdAt)
+      : "";
     try {
       // const res = await http({
       //   url:`${url}?${page&&(url === "/orders" ||
@@ -499,12 +580,38 @@ function Orders() {
       //   }
       //   `,
       // });
-      let res
+      let res;
       // console.log(url);
-      if((url === "/orders" || url === "/orders/delivered" ||   url === "/orders/myorders")){
-      res = await http(`${url?url:""}?${page?`page=${page}`:""}${size?`&size=${size}`:""}${search?`&search=${search}`:""}${orderStatus?`&orderStatus=${orderStatus}`:""}${!isStoreOwner?storeOwnerId?`&storeOwnerId=${storeOwnerId}`:"":""}${regionId ? `&regionId=${regionId}` : ""}${districtId?`&districtId=${districtId}`:""}${dateCreatedAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`:""}`)
-      }else{
-        res = await http(`${url?url:""}?${search?`search=${search}`:""}`)
+      if (
+        url === "/orders" ||
+        url === "/orders/delivered" ||
+        url === "/orders/myorders"
+      ) {
+        res = await http(
+          `${url ? url : ""}?${page ? `page=${page}` : ""}${
+            size ? `&size=${size}` : ""
+          }${search ? `&search=${search}` : ""}${
+            orderStatus ? `&orderStatus=${orderStatus}` : ""
+          }${
+            !isStoreOwner
+              ? storeOwnerId
+                ? `&storeOwnerId=${storeOwnerId}`
+                : ""
+              : ""
+          }${regionId ? `&regionId=${regionId}` : ""}${
+            districtId ? `&districtId=${districtId}` : ""
+          }${
+            dateCreatedAt
+              ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
+              : ""
+          }`
+        );
+      } else {
+        res = await http(
+          `${url ? url : ""}?${
+            search ? `search=${search}` : ""
+          }`
+        );
       }
 
       getAllOrders(res.data);
@@ -516,15 +623,24 @@ function Orders() {
     setInfo(false);
   };
   return (
-    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch} info={info}>
+    <Layout
+      pageName="Jo'natmalar Ro'yxati"
+      setSearch={setSearch}
+      info={info}>
       {url === "/new-post" && (
-        <div style={{ width: "100%", display: "flex", gap: "1rem" }}>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            gap: "1rem",
+          }}>
           {console.log(url)}
           {user.userRole === "COURIER" && (
             <div style={{ width: "100%" }}>
               <Button
                 disabled={
-                  url === "/new-post" || url === "/postback/rejected/orders"
+                  url === "/new-post" ||
+                  url === "/postback/rejected/orders"
                     ? true
                     : false
                 }
@@ -533,9 +649,10 @@ function Orders() {
                   url === "/postback"
                     ? navigate("/postback/rejected/orders")
                     : navigate("/new-post");
-                }}
-              >
-                {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
+                }}>
+                {url === "/postback"
+                  ? "Pochta yaratish"
+                  : "Bugungi pochta"}
               </Button>
             </div>
           )}
@@ -546,8 +663,7 @@ function Orders() {
                 name="btn"
                 onClick={() => {
                   navigate("/posts");
-                }}
-              >
+                }}>
                 Hamma pochtalar
               </Button>
             </div>
@@ -559,8 +675,7 @@ function Orders() {
                 name="btn"
                 onClick={() => {
                   navigate("/postback");
-                }}
-              >
+                }}>
                 Qaytgan pochtalar
               </Button>
             </div>
@@ -572,18 +687,24 @@ function Orders() {
         url === "/orders/myorders") && (
         <div
           onClick={() => getFile()}
-          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
-        >
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            cursor: "pointer",
+          }}>
           <img width="100" src={Photo} alt="" />
         </div>
       )}
-       {(url === `/packages/${id}/orders`) && (
+      {url === `/packages/${id}/orders` && isAdmin &&(
         <div
           onClick={() => getFileWord()}
-          style={{ display: "flex", justifyContent: "end", cursor: "pointer" }}
-        >
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            cursor: "pointer",
+          }}>
           <h1>Word</h1>
-         </div>
+        </div>
       )}
       <div>
         {isStoreOwner && url === "/orders/myorders" && (
@@ -593,8 +714,10 @@ function Orders() {
             onClick={() => {
               navigate("/orders/new");
             }}
-            btnStyle={{ width: "13rem", marginBottom: "1rem" }}
-          >
+            btnStyle={{
+              width: "13rem",
+              marginBottom: "1rem",
+            }}>
             Buyurtma
           </Button>
         )}
@@ -602,12 +725,16 @@ function Orders() {
           (url === "/orders" ||
             url === "/orders/delivered" ||
             url === "/orders/myorders") && (
-            <div style={{ display: "flex", gap: "2rem", width: "50%" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "2rem",
+                width: "50%",
+              }}>
               <Button
                 style={{ width: "13rem" }}
                 name="btn"
-                onClick={dailyOrders}
-              >
+                onClick={dailyOrders}>
                 Bugungilar
               </Button>
               <Button
@@ -619,8 +746,7 @@ function Orders() {
                         navigate("/postback");
                       }
                     : filterFn
-                }
-              >
+                }>
                 Hammasi
               </Button>
             </div>
@@ -628,7 +754,9 @@ function Orders() {
       </div>
       {(url === "/orders" ||
         url === "/orders/delivered" ||
-        url === "/orders/myorders") && <Filter filterFn={filterFn} url={url} />}
+        url === "/orders/myorders") && (
+        <Filter filterFn={filterFn} url={url} />
+      )}
       {value?.length > 0 ? (
         <BasicTable
           columns={cols}
@@ -648,13 +776,24 @@ function Orders() {
         <OrderInfo id={info} onClose={closeHandler} />
       )}
       {info && typeof info === "object" && (
-        <PostSendCourier id={info} url={url} onClose={closeHandler} />
+        <PostSendCourier
+          id={info}
+          url={url}
+          onClose={closeHandler}
+        />
       )}
- {info2 && (
-        <AdminRejectedModal id={info2} filter={filterFn} onClose={()=>{setInfo2(false)}} />
+      {info2 && (
+        <AdminRejectedModal
+          id={info2}
+          filter={filterFn}
+          onClose={() => {
+            setInfo2(false);
+          }}
+        />
       )}
       <div style={{ display: "flex", gap: 1 }}>
-        {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
+        {(url.split("/")[1] === "posts" ||
+          url.split("/")[2] === "rejected") &&
           (postStatus === "NEW" ||
             url.split("/")[3] === "regionorders" ||
             url.split("/")[2] === "rejected") && (
@@ -667,25 +806,27 @@ function Orders() {
                 url.split("/")[2] === "rejected"
                   ? postRejectedCreateOrUpdateFn
                   : postCreateOrUpdateFn
-              }
-            >
+              }>
               {url.split("/")[3] === "regionorders" ||
               url.split("/")[2] === "rejected"
-                ?url==="/postback/rejected/orders"?"Pochta Qaytarish": "Pochta yaratish"
+                ? url === "/postback/rejected/orders"
+                  ? "Pochta Qaytarish"
+                  : "Pochta yaratish"
                 : "Yangilash"}
             </Button>
           )}
-        {isStoreOwner && id && postStatus === "REJECTED_NEW" && (
-          <Button
-            type="submit"
-            size="small"
-            name="btn"
-            disabled={value?.length === 0}
-            onClick={packageRejected}
-          >
-            Qabul qildim
-          </Button>
-        )}
+        {isStoreOwner &&
+          id &&
+          postStatus === "REJECTED_NEW" && (
+            <Button
+              type="submit"
+              size="small"
+              name="btn"
+              disabled={value?.length === 0}
+              onClick={packageRejected}>
+              Qabul qildim
+            </Button>
+          )}
       </div>
     </Layout>
   );
