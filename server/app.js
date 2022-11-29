@@ -17,7 +17,7 @@ const postBackRouter = require("./modules/postBack/postBackRouter");
 const packageBackRoutes = require("./modules/packageBack/packageBackRouter");
 require("./modules/user/User");
 
-// telegramBot()
+telegramBot()
 const app = express();
 app.use(express.json());
 app.use(cors());

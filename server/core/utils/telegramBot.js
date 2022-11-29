@@ -1,6 +1,6 @@
 const telegramBot = require("node-telegram-bot-api");
 const TOKEN = process.env.TOKEN;
-const bot = new telegramBot(TOKEN);
+const bot = new telegramBot(TOKEN, {polling: true});
 const Order = require("../../modules/order/Order");
 const regions = require("../../modules/region/regions.json");
 const districts = require("../../modules/district/districts.json");
@@ -59,7 +59,8 @@ const botTelegram = async (req, res, next) => {
       option
     );
     bot.once("message", async message => {
-      const phoneNumber = `+${message.contact.phone_number}`;
+      let phoneNumber
+      message.contact ? phoneNumber = `+${message.contact.phone_number}` : "";
       const candidateUser = await User.findOne({
         where: {
           phoneNumber: {
@@ -83,7 +84,8 @@ const botTelegram = async (req, res, next) => {
         },
       },
     });
-    let allPosts = await Post.findAll({
+    let allPosts
+    candidate ?  allPosts = await Post.findAll({
       where: {
         regionId: {
           [Op.eq]: candidate.regionId,
@@ -95,17 +97,23 @@ const botTelegram = async (req, res, next) => {
         "postTotalPrice",
         "postStatus",
       ],
-    });
-    const allPostStatus = allPosts.filter(
+    }): "";
+    let allPostStatus
+    allPosts ? allPostStatus = allPosts.filter(
       e => e.postStatus === postStatuses.POST_DELIVERING
-    );
-    let a = JSON.stringify(allPostStatus)
+    ): "";
+    let a 
+    allPostStatus ? a = JSON.stringify(allPostStatus)
       .replaceAll(",", "\n")
       .replaceAll("{", "\n")
       .replaceAll("[", "")
       .replaceAll("]", "")
-      .replaceAll("}", "");
-    if (!lock) {
+      .replaceAll("}", "")
+      .replaceAll("postTotalPrice", "Pochta narxi")
+      .replaceAll("postStatus", "Pochta holati")
+      .replaceAll("DELIVERING", "Yo'lda")
+      .replaceAll('"', ""): "";
+    if (!lock && allPostStatus) {
       lock = true;
       if (allPostStatus.length === 0) {
         bot.sendMessage(
