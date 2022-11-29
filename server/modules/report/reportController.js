@@ -7,6 +7,7 @@ const User = require("../user/User");
 const Order = require("../order/Order");
 const userRoles = require("../../core/constants/userRole")
 const {Op} = require("sequelize")
+const orderStatuses = require("../../core/constants/orderStatus")
 
 exports.exportOrders = catchAsync(async (req, res, next) => {
     const {regionId, userRole, id} = req.user
@@ -31,6 +32,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	let downloadOrders = await Order.findAndCountAll(
 		queryBuilder.queryOptions
 	);
+	let regionName = "Barcha viloyatlar"
+    let storeName = "Barcha firmalar"
+	let orderDate = ""
+	req.query.createdAt ? orderDate = new Date(req.query.createdAt["eq"]).toLocaleString().split(",")[0]: ""
     if(userRole === userRoles.COURIER) {
 		queryBuilder.queryOptions.where = {
 			regionId: {[Op.eq]: regionId},
@@ -47,10 +52,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
     }
     let downloadCandidate = await User.findAll()
 
-	let regionName = "Barcha viloyatlar"
-    let storeName = "Barcha firmalar"
-	let orderDate = ""
-	req.query.createdAt ? orderDate = new Date(req.query.createdAt["eq"]).toLocaleString().split(",")[0]: ""
 	downloadOrders.rows.forEach(order => {
     order.recipient = ""
     downloadCandidate.forEach(candidate => {
@@ -60,7 +61,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
       if(req.query.storeOwnerId == candidate.id) {
         storeName = candidate.storeName
       }
-      if(order.regionId == candidate.id) {
+      if(order.regionId == candidate.regionId) {
         order.recipient = +candidate.tariff
       }
     })
@@ -88,6 +89,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	});
   const totalPrice1 = () => {
     const endRow = worksheet.lastRow._number + 1;
+    const endColumn = worksheet.lastColumn._number + 1;
 	  worksheet.getCell(`F${endRow}`).value = "UMUMIY NARX:";
 	  worksheet.getCell(`G${endRow}`).alignment = { horizontal: "center" };
 	  worksheet.getCell(`H${endRow}`).value = { formula: `SUM(H2:H${endRow - 1})` };
@@ -244,3 +246,32 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		res.status(200).end();
 	});
 });
+exports.getStatistics = catchAsync(async(req, res, next) => {
+	let allOrders = await Order.count()
+	let soldOrders = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD}
+		}
+	})
+	let rejectedOrders = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_REJECTED}
+		}
+	})
+	let allStores = await User.count({
+		where: {
+			userRole: {[Op.eq]: userRoles.STORE_OWNER}
+		}
+	})
+	res.json({
+		status: "success",
+		message: "Statistika uchun ma'lumotlar",
+		error: null,
+		data: {
+			allOrders,
+			soldOrders,
+			rejectedOrders,
+			allStores
+		}
+	})
+})
