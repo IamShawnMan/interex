@@ -118,7 +118,7 @@ const botTelegram = async (req, res, next) => {
       if (allPostStatus.length === 0) {
         bot.sendMessage(
           message.chat.id,
-          "Sizga yangi junatma yo'q"
+          "Sizga yangi jo'natma yo'q"
         );
       } else {
         bot
