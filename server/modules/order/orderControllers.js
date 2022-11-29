@@ -23,7 +23,7 @@ exports.getAllOrders = catchAsync(
       .filter()
       .paginate()
       .limitFields()
-      .search(["recipientPhoneNumber", "recipient","id"])
+      .search(["recipientPhoneNumber", "recipient", "id"])
       .sort();
     queryBuilder.queryOptions.include = [
       {
@@ -558,6 +558,26 @@ exports.getDeliveredOrders = catchAsync(
           districtId: {
             [Op.in]: [101, 106],
           },
+        },
+        orderStatus: {
+          [Op.in]: orderStatuses,
+        },
+        ...queryBuilder.queryOptions.where,
+      };
+      deliveredOrders = await Order.findAndCountAll(
+        queryBuilder.queryOptions
+      );
+      deliveredOrders =
+        queryBuilder.createPagination(deliveredOrders);
+      ordersArrInPost = deliveredOrders.content.map(
+        order => {
+          return order.dataValues.id;
+        }
+      );
+    } else if (region?.name === "Xorazm viloyati") {
+      queryBuilder.queryOptions.where = {
+        regionId: {
+          [Op.in]: [regionId, 1],
         },
         orderStatus: {
           [Op.in]: orderStatuses,
