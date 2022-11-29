@@ -5,6 +5,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 2rem;
+    padding-bottom:0
+}
+.p{
+    padding: 1.5rem;
+    
+    padding-top:0;
 }
 .ellipse{
     display: flex;
@@ -13,6 +20,7 @@
     width: 54px;
 height: 54px;
 border-radius:50%;
+
 background: rgba(122, 122, 122, 0.4);
 }
 .rectangle{

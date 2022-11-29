@@ -17,8 +17,12 @@ const {
   Paragraph,
   TextRun,
   Document,
+  TabStopPosition,
+  TabStopType,
   Packer,
   SectionType,
+  AlignmentType,
+  VerticalAlign,
 } = require("docx");
 
 exports.getAllPackages = catchAsync(
@@ -161,7 +165,6 @@ exports.downloadWord = catchAsync(
     let children = [];
     ordersArr?.forEach(orderArr => {
       const table = new Table({
-        margins: { right: 1000 },
         columnWidths: [3500, 3500, 3500],
         rows: [
           new TableRow({
@@ -170,11 +173,12 @@ exports.downloadWord = catchAsync(
               new TableCell({
                 width: {
                   size: 3500,
-                  type: WidthType.DXA,
+                  type: WidthType.AUTO,
                 },
                 children: [
                   new Paragraph({ children: [] }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Xaridor: -",
@@ -189,6 +193,7 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Viloyat: -",
@@ -203,6 +208,7 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun("Summa: - "),
                       new TextRun("   "),
@@ -217,6 +223,7 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun("Firma: - "),
                       new TextRun("   "),
@@ -230,6 +237,7 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Tel: - ",
@@ -249,11 +257,12 @@ exports.downloadWord = catchAsync(
               new TableCell({
                 width: {
                   size: 3500,
-                  type: WidthType.DXA,
+                  type: WidthType.AUTO,
                 },
                 children: [
                   new Paragraph({ children: [] }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Xaridor: -",
@@ -268,6 +277,7 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Viloyat: -",
@@ -282,12 +292,13 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun("Summa: - "),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].totalPrice.toLocaleString(
+                          orderArr[1].totalPrice?.toLocaleString(
                             "RU-RU"
                           ) || null
                         } so\`m`,
@@ -296,19 +307,21 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun("Firma: - "),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].storeOwner
-                            .storeName || null
+                          orderArr[1]?.storeOwner
+                            ?.storeName || null
                         }`,
                         bold: true,
                       }),
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Tel: - ",
@@ -328,11 +341,12 @@ exports.downloadWord = catchAsync(
               new TableCell({
                 width: {
                   size: 3500,
-                  type: WidthType.DXA,
+                  type: WidthType.AUTO,
                 },
                 children: [
                   new Paragraph({ children: [] }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Xaridor: -",
@@ -347,6 +361,7 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Viloyat: -",
@@ -361,12 +376,13 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun("Summa: - "),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[2].totalPrice.toLocaleString(
+                          orderArr[2].totalPrice?.toLocaleString(
                             "RU-RU"
                           ) || null
                         } so\`m`,
@@ -375,19 +391,21 @@ exports.downloadWord = catchAsync(
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun("Firma: - "),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[2].storeOwner
-                            .storeName || null
+                          orderArr[2]?.storeOwner
+                            ?.storeName || null
                         }`,
                         bold: true,
                       }),
                     ],
                   }),
                   new Paragraph({
+                    alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
                         text: "Tel: - ",
@@ -408,7 +426,6 @@ exports.downloadWord = catchAsync(
           }),
         ],
       });
-      const parag = new Paragraph("");
       children.push(table);
     });
 

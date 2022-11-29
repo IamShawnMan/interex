@@ -10,16 +10,19 @@ function Pagination(props) {
   console.log(url);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+ let search=props.search?.split("&")
+ search= search?.splice(2)
+ search=search?.join("&")
   const [pagesCount, setPagesCount] = useState(6);
   const offset = pagesCount - 6;
   const page = searchParams.get("page") || 1;
   const sixPageChange = (num) => {
     if (num === 1) {
       setPagesCount(pagesCount + 6);
-      navigate(`${url}?page=${+offset + 7}`);
+      navigate(`${url}?page=${+offset + 7}&${search}`);
     } else {
       setPagesCount(pagesCount - 6);
-      navigate(`${url}?page=${+offset - 5}`);
+      navigate(`${url}?page=${+offset - 5}&${search}`);
     }
   };
 
@@ -27,16 +30,16 @@ function Pagination(props) {
     if (num === 1) {
       if (+page === pagesCount) {
         setPagesCount(pagesCount + 6);
-        navigate(`${url}?page=${+page + 1}&size=10`);
+        navigate(`${url}?page=${+page + 1}&size=10&${search}`);
       } else {
-        navigate(`${url}?page=${+page + 1}&size=10`);
+        navigate(`${url}?page=${+page + 1}&size=10&${search}`);
       }
     } else {
       if (+page === offset) {
         setPagesCount(pagesCount - 6);
-        navigate(`${url}?page=${+page - 1}&size=10`);
+        navigate(`${url}?page=${+page - 1}&size=10&${search}`);
       } else {
-        navigate(`${url}?page=${+page - 1}&size=10`);
+        navigate(`${url}?page=${+page - 1}&size=10&${search}`);
       }
     }
   };
@@ -71,7 +74,7 @@ function Pagination(props) {
                 className={`${styles.pageLinks}  ${
                   +page === i + 1 ? styles.active : ""
                 }`}
-                to={`${url}?page=${+i + 1}&size=10`}
+                to={`${url}?page=${+i + 1}&size=10&${search}`}
                 key={i + "xksxskj"}
                 style={page === i + 1 ? { pointerEvents: "none" } : null}
               >
