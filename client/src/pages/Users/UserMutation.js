@@ -137,7 +137,7 @@ const UserMutation = () => {
 					<Input
 						id="text"
 						type="text"
-						placeholder="Famailiyasi"
+						placeholder="Familiyasi"
 						register={register.bind(null, "lastName")}
 						error={errors.lastName?.message}
 					/>

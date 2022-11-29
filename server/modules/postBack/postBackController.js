@@ -152,7 +152,8 @@ exports.createPostForAllRejectedOrders = catchAsync(async (req, res, next) => {
 exports.sendRejectedPost = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { id } = req.params;
-	const { postStatus, note } = req.body;
+	const { postStatus, name, phone, avtoNumber, comment } = req.body;
+	const note = `Ismi -${name}, Tel - ${phone}, Mashina raqami - ${avtoNumber}, Izoh - ${comment}`
 	const getRejectedPostById = await PostBack.findByPk(id);
 
 	if (!getRejectedPostById) {
