@@ -290,7 +290,7 @@ function Orders() {
             )}
             {isCourier && (
               <div>
-                {user.tariff?.toLocaleString("Ru-Ru")}
+                {`${user.tariff?.toLocaleString("Ru-Ru")||0} so'm`}
               </div>
             )}
           </>
