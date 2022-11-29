@@ -290,7 +290,7 @@ function Orders() {
             )}
             {isCourier && (
               <div>
-                {user.tariff?.toLocaleString("Ru-Ru")}
+                {`${user.tariff?.toLocaleString("Ru-Ru")||0} so'm`}
               </div>
             )}
           </>
@@ -670,7 +670,7 @@ function Orders() {
           <img width="100" onClick={() => getFile()} style={{cursor: "pointer"}} src={Photo} alt="" />
         </div>
       )}
-      {url === `/packages/${id}/orders` && (
+      {url === `/packages/${id}/orders` && isAdmin &&(
         <div
           style={{ display: "flex", justifyContent: "end" }}
         >

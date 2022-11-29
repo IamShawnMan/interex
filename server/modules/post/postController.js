@@ -413,7 +413,6 @@ exports.newPosts = catchAsync(async (req, res, next) => {
 
 exports.sendPost = catchAsync(async (req, res, next) => {
 	const validationErrors = validationResult(req);
-	console.log(validationErrors);
 	if (!validationErrors.isEmpty()) {
 		let err = new AppError("Validatsiya xatosi", 403);
 		err.isOperational = false;
@@ -425,7 +424,7 @@ exports.sendPost = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const { postStatus, name, phone, avtoNumber, comment } = req.body;
 	const getPostById = await Post.findByPk(id);
-	const note = `ismi -${name}, tel - ${phone}, moshin - ${avtoNumber}, izoh - ${comment}`
+	const note = `Ismi -${name}, Tel - ${phone}, Mashina raqami - ${avtoNumber}, Izoh - ${comment}`
 	if (!getPostById) {
 		return next(new AppError("This post not found", 404));
 	}
