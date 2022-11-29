@@ -157,7 +157,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.getCell(`K${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value
 	}
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`L${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value
+		worksheet.getCell(`L${i}`).value = worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value
 	}
 	  worksheet.getCell(`K${endRow}`).value = { formula: `SUM(K3:K${endRow - 1})` };
 	  worksheet.getCell(`L${endRow}`).value = { formula: `SUM(L3:L${endRow - 1})` };
@@ -174,7 +174,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.getCell(`J${i}`).value = worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value
 	}
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`K${i}`).value = worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value
+		worksheet.getCell(`K${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value
 	}
 	  worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
 	  worksheet.getCell(`K${endRow}`).value = { formula: `SUM(K3:K${endRow - 1})` };
@@ -191,7 +191,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.getCell(`I${i}`).value = worksheet.getCell(`F${i}`).value - worksheet.getCell(`G${i}`).value
 	}
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`J${i}`).value = worksheet.getCell(`F${i}`).value - worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value
+		worksheet.getCell(`J${i}`).value = worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value
 	}
 	  worksheet.getCell(`I${endRow}`).value = { formula: `SUM(I3:I${endRow - 1})` };
 	  worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
