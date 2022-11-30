@@ -10,6 +10,7 @@ const {Op} = require("sequelize")
 const orderStatuses = require("../../core/constants/orderStatus")
 const Region = require("../region/Region")
 const userStatuses = require("../../core/constants/userStatus")
+const dayjs = require("dayjs")
 
 exports.exportOrders = catchAsync(async (req, res, next) => {
     const {regionId, userRole, id} = req.user
@@ -402,7 +403,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
           fgColor: { argb: "f4f183" },
           }
       }
-      if(cell.model.value === "OTKAZ") {
+      if(cell.model.value === "OTKAZ" || cell.model.value === "OTKAZ YO'LDA" || cell.model.value === "OTKAZ BORMADI" 
+	  ||cell.model.value === "OTKAZ BORDI" || cell.model.value === "FIRMA OLDI" || cell.model.value === "FIRMA OLMADI") {
         row.fill = {
           type: "pattern",
           pattern: "solid",
@@ -421,20 +423,83 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	});
 });
 exports.getStatistics = catchAsync(async(req, res, next) => {
+	const {createdAt} = req.query
 	let allOrders = await Order.count()
 	let soldOrders = await Order.count({
 		where: {
 			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD}
 		}
 	})
+	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8)
 	let rejectedOrders = await Order.count({
 		where: {
-			orderStatus: {[Op.eq]: orderStatuses.STATUS_REJECTED}
+			orderStatus: {[Op.in]: rejectedOrderStatuses}
 		}
 	})
 	let allStores = await User.count({
 		where: {
 			userRole: {[Op.eq]: userRoles.STORE_OWNER}
+		}
+	})
+	let ordersSold = await Order.findAll({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD}
+		}
+	})
+	let discountTariff = 0
+	let allUsers = await User.findAll()
+	ordersSold.forEach(order => {
+		allUsers.forEach(user => {
+			if(order.regionId === user.regionId) {
+				discountTariff += +user.tariff*soldOrders
+			}
+		})
+	})
+	let discountDeliveryPrice = ordersSold.map(e =>e.deliveryPrice).reduce((sum,e) => sum+e,0)
+	let incomeSum = discountDeliveryPrice - discountTariff
+	let today = new Date()
+	let soldOrdersperDay = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD},
+			updatedAt: {
+				[Op.or] : {
+					[Op.gte]: dayjs(`${today}`).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+					[Op.lte]: dayjs(`${today}`).endOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]")
+				}
+			}
+		}
+	})
+	let soldOrdersperWeek = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD},
+			updatedAt: {
+				[Op.or] : {
+					[Op.gte]: dayjs(`${today}`).startOf("week").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+					[Op.lte]: dayjs(`${today}`).endOf("week").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]")
+				}
+			}
+		}
+	})
+	let soldOrdersperMonth = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD},
+			updatedAt: {
+				[Op.or] : {
+					[Op.gte]: dayjs(`${today}`).startOf("month").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+					[Op.lte]: dayjs(`${today}`).endOf("month").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]")
+				}
+			}
+		}
+	})
+	let soldOrdersperYear = await Order.count({
+		where: {
+			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD},
+			updatedAt: {
+				[Op.or] : {
+					[Op.gte]: dayjs(`${today}`).startOf("year").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+					[Op.lte]: dayjs(`${today}`).endOf("year").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]")
+				}
+			}
 		}
 	})
 	res.json({
@@ -445,7 +510,12 @@ exports.getStatistics = catchAsync(async(req, res, next) => {
 			allOrders,
 			soldOrders,
 			rejectedOrders,
-			allStores
+			allStores,
+			incomeSum,
+			soldOrdersperDay,
+			soldOrdersperWeek,
+			soldOrdersperMonth,
+			soldOrdersperYear
 		}
 	})
 })

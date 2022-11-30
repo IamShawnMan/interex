@@ -13,6 +13,7 @@ const orderStatusesUz = require("../../core/constants/orderStatusUz");
 const District = require("../district/District");
 const PackageBack = require("../packageBack/PackageBack");
 const statusPackage = require("../../core/constants/packageStatus");
+const { validationResult } = require("express-validator");
 
 exports.rejectedOrdersBeforeSend = catchAsync(
   async (req, res, next) => {
@@ -200,6 +201,13 @@ exports.createPostForAllRejectedOrders = catchAsync(
 
 exports.sendRejectedPost = catchAsync(
   async (req, res, next) => {
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+    let err = new AppError("Validatsiya xatosi", 403);
+    err.isOperational = false;
+    err.errors = validationErrors;
+    return next(err);
+    }
     const { userRole } = req.user;
     const { id } = req.params;
     const { postStatus, name, phone, avtoNumber, comment } = req.body;
