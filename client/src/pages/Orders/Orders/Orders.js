@@ -412,6 +412,8 @@ function Orders() {
                         id: order.id,
                         status: "SOLD",
                         postId: id,
+                        statusUz: "Buyurtma Sotildi"
+
                       });
                     }}>
                     Sotildi
@@ -439,6 +441,8 @@ function Orders() {
                         id: order.id,
                         status: "PENDING",
                         postId: id,
+                        statusUz: "Buyurtma Kutilmoqda"
+
                       });
                     }}>
                     Kutilmoqda
@@ -464,6 +468,7 @@ function Orders() {
                         id: order.id,
                         status: "REJECTED",
                         postId: id,
+                        statusUz: "Buyurtma Qaytarildi"
                       });
                     }}>
                     Qaytdi

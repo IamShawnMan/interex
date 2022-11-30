@@ -19,6 +19,7 @@ import RejectedPosts from "./pages/Rejected-Posts/Rejected-Posts";
 import RejectedOrders from "./pages/Rejected-Orders/Rejected-Orders";
 import PostCreate from "./pages/Posts/PostCreate";
 import PackageBack from "./pages/PackageBack/PackageBack";
+import Settings from "./pages/Settings/Settings";
 function App() {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
@@ -71,6 +72,7 @@ function App() {
         {isAuth && <Route path="/new-post" element={<NewPost />} />}
         {isAuth && <Route path="/posts/new" element={<PostMutation />} />}
         {isAuth && <Route path="/rejected/posts" element={<RejectedPosts />} />}
+        {isAuth && <Route path="/settings" element={<Settings />} />}
         {isAuth && (
           <Route
             path="/rejected/post/:id/orders"

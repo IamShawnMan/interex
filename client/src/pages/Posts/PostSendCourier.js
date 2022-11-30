@@ -8,7 +8,6 @@ import Input from "../../components/Form/FormComponents/Input/Input";
 import Modal from "../../components/Modal/Modal";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
-import * as yup from "yup";
 
 const PostSendCourier = ({ id, url, onClose }) => {
   const navigate = useNavigate();
@@ -23,7 +22,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
    reset({phone:"+998"})
   },[])
   const sendPost = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url:
@@ -40,6 +38,9 @@ const PostSendCourier = ({ id, url, onClose }) => {
       toast.success(res.data.message);
     } catch (error) {
       console.log(error);
+      error.response.data.error.errors.map(e=>{
+        toast.error(e.msg)
+      })
     } finally {
       onClose();
     }
@@ -100,7 +101,8 @@ const PostSendCourier = ({ id, url, onClose }) => {
 					/>
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
-          {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.status} Order`) ||
+            {console.log(id)}
+          {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.statusUz}`) ||
       ((url === "/postback" || url === "/posts") && "Send Post")}
 					</Button>
 				</form>
