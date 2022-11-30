@@ -504,7 +504,7 @@ exports.getStatistics = catchAsync(
 		}
 	})
 	let dayData = []
-	dayData.push({day: today.getDate(), count: soldOrdersperDay})
+	dayData.push(soldOrdersperDay)
 
 	let soldOrdersperMonth = await Order.count({
 		where: {
@@ -518,7 +518,7 @@ exports.getStatistics = catchAsync(
 		}
 	})
 	let monthData = []
-	monthData.push({month: today.getMonth()+1, count: soldOrdersperMonth})
+	monthData.push(soldOrdersperMonth)
 
 	let soldOrdersperYear = await Order.count({
 		where: {
@@ -532,7 +532,7 @@ exports.getStatistics = catchAsync(
 		}
 	})
 	let yearData = []
-	yearData.push({year: today.getFullYear(), count: soldOrdersperYear})
+	yearData.push(soldOrdersperYear)
 
     res.json({
       status: "success",
