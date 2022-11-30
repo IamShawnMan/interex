@@ -14,6 +14,7 @@ router
 		orderControllers.createOrder
 	);
 router.get("/download", reportController.exportOrders)
+router.get("/statistics", reportController.getStatistics)
 router
 	.get("/delivered", roleMiddleware(["COURIER"]), orderControllers.getDeliveredOrders) 
 	.get("/delivered/daily", roleMiddleware(["COURIER"]), orderControllers.getDailyOrders)

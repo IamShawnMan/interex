@@ -49,6 +49,7 @@ exports.login = catchAsync(async (req, res, next) => {
 		userRole: candidate.userRole,
 		userRoleUz: candidate.userRoleUz,
 		status: candidate.status,
+		storeName: candidate.storeName,
 		regionId: candidate.regionId,
 		tariff: candidate.tariff,
 	};
