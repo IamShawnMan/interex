@@ -23,7 +23,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
    reset({phone:"+998"})
   },[])
   const sendPost = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url:
@@ -40,6 +39,9 @@ const PostSendCourier = ({ id, url, onClose }) => {
       toast.success(res.data.message);
     } catch (error) {
       console.log(error);
+      error.response.data.error.errors.map(e=>{
+        toast.error(e.msg)
+      })
     } finally {
       onClose();
     }

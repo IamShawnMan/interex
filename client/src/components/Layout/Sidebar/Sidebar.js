@@ -180,6 +180,7 @@ function Sidebar(props) {
             </p>
           </Link>
           <Link
+          to="/settings"
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
