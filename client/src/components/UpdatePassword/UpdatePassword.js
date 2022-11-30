@@ -33,7 +33,6 @@ function UpdatePassword({ id }) {
   });
 
   const passwordSubmit = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: `users/${id}/password`,

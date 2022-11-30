@@ -23,7 +23,6 @@ const OrderInfo = ({ id, onClose }) => {
     const res = await http({
       url: `/orders/${id}`,
     });
-    console.log(res);
     setValue(res.data.data.orderById);
     setItems(res.data.data.orderById.items);
   };

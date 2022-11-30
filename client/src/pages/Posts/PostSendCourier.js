@@ -37,7 +37,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
       });
       toast.success(res.data.message);
     } catch (error) {
-      console.log(error);
       error.response.data.error.errors.map(e=>{
         toast.error(e.msg)
       })
@@ -46,7 +45,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
     }
   };
   const changeOrderStatusByCourier = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: `/orders/delivered/${id.id}/status`,
@@ -57,7 +55,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
         },
       });
     } catch (error) {
-      console.log(error);
     } finally {
       onClose();
     }
@@ -65,8 +62,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
   return (
     <Modal onClose={onClose}>
 
-      {console.log(((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && "changeOrderStatusByCourier") ||
-      ((url === "/postback" || url === "/posts") && "sendPost"))}
         <form style={{padding: "20px"}} onSubmit={handleSubmit(((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && changeOrderStatusByCourier) ||
       ((url === "/postback" || url === "/posts") && sendPost))} className="form">
 				{	(url === "/postback" || url === "/posts")&&<><Input
@@ -101,7 +96,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
 					/>
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
-            {console.log(id)}
           {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.statusUz}`) ||
       ((url === "/postback" || url === "/posts") && "Send Post")}
 					</Button>
@@ -126,8 +120,6 @@ const PostSendCourier = ({ id, url, onClose }) => {
       ((url === "/postback" || url === "/posts") && sendPost)
     }
   >
-    {console.log(id)}
-    {console.log(url)}
     {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.status} Order`) ||
       ((url === "/postback" || url === "/posts") && "Send Post")}
   </Button>

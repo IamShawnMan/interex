@@ -17,7 +17,6 @@ function Home() {
         url: `/orders/statistics`,
       });
       setValue(res.data.data);
-      console.log(res);
     } catch (error) {
       toast.error(error?.response.data.message);
     }
@@ -26,7 +25,6 @@ function Home() {
     getStatistics();
 
   },[])
-  console.log(value);
   return (
     <Layout pageName={"Bosh Sahifa"}>
       <div className={styles.statistics}>

@@ -477,20 +477,22 @@ exports.getStatistics = catchAsync(
       },
     });
     let discountTariff = 0;
+	let curierReg
     ordersSold.forEach(async order => {
-      let curierReg = await User.findOne({
+      curierReg = await User.findOne({
         where: {
           userRole: { [Op.eq]: userRoles.COURIER },
           status: { [Op.eq]: "ACTIVE" },
           regionId: { [Op.eq]: order.regionId },
         },
       });
-      discountTariff += +curierReg?.tariff;
+	  discountTariff = +curierReg?.dataValues.tariff
     });
+	
     let discountDeliveryPrice = ordersSold
       .map(e => e.deliveryPrice)
       .reduce((sum, e) => sum + e, 0);
-    let incomeSum = discountDeliveryPrice - discountTariff;
+    let incomeSum = discountDeliveryPrice - discountTariff
     let today = new Date()
 	let soldOrdersperDay = await Order.count({
 		where: {

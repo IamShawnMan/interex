@@ -30,7 +30,6 @@ exports.getAllPackages = catchAsync(
     const userId = req.user.id;
     const queryBuilder = new QueryBuilder(req.query);
     queryBuilder.filter().paginate().limitFields().sort();
-    console.log(req.user);
     if (req.user.userRole === "STORE_OWNER") {
       if (req.query.new === "new") {
         queryBuilder.queryOptions.where = {
