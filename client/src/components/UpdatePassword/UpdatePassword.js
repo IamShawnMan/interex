@@ -4,6 +4,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
+import Input from "../Form/FormComponents/Input/Input";
+import Button from "../Form/FormComponents/Button/Button";
 
 const schema = yup.object().shape({
   password: yup
@@ -47,18 +49,18 @@ function UpdatePassword({ id }) {
   };
   return (
     <form onSubmit={handleSubmit(passwordSubmit)}>
-      <input
+      <Input
         type="text"
         placeholder="Yangi parol"
-        {...register("password")}
-      />
-      <input
+        register={register.bind(null,"password")}
+      >Yangi parol</Input>
+      <Input
         type="text"
-        placeholder="Usernameingizni tasdiqlang"
-        {...register("username")}
-      />
+        placeholder="Loginni tasdiqlang"
+        register={register.bind(null,"username")}
+      >Loginni tasdiqlang</Input>
       {errors.password && <p>{errors.password.message}</p>}
-      <button>Parolni saqlash</button>
+      <Button name="btn">Parolni saqlash</Button>
     </form>
   );
 }

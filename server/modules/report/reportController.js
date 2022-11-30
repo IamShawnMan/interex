@@ -1,6 +1,6 @@
 const excelJS = require("exceljs");
 const catchAsync = require("../../core/utils/catchAsync");
-const QueryBuilder = require("../../core/utils/QueryBuilder")
+const QueryBuilder = require("../../core/utils/QueryBuilder");
 const regionsJSON = require("../region/regions.json");
 const districtsJSON = require("../district/districts.json");
 const User = require("../user/User");
@@ -84,12 +84,14 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		}
         downloadOrders = await Order.findAndCountAll(queryBuilder.queryOptions)
     }
-    if(userRole === userRoles.STORE_OWNER) {
-		queryBuilder.queryOptions.where = {
-			storeOwnerId: {[Op.eq]: id},
-			...queryBuilder.queryOptions.where
-		}
-        downloadOrders = await Order.findAndCountAll(queryBuilder.queryOptions)
+    if (userRole === userRoles.STORE_OWNER) {
+      queryBuilder.queryOptions.where = {
+        storeOwnerId: { [Op.eq]: id },
+        ...queryBuilder.queryOptions.where,
+      };
+      downloadOrders = await Order.findAndCountAll(
+        queryBuilder.queryOptions
+      );
     }
     let downloadCandidate = await User.findAll()
 	let downloadOrderItem = await OrderItem.findAll()
@@ -389,70 +391,107 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
         row.fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "c4d79b" },
-          }
-      }
-      if(cell.model.value === "KUTILMOQDA") {
-        row.fill = {
+          fgColor: { argb: "ffd385" },
+        }
+		}
+    })
+	})
+    worksheet.getRow(2).eachCell(cell => {
+      (cell.font = { bold: true }),
+        (cell.fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "f4f183" },
-          }
-      }
-      if(cell.model.value === "OTKAZ" || cell.model.value === "OTKAZ YO'LDA" || cell.model.value === "OTKAZ BORMADI" 
-	  ||cell.model.value === "OTKAZ BORDI" || cell.model.value === "FIRMA OLDI" || cell.model.value === "FIRMA OLMADI") {
-        row.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "da9694" },
-          }
-      }
-		});
-	});
-	res.setHeader(
-		"Content-Type",
-		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-	);
-	res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
-	return workbook.xlsx.write(res).then(() => {
-		res.status(200).end();
-	});
-});
-exports.getStatistics = catchAsync(async(req, res, next) => {
-	let allOrders = await Order.count()
-	let soldOrders = await Order.count({
-		where: {
-			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD}
-		}
-	})
-	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8)
-	let rejectedOrders = await Order.count({
-		where: {
-			orderStatus: {[Op.in]: rejectedOrderStatuses}
-		}
-	})
-	let allStores = await User.count({
-		where: {
-			userRole: {[Op.eq]: userRoles.STORE_OWNER}
-		}
-	})
-	let ordersSold = await Order.findAll({
-		where: {
-			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD}
-		}
-	})
-	let discountTariff = 0
-	let allUsers = await User.findAll()
-	ordersSold.forEach(order => {
-		allUsers.forEach(user => {
-			if(order.regionId === user.regionId) {
-				discountTariff += +user.tariff*soldOrders
-			}
-		})
-	})
-	let discountDeliveryPrice = ordersSold.map(e =>e.deliveryPrice).reduce((sum,e) => sum+e,0)
-	let incomeSum = discountDeliveryPrice - discountTariff
-	let today = new Date()
+          fgColor: { argb: "b9b8b7" },
+        });
+    });
+    worksheet.eachRow(row => {
+      row.eachCell(cell => {
+        cell.alignment = {
+          horizontal: "center",
+        };
+        if (cell.model.value === "SOTILDI") {
+          row.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "c4d79b" },
+          };
+        }
+        if (cell.model.value === "KUTILMOQDA") {
+          row.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "f4f183" },
+          };
+        }
+        if (
+          cell.model.value === "OTKAZ" ||
+          cell.model.value === "OTKAZ YO'LDA" ||
+          cell.model.value === "OTKAZ BORMADI" ||
+          cell.model.value === "OTKAZ BORDI" ||
+          cell.model.value === "FIRMA OLDI" ||
+          cell.model.value === "FIRMA OLMADI"
+        ) {
+          row.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "da9694" },
+          };
+        }
+      });
+    })
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=orders.xlsx"
+    );
+    return workbook.xlsx.write(res).then(() => {
+      res.status(200).end();
+    });
+  });
+exports.getStatistics = catchAsync(
+  async (req, res, next) => {
+    let allOrders = await Order.count();
+    let soldOrders = await Order.count({
+      where: {
+        orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
+      },
+    });
+    const rejectedOrderStatuses =
+      Object.values(orderStatuses).slice(8);
+    let rejectedOrders = await Order.count({
+      where: {
+        orderStatus: { [Op.in]: rejectedOrderStatuses },
+      },
+    });
+    let allStores = await User.count({
+      where: {
+        userRole: { [Op.eq]: userRoles.STORE_OWNER },
+      },
+    });
+    let ordersSold = await Order.findAll({
+      where: {
+        orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
+      },
+    });
+    let discountTariff = 0;
+    ordersSold.forEach(async order => {
+      let curierReg = await User.findOne({
+        where: {
+          userRole: { [Op.eq]: userRoles.COURIER },
+          status: { [Op.eq]: "ACTIVE" },
+          regionId: { [Op.eq]: order.regionId },
+        },
+      });
+      discountTariff += +curierReg?.tariff;
+    });
+    let discountDeliveryPrice = ordersSold
+      .map(e => e.deliveryPrice)
+      .reduce((sum, e) => sum + e, 0);
+    let incomeSum = discountDeliveryPrice - discountTariff;
+    let today = new Date()
 	let soldOrdersperDay = await Order.count({
 		where: {
 			orderStatus: {[Op.eq]: orderStatuses.STATUS_SOLD},
@@ -494,20 +533,22 @@ exports.getStatistics = catchAsync(async(req, res, next) => {
 	})
 	let yearData = []
 	yearData.push({year: today.getFullYear(), count: soldOrdersperYear})
-	
-	res.json({
-		status: "success",
-		message: "Statistika uchun ma'lumotlar",
-		error: null,
-		data: {
-			allOrders,
-			soldOrders,
-			rejectedOrders,
-			allStores,
-			incomeSum,
-			dayData,
-			monthData,
-			yearData
-		}
-	})
-})
+
+    res.json({
+      status: "success",
+      message: "Statistika uchun ma'lumotlar",
+      error: null,
+      data: {
+        allOrders,
+        soldOrders,
+        rejectedOrders,
+        allStores,
+        discountTariff,
+        incomeSum,
+        dayData,
+        monthData,
+        yearData
+      },
+    });
+  }
+);
