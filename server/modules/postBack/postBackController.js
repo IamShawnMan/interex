@@ -363,7 +363,6 @@ exports.getAllRejectedOrdersInPost = catchAsync(
   async (req, res, next) => {
     const { id } = req.params;
     const queryBuilder = new QueryBuilder(req.query);
-    console.log(id);
 
     queryBuilder.queryOptions.include = [
       { model: Region, as: "region", attributes: ["name"] },

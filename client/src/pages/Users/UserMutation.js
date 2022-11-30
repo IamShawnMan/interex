@@ -99,7 +99,6 @@ const UserMutation = () => {
     reset(user);
   };
   const formSubmit = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/users/${id}` : "/users",
@@ -109,7 +108,6 @@ const UserMutation = () => {
       toast.success(res.data.message);
       navigate("/users");
     } catch (error) {
-		console.log(error);
       return error.response.data.message.map((error) => toast.error(error));
     }
   };
@@ -195,7 +193,6 @@ const UserMutation = () => {
             >
               Viloyatlar
             </Select>
-			{console.log(tarifs)}
 			<Select
               register={register.bind(null, "tariff")}
               data={tarifs?.map((e)=>{

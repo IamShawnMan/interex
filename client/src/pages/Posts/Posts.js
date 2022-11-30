@@ -36,11 +36,9 @@ const Posts = () => {
               }`
             : `/postback/rejectedposts${search ? `?search=${search}` : ""}`,
       });
-      console.log(res.data.data);
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -143,7 +141,6 @@ const Posts = () => {
   return (
     <Layout pageName="Postlar" setSearch={setSearch}>
       <div style={{ width: "100%", display: "flex", gap: "1rem" }}>
-        {console.log(url)}
         {user.userRole === "COURIER" && (
           <div style={{ width: "100%" }}>
             <Button

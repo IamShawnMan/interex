@@ -194,7 +194,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 			const newPassword = await hash(req.body.password, 8);
 			await byIdUser.update({ password: newPassword });
 		} else {
-			return next(new AppError("Username to'g'ri kiritilmadi"));
+			return next(new AppError("Login xato kiritildi"));
 		}
 	} else {
 		return next(new AppError("Siz bu foydalanuvchi parolini o'zgartira olmaysiz", 400));

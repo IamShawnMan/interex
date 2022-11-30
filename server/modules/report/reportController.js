@@ -476,21 +476,23 @@ exports.getStatistics = catchAsync(
         orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
       },
     });
-    let discountTariff = 0;
-    ordersSold.forEach(async order => {
-      let curierReg = await User.findOne({
+	let sold = ordersSold.map(e=> e.regionId);
+	let allUsers = await User.findOne({
         where: {
           userRole: { [Op.eq]: userRoles.COURIER },
           status: { [Op.eq]: "ACTIVE" },
-          regionId: { [Op.eq]: order.regionId },
+          regionId: { [Op.in]: sold},
         },
       });
-      discountTariff += +curierReg?.tariff;
-    });
+    let discountTariff;
+	discountTariff = +allUsers.dataValues.tariff
+	
     let discountDeliveryPrice = ordersSold
       .map(e => e.deliveryPrice)
       .reduce((sum, e) => sum + e, 0);
-    let incomeSum = discountDeliveryPrice - discountTariff;
+    let incomeSum = discountDeliveryPrice - discountTariff*soldOrders
+	console.log(discountDeliveryPrice);
+	console.log(incomeSum);
     let today = new Date()
 	let soldOrdersperDay = await Order.count({
 		where: {
@@ -504,7 +506,7 @@ exports.getStatistics = catchAsync(
 		}
 	})
 	let dayData = []
-	dayData.push({day: today.getDate(), count: soldOrdersperDay})
+	dayData.push(soldOrdersperDay)
 
 	let soldOrdersperMonth = await Order.count({
 		where: {
@@ -518,7 +520,7 @@ exports.getStatistics = catchAsync(
 		}
 	})
 	let monthData = []
-	monthData.push({month: today.getMonth()+1, count: soldOrdersperMonth})
+	monthData.push(soldOrdersperMonth)
 
 	let soldOrdersperYear = await Order.count({
 		where: {
@@ -532,7 +534,7 @@ exports.getStatistics = catchAsync(
 		}
 	})
 	let yearData = []
-	yearData.push({year: today.getFullYear(), count: soldOrdersperYear})
+	yearData.push(soldOrdersperYear)
 
     res.json({
       status: "success",
