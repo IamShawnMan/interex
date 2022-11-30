@@ -17,6 +17,7 @@ function Home() {
         url: `/orders/statistics`,
       });
       setValue(res.data.data);
+      console.log(res);
     } catch (error) {
       toast.error(error?.response.data.message);
     }
@@ -74,8 +75,8 @@ function Home() {
             <div className={styles.text}>
               <p>Foyda</p>
               <h2>
-                {/* {ctx.students?.length || 0} */}
-               0 sum
+                {value?.incomeSum || 0}{" "}
+                 sum
               </h2>
             </div>
           </div>

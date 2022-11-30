@@ -456,7 +456,8 @@ exports.getStatistics = catchAsync(async(req, res, next) => {
 		})
 	})
 	let discountDeliveryPrice = ordersSold.map(e =>e.deliveryPrice).reduce((sum,e) => sum+e,0)
-	let incomeSum = discountDeliveryPrice - discountTariff
+	let incomeSum 
+	incomeSum += discountDeliveryPrice - discountTariff
 	let today = new Date()
 	let soldOrdersperDay = await Order.count({
 		where: {
