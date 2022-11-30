@@ -8,7 +8,6 @@ import Input from "../../components/Form/FormComponents/Input/Input";
 import Modal from "../../components/Modal/Modal";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
-import * as yup from "yup";
 
 const PostSendCourier = ({ id, url, onClose }) => {
   const navigate = useNavigate();
@@ -102,7 +101,8 @@ const PostSendCourier = ({ id, url, onClose }) => {
 					/>
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
-          {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.status} Order`) ||
+            {console.log(id)}
+          {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.statusUz}`) ||
       ((url === "/postback" || url === "/posts") && "Send Post")}
 					</Button>
 				</form>
