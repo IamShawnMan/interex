@@ -1,6 +1,6 @@
 const telegramBot = require("node-telegram-bot-api");
 const TOKEN = process.env.TOKEN;
-const bot = new telegramBot(TOKEN, {polling: true})
+const bot = new telegramBot(TOKEN)
 const Order = require("../../modules/order/Order");
 const regions = require("../../modules/region/regions.json");
 const districts = require("../../modules/district/districts.json");
