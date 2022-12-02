@@ -9,7 +9,7 @@ module.exports = router
   .get("/rejected/coming", roleMiddleware(["COURIER"]), postBackController.getTodaysRejectedPost)
   .get("/rejected/count", postBackController.countRejectedOrders)
   .post("/new/rejected", roleMiddleware(["COURIER"]), postBackController.createPostForAllRejectedOrders)
-  .put("/:id/send/rejected", roleMiddleware(["COURIER"]), postNoteValidator.noteValidator, postBackController.sendRejectedPost)
+  .put("/:id/send/rejected", roleMiddleware(["COURIER"]), postBackController.sendRejectedPost)
   .get("/rejectedposts", roleMiddleware(["ADMIN", "COURIER"]), postBackController.getAllRejectedPosts)
   .get("/rejectedposts/:id", roleMiddleware(["ADMIN", "COURIER"]), postBackController.getAllRejectedOrdersInPost)
   .put("/new/receiverejectedpost", roleMiddleware(["ADMIN"]), postBackController.receiveRejectedOrders)

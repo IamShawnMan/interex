@@ -61,7 +61,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
     } finally {
       onClose();
     }
-  };
+  }
   return (
     <Modal onClose={onClose}>
 
