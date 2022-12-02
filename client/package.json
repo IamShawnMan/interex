@@ -10,6 +10,7 @@
     "axios": "^1.0.0",
     "chart.js": "^4.0.1",
     "react": "^18.2.0",
+    "react-audio-voice-recorder": "^1.0.4",
     "react-chartjs-2": "^5.0.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.36.1",

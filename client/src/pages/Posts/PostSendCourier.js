@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Modal from "../../components/Modal/Modal";
+import ExampleComponent from "../../components/VoiceRecorder/Example";
 import AppContext from "../../context/AppContext";
 import http from "../../utils/axios-instance";
 
@@ -45,6 +46,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
     }
   };
   const changeOrderStatusByCourier = async (data) => {
+    console.log(data.expense);
     try {
       const res = await http({
         url: `/orders/delivered/${id.id}/status`,
@@ -52,6 +54,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
         data: {
           orderStatus: id.status,
          note: data.comment,
+         expense: data.expense
         },
       });
     } catch (error) {
@@ -94,6 +97,14 @@ const PostSendCourier = ({ id, url, onClose }) => {
 						register={register.bind(null, "comment")}
 						error={errors.comment?.message}
 					/>
+         {user.userRole==="COURIER"&&(id.status==="SOLD"||id.status==="REJECTED")&&  <Input
+						id="text"
+						type="number"
+						placeholder="Ortiqcha harajat"
+						register={register.bind(null, "expense")}
+						error={errors.expense?.message}
+					/>}
+   {user.userRole==="COURIER"&&(id.status==="SOLD"||id.status==="PENDING"||id.status==="REJECTED")&&<ExampleComponent/>}
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
           {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.statusUz}`) ||
