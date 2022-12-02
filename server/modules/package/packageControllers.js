@@ -122,7 +122,6 @@ exports.getOrdersByPackage = catchAsync(
     });
   }
 );
-
 exports.downloadWord = catchAsync(
   async (req, res, next) => {
     const { id } = req.params;
@@ -179,13 +178,55 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
+                      new TextRun("Firma: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].storeOwner
+                            .storeName || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
                       new TextRun({
                         text: "ID: -",
                       }),
                       new TextRun("   "),
                       new TextRun({
+                        text: `${orderArr[0].id || null}`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "Viloyat: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
                         text: `${
-                          orderArr[0].id || null
+                          orderArr[0].region?.name || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "Tumani: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].district?.name || null
                         }`,
                         bold: true,
                       }),
@@ -210,12 +251,13 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
-                        text: "Viloyat: -",
+                        text: "Tel: - ",
                       }),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[0].region?.name || null
+                          orderArr[0]
+                            .recipientPhoneNumber || null
                         }`,
                         bold: true,
                       }),
@@ -236,36 +278,6 @@ exports.downloadWord = catchAsync(
                       }),
                     ],
                   }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun("Firma: - "),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[0].storeOwner
-                            .storeName || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Tel: - ",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[0]
-                            .recipientPhoneNumber || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
                 ],
               }),
               new TableCell({
@@ -278,13 +290,55 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
+                      new TextRun("Firma: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].storeOwner
+                            .storeName || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
                       new TextRun({
                         text: "ID: -",
                       }),
                       new TextRun("   "),
                       new TextRun({
+                        text: `${orderArr[1].id || null}`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "Viloyat: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
                         text: `${
-                          orderArr[1].id || null
+                          orderArr[1].region?.name || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "Tumani: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].district?.name || null
                         }`,
                         bold: true,
                       }),
@@ -309,12 +363,13 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
-                        text: "Viloyat: -",
+                        text: "Tel: - ",
                       }),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].region?.name || null
+                          orderArr[1]
+                            .recipientPhoneNumber || null
                         }`,
                         bold: true,
                       }),
@@ -327,40 +382,10 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].totalPrice?.toLocaleString(
+                          orderArr[1].totalPrice.toLocaleString(
                             "RU-RU"
                           ) || null
                         } so\`m`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun("Firma: - "),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[1]?.storeOwner
-                            ?.storeName || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Tel: - ",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[1]
-                            .recipientPhoneNumber || null
-                        }`,
                         bold: true,
                       }),
                     ],
@@ -377,13 +402,55 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
+                      new TextRun("Firma: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[2].storeOwner
+                            ?.storeName || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
                       new TextRun({
                         text: "ID: -",
                       }),
                       new TextRun("   "),
                       new TextRun({
+                        text: `${orderArr[1].id || null}`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "Viloyat: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
                         text: `${
-                          orderArr[2].id || null
+                          orderArr[2].region?.name || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "Tumani: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[2].district?.name || null
                         }`,
                         bold: true,
                       }),
@@ -408,12 +475,13 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
-                        text: "Viloyat: -",
+                        text: "Tel: - ",
                       }),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[2].region?.name || null
+                          orderArr[2]
+                            .recipientPhoneNumber || null
                         }`,
                         bold: true,
                       }),
@@ -430,36 +498,6 @@ exports.downloadWord = catchAsync(
                             "RU-RU"
                           ) || null
                         } so\`m`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun("Firma: - "),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2]?.storeOwner
-                            ?.storeName || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Tel: - ",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2]
-                            .recipientPhoneNumber || null
-                        }`,
                         bold: true,
                       }),
                     ],
