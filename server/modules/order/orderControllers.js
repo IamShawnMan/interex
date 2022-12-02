@@ -140,7 +140,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
         "buyurtma";
         break;
     }
-    id = `${regSeria}-O-${countForId}`;
+    id = `${regSeria}-${countForId}`;
     const orderInfo = {
       id,
       recipient: order.recipient,

@@ -9,6 +9,7 @@ import Switch from "../../components/Form/FormComponents/Switch/Switch";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import AppContext from "../../context/AppContext";
 import { phoneNumberFormat } from "../../utils/phoneNumberFormatter";
+import ExampleComponent from "../../components/VoiceRecorder/Example"
 function Users() {
   const [value, setValue] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -16,10 +17,11 @@ function Users() {
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const { user } = useContext(AppContext);
+  const [role,setRole] = useState(null)
   const getAllUser = async () => {
     try {
       const res = await http({
-        url: `/users?page=${page}&size=${size}`,
+        url: `/users?page=${page}&size=${size}${role?`&userRole=${role}`:""}`,
       });
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
@@ -29,7 +31,7 @@ function Users() {
   };
   useEffect(() => {
     getAllUser();
-  }, [page]);
+  }, [page,role]);
 
   const userStatusChangeHandler = async ({ id, status }) => {
     try {
@@ -47,13 +49,23 @@ function Users() {
 
   const usersCols = [
     {
+      id:"role",
+      Header:"Nomi",
+      accessor: (user) => {
+      return (
+        <>
+        {user?.storeName||user?.region?.name||"Interex"}
+        </>
+      )
+      }
+    },
+    {
       id: "fullName",
       Header: "F.I.Sh",
       accessor: (user) => {
         return `${user.firstName} ${user.lastName}`;
       },
     },
-    { id: "username", Header: "Login", accessor: "username" },
     { id: "phoneNumber", Header: "Telefon raqam", accessor: (order) => {
       return (
         <a href={`tel:${order?.phoneNumber}`}>
@@ -118,7 +130,12 @@ function Users() {
           </Button>
         </Link>
       )}
-
+    <div style={{display: "flex",gap:"1rem", marginTop: "1rem"}}>
+    <Button name="btn" disabled={role===null} onClick={()=>setRole(null)}>Barchasi</Button>
+    <Button name="btn" disabled={role==="ADMIN"} onClick={()=>setRole("ADMIN")}>Adminlar</Button>
+    <Button name="btn" disabled={role==="COURIER"} onClick={()=>setRole("COURIER")}>Viloyat Boshliqlari</Button>
+    <Button name="btn" disabled={role==="STORE_OWNER"} onClick={()=>setRole("STORE_OWNER")}>Firmalar</Button>
+    </div> 
       {value?.length > 0 ? (
         <BasicTable
           columns={usersCols}
