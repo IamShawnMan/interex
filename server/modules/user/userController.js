@@ -8,6 +8,7 @@ const QueryBuilder = require("../../core/utils/QueryBuilder");
 const { Op } = require("sequelize");
 const { hash } = require("bcrypt");
 const userRoleUz = require("../../core/constants/userRoleUz")
+const Region = require("../region/Region")
 
 const findById = async (id, next) => {
 	const byId = await User.findByPk(id, {
@@ -28,6 +29,14 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 		.limitFields()
 		.search(["phoneNumber", "firstName", "lastName", "storeName"])
 		.sort();
+
+	queryBuilder.queryOptions.include = [
+		{
+			model: Region,
+			as: "region",
+			attributes: ["name"],
+		  }
+	]
 
 	// getting users except SUPER_ADMIN
 	if (!req.query.userRole || req.query.userRole === "SUPER_ADMIN") {

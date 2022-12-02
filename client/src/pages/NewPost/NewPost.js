@@ -14,6 +14,7 @@ function NewPost() {
   const [ordersIdArr, setOrdersIdArr] = useState([]);
   const [postData, setPostData] = useState([]);
   const [orderData, setOrderData] = useState([]);
+  const [orderCol, setOrderCol] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const url = location.pathname;
@@ -23,10 +24,13 @@ function NewPost() {
 
   const getNewPost = async () => {
     const res = await http("/posts/new/coming");
+    console.log(res);
     setOrdersIdArr(res?.data?.data?.orderArr);
     setOrderData(res?.data?.data?.ordersOnTheWay?.content);
+    setOrderCol(res?.data?.data?.ordersOnTheWay?.pagination?.allItemsCount);
     setPostData([res?.data?.data?.postOnTheWay]);
   };
+  {console.log(orderCol)}
 
   const postCols = [
     {
@@ -45,6 +49,11 @@ function NewPost() {
       accessor: (post) => {
         return formatDate(post.updatedAt);
       },
+    },
+    {
+      id: "ordersoni",
+      Header: "Buyurtmalar soni",
+      accessor:()=><>{orderCol} ta</>
     },
     {
       id: "postTotalPrice",
