@@ -8,7 +8,7 @@ import Dollar from "../../assets/icons/Dollar";
 import Photobox from "../../assets/icons/iconcasino.png";
 import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
-
+import BarChart from "../../components/Chart/BarChart"
 function Home() {
   const [value,setValue]= useState()
   const getStatistics = async () => {
@@ -75,13 +75,14 @@ function Home() {
             <div className={styles.text}>
               <p>Foyda</p>
               <h2>
-                {value?.incomeSum || 0}{" "}
-                 sum
+                { value?.incomeSum?.toLocaleString("Ru-Ru")|| 0}
+                sum
               </h2>
             </div>
           </div>
         </div>
       </div>
+      <BarChart/>
     </Layout>
   );
 }

@@ -36,6 +36,7 @@ function App() {
       isAuth: token?.trim().length > 0,
     });
   }, [token]);
+ 
   return (
     <>
       <ToastContainer />
@@ -81,6 +82,7 @@ function App() {
         )}
         <Route path="*" element={<Navigate to={"/login"} />} />
       </Routes>
+     
     </>
   );
 }
