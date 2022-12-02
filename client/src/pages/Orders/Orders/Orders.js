@@ -124,8 +124,8 @@ function Orders() {
             : ""
           : ""
       }${
-        createdAt
-          ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
+        dateCreatedAt
+          ?orderStatus==="SOLD"? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`:`&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
       }`,
       method: "GET",
@@ -583,7 +583,7 @@ function Orders() {
             districtId ? `&districtId=${districtId}` : ""
           }${
             dateCreatedAt
-              ? `&createdAt[eq]=${dateCreatedAt.toISOString()}`
+              ?orderStatus==="SOLD"? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`:`&createdAt[eq]=${dateCreatedAt.toISOString()}`
               : ""
           }`
         );
