@@ -49,7 +49,6 @@ function Orders() {
   const { id } = useParams();
   const [search, setSearch] = useState(null);
   const navigate = useNavigate();
-  console.log(location.search);
   const url = location.pathname;
   useEffect(() => {
     filterFn();
@@ -509,7 +508,6 @@ function Orders() {
       });
       toast.success(res.data.message);
     } catch (error) {
-      console.log(error);
       toast.error(error?.response?.data?.message);
     }
     navigate("/post/create");
@@ -565,7 +563,6 @@ function Orders() {
       //   `,
       // });
       let res;
-      // console.log(url);
       if (
         url === "/orders" ||
         url === "/orders/delivered" ||
@@ -618,7 +615,6 @@ function Orders() {
             display: "flex",
             gap: "1rem",
           }}>
-          {console.log(url)}
           {user.userRole === "COURIER" && (
             <div style={{ width: "100%" }}>
               <Button

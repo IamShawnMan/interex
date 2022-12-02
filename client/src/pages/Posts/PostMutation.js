@@ -47,7 +47,6 @@ const PostMutation = () => {
         <p>Ma'lumotlar yo'q</p>
       )} */}
 
-      {console.log(value)}
     </Layout>
   );
 };

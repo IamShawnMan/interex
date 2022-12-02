@@ -7,7 +7,6 @@ import PaginationDots from "../../assets/icons/PaginationDots";
 function Pagination(props) {
   const { allPagesCount, isFirstPage, isLastPage } = props.pagination;
   const url = props.url;
-  console.log(url);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
  let search=props.search?.split("&")

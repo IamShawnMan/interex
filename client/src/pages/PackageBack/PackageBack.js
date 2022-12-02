@@ -4,6 +4,7 @@ import { BasicTable } from "../../components/Table/BasicTable";
 import http from "../../utils/axios-instance";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../components/Form/FormComponents/Button/Button";
+import { toast } from "react-toastify";
 // import styles from "./Packages.module.css";
 function PackageBack() {
   const [packages, setPackages] = useState(null);
@@ -27,7 +28,7 @@ function PackageBack() {
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -81,8 +82,6 @@ function PackageBack() {
 
   return (
     <Layout>  
-  
-{console.log(url)}
 
       <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem"}}>
     <Button name="btn" disabled={url==="/packages"} onClick={() => navigate("/packages")}>

@@ -30,7 +30,6 @@ exports.getAllPackages = catchAsync(
     const userId = req.user.id;
     const queryBuilder = new QueryBuilder(req.query);
     queryBuilder.filter().paginate().limitFields().sort();
-    console.log(req.user);
     if (req.user.userRole === "STORE_OWNER") {
       if (req.query.new === "new") {
         queryBuilder.queryOptions.where = {
@@ -173,10 +172,25 @@ exports.downloadWord = catchAsync(
               new TableCell({
                 width: {
                   size: 3500,
-                  type: WidthType.AUTO,
+                  type: WidthType.DXA,
                 },
                 children: [
                   new Paragraph({ children: [] }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "ID: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].id || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
@@ -257,10 +271,25 @@ exports.downloadWord = catchAsync(
               new TableCell({
                 width: {
                   size: 3500,
-                  type: WidthType.AUTO,
+                  type: WidthType.DXA,
                 },
                 children: [
                   new Paragraph({ children: [] }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "ID: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].id || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
@@ -341,10 +370,25 @@ exports.downloadWord = catchAsync(
               new TableCell({
                 width: {
                   size: 3500,
-                  type: WidthType.AUTO,
+                  type: WidthType.DXA,
                 },
                 children: [
                   new Paragraph({ children: [] }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "ID: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[2].id || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [

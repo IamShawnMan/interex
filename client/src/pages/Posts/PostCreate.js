@@ -61,7 +61,6 @@ const PostCreate = () => {
       )}
     <>{ user.userRole === "ADMIN" ? (
         <>
-        {console.log(regionValue)}
           {regionValue?.length > 0 ? (
             <div className={styles.div} >
             {regionValue.map((e)=>

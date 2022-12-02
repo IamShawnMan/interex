@@ -21,16 +21,16 @@ exports.createValidator = [
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
 	body("username")
 		.notEmpty()
-		.withMessage("Username bo'sh bo'lishi mumkin emas")
+		.withMessage("Login bo'sh bo'lishi mumkin emas")
 		.isLength({ min: 5 })
-		.withMessage("Usename 5 ta belgidan kam bo'lmasligi kerak")
+		.withMessage("Login 5 ta belgidan kam bo'lmasligi kerak")
 		.trim()
 		.isLowercase()
-		.withMessage("Username faqat kichkina harflardan iborat bo'lishi kerak")
-		.custom(async(value,{req}) => {
+		.withMessage("Login faqat kichkina harflardan iborat bo'lishi kerak")
+		.custom(async(value) => {
 			const existedUser = await User.findOne({where: {username:{[Op.eq]: value}}}) 
 			if(existedUser) 
-			throw new Error("Ushbu Login tizimda mavjud, iltimos boshqa Login o'ylab toping")
+			throw new Error("Ushbu login tizimda mavjud, iltimos boshqa login o'ylab toping")
 		}),
 	body("password")
 		.notEmpty()
@@ -91,13 +91,12 @@ exports.updateValidator = [
 		.withMessage("Familiya bo'sh bo'lishi mumkin emas"),
 	body("username")
 		.notEmpty()
-		.withMessage("Username bo'sh bo'lishi mumkin emas")
+		.withMessage("Login bo'sh bo'lishi mumkin emas")
 		.isLength({ min: 5 })
-		.withMessage("Usename 5 ta belgidan kam bo'lmasligi kerak")
+		.withMessage("Login 5 ta belgidan kam bo'lmasligi kerak")
 		.trim()
 		.isLowercase()
-		.withMessage("Username faqat kichkina harflardan iborat bo'lishi kerak")
-,
+		.withMessage("Login faqat kichkina harflardan iborat bo'lishi kerak"),
 	body("passportNumber")
 		.notEmpty()
 		.withMessage("Pasport raqami bo'sh bo'lishi mumkin emas")
@@ -137,12 +136,12 @@ exports.updateValidator = [
 exports.passwordChangeValidator = [
 	body("username")
 		.notEmpty()
-		.withMessage("Username bo'sh bo'lishi mumkin emas")
+		.withMessage("Login bo'sh bo'lishi mumkin emas")
 		.isLength({ min: 5 })
-		.withMessage("Usename 5 ta belgidan kam bo'lmasligi kerak")
+		.withMessage("Login 5 ta belgidan kam bo'lmasligi kerak")
 		.trim()
 		.isLowercase()
-		.withMessage("Username faqat kichkina harflardan iborat bo'lishi kerak"),
+		.withMessage("Login faqat kichkina harflardan iborat bo'lishi kerak"),
 	body("password")
 		.notEmpty()
 		.withMessage("Parol bo'sh bo'lishi mumkin emas")

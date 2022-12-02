@@ -18,7 +18,6 @@ function Input({
   value,
   defaultValue
 }) {
-  // console.log(checked);
   // useEffect(() => {})
   return (
     <div className={styles.formControl}>

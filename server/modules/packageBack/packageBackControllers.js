@@ -75,7 +75,6 @@ exports.getOrdersbyPackageBack = catchAsync(
     const { id } = req.params;
     const userId = req.user.id;
     let orderIdArr = [];
-    console.log("");
 
     const packageBackbyId = await PackageBackModel.findByPk(
       id
