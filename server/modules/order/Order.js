@@ -51,6 +51,10 @@ const Order = sequelize.define(
       type: DataTypes.DATE,
       field: "updated_at",
     },
+    expense : {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    }
   },
   { underscored: true, timestamps: true }
 );

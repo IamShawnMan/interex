@@ -18,21 +18,21 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const workbook = new excelJS.Workbook();
 	const worksheet = workbook.addWorksheet("orders");
 	worksheet.columns = [
-		{ header: "No", key: "s_no", width: 20 },
-		{ header: "Id", key: "id", width: 20 },
-		{ header: "Viloyati", key: "regionId", width: 30 },
-		{ header: "Tumani", key: "districtId", width: 30 },
-		{ header: "Firma", key: "storeOwnerId", width: 30 },
+		{ header: "No", key: "s_no", width: 5 },
+		{ header: "Id", key: "id", width: 10 },
+		{ header: "Viloyati", key: "regionId", width: 15 },
+		{ header: "Tumani", key: "districtId", width: 15 },
+		{ header: "Firma", key: "storeOwnerId", width: 15 },
 		{ header: "Mahsulot", key: "orderStatus", width: 20 },
-		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 20 },
-		{ header: "Holati", key: "orderStatusUz", width: 30 },
-		{ header: "Tovar summasi", key: "totalPrice", width: 20 },
-		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 20 },
-        { header: "Xizmat narxi", key: "recipient", width: 20 },
-		{ header: "Firma puli", width: 20 },
-		{ header: "Daromad", width: 20 },
-		{ header: "Yaratilgan sana", key: "createdAt", width: 20 },
-		{ header: "Izoh", key: "note", width: 120 },
+		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 15 },
+		{ header: "Holati", key: "orderStatusUz", width: 15 },
+		{ header: "Tovar summasi", key: "totalPrice", width: 10 },
+		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 10 },
+        { header: "Xizmat narxi", key: "recipient", width: 10 },
+		{ header: "Firma puli", width: 10 },
+		{ header: "Daromad", width: 10 },
+		{ header: "Ortiqcha xarajat", key: "expense", width: 10 },
+		{ header: "Yaratilgan sana", key: "createdAt", width: 10 },
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
@@ -112,6 +112,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 
 	downloadOrders.rows.forEach(order => {
     order.recipient = ""
+	order.totalPrice = order.totalPrice/1000
+	order.deliveryPrice = order.deliveryPrice/1000
+	order.expense = order.expense/1000
     downloadCandidate.forEach(candidate => {
       if(order.storeOwnerId == candidate.id) {
         order.storeOwnerId = candidate.storeName
@@ -120,13 +123,16 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
         storeName = candidate.storeName
       }
       if(order.regionId == candidate.regionId) {
-        order.recipient = +candidate.tariff
+        order.recipient = +candidate?.tariff/1000
       }
 	  if(order.districtId === 101 || order.districtId === 106) {
-		  order.recipient = +customUserforDistrict.tariff
+		  order.recipient = +customUserforDistrict?.tariff/1000
 	  }
 	  if(order.regionId === 1) {
-		  order.recipient = +customUserforRegion.tariff
+		  if(customUserforRegion) {
+			order.recipient = +customUserforRegion.tariff/1000
+		  }
+		  else order.recipient = 0
 	  }
     })
 	downloadOrderItem.forEach(item => {
@@ -136,7 +142,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	})
 		regionsJSON.forEach(region => {
 			if(order.regionId == region.id){
-				order.regionId = region.name
+				order.regionId = region.name.slice(0, region.name.length-7)
 			}
 			if(req.query.regionId == region.id) {
 				regionName = region.name
@@ -144,7 +150,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		})
 		districtsJSON.forEach(district => {
 			if(order.districtId == district.id) {
-				order.districtId = district.name
+				order.districtId = district.name.slice(0, district.name.length-7)
 			}
 		})
 	})
@@ -165,13 +171,14 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	  worksheet.getCell(`K${endRow}`).value = { formula: `SUM(K3:K${endRow - 1})` };
       worksheet.mergeCells(`G${endRow}:H${endRow}`);
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`L${i}`).value = worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value
+		worksheet.getCell(`L${i}`).value = worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value - worksheet.getCell(`N${i}`).value
 	}
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`M${i}`).value = worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value
+		worksheet.getCell(`M${i}`).value = worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value 
 	}
 	  worksheet.getCell(`L${endRow}`).value = { formula: `SUM(L3:L${endRow - 1})` };
 	  worksheet.getCell(`M${endRow}`).value = { formula: `SUM(M3:M${endRow - 1})` };
+	  worksheet.getCell(`N${endRow}`).value = { formula: `SUM(N3:N${endRow - 1})` };
   }
   const totalPrice2 = () => {
     const endRow = worksheet.lastRow._number + 1; 
@@ -182,13 +189,14 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	  worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
       worksheet.mergeCells(`F${endRow}:G${endRow}`);
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`K${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value
+		worksheet.getCell(`K${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`M${i}`).value
 	}
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`L${i}`).value = worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value
+		worksheet.getCell(`L${i}`).value = worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value 
 	}
 	  worksheet.getCell(`K${endRow}`).value = { formula: `SUM(K3:K${endRow - 1})` };
 	  worksheet.getCell(`L${endRow}`).value = { formula: `SUM(L3:L${endRow - 1})` };
+	  worksheet.getCell(`M${endRow}`).value = { formula: `SUM(M3:M${endRow - 1})` };
   }
   const totalPrice3 = () => {
     const endRow = worksheet.lastRow._number + 1; 
@@ -199,13 +207,14 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	  worksheet.getCell(`I${endRow}`).value = { formula: `SUM(I3:I${endRow - 1})` };
       worksheet.mergeCells(`E${endRow}:F${endRow}`);
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`J${i}`).value = worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value
+		worksheet.getCell(`J${i}`).value = worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value - worksheet.getCell(`L${i}`).value
 	}
 	for(i = 3; i<endRow; i++) {
 		worksheet.getCell(`K${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value
 	}
 	  worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
 	  worksheet.getCell(`K${endRow}`).value = { formula: `SUM(K3:K${endRow - 1})` };
+	  worksheet.getCell(`L${endRow}`).value = { formula: `SUM(L3:L${endRow - 1})` };
   }
   const totalPrice4 = () => {
 	const endRow = worksheet.lastRow._number + 1; 
@@ -215,9 +224,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	  worksheet.getCell(`I${endRow}`).value = { formula: `SUM(I3:I${endRow - 1})` };
       worksheet.mergeCells(`F${endRow}:G${endRow}`);
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`J${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value
+		worksheet.getCell(`J${i}`).value = worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`K${i}`).value
 	}
 	  worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
+	  worksheet.getCell(`K${endRow}`).value = { formula: `SUM(K3:K${endRow - 1})` };
   }
   const totalPrice5 = () => {
 	const endRow = worksheet.lastRow._number + 1; 
@@ -227,9 +237,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	  worksheet.getCell(`H${endRow}`).value = { formula: `SUM(H3:H${endRow - 1})` };
       worksheet.mergeCells(`E${endRow}:F${endRow}`);
 	for(i = 3; i<endRow; i++) {
-		worksheet.getCell(`I${i}`).value = worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value
+		worksheet.getCell(`I${i}`).value = worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value - worksheet.getCell(`J${i}`).value
 	}
 	  worksheet.getCell(`I${endRow}`).value = { formula: `SUM(I3:I${endRow - 1})` };
+	  worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
   }
   const totalPrice6 = () => {
 	const endRow = worksheet.lastRow._number + 1;
@@ -237,6 +248,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.getCell(`H${endRow}`).alignment = { horizontal: "center" };
 	worksheet.getCell(`I${endRow}`).value = { formula: `SUM(I3:I${endRow - 1})` };
 	worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
+	worksheet.getCell(`K${endRow}`).value = { formula: `SUM(K3:K${endRow - 1})` };
 	worksheet.mergeCells(`G${endRow}:H${endRow}`);
   }
   const totalPrice7 = () => {
@@ -245,6 +257,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.getCell(`G${endRow}`).alignment = { horizontal: "center" };
 	worksheet.getCell(`H${endRow}`).value = { formula: `SUM(H3:H${endRow - 1})` };
 	worksheet.getCell(`I${endRow}`).value = { formula: `SUM(I3:I${endRow - 1})` };
+	worksheet.getCell(`J${endRow}`).value = { formula: `SUM(J3:J${endRow - 1})` };
 	worksheet.mergeCells(`F${endRow}:G${endRow}`);
   }
   if(req.query.regionId && !req.query.storeOwnerId && !req.query.createdAt
@@ -259,7 +272,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
   }
   if(req.query.createdAt && !req.query.regionId && !req.query.storeOwnerId
 	&& (userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) {
-    worksheet.spliceColumns(14,1)
+    worksheet.spliceColumns(15,1)
     totalPrice1()
   }
   if(req.query.regionId && req.query.storeOwnerId && !req.query.createdAt
@@ -271,20 +284,20 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
   if(req.query.regionId && !req.query.storeOwnerId && req.query.createdAt
 	&& (userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) {
     worksheet.spliceColumns(3,1)
-    worksheet.spliceColumns(13,1)
+    worksheet.spliceColumns(14,1)
     totalPrice2()
   }
   if(!req.query.regionId && req.query.storeOwnerId && req.query.createdAt
 	&& (userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) {
     worksheet.spliceColumns(5,1)
-    worksheet.spliceColumns(13,1)
+    worksheet.spliceColumns(14,1)
     totalPrice2()
   }
   if(req.query.regionId && req.query.storeOwnerId && req.query.createdAt 
 	&& (userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) {
     worksheet.spliceColumns(3,1)
     worksheet.spliceColumns(4,1)
-    worksheet.spliceColumns(12,1)
+    worksheet.spliceColumns(13,1)
     totalPrice3()
   }
   if(!req.query.regionId && !req.query.storeOwnerId && !req.query.createdAt 
@@ -303,7 +316,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.spliceColumns(5,1)
 	worksheet.spliceColumns(10,1)
 	worksheet.spliceColumns(11,1)
-	worksheet.spliceColumns(11,1)
+	worksheet.spliceColumns(12,1)
 	totalPrice4()
   }
   if(!req.query.createdAt && req.query.regionId && userRole === userRoles.STORE_OWNER) {
@@ -320,7 +333,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.spliceColumns(4,1)
 	worksheet.spliceColumns(9,1)
 	worksheet.spliceColumns(10,1)
-	worksheet.spliceColumns(10,1)
+	worksheet.spliceColumns(11,1)
 	totalPrice5()
   }
   if(!req.query.regionId && !req.query.createdAt && userRole === userRoles.COURIER) {
@@ -333,7 +346,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.spliceColumns(10,1)
 	worksheet.spliceColumns(11,1)
 	worksheet.spliceColumns(11,1)
-	worksheet.spliceColumns(11,1)
+	worksheet.spliceColumns(12,1)
 	totalPrice6()
   }
   if(!req.query.createdAt && req.query.regionId && userRole === userRoles.COURIER) {
@@ -348,14 +361,15 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.spliceColumns(9,1)
 	worksheet.spliceColumns(10,1)
 	worksheet.spliceColumns(10,1)
-	worksheet.spliceColumns(10,1)
+	worksheet.spliceColumns(11,1)
 	totalPrice7()
   }
-	worksheet.getCell(`A2`).value = `${orderDate}`
-	worksheet.getCell(`B2`).value = `${regionName}`
-	worksheet.getCell(`D2`).value = `${storeName}`
+	worksheet.getCell(`B2`).value = `${orderDate}`
+	worksheet.getCell(`D2`).value = `${regionName}`
+	worksheet.getCell(`F2`).value = `${storeName}`
 	worksheet.mergeCells("B2:C2");
 	worksheet.mergeCells("D2:E2");
+	worksheet.mergeCells("F2:H2");
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {
 			cell.border = {
@@ -366,13 +380,39 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			}
 		})
 	})
+	worksheet.eachRow((row) => {
+		row.eachCell((cell) => {
+			cell.alignment = {
+				horizontal: "center",
+		};
+		if (cell.model.value === "KUTILMOQDA") {
+			row.font = {
+				color: {argb: "dd2727"}
+			}
+		}
+		if (cell.model.value === "FIRMA OLDI" || cell.model.value === "FIRMA OLMADI" 
+		|| cell.model.value === "OTKAZ BORDI") {
+			row.fill = {
+				type: "pattern",
+				pattern: "solid",
+				fgColor: { argb: "f4f183" },
+			  }
+		}
+    })
+	})
+	worksheet.getRow(1).height = 30
 	worksheet.getRow(1).eachCell((cell) => {
 		cell.font = { bold: true },
 		cell.fill = {
 			type: "pattern",
 			pattern: "solid",
 			fgColor: { argb: "ffd385" },
-		  }
+		},
+		cell.alignment = {
+			horizontal: "center",
+			vertical: "middle",
+			wrapText: true
+		}
 	});
 	worksheet.getRow(2).eachCell((cell) => {
 		cell.font = { bold: true },
@@ -382,63 +422,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			fgColor: { argb: "b9b8b7" },
 		  }
 	});
-	worksheet.eachRow((row) => {
-		row.eachCell((cell) => {
-			cell.alignment = {
-				horizontal: "center",
-			};
-      if(cell.model.value === "SOTILDI") {
-        row.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "ffd385" },
-        }
-		}
-    })
-	})
-    worksheet.getRow(2).eachCell(cell => {
-      (cell.font = { bold: true }),
-        (cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "b9b8b7" },
-        });
-    });
-    worksheet.eachRow(row => {
-      row.eachCell(cell => {
-        cell.alignment = {
-          horizontal: "center",
-        };
-        if (cell.model.value === "SOTILDI") {
-          row.fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: "c4d79b" },
-          };
-        }
-        if (cell.model.value === "KUTILMOQDA") {
-          row.fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: "f4f183" },
-          };
-        }
-        if (
-          cell.model.value === "OTKAZ" ||
-          cell.model.value === "OTKAZ YO'LDA" ||
-          cell.model.value === "OTKAZ BORMADI" ||
-          cell.model.value === "OTKAZ BORDI" ||
-          cell.model.value === "FIRMA OLDI" ||
-          cell.model.value === "FIRMA OLMADI"
-        ) {
-          row.fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: "da9694" },
-          };
-        }
-      });
-    })
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -485,14 +468,12 @@ exports.getStatistics = catchAsync(
         },
       });
     let discountTariff;
-	discountTariff = +allUsers.dataValues.tariff
+	discountTariff = +allUsers?.dataValues.tariff
 	
     let discountDeliveryPrice = ordersSold
       .map(e => e.deliveryPrice)
       .reduce((sum, e) => sum + e, 0);
     let incomeSum = discountDeliveryPrice - discountTariff*soldOrders
-	console.log(discountDeliveryPrice);
-	console.log(incomeSum);
     let today = new Date()
 	let soldOrdersperDay = await Order.count({
 		where: {

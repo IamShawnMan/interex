@@ -45,6 +45,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
     }
   };
   const changeOrderStatusByCourier = async (data) => {
+    console.log(data.expense);
     try {
       const res = await http({
         url: `/orders/delivered/${id.id}/status`,
@@ -52,13 +53,14 @@ const PostSendCourier = ({ id, url, onClose }) => {
         data: {
           orderStatus: id.status,
          note: data.comment,
+         expense: data.expense
         },
       });
     } catch (error) {
     } finally {
       onClose();
     }
-  };
+  }
   return (
     <Modal onClose={onClose}>
 
@@ -94,6 +96,13 @@ const PostSendCourier = ({ id, url, onClose }) => {
 						register={register.bind(null, "comment")}
 						error={errors.comment?.message}
 					/>
+          {user.userRole==="COURIER"&&(id.status==="SOLD"||id.status==="REJECTED")&&  <Input
+            id="text"
+            type="number"
+            placeholder="Ortiqcha harajat"
+            register={register.bind(null, "expense")}
+            error={errors.expense?.message}
+          />}
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
           {((url === "/orders/delivered"||url===`/posts/${id.postId}/orders`) && `${id.statusUz}`) ||

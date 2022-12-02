@@ -635,7 +635,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
   async (req, res, next) => {
     const { regionId, userRoleUz } = req.user;
     const { id } = req.params;
-    const { orderStatus, note } = req.body;
+    const { orderStatus, note, expense} = req.body;
     const postOrdersById = await Order.findByPk(id, {
       where: {
         regionId: {
@@ -673,6 +673,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
         orderStatus: postOrderStatusChange,
         orderStatusUz: postOrderStatusChangeUz,
         note: `${postOrdersById.dataValues.note} ${userRoleUz}: ${note}`,
+        expense
       });
     }
 
@@ -688,6 +689,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
       error: null,
       data: {
         note,
+        expense
       },
     });
   }
