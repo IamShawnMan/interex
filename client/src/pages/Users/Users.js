@@ -16,7 +16,7 @@ function Users() {
   const page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const { user } = useContext(AppContext);
-  const [role,setRole] = useState()
+  const [role,setRole] = useState(null)
   const getAllUser = async () => {
     try {
       const res = await http({
