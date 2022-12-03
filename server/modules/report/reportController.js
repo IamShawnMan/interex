@@ -16,7 +16,7 @@ const OrderItem = require("../orderitem/OrderItem");
 exports.exportOrders = catchAsync(async (req, res, next) => {
     const {regionId, userRole, id} = req.user
 	const workbook = new excelJS.Workbook();
-	const worksheet = workbook.addWorksheet("orders");
+	const worksheet = workbook.addWorksheet("interEx");
 	worksheet.columns = [
 		{ header: "No", key: "s_no", width: 5 },
 		{ header: "Id", key: "id", width: 10 },
@@ -428,7 +428,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=orders.xlsx"
+      "attachment; filename=interEx.xlsx"
     );
     return workbook.xlsx.write(res).then(() => {
       res.status(200).end();
