@@ -46,13 +46,15 @@ const PostSendCourier = ({ id, url, onClose }) => {
     }
   };
   const changeOrderStatusByCourier = async (data) => {
-    console.log(data.expense);
+    if(data.expense === "") {
+      data.expense = 0
+    }
     try {
       const res = await http({
         url: `/orders/delivered/${id.id}/status`,
         method: "PUT",
         data: {
-          orderStatus: id.status,
+         orderStatus: id.status,
          note: data.comment,
          expense: data.expense
         },
