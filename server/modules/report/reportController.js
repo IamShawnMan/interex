@@ -833,8 +833,8 @@ exports.countsInRegionsAndMonths = catchAsync(
 
     setTimeout(() => {
       res.send({
-        forRegions: countOrderinRegions,
-        forMonths: countOrdersInMonthArr,
+        byRegions: countOrderinRegions,
+        byMonths: countOrdersInMonthArr,
       });
     }, 1000);
   }
