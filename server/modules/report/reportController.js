@@ -773,12 +773,26 @@ exports.getStatistics = catchAsync(
 
 exports.countsInRegionsAndMonths = catchAsync(
   async (req, res, next) => {
+    const { id, userRole } = req.user;
+    let queryBuilder;
     const getRegions = await Region.findAll();
     let countOrderinRegions = [];
     getRegions?.map(async region => {
-      const count = await Order.count({
-        where: { regionId: { [Op.eq]: region.id } },
-      });
+      if (userRole === "STORE_OWNER") {
+        queryBuilder = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+            storeOwnerId: { [Op.eq]: id },
+          },
+        };
+      } else {
+        queryBuilder = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+          },
+        };
+      }
+      const count = await Order.count(queryBuilder);
       countOrderinRegions.push({
         region: region.name,
         count: count,
@@ -804,7 +818,6 @@ exports.countsInRegionsAndMonths = catchAsync(
     ];
 
     let countOrdersInMonthArr = [];
-
     monthsIndexArr.forEach(async month => {
       const start = new Date(
         `${new Date().getFullYear()}-${
@@ -816,14 +829,28 @@ exports.countsInRegionsAndMonths = catchAsync(
           month.end
         } 23:59:59.000+05`
       );
-      const countInMonth = await Order.count({
-        where: {
-          createdAt: {
-            [Op.gt]: start,
-            [Op.lte]: end,
+      let queryWhere;
+      if (userRole === "STORE_OWNER") {
+        queryWhere = {
+          where: {
+            storeOwnerId: { [Op.eq]: id },
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
           },
-        },
-      });
+        };
+      } else {
+        queryWhere = {
+          where: {
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
+          },
+        };
+      }
+      const countInMonth = await Order.count(queryWhere);
       countOrdersInMonthArr.push({
         start,
         end,
