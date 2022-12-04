@@ -822,12 +822,12 @@ exports.countsInRegionsAndMonths = catchAsync(
       const start = new Date(
         `${new Date().getFullYear()}-${
           month.month
-        }-01 05:00:00.000+05`
+        }-01 00:00:00.000+00`
       );
       const end = new Date(
         `${new Date().getFullYear()}-${month.month}-${
           month.end
-        } 23:59:59.000+05`
+        } 23:59:59.000+00`
       );
       let queryWhere;
       if (userRole === "STORE_OWNER") {
