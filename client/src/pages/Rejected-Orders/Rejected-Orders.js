@@ -9,6 +9,7 @@ import { formatDate } from "../../utils/dateFormatter";
 import styles from "./Rejected-Orders.module.css";
 import { toast } from "react-toastify";
 import AppContext from "../../context/AppContext";
+import OrderInfo from "../Orders/OrderInfo/OrderInfo";
 function RejectedOrders() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -128,6 +129,9 @@ function RejectedOrders() {
   
       {value.length > 0 ? (
         <>
+          {info &&  (
+        <OrderInfo id={info} onClose={closeHandler} />
+      )}
           <BasicTable columns={cols} data={value} />
           <Button
             disabled={value[0].orderStatus==="REJECTED_NOT_DELIVERED"||value[0].orderStatus==="REJECTED_DELIVERED"}
