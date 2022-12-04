@@ -24,13 +24,11 @@ function NewPost() {
 
   const getNewPost = async () => {
     const res = await http("/posts/new/coming");
-    console.log(res);
     setOrdersIdArr(res?.data?.data?.orderArr);
     setOrderData(res?.data?.data?.ordersOnTheWay?.content);
     setOrderCol(res?.data?.data?.ordersOnTheWay?.pagination?.allItemsCount);
     setPostData([res?.data?.data?.postOnTheWay]);
   };
-  {console.log(orderCol)}
 
   const postCols = [
     {

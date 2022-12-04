@@ -67,7 +67,7 @@ function Navbar(props) {
           onChange={(e) => {
             props.setSearch(e.target.value);
           }}
-          plascholder={"Search"}
+          placeholder={"Qidirish"}
         />
         <div className={styles.searchSvg}>
           <SearchIcon classname={styles.searchSvg} />
