@@ -569,8 +569,8 @@ function Orders() {
         url === "/orders/myorders"
       ) {
         res = await http(
-          `${url ? url : ""}?${page ? `page=${page}` : ""}${
-            size ? `&size=${size}` : ""
+          `${url ? url : ""}?${page ? `page=${search?1:page}` : ""}${
+            size ? `&size=${search?100:size}` : ""
           }${search ? `&search=${search}` : ""}${
             orderStatus ? `&orderStatus=${orderStatus}` : ""
           }${
