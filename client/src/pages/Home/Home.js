@@ -32,13 +32,16 @@ function Home() {
       setRegions(res.data.regions);
       setMonth(res.data.months);
     } catch (error) {
+      console.log(error);
       toast.error(error?.response.data.message);
     }
   };
   useEffect(() => {
+    getChartStatistics()
     getStatistics();
     getChartStatistics()
   },[])
+
   return (
     <Layout pageName={"Bosh Sahifa"}>
       <div className={styles.statistics}>
@@ -94,10 +97,8 @@ function Home() {
           </div>
         </div>
       </div>
-      <div style={{ display: "flex",width: "100%",justifyContent: "center"}}>
- <BarChart style={{width:"50%"}} data={regions}/>
-      <BarChart data={month}/>
-      </div>
+ {regions&&<BarChart  data={regions}/>}
+     {month&& <BarChart data={month}/>}
      
     </Layout>
   );
