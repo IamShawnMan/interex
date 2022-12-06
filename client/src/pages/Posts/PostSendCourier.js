@@ -56,7 +56,7 @@ const PostSendCourier = ({ id, url, onClose }) => {
         data: {
          orderStatus: id.status,
          note: data.comment,
-         expense: data.expense
+         expense: data.expense||0
         },
       });
     } catch (error) {

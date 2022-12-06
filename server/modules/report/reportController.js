@@ -16,7 +16,7 @@ const OrderItem = require("../orderitem/OrderItem");
 exports.exportOrders = catchAsync(async (req, res, next) => {
 	const { regionId, userRole, id } = req.user;
 	const workbook = new excelJS.Workbook();
-	const worksheet = workbook.addWorksheet("orders");
+	const worksheet = workbook.addWorksheet("interEx");
 	worksheet.columns = [
 		{ header: "No", key: "s_no", width: 5 },
 		{ header: "Id", key: "id", width: 10 },
@@ -24,15 +24,39 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Tumani", key: "districtId", width: 15 },
 		{ header: "Firma", key: "storeOwnerId", width: 15 },
 		{ header: "Mahsulot", key: "orderStatus", width: 20 },
-		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 15 },
+		{
+			header: "Telefon raqami",
+			key: "recipientPhoneNumber",
+			width: 15,
+		},
 		{ header: "Holati", key: "orderStatusUz", width: 15 },
-		{ header: "Tovar summasi", key: "totalPrice", width: 10 },
-		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 10 },
-		{ header: "Xizmat narxi", key: "recipient", width: 10 },
+		{
+			header: "Tovar summasi",
+			key: "totalPrice",
+			width: 10,
+		},
+		{
+			header: "Yetkazish narxi",
+			key: "deliveryPrice",
+			width: 10,
+		},
+		{
+			header: "Xizmat narxi",
+			key: "recipient",
+			width: 10,
+		},
 		{ header: "Firma puli", width: 10 },
 		{ header: "Daromad", width: 10 },
-		{ header: "Ortiqcha xarajat", key: "expense", width: 10 },
-		{ header: "Yaratilgan sana", key: "createdAt", width: 10 },
+		{
+			header: "Ortiqcha xarajat",
+			key: "expense",
+			width: 10,
+		},
+		{
+			header: "Yaratilgan sana",
+			key: "createdAt",
+			width: 10,
+		},
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
@@ -140,34 +164,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			if (order.regionId == region.id) {
 				order.regionId = region.name.slice(0, region.name.length - 7);
 			}
-			if (req.query.storeOwnerId == candidate.id) {
-				storeName = candidate.storeName;
-			}
-		});
-		districtsJSON.forEach((district) => {
-			if (order.districtId == district.id) {
-				order.districtId = district.name.slice(0, district.name.length - 7);
-			}
-			if (order.districtId === 101 || order.districtId === 106) {
-				order.recipient = Intl.NumberFormat("ru-RU").format(
-					+customUserforDistrict.tariff
-				);
-			}
-			if (order.regionId === 1) {
-				order.recipient = Intl.NumberFormat("ru-RU").format(
-					+customUserforRegion.tariff
-				);
-			}
-		});
-		downloadOrderItem.forEach((item) => {
-			if (order.id == item.orderId) {
-				order.orderStatus = item.productName;
-			}
-		});
-		regionsJSON.forEach((region) => {
-			if (order.regionId == region.id) {
-				order.regionId = region.name.slice(0, region.name.length - 7);
-			}
 			if (req.query.regionId == region.id) {
 				regionName = region.name;
 			}
@@ -189,7 +185,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const totalPrice1 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`G${endRow}`).value = "UMUMIY NARX:";
-		worksheet.getCell(`H${endRow}`).alignment = { horizontal: "center" };
+		worksheet.getCell(`H${endRow}`).alignment = {
+			horizontal: "center",
+		};
 		worksheet.getCell(`I${endRow}`).value = {
 			formula: `SUM(I3:I${endRow - 1})`,
 		};
@@ -223,7 +221,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const totalPrice2 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`F${endRow}`).value = "UMUMIY NARX:";
-		worksheet.getCell(`G${endRow}`).alignment = { horizontal: "center" };
+		worksheet.getCell(`G${endRow}`).alignment = {
+			horizontal: "center",
+		};
 		worksheet.getCell(`H${endRow}`).value = {
 			formula: `SUM(H3:H${endRow - 1})`,
 		};
@@ -257,7 +257,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const totalPrice3 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`E${endRow}`).value = "UMUMIY NARX:";
-		worksheet.getCell(`F${endRow}`).alignment = { horizontal: "center" };
+		worksheet.getCell(`F${endRow}`).alignment = {
+			horizontal: "center",
+		};
 		worksheet.getCell(`G${endRow}`).value = {
 			formula: `SUM(G3:G${endRow - 1})`,
 		};
@@ -274,15 +276,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 				worksheet.getCell(`H${i}`).value -
 				worksheet.getCell(`L${i}`).value;
 		}
-		if (
-			!req.query.regionId &&
-			req.query.storeOwnerId &&
-			req.query.createdAt &&
-			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-		) {
-			worksheet.spliceColumns(5, 1);
-			worksheet.spliceColumns(13, 1);
-			totalPrice2();
+		for (i = 3; i < endRow; i++) {
+			worksheet.getCell(`K${i}`).value =
+				worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value;
 		}
 		worksheet.getCell(`J${endRow}`).value = {
 			formula: `SUM(J3:J${endRow - 1})`,
@@ -297,7 +293,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const totalPrice4 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`F${endRow}`).value = "UMUMIY NARX:";
-		worksheet.getCell(`G${endRow}`).alignment = { horizontal: "center" };
+		worksheet.getCell(`G${endRow}`).alignment = {
+			horizontal: "center",
+		};
 		worksheet.getCell(`H${endRow}`).value = {
 			formula: `SUM(H3:H${endRow - 1})`,
 		};
@@ -321,7 +319,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const totalPrice5 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`E${endRow}`).value = "UMUMIY NARX:";
-		worksheet.getCell(`F${endRow}`).alignment = { horizontal: "center" };
+		worksheet.getCell(`F${endRow}`).alignment = {
+			horizontal: "center",
+		};
 		worksheet.getCell(`G${endRow}`).value = {
 			formula: `SUM(G3:G${endRow - 1})`,
 		};
@@ -345,7 +345,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const totalPrice6 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`G${endRow}`).value = "UMUMIY NARX:";
-		worksheet.getCell(`H${endRow}`).alignment = { horizontal: "center" };
+		worksheet.getCell(`H${endRow}`).alignment = {
+			horizontal: "center",
+		};
 		worksheet.getCell(`I${endRow}`).value = {
 			formula: `SUM(I3:I${endRow - 1})`,
 		};
@@ -360,7 +362,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	const totalPrice7 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`F${endRow}`).value = "UMUMIY NARX:";
-		worksheet.getCell(`G${endRow}`).alignment = { horizontal: "center" };
+		worksheet.getCell(`G${endRow}`).alignment = {
+			horizontal: "center",
+		};
 		worksheet.getCell(`H${endRow}`).value = {
 			formula: `SUM(H3:H${endRow - 1})`,
 		};
@@ -605,69 +609,33 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		"Content-Type",
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 	);
-	res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
+	res.setHeader("Content-Disposition", "attachment; filename=interEx.xlsx");
 	return workbook.xlsx.write(res).then(() => {
 		res.status(200).end();
 	});
 });
-
 exports.getStatistics = catchAsync(async (req, res, next) => {
 	const { userRole, id, regionId } = req.user;
-	let allOrders;
-	let soldOrders;
-	let rejectedOrders;
-	let allStores;
-	let allUsers;
+	let allOrders = 0;
+	let soldOrders = 0;
+	let rejectedOrders = 0;
+	let allStores = 0;
+	let dayData = [];
+	let monthData = [];
+	let yearData = [];
+	let allUsers = 0;
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 
 	//................Statistics for ADMIN and SUPER_ADMIN starts here ....................
 
 	if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
-		let deliveryPriceSum = 0;
-		let tariffSum = 0;
-
-		const allSoldOrders = await Order.findAll(
-			{ attributes: ["deliveryPrice", "regionId", "orderStatus"] },
-			{
-				where: {
-					orderStatus: {
-						[Op.eq]: orderStatuses.STATUS_SOLD,
-					},
-				},
-			}
-		);
-
-		allSoldOrders.map(async (order) => {
-			if (order.orderStatus === orderStatuses.STATUS_SOLD) {
-				deliveryPriceSum += order.deliveryPrice;
-
-				const region = await Region.findOne(
-					{ attributes: ["name"] },
-					{
-						where: {
-							id: {
-								[Op.eq]: regionId,
-							},
-						},
-					}
-				);
-
-				const userTariff = await User.findOne(
-					{ attributes: ["tariff"] },
-					{
-						where: {
-							id: {
-								[Op.eq]: id,
-							},
-						},
-					}
-				);
-			}
-		});
-
-		console.log(deliveryPriceSum);
-
 		allOrders = await Order.count();
+
+		soldOrders = await Order.count({
+			where: {
+				orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
+			},
+		});
 
 		rejectedOrders = await Order.count({
 			where: {
@@ -692,8 +660,58 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				status: { [Op.eq]: "ACTIVE" },
 			},
 		});
-	}
 
+		const soldOrdersperDay = await Order.count({
+			where: {
+				orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
+				updatedAt: {
+					[Op.or]: {
+						[Op.gte]: dayjs(`${today}`)
+							.monthOf("day")
+							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+						[Op.lte]: dayjs(`${today}`)
+							.endOf("day")
+							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+					},
+				},
+			},
+		});
+		dayData.push(soldOrdersperDay);
+
+		const soldOrdersperMonth = await Order.count({
+			where: {
+				orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
+				updatedAt: {
+					[Op.or]: {
+						[Op.gte]: dayjs(`${today}`)
+							.monthOf("month")
+							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+						[Op.lte]: dayjs(`${today}`)
+							.endOf("month")
+							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+					},
+				},
+			},
+		});
+		monthData.push(soldOrdersperMonth);
+
+		const soldOrdersperYear = await Order.count({
+			where: {
+				orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
+				updatedAt: {
+					[Op.or]: {
+						[Op.gte]: dayjs(`${today}`)
+							.monthOf("year")
+							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+						[Op.lte]: dayjs(`${today}`)
+							.endOf("year")
+							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+					},
+				},
+			},
+		});
+		yearData.push(soldOrdersperYear);
+	}
 	//................Statistics for STORE starts here ....................
 
 	if (userRole === "STORE_OWNER") {
@@ -727,6 +745,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 			},
 		});
 	}
+
 	//............................ statistics for COURIER satrts here ..........................
 	if (userRole === "COURIER") {
 		const region = await Region.findOne({
@@ -897,70 +916,6 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 		}
 	}
 
-	// let sold = ordersSold.map((e) => e.regionId);
-
-	// let discountTariff;
-	// discountTariff = +allUsers?.dataValues.tariff;
-
-	// let discountDeliveryPrice = ordersSold;
-	// // .map((e) => e.deliveryPrice)
-	// // .reduce((sum, e) => sum + e, 0);
-	// let incomeSum = discountDeliveryPrice - discountTariff * soldOrders;
-	// let today = new Date();
-	// let soldOrdersperDay = await Order.count({
-	// 	where: {
-	// 		orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
-	// 		updatedAt: {
-	// 			[Op.or]: {
-	// 				[Op.gte]: dayjs(`${today}`)
-	// 					.startOf("day")
-	// 					.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-	// 				[Op.lte]: dayjs(`${today}`)
-	// 					.endOf("day")
-	// 					.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-	// 			},
-	// 		},
-	// 	},
-	// });
-	// let dayData = [];
-	// dayData.push(soldOrdersperDay);
-
-	// let soldOrdersperMonth = await Order.count({
-	// 	where: {
-	// 		orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
-	// 		updatedAt: {
-	// 			[Op.or]: {
-	// 				[Op.gte]: dayjs(`${today}`)
-	// 					.startOf("month")
-	// 					.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-	// 				[Op.lte]: dayjs(`${today}`)
-	// 					.endOf("month")
-	// 					.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-	// 			},
-	// 		},
-	// 	},
-	// });
-	// let monthData = [];
-	// monthData.push(soldOrdersperMonth);
-
-	// let soldOrdersperYear = await Order.count({
-	// 	where: {
-	// 		orderStatus: { [Op.eq]: orderStatuses.STATUS_SOLD },
-	// 		updatedAt: {
-	// 			[Op.or]: {
-	// 				[Op.gte]: dayjs(`${today}`)
-	// 					.startOf("year")
-	// 					.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-	// 				[Op.lte]: dayjs(`${today}`)
-	// 					.endOf("year")
-	// 					.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-	// 			},
-	// 		},
-	// 	},
-	// });
-	// let yearData = [];
-	// yearData.push(soldOrdersperYear);
-
 	res.json({
 		status: "success",
 		message: "Statistika uchun ma'lumotlar",
@@ -970,12 +925,101 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 			soldOrders,
 			rejectedOrders,
 			allStores,
-			allUsers,
-			// discountTariff,
-			// incomeSum,
-			// dayData,
-			// monthData,
-			// yearData,
+			discountTariff,
+			incomeSum,
+			dayData,
+			monthData,
+			yearData,
 		},
 	});
+});
+
+exports.countsInRegionsAndMonths = catchAsync(async (req, res, next) => {
+	const { id, userRole } = req.user;
+	let queryBuilder;
+	const getRegions = await Region.findAll();
+	let countOrderinRegions = [];
+	getRegions?.map(async (region) => {
+		if (userRole === "STORE_OWNER") {
+			queryBuilder = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+					storeOwnerId: { [Op.eq]: id },
+				},
+			};
+		} else {
+			queryBuilder = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+				},
+			};
+		}
+		const count = await Order.count(queryBuilder);
+		countOrderinRegions.push({
+			region: region.name,
+			count: count,
+		});
+	});
+
+	const monthsIndexArr = [
+		{ month: 1, end: 31 },
+		{
+			month: 2,
+			end: new Date().getFullYear() % 4 === 0 ? 29 : 28,
+		},
+		{ month: 3, end: 31 },
+		{ month: 4, end: 30 },
+		{ month: 5, end: 31 },
+		{ month: 6, end: 30 },
+		{ month: 7, end: 31 },
+		{ month: 8, end: 31 },
+		{ month: 9, end: 30 },
+		{ month: 10, end: 31 },
+		{ month: 11, end: 30 },
+		{ month: 12, end: 31 },
+	];
+
+	let countOrdersInMonthArr = [];
+	monthsIndexArr.forEach(async (month) => {
+		const start = new Date(
+			`${new Date().getFullYear()}-${month.month}-01 00:00:00.000+00`
+		);
+		const end = new Date(
+			`${new Date().getFullYear()}-${month.month}-${month.end} 23:59:59.000+00`
+		);
+		let queryWhere;
+		if (userRole === "STORE_OWNER") {
+			queryWhere = {
+				where: {
+					storeOwnerId: { [Op.eq]: id },
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+		} else {
+			queryWhere = {
+				where: {
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+		}
+		const countInMonth = await Order.count(queryWhere);
+		countOrdersInMonthArr.push({
+			start,
+			end,
+			count: countInMonth,
+		});
+	});
+
+	setTimeout(() => {
+		res.send({
+			byRegions: countOrderinRegions,
+			byMonths: countOrdersInMonthArr,
+		});
+	}, 1000);
 });
