@@ -16,7 +16,9 @@ const data = {
   ],
 };
 
-const LineChart = () => {
+const LineChart = (props) => {
+  data.labels=props?.data?.labels;
+  data.datasets[0].data=props.data?.datasets[0]?.data
   return (
     <div>
       <Line data={data}  />
