@@ -39,7 +39,6 @@ function Home() {
   useEffect(() => {
     getChartStatistics()
     getStatistics();
-    getChartStatistics()
   },[])
 
   return (
