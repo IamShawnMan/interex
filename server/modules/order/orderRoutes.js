@@ -23,6 +23,7 @@ router.get("/download", reportController.exportOrders);
 router.get("/statistics", reportController.getStatistics);
 router.get(
   "/statisticcount",
+
   roleMiddleware(["SUPER_ADMIN", "ADMIN", "STORE_OWNER"]),
   reportController.countsInRegionsAndMonths
 );
