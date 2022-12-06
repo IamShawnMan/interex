@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import BarChart from "../../components/Chart/BarChart"
 function Home() {
   const [value,setValue]= useState()
+  const [regions,setRegions] = useState()
+  const [month,setMonth] = useState()
   const getStatistics = async () => {
     try {
       const res = await http({
@@ -21,10 +23,24 @@ function Home() {
       toast.error(error?.response.data.message);
     }
   };
+  const getChartStatistics = async () => {
+    try {
+      const res = await http({
+        url: `/orders/statisticcount`,
+      });
+      console.log(res);
+      setRegions(res.data.regions);
+      setMonth(res.data.months);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response.data.message);
+    }
+  };
   useEffect(() => {
+    getChartStatistics()
     getStatistics();
-
   },[])
+
   return (
     <Layout pageName={"Bosh Sahifa"}>
       <div className={styles.statistics}>
@@ -80,7 +96,9 @@ function Home() {
           </div>
         </div>
       </div>
-      <BarChart/>
+ {regions&&<BarChart  data={regions}/>}
+     {month&& <BarChart data={month}/>}
+     
     </Layout>
   );
 }

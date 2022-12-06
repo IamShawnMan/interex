@@ -18,10 +18,11 @@ function Users() {
   const size = searchParams.get("size") || 10;
   const { user } = useContext(AppContext);
   const [role,setRole] = useState(null)
+  const [search,setSearch] = useState(null)
   const getAllUser = async () => {
     try {
       const res = await http({
-        url: `/users?page=${page}&size=${size}${role?`&userRole=${role}`:""}`,
+        url: `/users?page=${page}&size=${size}${search?`&search=${search}`:""}${role?`&userRole=${role}`:""}`,
       });
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
@@ -31,7 +32,7 @@ function Users() {
   };
   useEffect(() => {
     getAllUser();
-  }, [page,role]);
+  }, [page,role,search]);
 
   const userStatusChangeHandler = async ({ id, status }) => {
     try {
@@ -122,7 +123,7 @@ function Users() {
     usersCols.push(...superAdminAction);
   }
   return (
-    <Layout pageName="Foydalanuvchilar">
+    <Layout pageName="Foydalanuvchilar" setSearch={setSearch}>
       {user.userRole === "SUPER_ADMIN" && (
         <Link style={{ width: "10rem", display: "block" }} to="/users/new">
           <Button size="iconSmall" name="btn">
