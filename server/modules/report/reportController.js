@@ -596,6 +596,11 @@ exports.exportOrders = catchAsync(
           bottom: { style: "thin" },
           right: { style: "thin" },
         };
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+          wrapText: true
+        }
       });
     });
     worksheet.eachRow(row => {
