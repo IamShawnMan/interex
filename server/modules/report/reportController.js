@@ -777,6 +777,15 @@ exports.countsInRegionsAndMonths = catchAsync(
     let queryBuilder;
     const getRegions = await Region.findAll();
     let countOrderinRegions = [];
+    let countOrderinMonths = [];
+    let regions = {
+      labels: [],
+      datasets: [],
+    };
+    let months = {
+      labels: [],
+      datasets: [],
+    };
     getRegions?.map(async region => {
       if (userRole === "STORE_OWNER") {
         queryBuilder = {
@@ -793,31 +802,29 @@ exports.countsInRegionsAndMonths = catchAsync(
         };
       }
       const count = await Order.count(queryBuilder);
-      countOrderinRegions.push({
-        region: region.name,
-        count: count,
-      });
+      countOrderinRegions.push(count);
+      regions.labels.push(region.name);
     });
 
     const monthsIndexArr = [
-      { month: 1, end: 31 },
+      { name: "Yanvar", month: 1, end: 31 },
       {
+        name: "Fevral",
         month: 2,
         end: new Date().getFullYear() % 4 === 0 ? 29 : 28,
       },
-      { month: 3, end: 31 },
-      { month: 4, end: 30 },
-      { month: 5, end: 31 },
-      { month: 6, end: 30 },
-      { month: 7, end: 31 },
-      { month: 8, end: 31 },
-      { month: 9, end: 30 },
-      { month: 10, end: 31 },
-      { month: 11, end: 30 },
-      { month: 12, end: 31 },
+      { name: "Mart", month: 3, end: 31 },
+      { name: "Aprel", month: 4, end: 30 },
+      { name: "May", month: 5, end: 31 },
+      { name: "Iyun", month: 6, end: 30 },
+      { name: "Iyul", month: 7, end: 31 },
+      { name: "Avgust", month: 8, end: 31 },
+      { name: "Sentyabr", month: 9, end: 30 },
+      { name: "Oktyabr", month: 10, end: 31 },
+      { name: "Noyabr", month: 11, end: 30 },
+      { name: "Dekabr", month: 12, end: 31 },
     ];
 
-    let countOrdersInMonthArr = [];
     monthsIndexArr.forEach(async month => {
       const start = new Date(
         `${new Date().getFullYear()}-${
@@ -851,18 +858,19 @@ exports.countsInRegionsAndMonths = catchAsync(
         };
       }
       const countInMonth = await Order.count(queryWhere);
-      countOrdersInMonthArr.push({
-        start,
-        end,
-        count: countInMonth,
-      });
+      months.labels.push(month.name);
+      countOrderinMonths.push(countInMonth);
     });
 
+    regions.datasets.push({
+      data: countOrderinRegions,
+    });
+
+    months.datasets.push({
+      data: countOrderinMonths,
+    });
     setTimeout(() => {
-      res.send({
-        byRegions: countOrderinRegions,
-        byMonths: countOrdersInMonthArr,
-      });
+      res.send({ regions, months });
     }, 1000);
   }
 );
