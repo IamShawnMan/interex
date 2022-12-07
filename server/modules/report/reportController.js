@@ -563,8 +563,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {
 			cell.alignment = {
-				horizontal: "center",
-			};
+          vertical: "middle",
+          horizontal: "center",
+          wrapText: true
+      }
 			if (cell.model.value === "KUTILMOQDA") {
 				row.font = {
 					color: { argb: "dd2727" },
@@ -624,6 +626,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 	let monthData = [];
 	let yearData = [];
 	let allUsers = 0;
+  let today = new Date()
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 
 	//................Statistics for ADMIN and SUPER_ADMIN starts here ....................
