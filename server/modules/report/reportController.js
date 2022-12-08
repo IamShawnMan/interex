@@ -660,14 +660,22 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 	let soldOrders = 0;
 	let rejectedOrders = 0;
 	let allStores = 0;
+	let allUsers = 0;
 	let dayData = [];
 	let monthData = [];
 	let yearData = [];
-	let allUsers = 0;
   	let today = new Date()
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 
 	//................Statistics for ADMIN and SUPER_ADMIN starts here ....................
+	if (userRole === "ADMIN" || userRole === "SUPER_ADMIN" || userRole === "COURIER") {
+		allStores = await User.count({
+			where: {
+				userRole: {[Op.eq]: userRoles.STORE_OWNER},
+				status: {[Op.eq]: userStatuses.ACTIVE}
+			}
+		})
+	}	
 
 	if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
 		allOrders = await Order.count();
@@ -683,12 +691,6 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 		rejectedOrders = await Order.count({
 			where: {
 				orderStatus: { [Op.in]: rejectedOrderStatuses },
-			},
-		});
-
-		allStores = await User.count({
-			where: {
-				userRole: { [Op.eq]: userRoles.STORE_OWNER },
 			},
 		});
 
@@ -714,7 +716,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				updatedAt: {
 					[Op.or]: {
 						[Op.gte]: dayjs(`${today}`)
-							.monthOf("day")
+							.startOf("day")
 							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
 						[Op.lte]: dayjs(`${today}`)
 							.endOf("day")
@@ -733,7 +735,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				updatedAt: {
 					[Op.or]: {
 						[Op.gte]: dayjs(`${today}`)
-							.monthOf("month")
+							.startOf("month")
 							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
 						[Op.lte]: dayjs(`${today}`)
 							.endOf("month")
@@ -752,7 +754,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				updatedAt: {
 					[Op.or]: {
 						[Op.gte]: dayjs(`${today}`)
-							.monthOf("year")
+							.startOf("year")
 							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
 						[Op.lte]: dayjs(`${today}`)
 							.endOf("year")
@@ -766,6 +768,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 	//................Statistics for STORE starts here ....................
 
 	if (userRole === "STORE_OWNER") {
+		allStores = 1
 		allOrders = await Order.count({
 			where: {
 				storeOwnerId: {
@@ -973,6 +976,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 		error: null,
 		data: {
 			allOrders,
+			allStores,
 			soldOrders,
 			rejectedOrders,
 			dayData,
