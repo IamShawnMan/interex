@@ -53,6 +53,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			width: 10,
 		},
 		{
+			header: "Kuryerdan qaytgan pul",
+			width: 10,
+		},
+		{
 			header: "Yaratilgan sana",
 			key: "createdAt",
 			width: 10,
@@ -208,6 +212,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.getCell(`M${i}`).value =
 				worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value;
 		}
+		for (i = 3; i < endRow; i++) {
+			worksheet.getCell(`O${i}`).value =
+				worksheet.getCell(`I${i}`).value - worksheet.getCell(`K${i}`).value - worksheet.getCell(`N${i}`).value;
+		}
 		worksheet.getCell(`L${endRow}`).value = {
 			formula: `SUM(L3:L${endRow - 1})`,
 		};
@@ -216,6 +224,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.getCell(`N${endRow}`).value = {
 			formula: `SUM(N3:N${endRow - 1})`,
+		};
+		worksheet.getCell(`O${endRow}`).value = {
+			formula: `SUM(O3:O${endRow - 1})`,
 		};
 	};
 	const totalPrice2 = () => {
@@ -244,6 +255,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.getCell(`L${i}`).value =
 				worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value;
 		}
+		for (i = 3; i < endRow; i++) {
+			worksheet.getCell(`N${i}`).value =
+				worksheet.getCell(`H${i}`).value - worksheet.getCell(`J${i}`).value - worksheet.getCell(`M${i}`).value;
+		}
 		worksheet.getCell(`K${endRow}`).value = {
 			formula: `SUM(K3:K${endRow - 1})`,
 		};
@@ -252,6 +267,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.getCell(`M${endRow}`).value = {
 			formula: `SUM(M3:M${endRow - 1})`,
+		};
+		worksheet.getCell(`N${endRow}`).value = {
+			formula: `SUM(N3:N${endRow - 1})`,
 		};
 	};
 	const totalPrice3 = () => {
@@ -280,6 +298,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.getCell(`K${i}`).value =
 				worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value;
 		}
+		for (i = 3; i < endRow; i++) {
+			worksheet.getCell(`M${i}`).value =
+				worksheet.getCell(`G${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`L${i}`).value;
+		}
 		worksheet.getCell(`J${endRow}`).value = {
 			formula: `SUM(J3:J${endRow - 1})`,
 		};
@@ -288,6 +310,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.getCell(`L${endRow}`).value = {
 			formula: `SUM(L3:L${endRow - 1})`,
+		};
+		worksheet.getCell(`M${endRow}`).value = {
+			formula: `SUM(M3:M${endRow - 1})`,
 		};
 	};
 	const totalPrice4 = () => {
@@ -348,6 +373,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.getCell(`H${endRow}`).alignment = {
 			horizontal: "center",
 		};
+		for (i = 3; i < endRow; i++) {
+			worksheet.getCell(`L${i}`).value =
+				worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value;
+		}
 		worksheet.getCell(`I${endRow}`).value = {
 			formula: `SUM(I3:I${endRow - 1})`,
 		};
@@ -357,6 +386,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.getCell(`K${endRow}`).value = {
 			formula: `SUM(K3:K${endRow - 1})`,
 		};
+		worksheet.getCell(`L${endRow}`).value = {
+			formula: `SUM(L3:L${endRow - 1})`,
+		};
 		worksheet.mergeCells(`G${endRow}:H${endRow}`);
 	};
 	const totalPrice7 = () => {
@@ -365,6 +397,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.getCell(`G${endRow}`).alignment = {
 			horizontal: "center",
 		};
+		for (i = 3; i < endRow; i++) {
+			worksheet.getCell(`K${i}`).value =
+				worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value;
+		}
 		worksheet.getCell(`H${endRow}`).value = {
 			formula: `SUM(H3:H${endRow - 1})`,
 		};
@@ -373,6 +409,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.getCell(`J${endRow}`).value = {
 			formula: `SUM(J3:J${endRow - 1})`,
+		};
+		worksheet.getCell(`K${endRow}`).value = {
+			formula: `SUM(K3:K${endRow - 1})`,
 		};
 		worksheet.mergeCells(`F${endRow}:G${endRow}`);
 	};
@@ -400,7 +439,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		!req.query.storeOwnerId &&
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
-		worksheet.spliceColumns(15, 1);
+		worksheet.spliceColumns(16, 1);
 		totalPrice1();
 	}
 	if (
@@ -420,7 +459,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
 		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(14, 1);
+		worksheet.spliceColumns(15, 1);
 		totalPrice2();
 	}
 	if (
@@ -430,7 +469,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
 		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(14, 1);
+		worksheet.spliceColumns(15, 1);
 		totalPrice2();
 	}
 	if (
@@ -441,7 +480,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	) {
 		worksheet.spliceColumns(3, 1);
 		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(13, 1);
+		worksheet.spliceColumns(14, 1);
 		totalPrice3();
 	}
 	if (
@@ -461,6 +500,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.spliceColumns(5, 1);
 		worksheet.spliceColumns(10, 1);
 		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(12, 1);
 		totalPrice4();
 	}
 	if (
@@ -472,6 +512,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.spliceColumns(5, 1);
 		worksheet.spliceColumns(10, 1);
 		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(12, 1);
 		worksheet.spliceColumns(12, 1);
 		totalPrice4();
 	}
@@ -485,6 +526,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.spliceColumns(4, 1);
 		worksheet.spliceColumns(9, 1);
 		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(11, 1);
 		totalPrice5();
 	}
 	if (
@@ -497,6 +539,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.spliceColumns(4, 1);
 		worksheet.spliceColumns(9, 1);
 		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(11, 1);
 		worksheet.spliceColumns(11, 1);
 		totalPrice5();
 	}
@@ -518,7 +561,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.spliceColumns(10, 1);
 		worksheet.spliceColumns(11, 1);
 		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(13, 1);
 		totalPrice6();
 	}
 	if (
@@ -541,7 +584,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.spliceColumns(9, 1);
 		worksheet.spliceColumns(10, 1);
 		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(12, 1);
 		totalPrice7();
 	}
 	worksheet.getCell(`B2`).value = `${orderDate}`;
@@ -592,12 +635,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 				type: "pattern",
 				pattern: "solid",
 				fgColor: { argb: "ffd385" },
-			}),
-			(cell.alignment = {
-				horizontal: "center",
-				vertical: "middle",
-				wrapText: true,
-			});
+			})
 	});
 	worksheet.getRow(2).eachCell((cell) => {
 		(cell.font = { bold: true }),
