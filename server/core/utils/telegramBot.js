@@ -19,6 +19,7 @@ const botTelegram = async (req, res, next) => {
   // regions?.forEach(region=>{
   //     regionArr.push([region.name, region.id])
   // })
+  
   // let regionName = []
   // regionArr.forEach(reg=>{
   //     regionName.push(reg.slice(0,1))
