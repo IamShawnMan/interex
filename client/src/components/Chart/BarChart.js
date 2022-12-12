@@ -3,8 +3,8 @@ import Chart from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 
 const labels = [];
-
 const LineChart = props => {
+  console.log(props.data)
   const data = {
     labels: props?.data?.labels || [],
     datasets: [
