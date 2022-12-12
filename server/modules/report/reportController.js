@@ -24,43 +24,16 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Tumani", key: "districtId", width: 15 },
 		{ header: "Firma", key: "storeOwnerId", width: 15 },
 		{ header: "Mahsulot", key: "orderStatus", width: 20 },
-		{
-			header: "Telefon raqami",
-			key: "recipientPhoneNumber",
-			width: 15,
-		},
+		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 15},
 		{ header: "Holati", key: "orderStatusUz", width: 15 },
-		{
-			header: "Tovar summasi",
-			key: "totalPrice",
-			width: 10,
-		},
-		{
-			header: "Yetkazish narxi",
-			key: "deliveryPrice",
-			width: 10,
-		},
-		{
-			header: "Xizmat narxi",
-			key: "recipient",
-			width: 10,
-		},
+		{ header: "Tovar summasi", key: "totalPrice", width: 10},
+		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 10},
+		{ header: "Ortiqcha xarajat", key: "expense", width: 10},
+		{ header: "Xizmat narxi", key: "recipient", width: 10},
+		{ header: "Kuryerdan qaytgan pul", width: 10},
+		{ header: "Foyda", width: 10 },
 		{ header: "Firma puli", width: 10 },
-		{ header: "Daromad", width: 10 },
-		{
-			header: "Ortiqcha xarajat",
-			key: "expense",
-			width: 10,
-		},
-		{
-			header: "Kuryerdan qaytgan pul",
-			width: 10,
-		},
-		{
-			header: "Yaratilgan sana",
-			key: "createdAt",
-			width: 10,
-		},
+		{ header: "Yaratilgan sana", key: "createdAt", width: 10},
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
@@ -203,18 +176,18 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`G${endRow}:H${endRow}`);
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`L${i}`).value =
+			worksheet.getCell(`M${i}`).value =
 				worksheet.getCell(`I${i}`).value -
-				worksheet.getCell(`J${i}`).value -
-				worksheet.getCell(`N${i}`).value;
+				worksheet.getCell(`K${i}`).value -
+				worksheet.getCell(`L${i}`).value;
 		}
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`M${i}`).value =
-				worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value;
+			worksheet.getCell(`N${i}`).value =
+				worksheet.getCell(`J${i}`).value - worksheet.getCell(`L${i}`).value;
 		}
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`O${i}`).value =
-				worksheet.getCell(`I${i}`).value - worksheet.getCell(`K${i}`).value - worksheet.getCell(`N${i}`).value;
+				worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value;
 		}
 		worksheet.getCell(`L${endRow}`).value = {
 			formula: `SUM(L3:L${endRow - 1})`,
@@ -246,18 +219,18 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`F${endRow}:G${endRow}`);
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`K${i}`).value =
+			worksheet.getCell(`L${i}`).value =
 				worksheet.getCell(`H${i}`).value -
-				worksheet.getCell(`I${i}`).value -
-				worksheet.getCell(`M${i}`).value;
+				worksheet.getCell(`J${i}`).value -
+				worksheet.getCell(`K${i}`).value;
 		}
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`L${i}`).value =
-				worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value;
+			worksheet.getCell(`M${i}`).value =
+				worksheet.getCell(`I${i}`).value - worksheet.getCell(`K${i}`).value;
 		}
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`N${i}`).value =
-				worksheet.getCell(`H${i}`).value - worksheet.getCell(`J${i}`).value - worksheet.getCell(`M${i}`).value;
+				worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value;
 		}
 		worksheet.getCell(`K${endRow}`).value = {
 			formula: `SUM(K3:K${endRow - 1})`,
@@ -289,18 +262,18 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`E${endRow}:F${endRow}`);
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`J${i}`).value =
+			worksheet.getCell(`K${i}`).value =
 				worksheet.getCell(`G${i}`).value -
-				worksheet.getCell(`H${i}`).value -
-				worksheet.getCell(`L${i}`).value;
+				worksheet.getCell(`I${i}`).value -
+				worksheet.getCell(`J${i}`).value;
 		}
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`K${i}`).value =
-				worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value;
+			worksheet.getCell(`L${i}`).value =
+				worksheet.getCell(`H${i}`).value - worksheet.getCell(`J${i}`).value;
 		}
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`M${i}`).value =
-				worksheet.getCell(`G${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`L${i}`).value;
+				worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value;
 		}
 		worksheet.getCell(`J${endRow}`).value = {
 			formula: `SUM(J3:J${endRow - 1})`,
@@ -329,10 +302,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`F${endRow}:G${endRow}`);
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`J${i}`).value =
+			worksheet.getCell(`K${i}`).value =
 				worksheet.getCell(`H${i}`).value -
 				worksheet.getCell(`I${i}`).value -
-				worksheet.getCell(`K${i}`).value;
+				worksheet.getCell(`J${i}`).value;
 		}
 		worksheet.getCell(`J${endRow}`).value = {
 			formula: `SUM(J3:J${endRow - 1})`,
@@ -355,10 +328,10 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`E${endRow}:F${endRow}`);
 		for (i = 3; i < endRow; i++) {
-			worksheet.getCell(`I${i}`).value =
+			worksheet.getCell(`J${i}`).value =
 				worksheet.getCell(`G${i}`).value -
 				worksheet.getCell(`H${i}`).value -
-				worksheet.getCell(`J${i}`).value;
+				worksheet.getCell(`I${i}`).value;
 		}
 		worksheet.getCell(`I${endRow}`).value = {
 			formula: `SUM(I3:I${endRow - 1})`,
@@ -498,9 +471,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	) {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(10, 1);
 		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(11, 1);
 		totalPrice4();
 	}
 	if (
@@ -510,9 +483,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	) {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(10, 1);
 		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(11, 1);
 		worksheet.spliceColumns(12, 1);
 		totalPrice4();
 	}
@@ -524,9 +497,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(3, 1);
 		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(9, 1);
 		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(10, 1);
 		totalPrice5();
 	}
 	if (
@@ -537,9 +510,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(3, 1);
 		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(9, 1);
 		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(10, 1);
 		worksheet.spliceColumns(11, 1);
 		totalPrice5();
 	}
@@ -549,8 +522,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(13, 1);
+		worksheet.spliceColumns(13, 1);
 		totalPrice6();
 	}
 	if (
@@ -559,8 +532,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(13, 1);
+		worksheet.spliceColumns(13, 1);
 		worksheet.spliceColumns(13, 1);
 		totalPrice6();
 	}
@@ -570,9 +543,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(9, 1);
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(12, 1);
 		totalPrice7();
 	}
 	if (
@@ -581,9 +554,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(9, 1);
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(12, 1);
 		worksheet.spliceColumns(12, 1);
 		totalPrice7();
 	}
@@ -595,21 +568,17 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.mergeCells("F2:H2");
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {
-			cell.border = {
-				top: { style: "thin" },
-				left: { style: "thin" },
-				bottom: { style: "thin" },
-				right: { style: "thin" },
-			};
-		});
-	});
-	worksheet.eachRow((row) => {
-		row.eachCell((cell) => {
-			cell.alignment = {
+		cell.border = {
+			top: { style: "thin" },
+			left: { style: "thin" },
+			bottom: { style: "thin" },
+			right: { style: "thin" },
+		}
+	    cell.alignment = {
           vertical: "middle",
           horizontal: "center",
           wrapText: true
-      }
+      	}
 			if (cell.model.value === "KUTILMOQDA") {
 				row.font = {
 					color: { argb: "dd2727" },
