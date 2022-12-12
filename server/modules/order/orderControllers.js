@@ -289,6 +289,23 @@ exports.changeOrderStatus = catchAsync(
   }
 );
 
+exports.deleteOrder = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const orderById = await Order.findByPk(id);
+
+  !orderById.orderStatus === statusOrder.STATUS_NEW
+    ? next(new AppError("Buyurtmani o`chirib bo`lmaydi"))
+    : await orderById.destroy();
+
+  res.json({
+    status: "success",
+    message: "buyurtma o`chirildi",
+    error: null,
+    data: null,
+  });
+});
+
 exports.adminOrderStatus = catchAsync(
   async (req, res, next) => {
     let orderStatusVariables = [
@@ -635,7 +652,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
   async (req, res, next) => {
     const { regionId, userRoleUz } = req.user;
     const { id } = req.params;
-    const { orderStatus, note, expense} = req.body;
+    const { orderStatus, note, expense } = req.body;
     const postOrdersById = await Order.findByPk(id, {
       where: {
         regionId: {
@@ -673,7 +690,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
         orderStatus: postOrderStatusChange,
         orderStatusUz: postOrderStatusChangeUz,
         note: `${postOrdersById.dataValues.note} ${userRoleUz}: ${note}`,
-        expense
+        expense,
       });
     }
 
@@ -689,7 +706,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
       error: null,
       data: {
         note,
-        expense
+        expense,
       },
     });
   }
