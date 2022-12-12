@@ -9,6 +9,7 @@ import Photobox from "../../assets/icons/iconcasino.png";
 import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
 import BarChart from "../../components/Chart/BarChart"
+import ReChart from "../../components/Chart/ReChart";
 function Home() {
   const [value,setValue]= useState()
   const [regions,setRegions] = useState()
@@ -98,7 +99,7 @@ function Home() {
       </div>
  {regions&&<BarChart  data={regions}/>}
      {month&& <BarChart data={month}/>}
-     
+     <ReChart/>
     </Layout>
   );
 }
