@@ -1051,23 +1051,10 @@ exports.getStatistics = catchAsync(
 exports.countsInRegionsAndMonths = catchAsync(
   async (req, res, next) => {
     const { id, userRole } = req.user;
-    let allWhereRegion;
-    let soldWhereRegion;
-    let rejectedWhereRegion;
-    let allWhereMonth;
-    let soldWhereMonth;
-    let rejectedWhereMonth;
+    let regions = [];
+    let months = [];
     const getRegions = await Region.findAll();
-    let countAllOrderinRegions = [];
-    let countSoldOrderinRegions = [];
-    let countRejectedOrderinRegions = [];
-    let countAllOrderinMonths = [];
-    let countSoldOrderinMonths = [];
-    let countRejectedOrderinMonths = [];
-    let regions = {
-      labels: [],
-      datasets: [],
-    };
+
     const monthsIndexArr = [
       { name: "Yanvar", month: 1, end: 31 },
       {
@@ -1086,10 +1073,6 @@ exports.countsInRegionsAndMonths = catchAsync(
       { name: "Noyabr", month: 11, end: 30 },
       { name: "Dekabr", month: 12, end: 31 },
     ];
-    let months = {
-      labels: [],
-      datasets: [],
-    };
     getRegions?.forEach(async region => {
       if (userRole === "STORE_OWNER") {
         allWhereRegion = {
@@ -1142,19 +1125,18 @@ exports.countsInRegionsAndMonths = catchAsync(
       const countAllOrdersInRegion = await Order.count(
         allWhereRegion
       );
-      console.log(countAllOrdersInRegion);
       const soldCountInRegion = await Order.count(
         soldWhereRegion
       );
       const rejectedCountinRegion = await Order.count(
         rejectedWhereRegion
       );
-      countAllOrderinRegions.push(countAllOrdersInRegion);
-      countRejectedOrderinRegions.push(
-        rejectedCountinRegion
-      );
-      countSoldOrderinRegions.push(soldCountInRegion);
-      regions.labels.push(region.name);
+      regions.push({
+        name: region.name,
+        barchasi: countAllOrdersInRegion,
+        sotilgani: soldCountInRegion,
+        qaytgani: rejectedCountinRegion,
+      });
     });
 
     monthsIndexArr.forEach(async month => {
@@ -1244,25 +1226,14 @@ exports.countsInRegionsAndMonths = catchAsync(
       const countRejectedOrdersInMonth = await Order.count(
         rejectedWhereMonth
       );
-      countAllOrderinMonths.push(countAllOrdersInMonth);
-      countRejectedOrderinMonths.push(
-        countRejectedOrdersInMonth
-      );
-      months.labels.push(month.name);
-      countSoldOrderinMonths.push(countSoldOrdersInMonth);
+      months.push({
+        name: month.name,
+        barchasi: countAllOrdersInMonth,
+        sotilgani: countSoldOrdersInMonth,
+        qaytgani: countRejectedOrdersInMonth,
+      });
     });
 
-    regions.datasets.push({
-      data: countAllOrderinRegions,
-      data1: countSoldOrderinRegions,
-      data2: countRejectedOrderinRegions,
-    });
-
-    months.datasets.push({
-      data: countAllOrderinMonths,
-      data1: countSoldOrderinMonths,
-      data2: countRejectedOrderinMonths,
-    });
     setTimeout(() => {
       res.send({ regions, months });
     }, 1000);
