@@ -1239,4 +1239,3 @@ exports.countsInRegionsAndMonths = catchAsync(
     }, 1000);
   }
 );
-// console.log()
