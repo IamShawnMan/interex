@@ -278,6 +278,20 @@ exports.downloadWord = catchAsync(
                       }),
                     ],
                   }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Tovar: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${orderArr[0].note?.substr(
+                          0,
+                          orderArr[0].note?.indexOf(" ")
+                        )}`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                 ],
               }),
               new TableCell({
@@ -295,7 +309,7 @@ exports.downloadWord = catchAsync(
                       new TextRun({
                         text: `${
                           orderArr[1].storeOwner
-                            .storeName || null
+                            ?.storeName || null
                         }`,
                         bold: true,
                       }),
@@ -382,10 +396,24 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].totalPrice.toLocaleString(
+                          orderArr[1].totalPrice?.toLocaleString(
                             "RU-RU"
                           ) || null
                         } so\`m`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Tovar: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${orderArr[1].note?.substr(
+                          0,
+                          orderArr[1].note?.indexOf(" ")
+                        )}`,
                         bold: true,
                       }),
                     ],
@@ -498,6 +526,20 @@ exports.downloadWord = catchAsync(
                             "RU-RU"
                           ) || null
                         } so\`m`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Tovar: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${orderArr[2].note?.substr(
+                          0,
+                          orderArr[2].note?.indexOf(" ")
+                        )}`,
                         bold: true,
                       }),
                     ],

@@ -141,6 +141,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
         break;
     }
     id = `${regSeria}-${countForId}`;
+    let itemByNote = "";
     const orderInfo = {
       id,
       recipient: order.recipient,
@@ -156,6 +157,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     let items = [];
     let sum = 0;
     order?.orderItems?.forEach(item => {
+      itemByNote =
+        itemByNote +
+        `${
+          item.productName
+        }-${+item.quantity}/${+item.price},`;
       items.push({
         productName: item.productName,
         quantity: item.quantity,
@@ -168,6 +174,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     });
 
     await OrderItem.bulkCreate(items);
+    newOrder.note = itemByNote + " " + newOrder.note;
     newOrder.totalPrice = sum;
     newOrder.packageId = existedPackage.id;
     await newOrder.save();
@@ -220,6 +227,27 @@ exports.getOrderById = catchAsync(
       error: null,
       data: { orderById },
     });
+  }
+);
+
+exports.getAllOrdersUpdate = catchAsync(
+  async (req, res, next) => {
+    const getAllOrders = await Order.findAll();
+
+    getAllOrders?.forEach(async order => {
+      let itemByNote = "";
+      const itemsByOrder = await OrderItem.findAll({
+        where: { orderId: { [Op.eq]: order.id } },
+      });
+      itemsByOrder?.forEach(item => {
+        itemByNote += `${item.productName}-${item.quantity}/${item.orderItemTotalPrice}`;
+      });
+      if (itemByNote.length > 0) {
+        order.note = itemByNote + " " + order.note;
+        await order.save();
+      }
+    });
+    res.json("okey");
   }
 );
 
@@ -294,9 +322,12 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
 
   const orderById = await Order.findByPk(id);
 
-  !orderById.orderStatus === statusOrder.STATUS_NEW
-    ? next(new AppError("Buyurtmani o`chirib bo`lmaydi"))
-    : await orderById.destroy();
+  if (orderById.orderStatus !== statusOrder.STATUS_NEW) {
+    return next(
+      new AppError("Buyurtmani o`chirib bo`lmaydi")
+    );
+  }
+  await orderById.destroy();
 
   res.json({
     status: "success",
