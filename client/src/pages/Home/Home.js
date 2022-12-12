@@ -97,9 +97,14 @@ function Home() {
           </div>
         </div>
       </div>
+<div style={{width: "100%",height: "400px"}}>
 
      {regions&&<ReChart data={regions}/>}
+</div>
+<div style={{width: "100%",height: "400px"}}>
+
      {month&&<ReChart data={month}/>}
+     </div>
     </Layout>
   );
 }
