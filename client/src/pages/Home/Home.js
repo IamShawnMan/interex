@@ -97,9 +97,9 @@ function Home() {
           </div>
         </div>
       </div>
- {regions&&<BarChart  data={regions}/>}
-     {month&& <BarChart data={month}/>}
-     <ReChart/>
+
+     {regions&&<ReChart data={regions}/>}
+     {month&&<ReChart data={month}/>}
     </Layout>
   );
 }
