@@ -636,419 +636,211 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
   	let today = new Date()
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 
-	//................Statistics for ADMIN and SUPER_ADMIN starts here ....................
-	if (userRole === "ADMIN" || userRole === "SUPER_ADMIN" || userRole === "COURIER") {
-		allStores = await User.count({
-			where: {
-				userRole: {[Op.eq]: userRoles.STORE_OWNER},
-				status: {[Op.eq]: userStatuses.ACTIVE}
-			}
-		})
-	}	
+    res.json({
+      status: "success",
+      message: "Statistika uchun ma'lumotlar",
+      error: null,
+      data: {
+        allOrders,
+        allStores,
+        soldOrders,
+        rejectedOrders,
+        dayData,
+        monthData,
+        yearData,
+      },
+    });
+  }
+);
 
-	if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
-		allOrders = await Order.count();
+exports.countsInRegionsAndMonths = catchAsync(
+  async (req, res, next) => {
+    const { id, userRole } = req.user;
+    let regions = [];
+    let months = [];
+    const getRegions = await Region.findAll();
 
-		soldOrders = await Order.count({
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_SOLD,
-				},
-			},
-		});
+    const monthsIndexArr = [
+      { name: "Yanvar", month: 1, end: 31 },
+      {
+        name: "Fevral",
+        month: 2,
+        end: new Date().getFullYear() % 4 === 0 ? 29 : 28,
+      },
+      { name: "Mart", month: 3, end: 31 },
+      { name: "Aprel", month: 4, end: 30 },
+      { name: "May", month: 5, end: 31 },
+      { name: "Iyun", month: 6, end: 30 },
+      { name: "Iyul", month: 7, end: 31 },
+      { name: "Avgust", month: 8, end: 31 },
+      { name: "Sentyabr", month: 9, end: 30 },
+      { name: "Oktyabr", month: 10, end: 31 },
+      { name: "Noyabr", month: 11, end: 30 },
+      { name: "Dekabr", month: 12, end: 31 },
+    ];
+    getRegions?.forEach(async region => {
+      if (userRole === "STORE_OWNER") {
+        allWhereRegion = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+            storeOwnerId: { [Op.eq]: id },
+          },
+        };
+        soldWhereRegion = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+            storeOwnerId: { [Op.eq]: id },
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_SOLD,
+            },
+          },
+        };
+        rejectedWhereRegion = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+            storeOwnerId: { [Op.eq]: id },
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_REJECTED,
+            },
+          },
+        };
+      } else {
+        allWhereRegion = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+          },
+        };
+        soldWhereRegion = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_SOLD,
+            },
+          },
+        };
+        rejectedWhereRegion = {
+          where: {
+            regionId: { [Op.eq]: region.id },
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_REJECTED,
+            },
+          },
+        };
+      }
+      const countAllOrdersInRegion = await Order.count(
+        allWhereRegion
+      );
+      const soldCountInRegion = await Order.count(
+        soldWhereRegion
+      );
+      const rejectedCountinRegion = await Order.count(
+        rejectedWhereRegion
+      );
+      regions.push({
+        name: region.name,
+        barchasi: countAllOrdersInRegion,
+        sotilgani: soldCountInRegion,
+        qaytgani: rejectedCountinRegion,
+      });
+    });
 
-		rejectedOrders = await Order.count({
-			where: {
-				orderStatus: { [Op.in]: rejectedOrderStatuses },
-			},
-		});
+    monthsIndexArr.forEach(async month => {
+      const start = new Date(
+        `${new Date().getFullYear()}-${
+          month.month
+        }-01 00:00:00.000+00`
+      );
+      const end = new Date(
+        `${new Date().getFullYear()}-${month.month}-${
+          month.end
+        } 23:59:59.000+00`
+      );
+      if (userRole === "STORE_OWNER") {
+        allWhereMonth = {
+          where: {
+            storeOwnerId: { [Op.eq]: id },
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
+          },
+        };
+        soldWhereMonth = {
+          where: {
+            storeOwnerId: { [Op.eq]: id },
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_SOLD,
+            },
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
+          },
+        };
+        rejectedWhereMonth = {
+          where: {
+            storeOwnerId: { [Op.eq]: id },
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_REJECTED,
+            },
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
+          },
+        };
+      } else {
+        allWhereMonth = {
+          where: {
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
+          },
+        };
+        soldWhereMonth = {
+          where: {
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_SOLD,
+            },
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
+          },
+        };
+        rejectedWhereMonth = {
+          where: {
+            storeOwnerId: { [Op.eq]: id },
+            orderStatus: {
+              [Op.eq]: orderStatuses.STATUS_REJECTED,
+            },
+            createdAt: {
+              [Op.gt]: start,
+              [Op.lte]: end,
+            },
+          },
+        };
+      }
+      const countAllOrdersInMonth = await Order.count(
+        allWhereMonth
+      );
+      const countSoldOrdersInMonth = await Order.count(
+        soldWhereMonth
+      );
+      const countRejectedOrdersInMonth = await Order.count(
+        rejectedWhereMonth
+      );
+      months.push({
+        name: month.name,
+        barchasi: countAllOrdersInMonth,
+        sotilgani: countSoldOrdersInMonth,
+        qaytgani: countRejectedOrdersInMonth,
+      });
+    });
 
-		ordersSold = await Order.findAll({
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_SOLD,
-				},
-			},
-		});
-
-		allUsers = await User.count({
-			where: {
-				status: { [Op.eq]: "ACTIVE" },
-			},
-		});
-
-		const soldOrdersperDay = await Order.count({
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_SOLD,
-				},
-				updatedAt: {
-					[Op.or]: {
-						[Op.gte]: dayjs(`${today}`)
-							.startOf("day")
-							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-						[Op.lte]: dayjs(`${today}`)
-							.endOf("day")
-							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-					},
-				},
-			},
-		});
-		dayData.push(soldOrdersperDay);
-
-		const soldOrdersperMonth = await Order.count({
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_SOLD,
-				},
-				updatedAt: {
-					[Op.or]: {
-						[Op.gte]: dayjs(`${today}`)
-							.startOf("month")
-							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-						[Op.lte]: dayjs(`${today}`)
-							.endOf("month")
-							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-					},
-				},
-			},
-		});
-		monthData.push(soldOrdersperMonth);
-
-		const soldOrdersperYear = await Order.count({
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_SOLD,
-				},
-				updatedAt: {
-					[Op.or]: {
-						[Op.gte]: dayjs(`${today}`)
-							.startOf("year")
-							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-						[Op.lte]: dayjs(`${today}`)
-							.endOf("year")
-							.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-					},
-				},
-			},
-		});
-		yearData.push(soldOrdersperYear);
-	}
-	//................Statistics for STORE starts here ....................
-
-	if (userRole === "STORE_OWNER") {
-		allStores = 1
-		allOrders = await Order.count({
-			where: {
-				storeOwnerId: {
-					[Op.eq]: id,
-				},
-			},
-		});
-
-		soldOrders = await Order.count({
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_SOLD,
-				},
-				storeOwnerId: {
-					[Op.eq]: id,
-				},
-			},
-		});
-
-		rejectedOrders = await Order.count({
-			where: {
-				orderStatus: {
-					[Op.in]: rejectedOrderStatuses,
-				},
-				storeOwnerId: {
-					[Op.eq]: id,
-				},
-			},
-		});
-	}
-
-	//............................ statistics for COURIER satrts here ..........................
-	if (userRole === "COURIER") {
-		const region = await Region.findOne({
-			attributes: ["id", "name"],
-			where: {
-				id: {
-					[Op.eq]: regionId,
-				},
-			},
-		});
-
-		if (region.name === "Samarqand viloyati") {
-			allOrders = await Order.count({
-				where: {
-					regionId: {
-						[Op.eq]: regionId,
-					},
-					districtId: {
-						[Op.notIn]: [101, 106],
-					},
-				},
-			});
-
-			soldOrders = await Order.count({
-				where: {
-					orderStatus: {
-						[Op.eq]: orderStatuses.STATUS_SOLD,
-					},
-					regionId: {
-						[Op.eq]: regionId,
-					},
-					districtId: {
-						[Op.notIn]: [101, 106],
-					},
-				},
-			});
-
-			rejectedOrders = await Order.count({
-				where: {
-					orderStatus: {
-						[Op.in]: rejectedOrderStatuses,
-					},
-					regionId: {
-						[Op.eq]: regionId,
-					},
-					districtId: {
-						[Op.notIn]: [101, 106],
-					},
-				},
-			});
-		} else if (region.name === "Navoiy viloyati") {
-			allOrders = await Order.count({
-				where: {
-					[Op.or]: {
-						regionId: {
-							[Op.eq]: regionId,
-						},
-						districtId: {
-							[Op.in]: [101, 106],
-						},
-					},
-				},
-			});
-
-			soldOrders = await Order.count({
-				where: {
-					[Op.and]: [
-						{
-							orderStatus: {
-								[Op.eq]: orderStatuses.STATUS_SOLD,
-							},
-						},
-						{
-							[Op.or]: {
-								regionId: {
-									[Op.eq]: regionId,
-								},
-								districtId: {
-									[Op.in]: [101, 106],
-								},
-							},
-						},
-					],
-				},
-			});
-
-			rejectedOrders = await Order.count({
-				where: {
-					[Op.and]: [
-						{
-							orderStatus: {
-								[Op.in]: rejectedOrderStatuses,
-							},
-						},
-						{
-							[Op.or]: {
-								regionId: {
-									[Op.eq]: regionId,
-								},
-								districtId: {
-									[Op.in]: [101, 106],
-								},
-							},
-						},
-					],
-				},
-			});
-		} else if (region.name === "Xorazm viloyati") {
-			allOrders = await Order.count({
-				where: {
-					regionId: {
-						[Op.in]: [1, regionId],
-					},
-				},
-			});
-
-			soldOrders = await Order.count({
-				where: {
-					orderStatus: {
-						[Op.eq]: orderStatuses.STATUS_SOLD,
-					},
-					regionId: {
-						[Op.in]: [1, regionId],
-					},
-				},
-			});
-
-			rejectedOrders = await Order.count({
-				where: {
-					orderStatus: {
-						[Op.in]: rejectedOrderStatuses,
-					},
-					regionId: {
-						[Op.in]: [1, regionId],
-					},
-				},
-			});
-		} else {
-			allOrders = await Order.count({
-				where: {
-					regionId: {
-						[Op.eq]: regionId,
-					},
-				},
-			});
-
-			soldOrders = await Order.count({
-				where: {
-					orderStatus: {
-						[Op.eq]: orderStatuses.STATUS_SOLD,
-					},
-					regionId: {
-						[Op.eq]: regionId,
-					},
-				},
-			});
-
-			rejectedOrders = await Order.count({
-				where: {
-					orderStatus: {
-						[Op.in]: rejectedOrderStatuses,
-					},
-					regionId: {
-						[Op.eq]: regionId,
-					},
-				},
-			});
-		}
-	}
-
-	res.json({
-		status: "success",
-		message: "Statistika uchun ma'lumotlar",
-		error: null,
-		data: {
-			allOrders,
-			allStores,
-			soldOrders,
-			rejectedOrders,
-			dayData,
-			monthData,
-			yearData,
-		},
-	});
-});
-
-exports.countsInRegionsAndMonths = catchAsync(async (req, res, next) => {
-	const { id, userRole } = req.user;
-	let queryBuilder;
-	const getRegions = await Region.findAll();
-	let countOrderinRegions = [];
-	let countOrderinMonths = [];
-	let regions = {
-		labels: [],
-		datasets: [],
-	};
-	let months = {
-		labels: [],
-		datasets: [],
-	};
-	getRegions?.map(async (region) => {
-		if (userRole === "STORE_OWNER") {
-			queryBuilder = {
-				where: {
-					regionId: { [Op.eq]: region.id },
-					storeOwnerId: { [Op.eq]: id },
-				},
-			};
-		} else {
-			queryBuilder = {
-				where: {
-					regionId: { [Op.eq]: region.id },
-				},
-			};
-		}
-		const count = await Order.count(queryBuilder);
-		countOrderinRegions.push(count);
-		regions.labels.push(region.name);
-	});
-
-	const monthsIndexArr = [
-		{ name: "Yanvar", month: 1, end: 31 },
-		{
-			name: "Fevral",
-			month: 2,
-			end: new Date().getFullYear() % 4 === 0 ? 29 : 28,
-		},
-		{ name: "Mart", month: 3, end: 31 },
-		{ name: "Aprel", month: 4, end: 30 },
-		{ name: "May", month: 5, end: 31 },
-		{ name: "Iyun", month: 6, end: 30 },
-		{ name: "Iyul", month: 7, end: 31 },
-		{ name: "Avgust", month: 8, end: 31 },
-		{ name: "Sentyabr", month: 9, end: 30 },
-		{ name: "Oktyabr", month: 10, end: 31 },
-		{ name: "Noyabr", month: 11, end: 30 },
-		{ name: "Dekabr", month: 12, end: 31 },
-	];
-
-	monthsIndexArr.forEach(async (month) => {
-		const start = new Date(
-			`${new Date().getFullYear()}-${month.month}-01 00:00:00.000+00`
-		);
-		const end = new Date(
-			`${new Date().getFullYear()}-${month.month}-${month.end} 23:59:59.000+00`
-		);
-		let queryWhere;
-		if (userRole === "STORE_OWNER") {
-			queryWhere = {
-				where: {
-					storeOwnerId: { [Op.eq]: id },
-					createdAt: {
-						[Op.gt]: start,
-						[Op.lte]: end,
-					},
-				},
-			};
-		} else {
-			queryWhere = {
-				where: {
-					createdAt: {
-						[Op.gt]: start,
-						[Op.lte]: end,
-					},
-				},
-			};
-		}
-		const countInMonth = await Order.count(queryWhere);
-		months.labels.push(month.name);
-		countOrderinMonths.push(countInMonth);
-	});
-
-	regions.datasets.push({
-		data: countOrderinRegions,
-	});
-
-	months.datasets.push({
-		data: countOrderinMonths,
-	});
-	setTimeout(() => {
-		res.send({ regions, months });
-	}, 1000);
-});
+    setTimeout(() => {
+      res.send({ regions, months });
+    }, 1000);
+  }
+);
