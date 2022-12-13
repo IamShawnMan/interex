@@ -1132,7 +1132,10 @@ exports.countsInRegionsAndMonths = catchAsync(
         rejectedWhereRegion
       );
       regions.push({
-        name: region.name,
+        name: region.name?.slice(
+          0,
+          region.name?.indexOf(" ")
+        ),
         barchasi: countAllOrdersInRegion,
         sotilgani: soldCountInRegion,
         qaytgani: rejectedCountinRegion,
