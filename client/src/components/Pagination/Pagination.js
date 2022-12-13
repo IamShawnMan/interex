@@ -12,6 +12,7 @@ function Pagination(props) {
  let search=props.search?.split("&")
  search= search?.splice(2)
  search=search?.join("&")
+ console.log(search);
   const [pagesCount, setPagesCount] = useState(6);
   const offset = pagesCount - 6;
   const page = searchParams.get("page") || 1;
@@ -29,16 +30,16 @@ function Pagination(props) {
     if (num === 1) {
       if (+page === pagesCount) {
         setPagesCount(pagesCount + 6);
-        navigate(`${url}?page=${+page + 1}&size=10&${search}`);
+        navigate(`${url}?page=${+page + 1}&size=500&${search}`);
       } else {
-        navigate(`${url}?page=${+page + 1}&size=10&${search}`);
+        navigate(`${url}?page=${+page + 1}&size=500&${search}`);
       }
     } else {
       if (+page === offset) {
         setPagesCount(pagesCount - 6);
-        navigate(`${url}?page=${+page - 1}&size=10&${search}`);
+        navigate(`${url}?page=${+page - 1}&size=500&${search}`);
       } else {
-        navigate(`${url}?page=${+page - 1}&size=10&${search}`);
+        navigate(`${url}?page=${+page - 1}&size=500&${search}`);
       }
     }
   };
@@ -73,7 +74,7 @@ function Pagination(props) {
                 className={`${styles.pageLinks}  ${
                   +page === i + 1 ? styles.active : ""
                 }`}
-                to={`${url}?page=${+i + 1}&size=10&${search}`}
+                to={`${url}?page=${+i + 1}&size=500&${search}`}
                 key={i + "xksxskj"}
                 style={page === i + 1 ? { pointerEvents: "none" } : null}
               >
