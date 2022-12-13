@@ -99,7 +99,19 @@ function Orders() {
       toast.error(error?.response?.data?.message);
     }
   };
-
+  const deleteOrder = async (id) => {
+    try {
+      const res = await http({
+        url: `/orders/${id}`,
+        method: "DELETE",
+        data: {}
+      });
+      filterFn();
+      toast.success(res.data?.message)
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
   const dailyOrders = async () => {
     const res = await http({
       url: "/orders/delivered/daily",
@@ -331,6 +343,7 @@ function Orders() {
               isStoreOwner) && (
               <div className={styles.actionContainer}>
                 {user.userRole === "STORE_OWNER" && (
+                  <>
                   <Button
                     size="small"
                     disabled={
@@ -344,6 +357,19 @@ function Orders() {
                     }}>
                     O'zgartirish
                   </Button>
+                  <Button
+                    size="small"
+                    disabled={
+                      order.orderStatus !== "NEW"
+                        ? true
+                        : false
+                    }
+                    name="btn"
+                    btnStyle={{backgroundColor:order.orderStatus === "NEW"?"red":""}}
+                    onClick={() => deleteOrder(order.id)}>
+                    O'chirish
+                  </Button>
+                  </>
                 )}
                 {isAdmin && id && (
                   <>

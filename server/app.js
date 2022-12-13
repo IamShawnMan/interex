@@ -33,7 +33,7 @@ app.use(
   authMiddleware,
   districtRouter
 );
-app.put("/all", orderControllers.getAllOrdersUpdate);
+app.put("/api/v1/all", orderControllers.getAllOrdersUpdate);
 app.use("/api/v1/posts", authMiddleware, postsRoutes);
 app.use("/api/v1/postback", authMiddleware, postBackRouter);
 app.use(
