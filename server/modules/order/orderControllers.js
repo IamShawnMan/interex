@@ -1,5 +1,5 @@
 const OrderItem = require("../orderitem/OrderItem");
-const PackageModel = require("../package/Package");
+const Package = require("../package/Package");
 const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult } = require("express-validator");
@@ -67,7 +67,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   }
   const { userRoleUz } = req.user;
 
-  let existedPackage = await PackageModel.findOne({
+  let existedPackage = await Package.findOne({
     where: {
       [Op.and]: [
         { storeOwnerId: { [Op.eq]: req.user.id } },
@@ -82,7 +82,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   });
 
   if (!existedPackage) {
-    existedPackage = await PackageModel.create({
+    existedPackage = await Package.create({
       storeOwnerId: req.user.id,
     });
   }
@@ -279,7 +279,7 @@ exports.changeOrderStatus = catchAsync(
       } else {
         await orderById.update({ deliveryPrice: null });
       }
-      const existedPackage = await PackageModel.findByPk(
+      const existedPackage = await Package.findByPk(
         orderById.packageId
       );
 
@@ -321,11 +321,21 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   const orderById = await Order.findByPk(id);
+  const packageByOrderId = await Package.findOne({
+    where: { id: { [Op.eq]: orderById.packageId } },
+  });
 
   if (orderById.orderStatus !== statusOrder.STATUS_NEW) {
     return next(
       new AppError("Buyurtmani o`chirib bo`lmaydi")
     );
+  }
+  packageByOrderId.packageTotalPrice =
+    packageByOrderId.packageTotalPrice -
+    orderById.totalPrice;
+  await packageByOrderId.save();
+  if (packageByOrderId.packageTotalPrice < 1) {
+    await packageByOrderId.destroy();
   }
   await orderById.destroy();
 
@@ -387,7 +397,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
     note,
   } = req.body;
 
-  const myPackage = await PackageModel.findOne({
+  const myPackage = await Package.findOne({
     where: { storeOwnerId: { [Op.eq]: userId } },
   });
 

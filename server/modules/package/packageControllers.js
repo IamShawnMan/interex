@@ -124,22 +124,37 @@ exports.getOrdersByPackage = catchAsync(
 );
 exports.downloadWord = catchAsync(
   async (req, res, next) => {
+    const { userRole } = req.user;
     const { id } = req.params;
-
-    let allNewOrdersbyPackage = await Order.findAll({
+    let whereOrderStatus;
+    const orderInclude = {
       include: [
         { model: UserModel, as: "storeOwner" },
         { model: RegionModel, as: "region" },
         { model: DistrictModel, as: "district" },
         { model: OrderItem, as: "items" },
       ],
+    };
+    if (userRole === "ADMIN") {
+      whereOrderStatus = {
+        orderStatus: {
+          [Op.eq]: statusOrder.STATUS_ACCEPTED,
+        },
+      };
+    } else {
+      whereOrderStatus = {
+        orderStatus: {
+          [Op.eq]: statusOrder.STATUS_NEW,
+        },
+      };
+    }
+    let allNewOrdersbyPackage = await Order.findAll({
+      ...orderInclude,
       where: {
         [Op.and]: [
           { packageId: { [Op.eq]: id } },
           {
-            orderStatus: {
-              [Op.eq]: statusOrder.STATUS_ACCEPTED,
-            },
+            ...whereOrderStatus,
           },
         ],
       },

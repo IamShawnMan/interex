@@ -671,7 +671,7 @@ function Orders() {
           <img width="100" onClick={() => getFile()} style={{cursor: "pointer"}} src={Photo} alt="" />
         </div>
       )}
-      {url === `/packages/${id}/orders` && isAdmin &&(
+      {url === `/packages/${id}/orders` &&(
         <div
           style={{ display: "flex", justifyContent: "end" }}
         >
