@@ -125,7 +125,9 @@ function Orders() {
           : ""
       }${
         createdAt
-          ?orderStatus==="SOLD"? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`:`&createdAt[eq]=${dateCreatedAt.toISOString()}`
+          ? orderStatus === "SOLD"
+            ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
+            : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
       }`,
       method: "GET",
@@ -162,47 +164,43 @@ function Orders() {
     {
       id: "NO",
       Header: "NO",
-      accessor: (order,i) => {
+      accessor: (order, i) => {
         return (
           <>
-           {ordersIdArr &&
-                (url.split("/")[1] === "postback" || id) &&
-                url !== "/posts/1/orders" && (
-                  <div>
-                    <Input
-                      type="checkbox"
-                      checked={ordersIdArr.includes(
+            {ordersIdArr &&
+              (url.split("/")[1] === "postback" || id) &&
+              url !== "/posts/1/orders" && (
+                <div>
+                  <Input
+                    type="checkbox"
+                    checked={ordersIdArr.includes(order.id)}
+                    onClick={() => {
+                      const index = ordersIdArr.includes(
                         order.id
-                      )}
-                      onClick={() => {
-                        const index = ordersIdArr.includes(
-                          order.id
+                      );
+                      if (index) {
+                        let orderIsArr = ordersIdArr.filter(
+                          i => i !== order.id
                         );
-                        if (index) {
-                          let orderIsArr =
-                            ordersIdArr.filter(
-                              i => i !== order.id
-                            );
-                          setOrdersIdArr(orderIsArr);
-                        } else {
-                          setOrdersIdArr(prev => [
-                            ...prev,
-                            order.id,
-                          ]);
-                        }
-                      }}></Input>
-                  </div>
-                )}
-              <p style={{ textAligin: "center"}}>{i+1}</p>
-            
+                        setOrdersIdArr(orderIsArr);
+                      } else {
+                        setOrdersIdArr(prev => [
+                          ...prev,
+                          order.id,
+                        ]);
+                      }
+                    }}></Input>
+                </div>
+              )}
+            <p style={{ textAligin: "center" }}>{i + 1}</p>
           </>
         );
       },
     },
-  {
-    Header: "Id",
-    accessor:"id"
-  },
+    {
+      Header: "Id",
+      accessor: "id",
+    },
     {
       Header: "Manzil",
       accessor: order => {
@@ -281,15 +279,19 @@ function Orders() {
                       Narxi
                     </Select>
                   )}
-                {order.status !== "NEW" &&
+                {(order.status !== "NEW" &&
                   order.deliveryPrice?.toLocaleString(
                     "Ru-Ru"
-                  )||0} so'm
+                  )) ||
+                  0}{" "}
+                so'm
               </div>
             )}
             {isCourier && (
               <div>
-                {`${user.tariff?.toLocaleString("Ru-Ru")||0} so'm`}
+                {`${
+                  user.tariff?.toLocaleString("Ru-Ru") || 0
+                } so'm`}
               </div>
             )}
           </>
@@ -411,8 +413,7 @@ function Orders() {
                         id: order.id,
                         status: "SOLD",
                         postId: id,
-                        statusUz: "Buyurtma Sotildi"
-
+                        statusUz: "Buyurtma Sotildi",
                       });
                     }}>
                     Sotildi
@@ -440,8 +441,7 @@ function Orders() {
                         id: order.id,
                         status: "PENDING",
                         postId: id,
-                        statusUz: "Buyurtma Kutilmoqda"
-
+                        statusUz: "Buyurtma Kutilmoqda",
                       });
                     }}>
                     Kutilmoqda
@@ -467,7 +467,7 @@ function Orders() {
                         id: order.id,
                         status: "REJECTED",
                         postId: id,
-                        statusUz: "Buyurtma Qaytarildi"
+                        statusUz: "Buyurtma Qaytarildi",
                       });
                     }}>
                     Qaytdi
@@ -569,9 +569,11 @@ function Orders() {
         url === "/orders/myorders"
       ) {
         res = await http(
-          `${url ? url : ""}?${page ? `page=${search?1:page}` : ""}${
-            size ? `&size=${search?100:size}` : ""
-          }${search ? `&search=${search}` : ""}${
+          `${url ? url : ""}?${
+            page ? `page=${search ? 1 : page}` : ""
+          }${size ? `&size=${search ? 100 : size}` : ""}${
+            search ? `&search=${search}` : ""
+          }${
             orderStatus ? `&orderStatus=${orderStatus}` : ""
           }${
             !isStoreOwner
@@ -583,7 +585,9 @@ function Orders() {
             districtId ? `&districtId=${districtId}` : ""
           }${
             dateCreatedAt
-              ?orderStatus==="SOLD"? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`:`&createdAt[eq]=${dateCreatedAt.toISOString()}`
+              ? orderStatus === "SOLD"
+                ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
+                : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
               : ""
           }`
         );
@@ -666,18 +670,31 @@ function Orders() {
         url === "/orders/delivered" ||
         url === "/orders/myorders") && (
         <div
-          style={{ display: "flex", justifyContent: "end" }}
-        >
-          <img width="100" onClick={() => getFile()} style={{cursor: "pointer"}} src={Photo} alt="" />
+          style={{
+            display: "flex",
+            justifyContent: "end",
+          }}>
+          <img
+            width="100"
+            onClick={() => getFile()}
+            style={{ cursor: "pointer" }}
+            src={Photo}
+            alt=""
+          />
         </div>
       )}
-      {url === `/packages/${id}/orders` && isAdmin &&(
+      {url === `/packages/${id}/orders` && isAdmin && (
         <div
-          style={{ display: "flex", justifyContent: "end" }}
-        >
-         
-          <h1 style={{cursor: "pointer"}} onClick={() => getFileWord()}>Word</h1>
-         </div>
+          style={{
+            display: "flex",
+            justifyContent: "end",
+          }}>
+          <h1
+            style={{ cursor: "pointer" }}
+            onClick={() => getFileWord()}>
+            Word
+          </h1>
+        </div>
       )}
       <div>
         {isStoreOwner && url === "/orders/myorders" && (
