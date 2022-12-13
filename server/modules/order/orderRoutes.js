@@ -64,7 +64,12 @@ router
   .patch(
     roleMiddleware(["ADMIN"]),
     orderControllers.changeOrderStatus
+  )
+  .delete(
+    roleMiddleware(["STORE_OWNER"]),
+    orderControllers.deleteOrder
   );
+
 router.route("/:id/edit").get(orderControllers.editOrder);
 
 router

@@ -38,7 +38,7 @@ function Orders() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 10;
+  const size = searchParams.get("size") || 10000;
   const createdAt = searchParams.get("createdAt[eq]") || "";
   const orderStatus = searchParams.get("orderStatus") || "";
   const regionId = searchParams.get("regionId") || "";
@@ -671,7 +671,7 @@ function Orders() {
           <img width="100" onClick={() => getFile()} style={{cursor: "pointer"}} src={Photo} alt="" />
         </div>
       )}
-      {url === `/packages/${id}/orders` && isAdmin &&(
+      {url === `/packages/${id}/orders` &&(
         <div
           style={{ display: "flex", justifyContent: "end" }}
         >

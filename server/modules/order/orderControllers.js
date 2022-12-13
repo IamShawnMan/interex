@@ -1,5 +1,5 @@
 const OrderItem = require("../orderitem/OrderItem");
-const PackageModel = require("../package/Package");
+const Package = require("../package/Package");
 const { Op } = require("sequelize");
 const catchAsync = require("../../core/utils/catchAsync");
 const { validationResult } = require("express-validator");
@@ -67,7 +67,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   }
   const { userRoleUz } = req.user;
 
-  let existedPackage = await PackageModel.findOne({
+  let existedPackage = await Package.findOne({
     where: {
       [Op.and]: [
         { storeOwnerId: { [Op.eq]: req.user.id } },
@@ -82,7 +82,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   });
 
   if (!existedPackage) {
-    existedPackage = await PackageModel.create({
+    existedPackage = await Package.create({
       storeOwnerId: req.user.id,
     });
   }
@@ -141,6 +141,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
         break;
     }
     id = `${regSeria}-${countForId}`;
+    let itemByNote = "";
     const orderInfo = {
       id,
       recipient: order.recipient,
@@ -156,6 +157,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     let items = [];
     let sum = 0;
     order?.orderItems?.forEach(item => {
+      itemByNote =
+        itemByNote +
+        `${
+          item.productName
+        }-${+item.quantity}/${+item.price},`;
       items.push({
         productName: item.productName,
         quantity: item.quantity,
@@ -168,6 +174,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     });
 
     await OrderItem.bulkCreate(items);
+    newOrder.note = itemByNote + " " + newOrder.note;
     newOrder.totalPrice = sum;
     newOrder.packageId = existedPackage.id;
     await newOrder.save();
@@ -223,6 +230,27 @@ exports.getOrderById = catchAsync(
   }
 );
 
+exports.getAllOrdersUpdate = catchAsync(
+  async (req, res, next) => {
+    const getAllOrders = await Order.findAll();
+
+    getAllOrders?.forEach(async order => {
+      let itemByNote = "";
+      const itemsByOrder = await OrderItem.findAll({
+        where: { orderId: { [Op.eq]: order.id } },
+      });
+      itemsByOrder?.forEach(item => {
+        itemByNote += `${item.productName}-${item.quantity}/${item.orderItemTotalPrice}`;
+      });
+      if (itemByNote.length > 0) {
+        order.note = itemByNote + " " + order.note;
+        await order.save();
+      }
+    });
+    res.json("okey");
+  }
+);
+
 exports.changeOrderStatus = catchAsync(
   async (req, res, next) => {
     const { id } = req.params;
@@ -251,7 +279,7 @@ exports.changeOrderStatus = catchAsync(
       } else {
         await orderById.update({ deliveryPrice: null });
       }
-      const existedPackage = await PackageModel.findByPk(
+      const existedPackage = await Package.findByPk(
         orderById.packageId
       );
 
@@ -288,6 +316,36 @@ exports.changeOrderStatus = catchAsync(
     });
   }
 );
+
+exports.deleteOrder = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const orderById = await Order.findByPk(id);
+  const packageByOrderId = await Package.findOne({
+    where: { id: { [Op.eq]: orderById.packageId } },
+  });
+
+  if (orderById.orderStatus !== statusOrder.STATUS_NEW) {
+    return next(
+      new AppError("Buyurtmani o`chirib bo`lmaydi")
+    );
+  }
+  packageByOrderId.packageTotalPrice =
+    packageByOrderId.packageTotalPrice -
+    orderById.totalPrice;
+  await packageByOrderId.save();
+  if (packageByOrderId.packageTotalPrice < 1) {
+    await packageByOrderId.destroy();
+  }
+  await orderById.destroy();
+
+  res.json({
+    status: "success",
+    message: "buyurtma o`chirildi",
+    error: null,
+    data: null,
+  });
+});
 
 exports.adminOrderStatus = catchAsync(
   async (req, res, next) => {
@@ -339,7 +397,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
     note,
   } = req.body;
 
-  const myPackage = await PackageModel.findOne({
+  const myPackage = await Package.findOne({
     where: { storeOwnerId: { [Op.eq]: userId } },
   });
 
@@ -635,7 +693,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
   async (req, res, next) => {
     const { regionId, userRoleUz } = req.user;
     const { id } = req.params;
-    const { orderStatus, note, expense} = req.body;
+    const { orderStatus, note, expense } = req.body;
     const postOrdersById = await Order.findByPk(id, {
       where: {
         regionId: {
@@ -673,7 +731,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
         orderStatus: postOrderStatusChange,
         orderStatusUz: postOrderStatusChangeUz,
         note: `${postOrdersById.dataValues.note} ${userRoleUz}: ${note}`,
-        expense
+        expense,
       });
     }
 
@@ -689,7 +747,7 @@ exports.changeStatusDeliveredOrders = catchAsync(
       error: null,
       data: {
         note,
-        expense
+        expense,
       },
     });
   }
