@@ -25,15 +25,18 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Firma", key: "storeOwnerId", width: 15 },
 		{ header: "Mahsulot", key: "orderStatus", width: 20 },
 		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 15},
-		{ header: "Holati", key: "orderStatusUz", width: 15 },
+		{ header: "Holati", key: "orderStatusUz", width: 17 },
 		{ header: "Tovar summasi", key: "totalPrice", width: 10},
 		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 10},
 		{ header: "Ortiqcha xarajat", key: "expense", width: 10},
-		{ header: "Xizmat narxi", key: "recipient", width: 10},
+		{ header: "Xizmat narxi", key: "postId", width: 10},
 		{ header: "Kuryerdan qaytgan pul", width: 10},
 		{ header: "Foyda", width: 10 },
 		{ header: "Firma puli", width: 10 },
 		{ header: "Yaratilgan sana", key: "createdAt", width: 10},
+		{ header: "Klient", key: "recipient", width: 15},
+		{ header: "Mahsulot soni", key: "packageId", width: 10},
+		{ header: "Izoh", key: "note", width: 30}
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
@@ -109,7 +112,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	});
 
 	downloadOrders.rows.forEach((order) => {
-		order.recipient = "";
 		order.totalPrice = order.totalPrice / 1000;
 		order.deliveryPrice = order.deliveryPrice / 1000;
 		order.expense = order.expense / 1000;
@@ -121,20 +123,21 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 				storeName = candidate.storeName;
 			}
 			if (order.regionId == candidate.regionId) {
-				order.recipient = +candidate?.tariff / 1000;
+				order.postId = +candidate?.tariff / 1000;
 			}
 			if (order.districtId === 101 || order.districtId === 106) {
-				order.recipient = +customUserforDistrict?.tariff / 1000;
+				order.postId = +customUserforDistrict?.tariff / 1000;
 			}
 			if (order.regionId === 1) {
 				if (customUserforRegion) {
-					order.recipient = +customUserforRegion.tariff / 1000;
-				} else order.recipient = 0;
+					order.postId = +customUserforRegion.tariff / 1000;
+				} else order.postId = 0;
 			}
 		});
 		downloadOrderItem.forEach((item) => {
 			if (order.id == item.orderId) {
 				order.orderStatus = item.productName;
+				order.packageId = item.quantity
 			}
 		});
 		regionsJSON.forEach((region) => {
@@ -159,6 +162,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.addRow(order);
 		counter++;
 	});
+	
 	const totalPrice1 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`G${endRow}`).value = "UMUMIY NARX:";
@@ -395,6 +399,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
 		worksheet.spliceColumns(3, 1);
+		worksheet.spliceColumns(16, 3);
 		totalPrice2();
 	}
 	if (
@@ -404,6 +409,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
 		worksheet.spliceColumns(5, 1);
+		worksheet.spliceColumns(16, 3);
 		totalPrice2();
 	}
 	if (
@@ -412,7 +418,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		!req.query.storeOwnerId &&
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
-		worksheet.spliceColumns(16, 1);
+		worksheet.spliceColumns(16, 4);
 		totalPrice1();
 	}
 	if (
@@ -423,6 +429,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	) {
 		worksheet.spliceColumns(3, 1);
 		worksheet.spliceColumns(4, 1);
+		worksheet.spliceColumns(15, 3);
 		totalPrice3();
 	}
 	if (
@@ -432,7 +439,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
 		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(15, 1);
+		worksheet.spliceColumns(15, 4);
 		totalPrice2();
 	}
 	if (
@@ -442,7 +449,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
 		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(15, 1);
+		worksheet.spliceColumns(15, 4);
 		totalPrice2();
 	}
 	if (
@@ -453,7 +460,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	) {
 		worksheet.spliceColumns(3, 1);
 		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(14, 1);
+		worksheet.spliceColumns(14, 4);
 		totalPrice3();
 	}
 	if (
@@ -462,6 +469,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		!req.query.createdAt &&
 		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
 	) {
+		worksheet.spliceColumns(17, 3);
 		totalPrice1();
 	}
 	if (
@@ -471,9 +479,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	) {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(11, 3);
 		totalPrice4();
 	}
 	if (
@@ -483,9 +489,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	) {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(11, 1);
-		worksheet.spliceColumns(11, 1);
+		worksheet.spliceColumns(11, 3);
 		worksheet.spliceColumns(12, 1);
 		totalPrice4();
 	}
@@ -497,9 +501,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(3, 1);
 		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(10, 3);
 		totalPrice5();
 	}
 	if (
@@ -510,9 +512,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		storeName = req.user.storeName;
 		worksheet.spliceColumns(3, 1);
 		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(10, 1);
+		worksheet.spliceColumns(10, 3);
 		worksheet.spliceColumns(11, 1);
 		totalPrice5();
 	}
@@ -522,8 +522,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(13, 1);
-		worksheet.spliceColumns(13, 1);
+		worksheet.spliceColumns(13, 2);
+		worksheet.spliceColumns(14, 3);
 		totalPrice6();
 	}
 	if (
@@ -532,9 +532,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(13, 1);
-		worksheet.spliceColumns(13, 1);
-		worksheet.spliceColumns(13, 1);
+		worksheet.spliceColumns(13, 6);
 		totalPrice6();
 	}
 	if (
@@ -543,9 +541,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(12, 1);
-		worksheet.spliceColumns(12, 1);
-		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(12, 3);
+		worksheet.spliceColumns(13, 3);
 		totalPrice7();
 	}
 	if (
@@ -554,10 +551,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		userRole === userRoles.COURIER
 	) {
 		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(12, 1);
-		worksheet.spliceColumns(12, 1);
-		worksheet.spliceColumns(12, 1);
-		worksheet.spliceColumns(12, 1);
+		worksheet.spliceColumns(12, 7);
 		totalPrice7();
 	}
 	worksheet.getCell(`B2`).value = `${orderDate}`;
