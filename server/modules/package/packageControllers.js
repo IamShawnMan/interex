@@ -23,6 +23,8 @@ const {
   SectionType,
   AlignmentType,
   VerticalAlign,
+  Style,
+  PageOrientation,
 } = require("docx");
 
 exports.getAllPackages = catchAsync(
@@ -164,12 +166,10 @@ exports.downloadWord = catchAsync(
     for (
       let i = 0;
       i < allNewOrdersbyPackage.length;
-      i + 3
+      i + 2
     ) {
-      let thereArr = allNewOrdersbyPackage.splice(i, 3);
-      if (thereArr.length % 3 === 1) {
-        thereArr.push({}, {});
-      } else if (thereArr.length % 3 === 2) {
+      let thereArr = allNewOrdersbyPackage.splice(i, 2);
+      if (thereArr.length % 2 === 1) {
         thereArr.push({});
       }
       ordersArr.push(thereArr);
@@ -178,14 +178,15 @@ exports.downloadWord = catchAsync(
     let children = [];
     ordersArr?.forEach(orderArr => {
       const table = new Table({
-        columnWidths: [3500, 3500, 3500],
+        width: { size: 12000, type: WidthType.DXA },
+
         rows: [
           new TableRow({
             cantSplit: true,
             children: [
               new TableCell({
                 width: {
-                  size: 3500,
+                  size: 5000,
                   type: WidthType.DXA,
                 },
                 children: [
@@ -305,13 +306,14 @@ exports.downloadWord = catchAsync(
                         )}`,
                         bold: true,
                       }),
+                      new Paragraph({ children: [] }),
                     ],
                   }),
                 ],
               }),
               new TableCell({
                 width: {
-                  size: 3500,
+                  size: 5000,
                   type: WidthType.DXA,
                 },
                 children: [
@@ -433,132 +435,7 @@ exports.downloadWord = catchAsync(
                       }),
                     ],
                   }),
-                ],
-              }),
-              new TableCell({
-                width: {
-                  size: 3500,
-                  type: WidthType.DXA,
-                },
-                children: [
                   new Paragraph({ children: [] }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun("Firma: - "),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2].storeOwner
-                            ?.storeName || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "ID: -",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${orderArr[1].id || null}`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Viloyat: -",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2].region?.name || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Tumani: -",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2].district?.name || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Xaridor: -",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2].recipient || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Tel: - ",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2]
-                            .recipientPhoneNumber || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun("Summa: - "),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
-                          orderArr[2].totalPrice?.toLocaleString(
-                            "RU-RU"
-                          ) || null
-                        } so\`m`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun("Tovar: - "),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${orderArr[2].note?.substr(
-                          0,
-                          orderArr[2].note?.indexOf(" ")
-                        )}`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
                 ],
               }),
             ],
@@ -572,9 +449,15 @@ exports.downloadWord = catchAsync(
       sections: [
         {
           properties: {
-            column: 3,
-            grid: 50,
-            type: SectionType.NEXT_COLUMN,
+            grid: { charSpace: 300 },
+            page: {
+              margin: {
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+              },
+            },
           },
           children,
         },
