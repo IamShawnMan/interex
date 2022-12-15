@@ -10,15 +10,18 @@ function Package() {
   const [sNew, setSNew] = useState(true);
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
-  const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 10;
+  let page = searchParams.get("page") || 1;
+  let size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
   const navigate=useNavigate()
   useEffect(() => {
     getAllPackages();
   }, [page, sNew]);
-
+  useState(()=>{
+    page=1
+    size=10
+   },[])
   const getAllPackages = async () => {
     try {
       const res = await http({
