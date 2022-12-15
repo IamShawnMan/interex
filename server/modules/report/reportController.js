@@ -630,6 +630,295 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
   	let today = new Date()
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 
+    //................Statistics for ADMIN and SUPER_ADMIN starts here ....................
+    if (
+		userRole === "ADMIN" ||
+		userRole === "SUPER_ADMIN" ||
+		userRole === "COURIER"
+	  ) {
+		allStores = await User.count({
+		  where: {
+			userRole: { [Op.eq]: userRoles.STORE_OWNER },
+			status: { [Op.eq]: userStatuses.ACTIVE },
+		  },
+		});
+	  }
+  
+	  if (
+		userRole === "ADMIN" ||
+		userRole === "SUPER_ADMIN"
+	  ) {
+		allOrders = await Order.count();
+		soldOrders = await Order.count({
+		  where: {
+			orderStatus: {
+			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			},
+		  },
+		});
+		rejectedOrders = await Order.count({
+		  where: {
+			orderStatus: { [Op.in]: rejectedOrderStatuses },
+		  },
+		});
+		ordersSold = await Order.findAll({
+		  where: {
+			orderStatus: {
+			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			},
+		  },
+		});
+		allUsers = await User.count({
+		  where: {
+			status: { [Op.eq]: "ACTIVE" },
+		  },
+		});
+		const soldOrdersperDay = await Order.count({
+		  where: {
+			orderStatus: {
+			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			},
+			updatedAt: {
+			  [Op.or]: {
+				[Op.gte]: dayjs(`${today}`)
+				  .startOf("day")
+				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+				[Op.lte]: dayjs(`${today}`)
+				  .endOf("day")
+				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+			  },
+			},
+		  },
+		});
+		dayData.push(soldOrdersperDay);
+		const soldOrdersperMonth = await Order.count({
+		  where: {
+			orderStatus: {
+			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			},
+			updatedAt: {
+			  [Op.or]: {
+				[Op.gte]: dayjs(`${today}`)
+				  .startOf("month")
+				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+				[Op.lte]: dayjs(`${today}`)
+				  .endOf("month")
+				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+			  },
+			},
+		  },
+		});
+		monthData.push(soldOrdersperMonth);
+		const soldOrdersperYear = await Order.count({
+		  where: {
+			orderStatus: {
+			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			},
+			updatedAt: {
+			  [Op.or]: {
+				[Op.gte]: dayjs(`${today}`)
+				  .startOf("year")
+				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+				[Op.lte]: dayjs(`${today}`)
+				  .endOf("year")
+				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+			  },
+			},
+		  },
+		});
+		yearData.push(soldOrdersperYear);
+	  }
+	  //................Statistics for STORE starts here ....................
+	  if (userRole === "STORE_OWNER") {
+		allStores = 1;
+		allOrders = await Order.count({
+		  where: {
+			storeOwnerId: {
+			  [Op.eq]: id,
+			},
+		  },
+		});
+		soldOrders = await Order.count({
+		  where: {
+			orderStatus: {
+			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			},
+			storeOwnerId: {
+			  [Op.eq]: id,
+			},
+		  },
+		});
+		rejectedOrders = await Order.count({
+		  where: {
+			orderStatus: {
+			  [Op.in]: rejectedOrderStatuses,
+			},
+			storeOwnerId: {
+			  [Op.eq]: id,
+			},
+		  },
+		});
+	  }
+	  //............................ statistics for COURIER satrts here ..........................
+	  if (userRole === "COURIER") {
+		const region = await Region.findOne({
+		  attributes: ["id", "name"],
+		  where: {
+			id: {
+			  [Op.eq]: regionId,
+			},
+		  },
+		});
+		if (region.name === "Samarqand viloyati") {
+		  allOrders = await Order.count({
+			where: {
+			  regionId: {
+				[Op.eq]: regionId,
+			  },
+			  districtId: {
+				[Op.notIn]: [101, 106],
+			  },
+			},
+		  });
+		  soldOrders = await Order.count({
+			where: {
+			  orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_SOLD,
+			  },
+			  regionId: {
+				[Op.eq]: regionId,
+			  },
+			  districtId: {
+				[Op.notIn]: [101, 106],
+			  },
+			},
+		  });
+		  rejectedOrders = await Order.count({
+			where: {
+			  orderStatus: {
+				[Op.in]: rejectedOrderStatuses,
+			  },
+			  regionId: {
+				[Op.eq]: regionId,
+			  },
+			  districtId: {
+				[Op.notIn]: [101, 106],
+			  },
+			},
+		  });
+		} else if (region.name === "Navoiy viloyati") {
+		  allOrders = await Order.count({
+			where: {
+			  [Op.or]: {
+				regionId: {
+				  [Op.eq]: regionId,
+				},
+				districtId: {
+				  [Op.in]: [101, 106],
+				},
+			  },
+			},
+		  });
+		  soldOrders = await Order.count({
+			where: {
+			  [Op.and]: [
+				{
+				  orderStatus: {
+					[Op.eq]: orderStatuses.STATUS_SOLD,
+				  },
+				},
+				{
+				  [Op.or]: {
+					regionId: {
+					  [Op.eq]: regionId,
+					},
+					districtId: {
+					  [Op.in]: [101, 106],
+					},
+				  },
+				},
+			  ],
+			},
+		  });
+		  rejectedOrders = await Order.count({
+			where: {
+			  [Op.and]: [
+				{
+				  orderStatus: {
+					[Op.in]: rejectedOrderStatuses,
+				  },
+				},
+				{
+				  [Op.or]: {
+					regionId: {
+					  [Op.eq]: regionId,
+					},
+					districtId: {
+					  [Op.in]: [101, 106],
+					},
+				  },
+				},
+			  ],
+			},
+		  });
+		} else if (region.name === "Xorazm viloyati") {
+		  allOrders = await Order.count({
+			where: {
+			  regionId: {
+				[Op.in]: [1, regionId],
+			  },
+			},
+		  });
+		  soldOrders = await Order.count({
+			where: {
+			  orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_SOLD,
+			  },
+			  regionId: {
+				[Op.in]: [1, regionId],
+			  },
+			},
+		  });
+		  rejectedOrders = await Order.count({
+			where: {
+			  orderStatus: {
+				[Op.in]: rejectedOrderStatuses,
+			  },
+			  regionId: {
+				[Op.in]: [1, regionId],
+			  },
+			},
+		  });
+		} else {
+		  allOrders = await Order.count({
+			where: {
+			  regionId: {
+				[Op.eq]: regionId,
+			  },
+			},
+		  });
+		  soldOrders = await Order.count({
+			where: {
+			  orderStatus: {
+				[Op.eq]: orderStatuses.STATUS_SOLD,
+			  },
+			  regionId: {
+				[Op.eq]: regionId,
+			  },
+			},
+		  });
+		  rejectedOrders = await Order.count({
+			where: {
+			  orderStatus: {
+				[Op.in]: rejectedOrderStatuses,
+			  },
+			  regionId: {
+				[Op.eq]: regionId,
+			  },
+			},
+		  });
+		}
+	  }
     res.json({
       status: "success",
       message: "Statistika uchun ma'lumotlar",
