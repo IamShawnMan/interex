@@ -1074,6 +1074,9 @@ exports.countsInRegionsAndMonths = catchAsync(
       { name: "Dekabr", month: 12, end: 31 },
     ];
     getRegions?.forEach(async region => {
+      let allWhereRegion;
+      let soldWhereRegion;
+      let rejectedWhereRegion;
       if (userRole === "STORE_OWNER") {
         allWhereRegion = {
           where: {
@@ -1143,6 +1146,9 @@ exports.countsInRegionsAndMonths = catchAsync(
     });
 
     monthsIndexArr.forEach(async month => {
+      let allWhereMonth;
+      let soldWhereMonth;
+      let rejectedWhereMonth;
       const start = new Date(
         `${new Date().getFullYear()}-${
           month.month
