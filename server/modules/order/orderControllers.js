@@ -317,6 +317,28 @@ exports.changeOrderStatus = catchAsync(
   }
 );
 
+exports.orderEdit = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const orderById = await Order.findByPk(id);
+
+  if (
+    orderById.orderStatus === statusOrder.STATUS_SOLD ||
+    orderById.orderStatus === statusOrder.STATUS_REJECTED
+  ) {
+    await orderById.update({
+      orderStatus: statusOrder.STATUS_PENDING,
+      orderStatusUz: statusOrderUz.STATUS_KUTILMOQDA,
+    });
+  }
+
+  res.json({
+    status: "succes",
+    message: "Order statusi o`zgardi",
+    error: null,
+    data: null,
+  });
+});
+
 exports.deleteOrder = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 

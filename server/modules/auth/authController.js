@@ -7,25 +7,25 @@ const { Op } = require("sequelize");
 const Region = require("../region/Region");
 
 const generateToken = (payload, jwtSecret, options) => {
-	return new Promise((resolve, reject) => {
-		jwt.sign(payload, jwtSecret, options, (err, token) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(token);
-			}
-		});
-	});
+  return new Promise((resolve, reject) => {
+    jwt.sign(payload, jwtSecret, options, (err, token) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(token);
+      }
+    });
+  });
 };
 
-const findByUsername = (username) => {
-	const user = User.findOne({
-		where: { username: { [Op.eq]: username } },
-	});
-	if (user) {
-		return user;
-	}
-	return null;
+const findByUsername = username => {
+  const user = User.findOne({
+    where: { username: { [Op.eq]: username } },
+  });
+  if (user) {
+    return user;
+  }
+  return null;
 };
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -60,6 +60,7 @@ exports.login = catchAsync(async (req, res, next) => {
 		tariff: candidate.tariff,
 		regionName: region.name
 	};
+	console.log(payload);
 	const token = await generateToken(payload, process.env.JWT_SECRET, {
 		algorithm: "HS512",
 		expiresIn: "30d",

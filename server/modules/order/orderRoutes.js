@@ -56,6 +56,10 @@ router
 router
   .route("/:id")
   .get(orderControllers.getOrderById)
+  .patch(
+    roleMiddleware(["SUPER_ADMIN"]),
+    orderControllers.orderEdit
+  )
   .put(
     roleMiddleware(["STORE_OWNER"]),
     orderValidator.updatedOrderValidator,
