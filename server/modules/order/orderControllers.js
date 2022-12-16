@@ -337,8 +337,26 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
   if (packageByOrderId.packageTotalPrice < 1) {
     await packageByOrderId.destroy();
   }
-  await orderById.destroy();
 
+  await orderById.destroy();
+  const isNewOrdersInPackage = await Order.count({
+    where: {
+      packageId: { [Op.eq]: packageByOrderId.id },
+      orderStatus: { [Op.eq]: statusOrder.STATUS_NEW },
+    },
+  });
+  if (isNewOrdersInPackage === 0) {
+    packageByOrderId.packageStatus =
+      statusPackage.STATUS_OLD;
+    packageByOrderId.packageStatusUz =
+      statusPackageUz.STATUS_ESKI;
+  } else {
+    packageByOrderId.packageStatus =
+      statusPackage.STATUS_NEW;
+    packageByOrderId.packageStatusUz =
+      statusPackageUz.STATUS_YANGI;
+  }
+  await packageByOrderId.save();
   res.json({
     status: "success",
     message: "buyurtma o`chirildi",
