@@ -6,7 +6,7 @@ const districtsJSON = require("../district/districts.json");
 const User = require("../user/User");
 const Order = require("../order/Order");
 const userRoles = require("../../core/constants/userRole");
-const { Op } = require("sequelize");
+const { Op, DATE, cast } = require("sequelize");
 const orderStatuses = require("../../core/constants/orderStatus");
 const Region = require("../region/Region");
 const userStatuses = require("../../core/constants/userStatus");
@@ -24,19 +24,19 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Tumani", key: "districtId", width: 15 },
 		{ header: "Firma", key: "storeOwnerId", width: 15 },
 		{ header: "Mahsulot", key: "orderStatus", width: 20 },
-		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 15},
+		{ header: "Telefon raqami", key: "recipientPhoneNumber", width: 15 },
 		{ header: "Holati", key: "orderStatusUz", width: 17 },
-		{ header: "Tovar summasi", key: "totalPrice", width: 10},
-		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 10},
-		{ header: "Ortiqcha xarajat", key: "expense", width: 10},
-		{ header: "Xizmat narxi", key: "postId", width: 10},
-		{ header: "Kuryerdan qaytgan pul", width: 10},
+		{ header: "Tovar summasi", key: "totalPrice", width: 10 },
+		{ header: "Yetkazish narxi", key: "deliveryPrice", width: 10 },
+		{ header: "Ortiqcha xarajat", key: "expense", width: 10 },
+		{ header: "Xizmat narxi", key: "postId", width: 10 },
+		{ header: "Kuryerdan qaytgan pul", width: 10 },
 		{ header: "Foyda", width: 10 },
 		{ header: "Firma puli", width: 10 },
-		{ header: "Yaratilgan sana", key: "createdAt", width: 10},
-		{ header: "Klient", key: "recipient", width: 15},
-		{ header: "Mahsulot soni", key: "packageId", width: 10},
-		{ header: "Izoh", key: "note", width: 30}
+		{ header: "Yaratilgan sana", key: "createdAt", width: 10 },
+		{ header: "Klient", key: "recipient", width: 15 },
+		{ header: "Mahsulot soni", key: "packageId", width: 10 },
+		{ header: "Izoh", key: "note", width: 30 },
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
@@ -137,7 +137,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		downloadOrderItem.forEach((item) => {
 			if (order.id == item.orderId) {
 				order.orderStatus = item.productName;
-				order.packageId = item.quantity
+				order.packageId = item.quantity;
 			}
 		});
 		regionsJSON.forEach((region) => {
@@ -162,7 +162,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.addRow(order);
 		counter++;
 	});
-	
+
 	const totalPrice1 = () => {
 		const endRow = worksheet.lastRow._number + 1;
 		worksheet.getCell(`G${endRow}`).value = "UMUMIY NARX:";
@@ -191,7 +191,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		}
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`O${i}`).value =
-				worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value;
+				worksheet.getCell(`I${i}`).value -
+				worksheet.getCell(`J${i}`).value -
+				worksheet.getCell(`K${i}`).value;
 		}
 		worksheet.getCell(`L${endRow}`).value = {
 			formula: `SUM(L3:L${endRow - 1})`,
@@ -234,7 +236,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		}
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`N${i}`).value =
-				worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value;
+				worksheet.getCell(`H${i}`).value -
+				worksheet.getCell(`I${i}`).value -
+				worksheet.getCell(`J${i}`).value;
 		}
 		worksheet.getCell(`K${endRow}`).value = {
 			formula: `SUM(K3:K${endRow - 1})`,
@@ -277,7 +281,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		}
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`M${i}`).value =
-				worksheet.getCell(`G${i}`).value - worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value;
+				worksheet.getCell(`G${i}`).value -
+				worksheet.getCell(`H${i}`).value -
+				worksheet.getCell(`I${i}`).value;
 		}
 		worksheet.getCell(`J${endRow}`).value = {
 			formula: `SUM(J3:J${endRow - 1})`,
@@ -352,7 +358,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`L${i}`).value =
-				worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value - worksheet.getCell(`K${i}`).value;
+				worksheet.getCell(`I${i}`).value -
+				worksheet.getCell(`J${i}`).value -
+				worksheet.getCell(`K${i}`).value;
 		}
 		worksheet.getCell(`I${endRow}`).value = {
 			formula: `SUM(I3:I${endRow - 1})`,
@@ -376,7 +384,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		for (i = 3; i < endRow; i++) {
 			worksheet.getCell(`K${i}`).value =
-				worksheet.getCell(`H${i}`).value - worksheet.getCell(`I${i}`).value - worksheet.getCell(`J${i}`).value;
+				worksheet.getCell(`H${i}`).value -
+				worksheet.getCell(`I${i}`).value -
+				worksheet.getCell(`J${i}`).value;
 		}
 		worksheet.getCell(`H${endRow}`).value = {
 			formula: `SUM(H3:H${endRow - 1})`,
@@ -562,17 +572,17 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	worksheet.mergeCells("F2:H2");
 	worksheet.eachRow((row) => {
 		row.eachCell((cell) => {
-		cell.border = {
-			top: { style: "thin" },
-			left: { style: "thin" },
-			bottom: { style: "thin" },
-			right: { style: "thin" },
-		}
-	    cell.alignment = {
-          vertical: "middle",
-          horizontal: "center",
-          wrapText: true
-      	}
+			cell.border = {
+				top: { style: "thin" },
+				left: { style: "thin" },
+				bottom: { style: "thin" },
+				right: { style: "thin" },
+			};
+			cell.alignment = {
+				vertical: "middle",
+				horizontal: "center",
+				wrapText: true,
+			};
 			if (cell.model.value === "KUTILMOQDA") {
 				row.font = {
 					color: { argb: "dd2727" },
@@ -598,7 +608,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 				type: "pattern",
 				pattern: "solid",
 				fgColor: { argb: "ffd385" },
-			})
+			});
 	});
 	worksheet.getRow(2).eachCell((cell) => {
 		(cell.font = { bold: true }),
@@ -624,515 +634,677 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 	let rejectedOrders = 0;
 	let allStores = 0;
 	let allUsers = 0;
-	let dayData = [];
-	let monthData = [];
-	let yearData = [];
-  	let today = new Date()
+	let today = new Date();
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
+	const startDate = today.setUTCHours(0, 0, 0, 0);
+	const endDate = today.setUTCHours(23, 59, 59, 999);
 
-    //................Statistics for ADMIN and SUPER_ADMIN starts here ....................
-    if (
+	//................Statistics for ADMIN and SUPER_ADMIN starts here ....................
+	if (
 		userRole === "ADMIN" ||
 		userRole === "SUPER_ADMIN" ||
 		userRole === "COURIER"
-	  ) {
+	) {
 		allStores = await User.count({
-		  where: {
-			userRole: { [Op.eq]: userRoles.STORE_OWNER },
-			status: { [Op.eq]: userStatuses.ACTIVE },
-		  },
+			where: {
+				userRole: { [Op.eq]: userRoles.STORE_OWNER },
+				status: { [Op.eq]: userStatuses.ACTIVE },
+			},
 		});
-	  }
-  
-	  if (
-		userRole === "ADMIN" ||
-		userRole === "SUPER_ADMIN"
-	  ) {
-		allOrders = await Order.count();
+	}
+
+	if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
+		allOrders = await Order.count({
+			where: {
+				[Op.and]: [
+					{
+						createdAt: {
+							[Op.gte]: startDate,
+						},
+					},
+					{
+						createdAt: {
+							[Op.lte]: endDate,
+						},
+					},
+					{
+						orderStatus: {
+							[Op.ne]: orderStatuses.STATUS_NEW,
+						},
+					},
+				],
+			},
+		});
+
 		soldOrders = await Order.count({
-		  where: {
-			orderStatus: {
-			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			where: {
+				[Op.and]: [
+					{
+						createdAt: {
+							[Op.gte]: startDate,
+						},
+					},
+					{
+						createdAt: {
+							[Op.lte]: endDate,
+						},
+					},
+					{
+						orderStatus: {
+							[Op.eq]: orderStatuses.STATUS_SOLD,
+						},
+					},
+				],
 			},
-		  },
 		});
+
 		rejectedOrders = await Order.count({
-		  where: {
-			orderStatus: { [Op.in]: rejectedOrderStatuses },
-		  },
-		});
-		ordersSold = await Order.findAll({
-		  where: {
-			orderStatus: {
-			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			where: {
+				[Op.and]: [
+					{
+						createdAt: {
+							[Op.gte]: startDate,
+						},
+					},
+					{
+						createdAt: {
+							[Op.lte]: endDate,
+						},
+					},
+					{
+						orderStatus: {
+							[Op.in]: rejectedOrderStatuses,
+						},
+					},
+				],
 			},
-		  },
 		});
+
 		allUsers = await User.count({
-		  where: {
-			status: { [Op.eq]: "ACTIVE" },
-		  },
+			where: {
+				status: { [Op.eq]: "ACTIVE" },
+			},
 		});
-		const soldOrdersperDay = await Order.count({
-		  where: {
-			orderStatus: {
-			  [Op.eq]: orderStatuses.STATUS_SOLD,
-			},
-			updatedAt: {
-			  [Op.or]: {
-				[Op.gte]: dayjs(`${today}`)
-				  .startOf("day")
-				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-				[Op.lte]: dayjs(`${today}`)
-				  .endOf("day")
-				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-			  },
-			},
-		  },
-		});
-		dayData.push(soldOrdersperDay);
-		const soldOrdersperMonth = await Order.count({
-		  where: {
-			orderStatus: {
-			  [Op.eq]: orderStatuses.STATUS_SOLD,
-			},
-			updatedAt: {
-			  [Op.or]: {
-				[Op.gte]: dayjs(`${today}`)
-				  .startOf("month")
-				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-				[Op.lte]: dayjs(`${today}`)
-				  .endOf("month")
-				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-			  },
-			},
-		  },
-		});
-		monthData.push(soldOrdersperMonth);
-		const soldOrdersperYear = await Order.count({
-		  where: {
-			orderStatus: {
-			  [Op.eq]: orderStatuses.STATUS_SOLD,
-			},
-			updatedAt: {
-			  [Op.or]: {
-				[Op.gte]: dayjs(`${today}`)
-				  .startOf("year")
-				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-				[Op.lte]: dayjs(`${today}`)
-				  .endOf("year")
-				  .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
-			  },
-			},
-		  },
-		});
-		yearData.push(soldOrdersperYear);
-	  }
-	  //................Statistics for STORE starts here ....................
-	  if (userRole === "STORE_OWNER") {
+	}
+	//................Statistics for STORE starts here ....................
+
+	if (userRole === "STORE_OWNER") {
 		allStores = 1;
 		allOrders = await Order.count({
-		  where: {
-			storeOwnerId: {
-			  [Op.eq]: id,
+			where: {
+				[Op.and]: [
+					{
+						createdAt: {
+							[Op.gte]: startDate,
+						},
+					},
+					{
+						createdAt: {
+							[Op.lte]: endDate,
+						},
+					},
+					{
+						storeOwnerId: {
+							[Op.eq]: id,
+						},
+					},
+				],
 			},
-		  },
 		});
 		soldOrders = await Order.count({
-		  where: {
-			orderStatus: {
-			  [Op.eq]: orderStatuses.STATUS_SOLD,
+			where: {
+				[Op.and]: [
+					{
+						createdAt: {
+							[Op.gte]: startDate,
+						},
+					},
+					{
+						createdAt: {
+							[Op.lte]: endDate,
+						},
+					},
+					{
+						orderStatus: {
+							[Op.eq]: orderStatuses.STATUS_SOLD,
+						},
+					},
+					{
+						storeOwnerId: {
+							[Op.eq]: id,
+						},
+					},
+				],
 			},
-			storeOwnerId: {
-			  [Op.eq]: id,
-			},
-		  },
 		});
 		rejectedOrders = await Order.count({
-		  where: {
-			orderStatus: {
-			  [Op.in]: rejectedOrderStatuses,
+			where: {
+				[Op.and]: [
+					{
+						createdAt: {
+							[Op.gte]: startDate,
+						},
+					},
+					{
+						createdAt: {
+							[Op.lte]: endDate,
+						},
+					},
+					{
+						orderStatus: {
+							[Op.in]: rejectedOrderStatuses,
+						},
+					},
+					{
+						storeOwnerId: {
+							[Op.eq]: id,
+						},
+					},
+				],
 			},
-			storeOwnerId: {
-			  [Op.eq]: id,
-			},
-		  },
 		});
-	  }
-	  //............................ statistics for COURIER satrts here ..........................
-	  if (userRole === "COURIER") {
+	}
+	//............................ statistics for COURIER satrts here ..........................
+	if (userRole === "COURIER") {
 		const region = await Region.findOne({
-		  attributes: ["id", "name"],
-		  where: {
-			id: {
-			  [Op.eq]: regionId,
+			attributes: ["id", "name"],
+			where: {
+				id: {
+					[Op.eq]: regionId,
+				},
 			},
-		  },
 		});
 		if (region.name === "Samarqand viloyati") {
-		  allOrders = await Order.count({
-			where: {
-			  regionId: {
-				[Op.eq]: regionId,
-			  },
-			  districtId: {
-				[Op.notIn]: [101, 106],
-			  },
-			},
-		  });
-		  soldOrders = await Order.count({
-			where: {
-			  orderStatus: {
-				[Op.eq]: orderStatuses.STATUS_SOLD,
-			  },
-			  regionId: {
-				[Op.eq]: regionId,
-			  },
-			  districtId: {
-				[Op.notIn]: [101, 106],
-			  },
-			},
-		  });
-		  rejectedOrders = await Order.count({
-			where: {
-			  orderStatus: {
-				[Op.in]: rejectedOrderStatuses,
-			  },
-			  regionId: {
-				[Op.eq]: regionId,
-			  },
-			  districtId: {
-				[Op.notIn]: [101, 106],
-			  },
-			},
-		  });
+			allOrders = await Order.count({
+				where: {
+					regionId: {
+						[Op.eq]: regionId,
+					},
+					districtId: {
+						[Op.notIn]: [101, 106],
+					},
+					orderStatus: {
+						[Op.in]: [
+							orderStatuses.STATUS_DELIVERED,
+							orderStatuses.STATUS_PENDING,
+						],
+					},
+				},
+			});
+
+			soldOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+						{
+							orderStatus: {
+								[Op.eq]: orderStatuses.STATUS_SOLD,
+							},
+						},
+						{
+							regionId: {
+								[Op.eq]: regionId,
+							},
+						},
+						{
+							districtId: {
+								[Op.notIn]: [101, 106],
+							},
+						},
+					],
+				},
+			});
+
+			rejectedOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+						{
+							orderStatus: {
+								[Op.in]: rejectedOrderStatuses,
+							},
+						},
+						{
+							regionId: {
+								[Op.eq]: regionId,
+							},
+						},
+						{
+							districtId: {
+								[Op.notIn]: [101, 106],
+							},
+						},
+					],
+				},
+			});
 		} else if (region.name === "Navoiy viloyati") {
-		  allOrders = await Order.count({
-			where: {
-			  [Op.or]: {
-				regionId: {
-				  [Op.eq]: regionId,
-				},
-				districtId: {
-				  [Op.in]: [101, 106],
-				},
-			  },
-			},
-		  });
-		  soldOrders = await Order.count({
-			where: {
-			  [Op.and]: [
-				{
-				  orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_SOLD,
-				  },
-				},
-				{
-				  [Op.or]: {
-					regionId: {
-					  [Op.eq]: regionId,
+			allOrders = await Order.count({
+				where: {
+					[Op.or]: {
+						regionId: {
+							[Op.eq]: regionId,
+						},
+						districtId: {
+							[Op.in]: [101, 106],
+						},
 					},
-					districtId: {
-					  [Op.in]: [101, 106],
+					orderStatus: {
+						[Op.in]: [
+							orderStatuses.STATUS_DELIVERED,
+							orderStatuses.STATUS_PENDING,
+						],
 					},
-				  },
 				},
-			  ],
-			},
-		  });
-		  rejectedOrders = await Order.count({
-			where: {
-			  [Op.and]: [
-				{
-				  orderStatus: {
-					[Op.in]: rejectedOrderStatuses,
-				  },
+			});
+
+			soldOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							orderStatus: {
+								[Op.eq]: orderStatuses.STATUS_SOLD,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+						{
+							[Op.or]: {
+								regionId: {
+									[Op.eq]: regionId,
+								},
+								districtId: {
+									[Op.in]: [101, 106],
+								},
+							},
+						},
+					],
 				},
-				{
-				  [Op.or]: {
-					regionId: {
-					  [Op.eq]: regionId,
-					},
-					districtId: {
-					  [Op.in]: [101, 106],
-					},
-				  },
+			});
+
+			rejectedOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							orderStatus: {
+								[Op.in]: rejectedOrderStatuses,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+						{
+							[Op.or]: {
+								regionId: {
+									[Op.eq]: regionId,
+								},
+								districtId: {
+									[Op.in]: [101, 106],
+								},
+							},
+						},
+					],
 				},
-			  ],
-			},
-		  });
+			});
 		} else if (region.name === "Xorazm viloyati") {
-		  allOrders = await Order.count({
-			where: {
-			  regionId: {
-				[Op.in]: [1, regionId],
-			  },
-			},
-		  });
-		  soldOrders = await Order.count({
-			where: {
-			  orderStatus: {
-				[Op.eq]: orderStatuses.STATUS_SOLD,
-			  },
-			  regionId: {
-				[Op.in]: [1, regionId],
-			  },
-			},
-		  });
-		  rejectedOrders = await Order.count({
-			where: {
-			  orderStatus: {
-				[Op.in]: rejectedOrderStatuses,
-			  },
-			  regionId: {
-				[Op.in]: [1, regionId],
-			  },
-			},
-		  });
+			allOrders = await Order.count({
+				where: {
+					regionId: {
+						[Op.in]: [1, regionId],
+					},
+					orderStatus: {
+						[Op.in]: [
+							orderStatuses.STATUS_DELIVERED,
+							orderStatuses.STATUS_PENDING,
+						],
+					},
+				},
+			});
+
+			soldOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							orderStatus: {
+								[Op.eq]: orderStatuses.STATUS_SOLD,
+							},
+						},
+						{
+							regionId: {
+								[Op.in]: [1, regionId],
+							},
+						},
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+					],
+				},
+			});
+
+			rejectedOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							orderStatus: {
+								[Op.in]: rejectedOrderStatuses,
+							},
+						},
+						{
+							regionId: {
+								[Op.in]: [1, regionId],
+							},
+						},
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+					],
+				},
+			});
 		} else {
-		  allOrders = await Order.count({
-			where: {
-			  regionId: {
-				[Op.eq]: regionId,
-			  },
-			},
-		  });
-		  soldOrders = await Order.count({
-			where: {
-			  orderStatus: {
-				[Op.eq]: orderStatuses.STATUS_SOLD,
-			  },
-			  regionId: {
-				[Op.eq]: regionId,
-			  },
-			},
-		  });
-		  rejectedOrders = await Order.count({
-			where: {
-			  orderStatus: {
-				[Op.in]: rejectedOrderStatuses,
-			  },
-			  regionId: {
-				[Op.eq]: regionId,
-			  },
-			},
-		  });
+			allOrders = await Order.count({
+				where: {
+					regionId: {
+						[Op.eq]: regionId,
+					},
+					orderStatus: {
+						[Op.in]: [
+							orderStatuses.STATUS_DELIVERED,
+							orderStatuses.STATUS_PENDING,
+						],
+					},
+				},
+			});
+
+			soldOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							orderStatus: {
+								[Op.eq]: orderStatuses.STATUS_SOLD,
+							},
+						},
+						{
+							regionId: {
+								[Op.eq]: regionId,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+					],
+				},
+			});
+
+			rejectedOrders = await Order.count({
+				where: {
+					[Op.and]: [
+						{
+							orderStatus: {
+								[Op.in]: rejectedOrderStatuses,
+							},
+						},
+						{
+							regionId: {
+								[Op.eq]: regionId,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.gte]: startDate,
+							},
+						},
+						{
+							updatedAt: {
+								[Op.lte]: endDate,
+							},
+						},
+					],
+				},
+			});
 		}
-	  }
-    res.json({
-      status: "success",
-      message: "Statistika uchun ma'lumotlar",
-      error: null,
-      data: {
-        allOrders,
-        allStores,
-        soldOrders,
-        rejectedOrders,
-        dayData,
-        monthData,
-        yearData,
-      },
-    });
-  }
-);
+	}
+	res.json({
+		status: "success",
+		message: "Statistika uchun ma'lumotlar",
+		error: null,
+		data: {
+			allOrders,
+			allStores,
+			soldOrders,
+			rejectedOrders,
+		},
+	});
+});
 
-exports.countsInRegionsAndMonths = catchAsync(
-  async (req, res, next) => {
-    const { id, userRole } = req.user;
-    let regions = [];
-    let months = [];
-    const getRegions = await Region.findAll();
+exports.countsInRegionsAndMonths = catchAsync(async (req, res, next) => {
+	const { id, userRole } = req.user;
+	let regions = [];
+	let months = [];
+	const getRegions = await Region.findAll();
 
-    const monthsIndexArr = [
-      { name: "Yanvar", month: 1, end: 31 },
-      {
-        name: "Fevral",
-        month: 2,
-        end: new Date().getFullYear() % 4 === 0 ? 29 : 28,
-      },
-      { name: "Mart", month: 3, end: 31 },
-      { name: "Aprel", month: 4, end: 30 },
-      { name: "May", month: 5, end: 31 },
-      { name: "Iyun", month: 6, end: 30 },
-      { name: "Iyul", month: 7, end: 31 },
-      { name: "Avgust", month: 8, end: 31 },
-      { name: "Sentyabr", month: 9, end: 30 },
-      { name: "Oktyabr", month: 10, end: 31 },
-      { name: "Noyabr", month: 11, end: 30 },
-      { name: "Dekabr", month: 12, end: 31 },
-    ];
-    getRegions?.forEach(async region => {
-      let allWhereRegion;
-      let soldWhereRegion;
-      let rejectedWhereRegion;
-      if (userRole === "STORE_OWNER") {
-        allWhereRegion = {
-          where: {
-            regionId: { [Op.eq]: region.id },
-            storeOwnerId: { [Op.eq]: id },
-          },
-        };
-        soldWhereRegion = {
-          where: {
-            regionId: { [Op.eq]: region.id },
-            storeOwnerId: { [Op.eq]: id },
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_SOLD,
-            },
-          },
-        };
-        rejectedWhereRegion = {
-          where: {
-            regionId: { [Op.eq]: region.id },
-            storeOwnerId: { [Op.eq]: id },
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_REJECTED,
-            },
-          },
-        };
-      } else {
-        allWhereRegion = {
-          where: {
-            regionId: { [Op.eq]: region.id },
-          },
-        };
-        soldWhereRegion = {
-          where: {
-            regionId: { [Op.eq]: region.id },
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_SOLD,
-            },
-          },
-        };
-        rejectedWhereRegion = {
-          where: {
-            regionId: { [Op.eq]: region.id },
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_REJECTED,
-            },
-          },
-        };
-      }
-      const countAllOrdersInRegion = await Order.count(
-        allWhereRegion
-      );
-      const soldCountInRegion = await Order.count(
-        soldWhereRegion
-      );
-      const rejectedCountinRegion = await Order.count(
-        rejectedWhereRegion
-      );
-      regions.push({
-        name: region.name?.slice(
-          0,
-          region.name?.indexOf(" ")
-        ),
-        barchasi: countAllOrdersInRegion,
-        sotilgani: soldCountInRegion,
-        qaytgani: rejectedCountinRegion,
-      });
-    });
+	const monthsIndexArr = [
+		{ name: "Yanvar", month: 1, end: 31 },
+		{
+			name: "Fevral",
+			month: 2,
+			end: new Date().getFullYear() % 4 === 0 ? 29 : 28,
+		},
+		{ name: "Mart", month: 3, end: 31 },
+		{ name: "Aprel", month: 4, end: 30 },
+		{ name: "May", month: 5, end: 31 },
+		{ name: "Iyun", month: 6, end: 30 },
+		{ name: "Iyul", month: 7, end: 31 },
+		{ name: "Avgust", month: 8, end: 31 },
+		{ name: "Sentyabr", month: 9, end: 30 },
+		{ name: "Oktyabr", month: 10, end: 31 },
+		{ name: "Noyabr", month: 11, end: 30 },
+		{ name: "Dekabr", month: 12, end: 31 },
+	];
+	getRegions?.forEach(async (region) => {
+		let allWhereRegion;
+		let soldWhereRegion;
+		let rejectedWhereRegion;
+		if (userRole === "STORE_OWNER") {
+			allWhereRegion = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+					storeOwnerId: { [Op.eq]: id },
+				},
+			};
+			soldWhereRegion = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+					storeOwnerId: { [Op.eq]: id },
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_SOLD,
+					},
+				},
+			};
+			rejectedWhereRegion = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+					storeOwnerId: { [Op.eq]: id },
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_REJECTED,
+					},
+				},
+			};
+		} else {
+			allWhereRegion = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+				},
+			};
+			soldWhereRegion = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_SOLD,
+					},
+				},
+			};
+			rejectedWhereRegion = {
+				where: {
+					regionId: { [Op.eq]: region.id },
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_REJECTED,
+					},
+				},
+			};
+		}
+		const countAllOrdersInRegion = await Order.count(allWhereRegion);
+		const soldCountInRegion = await Order.count(soldWhereRegion);
+		const rejectedCountinRegion = await Order.count(rejectedWhereRegion);
+		regions.push({
+			name: region.name?.slice(0, region.name?.indexOf(" ")),
+			barchasi: countAllOrdersInRegion,
+			sotilgani: soldCountInRegion,
+			qaytgani: rejectedCountinRegion,
+		});
+	});
 
-    monthsIndexArr.forEach(async month => {
-      let allWhereMonth;
-      let soldWhereMonth;
-      let rejectedWhereMonth;
-      const start = new Date(
-        `${new Date().getFullYear()}-${
-          month.month
-        }-01 00:00:00.000+00`
-      );
-      const end = new Date(
-        `${new Date().getFullYear()}-${month.month}-${
-          month.end
-        } 23:59:59.000+00`
-      );
-      if (userRole === "STORE_OWNER") {
-        allWhereMonth = {
-          where: {
-            storeOwnerId: { [Op.eq]: id },
-            createdAt: {
-              [Op.gt]: start,
-              [Op.lte]: end,
-            },
-          },
-        };
-        soldWhereMonth = {
-          where: {
-            storeOwnerId: { [Op.eq]: id },
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_SOLD,
-            },
-            createdAt: {
-              [Op.gt]: start,
-              [Op.lte]: end,
-            },
-          },
-        };
-        rejectedWhereMonth = {
-          where: {
-            storeOwnerId: { [Op.eq]: id },
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_REJECTED,
-            },
-            createdAt: {
-              [Op.gt]: start,
-              [Op.lte]: end,
-            },
-          },
-        };
-      } else {
-        allWhereMonth = {
-          where: {
-            createdAt: {
-              [Op.gt]: start,
-              [Op.lte]: end,
-            },
-          },
-        };
-        soldWhereMonth = {
-          where: {
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_SOLD,
-            },
-            createdAt: {
-              [Op.gt]: start,
-              [Op.lte]: end,
-            },
-          },
-        };
-        rejectedWhereMonth = {
-          where: {
-            storeOwnerId: { [Op.eq]: id },
-            orderStatus: {
-              [Op.eq]: orderStatuses.STATUS_REJECTED,
-            },
-            createdAt: {
-              [Op.gt]: start,
-              [Op.lte]: end,
-            },
-          },
-        };
-      }
-      const countAllOrdersInMonth = await Order.count(
-        allWhereMonth
-      );
-      const countSoldOrdersInMonth = await Order.count(
-        soldWhereMonth
-      );
-      const countRejectedOrdersInMonth = await Order.count(
-        rejectedWhereMonth
-      );
-      months.push({
-        name: month.name,
-        barchasi: countAllOrdersInMonth,
-        sotilgani: countSoldOrdersInMonth,
-        qaytgani: countRejectedOrdersInMonth,
-      });
-    });
+	monthsIndexArr.forEach(async (month) => {
+		let allWhereMonth;
+		let soldWhereMonth;
+		let rejectedWhereMonth;
+		const start = new Date(
+			`${new Date().getFullYear()}-${month.month}-01 00:00:00.000+00`
+		);
+		const end = new Date(
+			`${new Date().getFullYear()}-${month.month}-${month.end} 23:59:59.000+00`
+		);
+		if (userRole === "STORE_OWNER") {
+			allWhereMonth = {
+				where: {
+					storeOwnerId: { [Op.eq]: id },
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+			soldWhereMonth = {
+				where: {
+					storeOwnerId: { [Op.eq]: id },
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_SOLD,
+					},
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+			rejectedWhereMonth = {
+				where: {
+					storeOwnerId: { [Op.eq]: id },
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_REJECTED,
+					},
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+		} else {
+			allWhereMonth = {
+				where: {
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+			soldWhereMonth = {
+				where: {
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_SOLD,
+					},
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+			rejectedWhereMonth = {
+				where: {
+					storeOwnerId: { [Op.eq]: id },
+					orderStatus: {
+						[Op.eq]: orderStatuses.STATUS_REJECTED,
+					},
+					createdAt: {
+						[Op.gt]: start,
+						[Op.lte]: end,
+					},
+				},
+			};
+		}
+		const countAllOrdersInMonth = await Order.count(allWhereMonth);
+		const countSoldOrdersInMonth = await Order.count(soldWhereMonth);
+		const countRejectedOrdersInMonth = await Order.count(rejectedWhereMonth);
+		months.push({
+			name: month.name,
+			barchasi: countAllOrdersInMonth,
+			sotilgani: countSoldOrdersInMonth,
+			qaytgani: countRejectedOrdersInMonth,
+		});
+	});
 
-    setTimeout(() => {
-      res.send({ regions, months });
-    }, 1000);
-  }
-);
+	setTimeout(() => {
+		res.send({ regions, months });
+	}, 1000);
+});

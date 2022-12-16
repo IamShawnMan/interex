@@ -5,27 +5,29 @@ const Region = require("../region/Region");
 const AppError = require("../../core/utils/AppError");
 const catchAsync = require("../../core/utils/catchAsync");
 const { Op } = require("sequelize");
+const Region = require("../region/Region");
 
 const generateToken = (payload, jwtSecret, options) => {
-	return new Promise((resolve, reject) => {
-		jwt.sign(payload, jwtSecret, options, (err, token) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(token);
-			}
-		});
-	});
+  return new Promise((resolve, reject) => {
+    jwt.sign(payload, jwtSecret, options, (err, token) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(token);
+      }
+    });
+  });
 };
 
-const findByUsername = (username) => {
-	const user = User.findOne({
-		where: { username: { [Op.eq]: username } },
-	});
-	if (user) {
-		return user;
-	}
-	return null;
+const findByUsername = username => {
+  const user = User.findOne({
+    include: [{ model: Region, as: "region" }],
+    where: { username: { [Op.eq]: username } },
+  });
+  if (user) {
+    return user;
+  }
+  return null;
 };
 
 exports.login = catchAsync(async (req, res, next) => {
