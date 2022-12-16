@@ -85,13 +85,18 @@ function Navbar(props) {
             classRed={notification && styles.notification}
           />
         </div>
-        <div className={styles.SmsIcon}>
-          <SmsIcon classname={styles.SmsIcon} />
-        </div>
+     
         {console.log(user)}
-        <p
-            className={`h6`}
-          >{`${`${user.storeName} ${user.firstName} ${user.lastName}`}`}</p>
+        <div style={{margin: "0 auto",textAlign: "center"}}>
+            <p
+            className={`h5`}
+          >{`${`${user.storeName||user.regionName||user.firstName||""}`}`}</p>
+              <span
+            >
+              {user.userRole}
+            </span>
+        </div>
+      
         <div className={styles.userMenu} onClick={modalShow}>
 
           <div className={styles.arrowSvg}>
@@ -102,7 +107,7 @@ function Navbar(props) {
               show ? styles.modalShow : ""
             }`}
           >
-          
+      
             <p
               onClick={logoutHandle}
               className={`h6 ${styles.userMenuModalItem}`}
