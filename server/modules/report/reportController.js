@@ -634,14 +634,10 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 	let rejectedOrders = 0;
 	let allStores = 0;
 	let allUsers = 0;
-	let dayData = [];
-	let monthData = [];
-	let yearData = [];
 	let today = new Date();
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 	const startDate = today.setUTCHours(0, 0, 0, 0);
 	const endDate = today.setUTCHours(23, 59, 59, 999);
-	console.log(yesterday, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
 	//................Statistics for ADMIN and SUPER_ADMIN starts here ....................
 	if (
@@ -729,7 +725,6 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				status: { [Op.eq]: "ACTIVE" },
 			},
 		});
-		yearData.push(soldOrdersperYear);
 	}
 	//................Statistics for STORE starts here ....................
 
@@ -1130,9 +1125,6 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 			allStores,
 			soldOrders,
 			rejectedOrders,
-			dayData,
-			monthData,
-			yearData,
 		},
 	});
 });
