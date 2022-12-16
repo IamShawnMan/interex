@@ -88,10 +88,12 @@ function Navbar(props) {
         <div className={styles.SmsIcon}>
           <SmsIcon classname={styles.SmsIcon} />
         </div>
+        {console.log(user)}
+        <p
+            className={`h6`}
+          >{`${`${user.storeName} ${user.firstName} ${user.lastName}`}`}</p>
         <div className={styles.userMenu} onClick={modalShow}>
-          <p
-            className={`h6 ${styles.fulName}`}
-          >{`${user.firstName} ${user.lastName}`}</p>
+
           <div className={styles.arrowSvg}>
             <Arrow classname={styles.arrowSvg} />
           </div>
@@ -100,6 +102,7 @@ function Navbar(props) {
               show ? styles.modalShow : ""
             }`}
           >
+          
             <p
               onClick={logoutHandle}
               className={`h6 ${styles.userMenuModalItem}`}
