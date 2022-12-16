@@ -179,7 +179,6 @@ exports.downloadWord = catchAsync(
     ordersArr?.forEach(orderArr => {
       const table = new Table({
         width: { size: 12000, type: WidthType.DXA },
-
         rows: [
           new TableRow({
             cantSplit: true,
@@ -191,6 +190,22 @@ exports.downloadWord = catchAsync(
                 },
                 children: [
                   new Paragraph({ children: [] }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: `${
+                          new Intl.DateTimeFormat("RU-RU", {
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          }).format(
+                            orderArr[0].createdAt
+                          ) || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
@@ -318,6 +333,27 @@ exports.downloadWord = catchAsync(
                 },
                 children: [
                   new Paragraph({ children: [] }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: `${
+                          orderArr[1].createdAt
+                            ? new Intl.DateTimeFormat(
+                                "RU-RU",
+                                {
+                                  dateStyle: "short",
+                                  timeStyle: "short",
+                                }
+                              ).format(
+                                orderArr[1].createdAt
+                              )
+                            : null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
@@ -465,7 +501,7 @@ exports.downloadWord = catchAsync(
     });
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=My Document.docx"
+      `attachment; filename=${new Date().toISOString}.docx`
     );
     return Packer.toBuffer(doc).then(buffer => {
       res.status(200).end(buffer);
