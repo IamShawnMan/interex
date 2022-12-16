@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, {  useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import styles from "./Home.module.css";
 import OrderYuqorilashi from "../../assets/icons/OrderYuqorilashi";
@@ -10,7 +10,11 @@ import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
 import BarChart from "../../components/Chart/BarChart"
 import ReChart from "../../components/Chart/ReChart";
+import Button from "../../components/Form/FormComponents/Button/Button";
+import AppContext from "../../context/AppContext";
 function Home() {
+  const { user } = useContext(AppContext);
+
   const [value,setValue]= useState()
   const [regions,setRegions] = useState()
   const [month,setMonth] = useState()
@@ -41,9 +45,28 @@ function Home() {
     getChartStatistics()
     getStatistics();
   },[])
-
+  const allOrderUpdate = async () => {
+    try {
+      const res = await http({
+        url: `/all`,
+        method: "PUT",
+        data:{}
+      });
+      console.log(res);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
   return (
     <Layout pageName={"Bosh Sahifa"}>
+      {user.userRole==="SUPER_ADMIN"&& <Button
+                    size="small"
+                    name="btn"
+                    onClick={() => {
+                      allOrderUpdate();
+                    }}>
+                    Eslatmani yangilash
+                  </Button>}
       <div className={styles.statistics}>
         <div className={styles.containerFlex}>
           <div className={styles.container}>

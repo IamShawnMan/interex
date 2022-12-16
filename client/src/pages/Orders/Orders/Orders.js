@@ -37,8 +37,8 @@ function Orders() {
   const [price, setPrice] = useState(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 10000;
+  let page = searchParams.get("page") || 1;
+  let size = searchParams.get("size") || 10;
   const createdAt = searchParams.get("createdAt[eq]") || "";
   const orderStatus = searchParams.get("orderStatus") || "";
   const regionId = searchParams.get("regionId") || "";
@@ -50,6 +50,10 @@ function Orders() {
   const [search, setSearch] = useState(null);
   const navigate = useNavigate();
   const url = location.pathname;
+  useState(()=>{
+   page=1
+   size=10
+  },[])
   useEffect(() => {
     filterFn();
     getPrices();
@@ -99,7 +103,19 @@ function Orders() {
       toast.error(error?.response?.data?.message);
     }
   };
-
+  const deleteOrder = async (id) => {
+    try {
+      const res = await http({
+        url: `/orders/${id}`,
+        method: "DELETE",
+        data: {}
+      });
+      filterFn();
+      toast.success(res.data?.message)
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
   const dailyOrders = async () => {
     const res = await http({
       url: "/orders/delivered/daily",
@@ -331,6 +347,7 @@ function Orders() {
               isStoreOwner) && (
               <div className={styles.actionContainer}>
                 {user.userRole === "STORE_OWNER" && (
+                  <>
                   <Button
                     size="small"
                     disabled={
@@ -344,6 +361,19 @@ function Orders() {
                     }}>
                     O'zgartirish
                   </Button>
+                  <Button
+                    size="small"
+                    disabled={
+                      order.orderStatus !== "NEW"
+                        ? true
+                        : false
+                    }
+                    name="btn"
+                    btnStyle={{backgroundColor:order.orderStatus === "NEW"?"red":""}}
+                    onClick={() => deleteOrder(order.id)}>
+                    O'chirish
+                  </Button>
+                  </>
                 )}
                 {isAdmin && id && (
                   <>

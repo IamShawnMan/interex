@@ -21,7 +21,7 @@ function Filter({ url }) {
   const [storeOwnerIds, setStoreOwner] = useState(null);
   const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 500;
+  const size = searchParams.get("size") || 10;
   useEffect(() => {
     getAllRegions();
     getAllStatuses();

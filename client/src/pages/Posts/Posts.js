@@ -21,11 +21,15 @@ const Posts = () => {
   const [viewAllPosts, setViewAllPosts] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const page = searchParams.get("page") || 1;
-  const size = searchParams.get("size") || 10;
+  let page = searchParams.get("page") || 1;
+  let size = searchParams.get("size") || 10;
   const location = useLocation();
   const url = location.pathname;
   const [search, setSearch] = useState(null);
+  useState(()=>{
+    page=1
+    size=10
+   },[])
   const getAllPosts = async () => {
     try {
       const res = await http({
