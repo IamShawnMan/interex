@@ -230,27 +230,6 @@ exports.getOrderById = catchAsync(
   }
 );
 
-exports.getAllOrdersUpdate = catchAsync(
-  async (req, res, next) => {
-    const getAllOrders = await Order.findAll();
-
-    getAllOrders?.forEach(async order => {
-      let itemByNote = "";
-      const itemsByOrder = await OrderItem.findAll({
-        where: { orderId: { [Op.eq]: order.id } },
-      });
-      itemsByOrder?.forEach(item => {
-        itemByNote += `${item.productName}-${item.quantity}/${item.orderItemTotalPrice}`;
-      });
-      if (itemByNote.length > 0) {
-        order.note = itemByNote + " " + order.note;
-        await order.save();
-      }
-    });
-    res.json("okey");
-  }
-);
-
 exports.changeOrderStatus = catchAsync(
   async (req, res, next) => {
     const { id } = req.params;
