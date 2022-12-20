@@ -1,4 +1,10 @@
 const router = require("express").Router();
+const {
+  ADMIN,
+  COURIER,
+  STORE_OWNER,
+  SUPER_ADMIN,
+} = require("../../core/constants/userRole");
 const roleMiddleware = require("../../core/middlewares/roleMiddleware");
 const orderControllers = require("./orderControllers");
 const orderValidator = require("./orderExpressValidator");
@@ -7,15 +13,15 @@ const reportController = require("../report/reportController");
 router
   .route("/")
   .get(
-    roleMiddleware(["ADMIN", "SUPER_ADMIN"]),
+    roleMiddleware([ADMIN, SUPER_ADMIN]),
     orderControllers.getAllOrders
   )
   .get(
-    roleMiddleware(["ADMIN"]),
+    roleMiddleware([ADMIN]),
     orderControllers.adminOrderStatus
   )
   .post(
-    roleMiddleware(["STORE_OWNER"]),
+    roleMiddleware([STORE_OWNER]),
     orderValidator.creatingOrderValidator,
     orderControllers.createOrder
   );
@@ -28,23 +34,23 @@ router.get(
 router
   .get(
     "/delivered",
-    roleMiddleware(["COURIER"]),
+    roleMiddleware([COURIER]),
     orderControllers.getDeliveredOrders
   )
   .get(
     "/delivered/daily",
-    roleMiddleware(["COURIER"]),
+    roleMiddleware([COURIER]),
     orderControllers.getDailyOrders
   )
   .put(
     "/delivered/:id/status",
-    roleMiddleware(["COURIER"]),
+    roleMiddleware([COURIER]),
     orderControllers.changeStatusDeliveredOrders
   );
 router
   .route("/myorders")
   .get(
-    roleMiddleware(["STORE_OWNER"]),
+    roleMiddleware([STORE_OWNER]),
     orderControllers.getMyOrders
   );
 router
@@ -56,21 +62,17 @@ router
 router
   .route("/:id")
   .get(orderControllers.getOrderById)
-  .patch(
-    roleMiddleware(["SUPER_ADMIN"]),
-    orderControllers.orderEdit
-  )
   .put(
-    roleMiddleware(["STORE_OWNER"]),
+    roleMiddleware([STORE_OWNER]),
     orderValidator.updatedOrderValidator,
     orderControllers.updateOrder
   )
   .patch(
-    roleMiddleware(["ADMIN"]),
+    roleMiddleware([SUPER_ADMIN, ADMIN]),
     orderControllers.changeOrderStatus
   )
   .delete(
-    roleMiddleware(["STORE_OWNER"]),
+    roleMiddleware([STORE_OWNER]),
     orderControllers.deleteOrder
   );
 
@@ -79,7 +81,7 @@ router.route("/:id/edit").get(orderControllers.editOrder);
 router
   .route("/:id/devprice")
   .patch(
-    roleMiddleware(["ADMIN"]),
+    roleMiddleware([ADMIN]),
     orderControllers.changeDevPrice
   );
 
