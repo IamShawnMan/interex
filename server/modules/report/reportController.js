@@ -33,7 +33,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Kuryerdan qaytgan pul", width: 10 },
 		{ header: "Foyda", width: 10 },
 		{ header: "Firma puli", width: 10 },
-		{ header: "Yaratilgan sana", key: "createdAt", width: 10 },
+		{ header: "Yaratilgan sana", key: "createdAt", width: 12 },
 		{ header: "Klient", key: "recipient", width: 15 },
 		{ header: "Mahsulot soni", key: "packageId", width: 10 },
 		{ header: "Izoh", key: "note", width: 30 },
