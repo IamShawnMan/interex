@@ -10,7 +10,8 @@ const statusOrderUz = require("../../core/constants/orderStatusUz");
 const priceDelivery = require("../../core/constants/deliveryPrice");
 const RegionModel = require("../region/Region");
 const DistrictModel = require("../district/District");
-const UserModel = require("../user/User");
+const User = require("../user/User");
+const rolesUser = require("../../core/constants/userRole");
 const statusPackage = require("../../core/constants/packageStatus");
 const statusPackageUz = require("../../core/constants/packageStatusUz");
 const Order = require("./Order");
@@ -29,7 +30,7 @@ exports.getAllOrders = catchAsync(
       .sort();
     queryBuilder.queryOptions.include = [
       {
-        model: UserModel,
+        model: User,
         as: "storeOwner",
         attributes: ["storeName"],
       },
@@ -170,9 +171,10 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     order?.orderItems?.forEach(item => {
       itemByNote =
         itemByNote +
-        `${
-          item.productName
-        }-${+item.quantity}/${+item.price},`;
+        `${item.productName?.replace(
+          / /g,
+          "_"
+        )}-${+item.quantity}/${+item.price},`;
       items.push({
         productName: item.productName,
         quantity: item.quantity,
@@ -219,7 +221,7 @@ exports.getOrderById = catchAsync(
         { model: OrderItem, as: "items" },
         { model: Tracking, as: "tracking" },
         {
-          model: UserModel,
+          model: User,
           as: "storeOwner",
           attributes: ["storeName"],
         },
@@ -247,13 +249,12 @@ exports.changeOrderStatus = catchAsync(
     const { userRole } = req.user;
     const { orderStatus } = req.body;
     let orderById = await Order.findByPk(id);
-
     let orderStatusUz;
-    orderStatus === statusOrder.STATUS_ACCEPTED
-      ? (orderStatusUz = statusOrderUz.STATUS_ADMIN_OLDI)
-      : (orderStatusUz =
-          statusOrderUz.STATUS_ADMIN_TOPILMADI);
-    if (userRole === "ADMIN") {
+    if (userRole === rolesUser.ADMIN) {
+      orderStatus === statusOrder.STATUS_ACCEPTED
+        ? (orderStatusUz = statusOrderUz.STATUS_ADMIN_OLDI)
+        : (orderStatusUz =
+            statusOrderUz.STATUS_ADMIN_TOPILMADI);
       const dprice = orderById.deliveryPrice;
       orderById = await orderById.update({
         orderStatus,
@@ -272,7 +273,6 @@ exports.changeOrderStatus = catchAsync(
       const existedPackage = await Package.findByPk(
         orderById.packageId
       );
-
       const isNewOrders = await Order.count({
         where: {
           [Op.and]: [
@@ -291,13 +291,29 @@ exports.changeOrderStatus = catchAsync(
           packageStatusUz: statusPackageUz.STATUS_ESKI,
         });
       }
+    } else if (userRole === rolesUser.SUPER_ADMIN) {
+      if (
+        orderById.orderStatus === statusOrder.STATUS_SOLD ||
+        orderById.orderStatus ===
+          statusOrder.STATUS_REJECTED
+      ) {
+        (orderStatusUz = statusOrderUz.STATUS_KUTILMOQDA),
+          await orderById.update({
+            orderStatus: statusOrder.STATUS_PENDING,
+            orderStatusUz,
+          });
+      } else {
+        res.send("O`zgartirib bo`lmaydi");
+      }
     }
+
     const orderForTracking = await Order.findByPk(id);
     await Tracking.create({
       orderId: id,
       fromStatus: statusOrder.STATUS_NEW,
       toStatus: orderForTracking.orderStatus,
     });
+
     res.status(203).json({
       status: "success",
       message: "order statusi o`zgardi",
@@ -306,28 +322,6 @@ exports.changeOrderStatus = catchAsync(
     });
   }
 );
-
-exports.orderEdit = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const orderById = await Order.findByPk(id);
-
-  if (
-    orderById.orderStatus === statusOrder.STATUS_SOLD ||
-    orderById.orderStatus === statusOrder.STATUS_REJECTED
-  ) {
-    await orderById.update({
-      orderStatus: statusOrder.STATUS_PENDING,
-      orderStatusUz: statusOrderUz.STATUS_KUTILMOQDA,
-    });
-  }
-
-  res.json({
-    status: "succes",
-    message: "Order statusi o`zgardi",
-    error: null,
-    data: null,
-  });
-});
 
 exports.deleteOrder = catchAsync(async (req, res, next) => {
   const { id } = req.params;
