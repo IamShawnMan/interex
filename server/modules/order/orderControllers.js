@@ -160,9 +160,10 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     order?.orderItems?.forEach(item => {
       itemByNote =
         itemByNote +
-        `${
-          item.productName
-        }-${+item.quantity}/${+item.price},`;
+        `${item.productName?.replace(
+          / /g,
+          "_"
+        )}-${+item.quantity}/${+item.price},`;
       items.push({
         productName: item.productName,
         quantity: item.quantity,
