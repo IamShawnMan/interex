@@ -1,10 +1,10 @@
 const { compare } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../user/User");
+const Region = require("../region/Region");
 const AppError = require("../../core/utils/AppError");
 const catchAsync = require("../../core/utils/catchAsync");
 const { Op } = require("sequelize");
-const Region = require("../region/Region");
 
 const generateToken = (payload, jwtSecret, options) => {
   return new Promise((resolve, reject) => {
@@ -31,14 +31,14 @@ const findByUsername = username => {
 exports.login = catchAsync(async (req, res, next) => {
 	const { username, password } = req.body;
 	const candidate = await findByUsername(username);
+	if (!candidate) {
+		return next(new AppError("Login yoki parol xato", 400));
+	}
 	const region = await Region.findOne({
 		where: {
 			id: {[Op.eq]: candidate.regionId}
 		}
 	})
-	if (!candidate) {
-		return next(new AppError("Login yoki parol xato", 400));
-	}
 	const passwordIsMatch = await compare(password, candidate.password);
 	if (!passwordIsMatch) {
 		return next(new AppError("Login yoki parol xato", 400));
@@ -58,9 +58,8 @@ exports.login = catchAsync(async (req, res, next) => {
 		storeName: candidate.storeName,
 		regionId: candidate.regionId,
 		tariff: candidate.tariff,
-		regionName: region.name
+		regionName: region.name,
 	};
-	console.log(payload);
 	const token = await generateToken(payload, process.env.JWT_SECRET, {
 		algorithm: "HS512",
 		expiresIn: "30d",

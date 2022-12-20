@@ -9,12 +9,11 @@ import Switch from "../../components/Form/FormComponents/Switch/Switch";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import AppContext from "../../context/AppContext";
 import { phoneNumberFormat } from "../../utils/phoneNumberFormatter";
-import ExampleComponent from "../../components/VoiceRecorder/Example"
 function Users() {
   const [value, setValue] = useState([]);
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
-  const page = searchParams.get("page") || 1;
+  let page = searchParams.get("page") || 1;
   const size = searchParams.get("size") || 10;
   const { user } = useContext(AppContext);
   const [role,setRole] = useState(null)
@@ -30,9 +29,13 @@ function Users() {
       toast.error(error?.response.data.message);
     }
   };
+  useEffect(()=>{
+    page=1
+    getAllUser()
+  },[role])
   useEffect(() => {
     getAllUser();
-  }, [page,role,search]);
+  }, [page,search]);
 
   const userStatusChangeHandler = async ({ id, status }) => {
     try {
