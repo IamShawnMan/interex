@@ -57,7 +57,7 @@ function Home() {
 	};
 	return (
 		<Layout pageName={"Bosh Sahifa"}>
-			{user.userRole === "SUPER_ADMIN" && (
+			{/* {user.userRole === "SUPER_ADMIN" && (
 				<Button
 					size="small"
 					name="btn"
@@ -67,7 +67,7 @@ function Home() {
 				>
 					Eslatmani yangilash
 				</Button>
-			)}
+			)} */}
 			<div className={styles.statistics}>
 				<div className={styles.containerFlex}>
 					<div className={styles.container}>
