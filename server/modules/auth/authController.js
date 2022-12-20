@@ -18,15 +18,14 @@ const generateToken = (payload, jwtSecret, options) => {
 	});
 };
 
-const findByUsername = (username) => {
-	const user = User.findOne({
-		include: [{ model: Region, as: "region" }],
-		where: { username: { [Op.eq]: username } },
-	});
-	if (user) {
-		return user;
-	}
-	return null;
+const findByUsername = username => {
+  const user = User.findOne({
+    where: { username: { [Op.eq]: username } },
+  });
+  if (user) {
+    return user;
+  }
+  return null;
 };
 
 exports.login = catchAsync(async (req, res, next) => {
