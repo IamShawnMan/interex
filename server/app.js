@@ -15,7 +15,6 @@ const packageRoutes = require("./modules/package/packageRoutes");
 const postsRoutes = require("./modules/post/postRouter");
 const postBackRouter = require("./modules/postBack/postBackRouter");
 const packageBackRoutes = require("./modules/packageBack/packageBackRouter");
-const orderControllers = require("./modules/order/orderControllers");
 require("./modules/user/User");
 
 telegramBot();
@@ -33,7 +32,6 @@ app.use(
   authMiddleware,
   districtRouter
 );
-app.put("/api/v1/all", orderControllers.getAllOrdersUpdate);
 app.use("/api/v1/posts", authMiddleware, postsRoutes);
 app.use("/api/v1/postback", authMiddleware, postBackRouter);
 app.use(

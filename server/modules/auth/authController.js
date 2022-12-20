@@ -7,15 +7,15 @@ const catchAsync = require("../../core/utils/catchAsync");
 const { Op } = require("sequelize");
 
 const generateToken = (payload, jwtSecret, options) => {
-  return new Promise((resolve, reject) => {
-    jwt.sign(payload, jwtSecret, options, (err, token) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(token);
-      }
-    });
-  });
+	return new Promise((resolve, reject) => {
+		jwt.sign(payload, jwtSecret, options, (err, token) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(token);
+			}
+		});
+	});
 };
 
 const findByUsername = username => {
@@ -36,9 +36,9 @@ exports.login = catchAsync(async (req, res, next) => {
 	}
 	const region = await Region.findOne({
 		where: {
-			id: {[Op.eq]: candidate.regionId}
-		}
-	})
+			id: { [Op.eq]: candidate.regionId },
+		},
+	});
 	const passwordIsMatch = await compare(password, candidate.password);
 	if (!passwordIsMatch) {
 		return next(new AppError("Login yoki parol xato", 400));
@@ -58,7 +58,7 @@ exports.login = catchAsync(async (req, res, next) => {
 		storeName: candidate.storeName,
 		regionId: candidate.regionId,
 		tariff: candidate.tariff,
-		regionName: region.name,
+		regionName: region?.name,
 	};
 	const token = await generateToken(payload, process.env.JWT_SECRET, {
 		algorithm: "HS512",
