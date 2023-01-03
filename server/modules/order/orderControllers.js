@@ -47,6 +47,7 @@ exports.getAllOrders = catchAsync(
     ];
     if(userRole === userRoles.SUPER_ADMIN || userRole === userRoles.ADMIN) {
       const customUserRoles = Object.values(statusOrder).slice(2)
+      console.log(customUserRoles);
       queryBuilder.queryOptions.where = {
         orderStatus: {
           [Op.in]: customUserRoles,
