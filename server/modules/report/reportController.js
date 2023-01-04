@@ -629,6 +629,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 });
 exports.getStatistics = catchAsync(async (req, res, next) => {
 	const { userRole, id, regionId } = req.user;
+	let soldPercantage = 0;
 	let allOrders = 0;
 	let soldOrders = 0;
 	let rejectedOrders = 0;
@@ -680,12 +681,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 			where: {
 				[Op.and]: [
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.gte]: startDate,
 						},
 					},
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.lte]: endDate,
 						},
 					},
@@ -702,12 +703,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 			where: {
 				[Op.and]: [
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.gte]: startDate,
 						},
 					},
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.lte]: endDate,
 						},
 					},
@@ -755,12 +756,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 			where: {
 				[Op.and]: [
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.gte]: startDate,
 						},
 					},
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.lte]: endDate,
 						},
 					},
@@ -781,12 +782,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 			where: {
 				[Op.and]: [
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.gte]: startDate,
 						},
 					},
 					{
-						createdAt: {
+						updatedAt: {
 							[Op.lte]: endDate,
 						},
 					},
