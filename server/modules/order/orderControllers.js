@@ -223,7 +223,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     });
   } else {
     return next(
-      new AppError("buyurtmani raqami takrorlansinmi?")
+      new AppError("buyurtmani raqami takrorlansinmi?", 400)
     );
   }
 });
