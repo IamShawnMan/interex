@@ -49,11 +49,11 @@ exports.getAllOrders = catchAsync(
       userRole === userRoles.SUPER_ADMIN ||
       userRole === userRoles.ADMIN
     ) {
-      const customUserRoles =
+      const customOrderStatuses =
         Object.values(statusOrder).slice(2);
       queryBuilder.queryOptions.where = {
         orderStatus: {
-          [Op.in]: customUserRoles,
+          [Op.in]: customOrderStatuses,
         },
         ...queryBuilder.queryOptions.where,
       };
