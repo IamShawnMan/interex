@@ -16,11 +16,11 @@ const statusPackage = require("../../core/constants/packageStatus");
 const statusPackageUz = require("../../core/constants/packageStatusUz");
 const Order = require("./Order");
 const Tracking = require("../tracking/Tracking");
-const userRoles = require("../../core/constants/userRole")
+const userRoles = require("../../core/constants/userRole");
 
 exports.getAllOrders = catchAsync(
   async (req, res, next) => {
-    const {userRole} = req.user
+    const { userRole } = req.user;
     const queryBuilder = new QueryBuilder(req.query);
     queryBuilder
       .filter()
@@ -45,8 +45,12 @@ exports.getAllOrders = catchAsync(
         attributes: ["name"],
       },
     ];
-    if(userRole === userRoles.SUPER_ADMIN || userRole === userRoles.ADMIN) {
-      const customUserRoles = Object.values(statusOrder).slice(2)
+    if (
+      userRole === userRoles.SUPER_ADMIN ||
+      userRole === userRoles.ADMIN
+    ) {
+      const customUserRoles =
+        Object.values(statusOrder).slice(2);
       queryBuilder.queryOptions.where = {
         orderStatus: {
           [Op.in]: customUserRoles,
@@ -99,12 +103,29 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     });
   }
   const storeOwnerId = req.user.id;
-  const orders = req.body.orders;
-  const countOrders = await Order.count();
-  orders?.forEach(async (order, i) => {
+  const order = req.body.orders[0];
+
+  const exisOrder = await Order.findOne({
+    where: {
+      [Op.and]: [
+        {
+          recipientPhoneNumber: {
+            [Op.eq]: order.recipientPhoneNumber,
+          },
+        },
+        {
+          orderStatus: { [Op.eq]: statusOrder.STATUS_NEW },
+        },
+      ],
+    },
+  });
+  if (req.query.phone === "free" && exisOrder) {
+    const countOrders = await Order.count({
+      where: { regionId: { [Op.eq]: order.regionId } },
+    });
     const regId = +order.regionId;
     let regSeria;
-    let countForId = +countOrders + (i + 1);
+    let countForId = countOrders + 1;
     switch (regId) {
       case 1:
         regSeria = 95;
@@ -154,6 +175,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     }
     id = `${regSeria}-${countForId}`;
     let itemByNote = "";
+    console.log(id);
     const orderInfo = {
       id,
       recipient: order.recipient,
@@ -164,11 +186,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       packageId: existedPackage.id,
       storeOwnerId,
     };
-    const newOrder = await Order.create(orderInfo);
 
+    newOrder = await Order.create(orderInfo);
     let items = [];
     let sum = 0;
-    order?.orderItems?.forEach(item => {
+    order.orderItems?.forEach(item => {
       itemByNote =
         itemByNote +
         `${item.productName?.replace(
@@ -193,14 +215,17 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     await newOrder.save();
     existedPackage.packageTotalPrice += newOrder.totalPrice;
     await existedPackage.save();
-  });
-
-  res.status(201).json({
-    status: "success",
-    message: "yangi buyurtmalar qo`shildi",
-    errors: null,
-    data: null,
-  });
+    res.status(201).json({
+      status: "success",
+      message: "yangi buyurtma  qo`shildi",
+      errors: null,
+      data: null,
+    });
+  } else {
+    return next(
+      new AppError("buyurtmani raqami takrorlansinmi?")
+    );
+  }
 });
 
 exports.getOrderById = catchAsync(
