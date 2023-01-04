@@ -376,7 +376,7 @@ function Orders() {
             {((isAdmin && url.split("/")[1] !== "posts") ||
               isStoreOwner) && (
               <div className={styles.actionContainer}>
-                {user.userRole === "STORE_OWNER" && (
+                {user.userRole === "STORE_OWNER" &&order.orderStatus === "NEW"&& (
                   <>
                     <Button
                       size="small"
@@ -411,7 +411,7 @@ function Orders() {
                   </>
                 )}
 
-                {isAdmin && id && (
+                {isAdmin && id &&order.orderStatus==="NEW"&& (
                   <>
                     <Button
                       name="btn"
@@ -607,25 +607,7 @@ function Orders() {
       ? new Date(createdAt)
       : "";
     try {
-      // const res = await http({
-      //   url:`${url}?${page&&(url === "/orders" ||
-      //   url === "/orders/delivered" ||
-      //   url === "/orders/myorders")?`page=${page}`:""}${size&&(url === "/orders" ||
-      //   url === "/orders/delivered" ||
-      //   url === "/orders/myorders")?`&size=${size}`:""}${orderStatus ? `&orderStatus=${orderStatus}` : ""
-      //   }${regionId ? `&regionId=${regionId}` : ""}${
-      //     search ? `&search=${search}` : ""
-      //   }${districtId ? `&districtId=${districtId}` : ""}
-      //   ${createdAt ? `&createdAt[eq]=${dateCreatedAt.toISOString()}` : ""}
-      //   ${
-      //     !isStoreOwner
-      //       ? storeOwnerId
-      //         ? `&storeOwnerId=${storeOwnerId}`
-      //         : ""
-      //       : ""
-      //   }
-      //   `,
-      // });
+    
       let res;
       if (
         url === "/orders" ||

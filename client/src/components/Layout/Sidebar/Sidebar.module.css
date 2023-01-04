@@ -81,6 +81,11 @@
   background: #7d41ed;
   color: #fff;
 }
+.active{
+  background: #7d41ed;
+  color: #fff;
+  fill: #fff;
+}
 .linkP_hidden {
   display: none;
 }

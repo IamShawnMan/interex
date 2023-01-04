@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styles from "./Sidebar.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import UsersIcon from "../../../assets/icons/UsersIcon";
 import AppContext from "../../../context/AppContext";
 import http from "../../../utils/axios-instance";
@@ -14,6 +14,8 @@ function Sidebar(props) {
   const ctx = useContext(AppContext);
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const url = location.pathname;
   const logoutHandle = () => {
     localStorage.clear();
     ctx.onReset();
@@ -51,9 +53,9 @@ function Sidebar(props) {
               to={"/users"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
+              } ${url==="/users"&&styles.active}`}
             >
-              <DashboardIcon classname={styles.sidebarLinkSvg} />
+              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/users"&&styles.active}`} />
               {
                 <p
                   className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
@@ -73,9 +75,9 @@ function Sidebar(props) {
             }
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
+            } ${(url==="/orders/delivered"||url==="/orders/myorders"||url==="/orders")&&styles.active}`}
           >
-            <DashboardIcon classname={styles.sidebarLinkSvg} />
+            <DashboardIcon classname={`${styles.sidebarLinkSvg} ${(url==="/orders/delivered"||url==="/orders/myorders"||url==="/orders")&&styles.active}`} />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
               Buyurtmalar
             </p>
@@ -85,10 +87,10 @@ function Sidebar(props) {
               to={"/packageback"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
+              } ${url==="/packageback"&&styles.active}`}
             >
-              <DashboardIcon classname={styles.sidebarLinkSvg} />
-              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/packageback"&&styles.active}`} />
+              <p className={`h6  ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Paketlar
               </p>
             </Link>
@@ -99,9 +101,9 @@ function Sidebar(props) {
               to={"/new-post"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
+              } ${url==="/new-post"&&styles.active}`}
             >
-              <DashboardIcon classname={styles.sidebarLinkSvg} />
+              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/new-post"&&styles.active}`} />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Pochta
               </p>
@@ -111,9 +113,9 @@ function Sidebar(props) {
               to="/postback/rejected/orders"
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
+              } ${url==="/postback/rejected/orders"&&styles.active}`}
             >
-              <UsersIcon classname={styles.sidebarLinkSvg} />
+              <UsersIcon classname={`${styles.sidebarLinkSvg} ${url==="/postback/rejected/orders"&&styles.active}`} />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Pochta Qaytarish
               </p>
@@ -123,9 +125,9 @@ function Sidebar(props) {
               to="/postback"
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
+              } ${url==="/postback"&&styles.active}`}
             >
-              <UsersIcon classname={styles.sidebarLinkSvg} />
+              <UsersIcon classname={`${styles.sidebarLinkSvg} ${url==="/postback"&&styles.active}`} />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Mening pochtalarim
               </p>
@@ -138,9 +140,9 @@ function Sidebar(props) {
               to={"/packages"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
+              } ${url==="/packages"&&styles.active}`}
             >
-              <DashboardIcon classname={styles.sidebarLinkSvg} />
+              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/packages"&&styles.active}`} />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Paketlar
               </p>
@@ -151,9 +153,9 @@ function Sidebar(props) {
               to={"/post/create"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              }`}
+              } ${url==="/post/create"&&styles.active}`}
             >
-              <DashboardIcon classname={styles.sidebarLinkSvg} />
+              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/post/create"&&styles.active}`} />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Pochtalar
               </p>
@@ -183,9 +185,9 @@ function Sidebar(props) {
           to="/settings"
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            }`}
+            } ${url==="/settings"&&styles.active}  `}
           >
-            <SettingIcon classname={styles.sidebarLinkSvg} />
+            <SettingIcon classname={`${styles.sidebarLinkSvg} ${url==="/settings"&&styles.active}`} />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
               Sozlamalar
             </p>
