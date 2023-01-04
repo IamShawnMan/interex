@@ -19,6 +19,20 @@ class QueryBuilder {
         if(typeof filterItem === "object"){
             Object.keys(filterItem).forEach((ik)=>{
                if(Object.keys(filterFields[k]).length>1){
+				if(Object.keys(filterFields[k])[0]==="gte" && Object.keys(filterFields[k])[1]==="lte"){
+					const filteredItem = Object.values(filterItem)
+					filterObject[k] = {
+						[Op["gte"]]: dayjs(`${filteredItem[0]}`).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"), 
+						[Op["lte"]]: dayjs(`${filteredItem[1]}`).endOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]") 
+					}
+				   return
+				 }
+				// if(){
+				// 	filterObject[k] = {
+				// 		[Op["lte"]]: dayjs(`${filterItem[ik]}`).endOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]") 
+				// 	}
+				//    return
+				//  }
                if(filterObject[k]){
                 filterObject[k] = {...{[Op[ik]]: filterItem[ik]},...filterObject[k]}
                }else{
