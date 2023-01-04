@@ -1,8 +1,8 @@
-const {Op} = require("sequelize");
-const dayjs = require("dayjs")
+const { Op } = require("sequelize");
+const dayjs = require("dayjs");
 
 const excludeParams = ["page", "size", "fields", "search", "sort"];
-const operators = ["gte", "gt", "lt", "lte", "in", "eq"]
+const operators = ["gte", "gt", "lt", "lte", "in", "eq"];
 
 class QueryBuilder {
 	constructor(queryParams) {
@@ -74,8 +74,8 @@ class QueryBuilder {
 	}
 
 	paginate() {
-		const page = this.queryParams.page ||= 1
-		const limit = this.queryParams.size ||= 100
+		const page = (this.queryParams.page ||= 1);
+		const limit = (this.queryParams.size ||= 500);
 		this.queryOptions.limit = limit;
 		this.queryOptions.offset = (page - 1) * limit;
 		return this;
