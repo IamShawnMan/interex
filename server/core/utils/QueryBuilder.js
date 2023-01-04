@@ -27,12 +27,6 @@ class QueryBuilder {
 					}
 				   return
 				 }
-				// if(){
-				// 	filterObject[k] = {
-				// 		[Op["lte"]]: dayjs(`${filterItem[ik]}`).endOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS[Z]") 
-				// 	}
-				//    return
-				//  }
                if(filterObject[k]){
                 filterObject[k] = {...{[Op[ik]]: filterItem[ik]},...filterObject[k]}
                }else{
