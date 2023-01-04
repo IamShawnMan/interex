@@ -12,6 +12,7 @@ function Filter({ url }) {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
   const isSuperAdmin = user.userRole === "SUPER_ADMIN";
+  const isCourier= user.userRole === "COURIER";
   const { register, handleSubmit } = useForm();
   const [statuses, setStatuses] = useState(null);
   const [regions, setRegions] = useState(null);
@@ -123,7 +124,7 @@ function Filter({ url }) {
             Do'kon nomi
           </Select>
         )}
-        <Select
+       {!isCourier&&<> <Select
           register={register.bind(null, "regionId")}
           data={regions}
           onChange={regionHandler}
@@ -139,7 +140,7 @@ function Filter({ url }) {
           id="tumanlar"
         >
           Tumanlar
-        </Select>
+        </Select></>}
         <Input type="date" register={register.bind(null, "createdAt")}>
           Sanasi
         </Input>

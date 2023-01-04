@@ -6,6 +6,7 @@ import Dots from "../../../../assets/icons/Dots";
 import Trash from "../../../../assets/icons/Trash";
 
 function Button({
+  nameBtn,
   children,
   type,
   name,
@@ -53,6 +54,7 @@ function Button({
 
   return (
     <button
+    nameBtn={nameBtn}
       disabled={disabled}
       className={`${styles[buttonSize]} ${styles[name]} ${
         name !== "dots" ? styles.btn : styles.dots
