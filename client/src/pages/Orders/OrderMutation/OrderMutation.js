@@ -13,6 +13,7 @@ import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
 import { formatDate } from "../../../utils/dateFormatter";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import { BasicTable } from "../../../components/Table/BasicTable";
+import StoreOwnerTrueFalseNumber from "./StoreOwnerTrueFalseNumber";
 
 const schema = object().shape({
   orders: array()
@@ -49,6 +50,8 @@ function OrderMutation() {
   const [btn, setBtn] = useState(null);
   const { id } = useParams();
   const [info, setInfo] = useState(null);
+  const [info2, setInfo2] = useState(null);
+  const [isTrue, setIsTrue] = useState(false);
 
 
   const isUpdate = id !== "new";
@@ -87,19 +90,23 @@ filterFn()
     isUpdate && updateData && append({ ...updateData });
   }, [updateData]);
   const formSubmit = async (data,e) => {
-    console.log(e.target)
     try {
       const res = await http({
-        url: isUpdate ? `/orders/${id}` : "/orders",
+        url: isUpdate ? `/orders/${id}` : `/orders${isTrue?`?phone=free`:""}`,
         method: isUpdate ? "PUT" : "POST",
         data: isUpdate ? data.orders[0] : data,
       });
+      setInfo2(null)
+      isTrue(false)
       toast.success(res.data.message);
      btn?window.location.reload(): navigate("/orders/myorders");
 
     } catch (error) {
-      console.log(error);
-      return (error.response.data.message.map((error) => toast.error(error))||toast.error(error.response.data.message))
+      if(error.response.status===400){
+      setInfo2(error.response.data.message);
+      }else{
+        return (error.response.data.message.map((error) => toast.error(error)))
+      }
     }
   };
 
@@ -377,6 +384,9 @@ filterFn()
           </div>
         </div>
       </form>
+      {info2&&<StoreOwnerTrueFalseNumber message={info2} set={(data)=>setIsTrue(data)} onClose={() => {
+            setInfo2(false);
+          }}/>}
       {value?.length > 0 ? (
         <BasicTable
           columns={cols}
