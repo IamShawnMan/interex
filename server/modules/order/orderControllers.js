@@ -119,7 +119,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       ],
     },
   });
-  if (req.query.phone === "free" && exisOrder) {
+  if (exisOrder === null || (req.query.phone === "free" && exisOrder)) {
     const countOrders = await Order.count({
       where: { regionId: { [Op.eq]: order.regionId } },
     });
