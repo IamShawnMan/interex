@@ -98,7 +98,8 @@ filterFn()
      btn?window.location.reload(): navigate("/orders/myorders");
 
     } catch (error) {
-      return error.response.data.message.map((error) => toast.error(error));
+      console.log(error);
+      return (error.response.data.message.map((error) => toast.error(error))||toast.error(error.response.data.message))
     }
   };
 
