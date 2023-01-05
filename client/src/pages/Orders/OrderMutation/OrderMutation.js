@@ -97,11 +97,12 @@ filterFn()
         data: isUpdate ? data.orders[0] : data,
       });
       setInfo2(null)
-      isTrue(false)
+      setIsTrue(false)
       toast.success(res.data.message);
      btn?window.location.reload(): navigate("/orders/myorders");
 
     } catch (error) {
+      console.log(error);
       if(error.response.status===400){
       setInfo2(error.response.data.message);
       }else{
