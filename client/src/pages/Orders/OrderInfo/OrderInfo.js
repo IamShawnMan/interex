@@ -35,14 +35,24 @@ const OrderInfo = ({ id, onClose }) => {
         return `${i + 1}`;
       },
     },
-    { id: "productName", Header: "Maxsulot nomi", accessor: "productName" },
-    { id: "quantity", Header: "Soni", accessor: "quantity" },
+    {
+      id: "productName",
+      Header: "Maxsulot nomi",
+      accessor: "productName",
+    },
+    {
+      id: "quantity",
+      Header: "Soni",
+      accessor: "quantity",
+    },
     {
       id: "Total Price",
       Header: "Umumiy narxi",
-      accessor: (order) => {
+      accessor: order => {
         return (
-          <>{`${order.orderItemTotalPrice.toLocaleString("Ru-Ru")} so'm`}</>
+          <>{`${order.orderItemTotalPrice.toLocaleString(
+            "Ru-Ru"
+          )} so'm`}</>
         );
       },
     },
@@ -52,26 +62,45 @@ const OrderInfo = ({ id, onClose }) => {
     <Modal onClose={onClose}>
       <div className="div">
         <div className={styles.orderInfo}>
-          <ul style={{ listStyle: "none", textAlign: "center" }}>
+          <ul
+            style={{
+              listStyle: "none",
+              textAlign: "center",
+            }}>
             <li className="h6">
-              <p className="bold inline-block">Xaridor Ismi:</p>{" "}
+              <p className="bold inline-block">
+                Xaridor Ismi:
+              </p>{" "}
               <span>{value?.recipient}</span>
             </li>
             <li className="h6">
-              <p className="bold inline-block"> Xaridor telefon raqami:</p>
+              <p className="bold inline-block">
+                {" "}
+                Xaridor telefon raqami:
+              </p>
               <span>
-                <a href={`tel:${value?.recipientPhoneNumber}`}>
-                  {phoneNumberFormat(value?.recipientPhoneNumber)}
+                <a
+                  href={`tel:${value?.recipientPhoneNumber}`}>
+                  {phoneNumberFormat(
+                    value?.recipientPhoneNumber
+                  )}
                 </a>
               </span>
             </li>
 
             <li className="h6">
-              <p className="bold inline-block">Mahsulot narxi:</p>{" "}
-              <span>{value?.totalPrice.toLocaleString("Ru-Ru")} so'm</span>
+              <p className="bold inline-block">
+                Mahsulot narxi:
+              </p>{" "}
+              <span>
+                {value?.totalPrice.toLocaleString("Ru-Ru")}{" "}
+                so'm
+              </span>
             </li>
             <li className="h6">
-              <p className="bold inline-block">Mahsulot holati:</p>{" "}
+              <p className="bold inline-block">
+                Mahsulot holati:
+              </p>{" "}
               {value?.orderStatusUz}
             </li>
             <li className="h6">
@@ -83,7 +112,10 @@ const OrderInfo = ({ id, onClose }) => {
               <span>{value?.district?.name}</span>
             </li>
             <li className="h6">
-              <p className="bold inline-block"> Firma nomi:</p>
+              <p className="bold inline-block">
+                {" "}
+                Firma nomi:
+              </p>
               <span>
                 <b> {value?.storeOwner?.storeName}</b>
               </span>
@@ -113,7 +145,11 @@ const OrderInfo = ({ id, onClose }) => {
             <div className={stylesInfo.ellipse}>
               <img
                 width="40"
-                src={value?.orderStatusUz === "YANGI" ? CarYellow : Car}
+                src={
+                  value?.orderStatusUz === "YANGI"
+                    ? CarYellow
+                    : Car
+                }
                 alt=""
                 className={stylesInfo.svg}
               />
@@ -122,7 +158,11 @@ const OrderInfo = ({ id, onClose }) => {
             <div className={stylesInfo.ellipse}>
               <img
                 width="40"
-                src={value?.orderStatusUz === "OLDI" ? AdminGreen : Admin}
+                src={
+                  value?.orderStatusUz === "OLDI"
+                    ? AdminGreen
+                    : Admin
+                }
                 alt=""
                 className={stylesInfo.svg}
               />
@@ -131,7 +171,11 @@ const OrderInfo = ({ id, onClose }) => {
             <div className={stylesInfo.ellipse}>
               <img
                 width="40"
-                src={value?.orderStatusUz === "YO`LDA" ? PochtaQizil : Pochta}
+                src={
+                  value?.orderStatusUz === "YO`LDA"
+                    ? PochtaQizil
+                    : Pochta
+                }
                 alt=""
                 className={stylesInfo.svg}
               />
@@ -140,21 +184,23 @@ const OrderInfo = ({ id, onClose }) => {
             <div className={stylesInfo.ellipse}>
               <img
                 width="40"
-                src={value?.orderStatusUz === "BORDI" ? ClockYellow : Clock}
+                src={
+                  value?.orderStatusUz === "BORDI"
+                    ? ClockYellow
+                    : Clock
+                }
                 alt=""
                 className={stylesInfo.svg}
               />
             </div>
           </div>
-
 
           <div className={stylesInfo.container}>
-           <p className={stylesInfo.p}>Yangi</p>
-           <p className={stylesInfo.p}>Admin Oldi</p>
-           <p className={stylesInfo.p}>Admin Jonatdi</p>
-           <p className={stylesInfo.p}>Kurierda</p>
+            <p className={stylesInfo.p}>Yangi</p>
+            <p className={stylesInfo.p}>Admin Oldi</p>
+            <p className={stylesInfo.p}>Admin Jonatdi</p>
+            <p className={stylesInfo.p}>Kurierda</p>
           </div>
-
         </div>
       </div>
     </Modal>

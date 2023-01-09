@@ -119,7 +119,10 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       ],
     },
   });
-  if (exisOrder === null || (req.query.phone === "free" && exisOrder)) {
+  if (
+    exisOrder === null ||
+    (req.query.phone === "free" && exisOrder)
+  ) {
     const countOrders = await Order.count();
     const regId = +order.regionId;
     let regSeria;
@@ -194,7 +197,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
         `${item.productName?.replace(
           / /g,
           "_"
-        )}-${+item.quantity}/${+item.price},`;
+        )}-${+item.quantity}-dona`;
       items.push({
         productName: item.productName,
         quantity: item.quantity,

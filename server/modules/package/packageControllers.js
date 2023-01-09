@@ -197,7 +197,6 @@ exports.downloadWord = catchAsync(
                         text: `${
                           new Intl.DateTimeFormat("RU-RU", {
                             dateStyle: "short",
-                            timeStyle: "short",
                           }).format(
                             orderArr[0].createdAt
                           ) || null
@@ -209,12 +208,14 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
-                      new TextRun("Firma: - "),
+                      new TextRun({
+                        text: "Firma: -",
+                      }),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
                           orderArr[0].storeOwner
-                            .storeName || null
+                            ?.storeName || null
                         }`,
                         bold: true,
                       }),
@@ -237,26 +238,18 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
-                        text: "Viloyat: -",
+                        text: "Manzil: -",
                       }),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[0].region?.name || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Tumani: -",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
+                          orderArr[0].region?.name.substr(
+                            0,
+                            orderArr[0].region?.name.indexOf(
+                              " "
+                            )
+                          ) || null
+                        } v,  ${
                           orderArr[0].district?.name || null
                         }`,
                         bold: true,
@@ -321,7 +314,40 @@ exports.downloadWord = catchAsync(
                         )}`,
                         bold: true,
                       }),
-                      new Paragraph({ children: [] }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Mutaxassis: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].storeOwner
+                            ?.firstName || null
+                        } - ${
+                          orderArr[0].storeOwner
+                            ?.phoneNumber || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Izoh: -"),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].note.slice(
+                            orderArr[0].note.indexOf(
+                              "FIRMA"
+                            ) + 7
+                          ) || null
+                        }`,
+                        bold: true,
+                      }),
                     ],
                   }),
                 ],
@@ -343,7 +369,6 @@ exports.downloadWord = catchAsync(
                                 "RU-RU",
                                 {
                                   dateStyle: "short",
-                                  timeStyle: "short",
                                 }
                               ).format(
                                 orderArr[1].createdAt
@@ -357,7 +382,9 @@ exports.downloadWord = catchAsync(
                   new Paragraph({
                     alignment: AlignmentType.CENTER,
                     children: [
-                      new TextRun("Firma: - "),
+                      new TextRun({
+                        text: "Firma: -",
+                      }),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
@@ -385,26 +412,18 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
-                        text: "Viloyat: -",
+                        text: "Manzil: -",
                       }),
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].region?.name || null
-                        }`,
-                        bold: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [
-                      new TextRun({
-                        text: "Tumani: -",
-                      }),
-                      new TextRun("   "),
-                      new TextRun({
-                        text: `${
+                          orderArr[1].region?.name.substr(
+                            0,
+                            orderArr[1].region?.name.indexOf(
+                              " "
+                            )
+                          ) || null
+                        } v,  ${
                           orderArr[1].district?.name || null
                         }`,
                         bold: true,
@@ -415,7 +434,7 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
-                        text: "Xaridor: -",
+                        text: "Klient: -",
                       }),
                       new TextRun("   "),
                       new TextRun({
@@ -430,7 +449,7 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
-                        text: "Tel: - ",
+                        text: "Tel: -",
                       }),
                       new TextRun("   "),
                       new TextRun({
@@ -471,6 +490,40 @@ exports.downloadWord = catchAsync(
                       }),
                     ],
                   }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Mutaxassis: - "),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].storeOwner
+                            ?.firstName || null
+                        } -- ${
+                          orderArr[1].storeOwner
+                            ?.phoneNumber || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Izoh: -"),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].note.slice(
+                            orderArr[1].note.indexOf(
+                              "FIRMA"
+                            ) + 7
+                          ) || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                   new Paragraph({ children: [] }),
                 ],
               }),
@@ -499,10 +552,6 @@ exports.downloadWord = catchAsync(
         },
       ],
     });
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=${new Date().toISOString}.docx`
-    );
     return Packer.toBuffer(doc).then(buffer => {
       res.status(200).end(buffer);
     });
