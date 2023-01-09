@@ -12,11 +12,12 @@ function Filter({ url }) {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
   const isSuperAdmin = user.userRole === "SUPER_ADMIN";
-  const isCourier= user.userRole === "COURIER";
+  const isCourier = user.userRole === "COURIER";
   const { register, handleSubmit } = useForm();
   const [statuses, setStatuses] = useState(null);
   const [regions, setRegions] = useState(null);
   const [region, setRegion] = useState(null);
+  const [fromTo, setFromTo] = useState(false);
   const [filterShow, setFilterShow] = useState(false);
   const [districts, setDistricts] = useState(null);
   const [storeOwnerIds, setStoreOwner] = useState(null);
@@ -80,7 +81,9 @@ function Filter({ url }) {
             ? `&storeOwnerId=${data.storeOwnerId}`
             : ""
           : ""
-      }${data?.createdAt ? `&createdAt[eq]=${data.createdAt}` : ""}`
+      }${(data?.createdAt&&!fromTo) ? `&createdAt[eq]=${data.createdAt}` : ""}${
+       ( data?.gteCreatedAt&&fromTo) ? `&createdAt[gte]=${data.gteCreatedAt}` : ""
+      }${(data?.lteCreatedAt&&fromTo) ? `&createdAt[lte]=${data.lteCreatedAt}` : ""}`
     );
   };
 
@@ -125,26 +128,50 @@ function Filter({ url }) {
             Do'kon nomi
           </Select>
         )}
-       {!isCourier&&<> <Select
-          register={register.bind(null, "regionId")}
-          data={regions}
-          onChange={regionHandler}
-          placeholder="Barcha viloyatlar"
-          id="viloyatlar"
+        {!isCourier && (
+          <>
+            {" "}
+            <Select
+              register={register.bind(null, "regionId")}
+              data={regions}
+              onChange={regionHandler}
+              placeholder="Barcha viloyatlar"
+              id="viloyatlar"
+            >
+              Viloyatlar
+            </Select>
+            <Select
+              register={register.bind(null, "districtId")}
+              data={districts}
+              placeholder="Barcha tumanlar"
+              id="tumanlar"
+            >
+              Tumanlar
+            </Select>
+          </>
+        )}
+        <Button
+          btnStyle={{ width: "10rem" }}
+          name="btn"
+          type="button"
+          onClick={() => setFromTo(!fromTo)}
         >
-          Viloyatlar
-        </Select>
-        <Select
-          register={register.bind(null, "districtId")}
-          data={districts}
-          placeholder="Barcha tumanlar"
-          id="tumanlar"
-        >
-          Tumanlar
-        </Select></>}
-        <Input type="date" register={register.bind(null, "createdAt")}>
-          Sanasi
-        </Input>
+          {fromTo ? "From To" : "Aniq Sana"}
+        </Button>
+        {!fromTo ? (
+          <Input type="date" register={register.bind(null, "createdAt")}>
+            Sanasi
+          </Input>
+        ) : (
+          <>
+            <Input type="date" register={register.bind(null, "gteCreatedAt")}>
+              Boshlang'ich vaqti
+            </Input>
+            <Input type="date" register={register.bind(null, "lteCreatedAt")}>
+              Tugash vaqti
+            </Input>
+          </>
+        )}
         <Button
           type="submit"
           name="btn"

@@ -53,7 +53,11 @@ function OrderMutation() {
   const [info2, setInfo2] = useState(null);
   const [isTrue, setIsTrue] = useState(false);
 
-
+  const something=(event)=> {
+    if (event.keyCode === 13) {
+        console.log('enter')
+    }
+}
   const isUpdate = id !== "new";
   const navigate = useNavigate();
   const {
@@ -369,6 +373,7 @@ filterFn()
                   iconName="plus"
                   btnStyle={{ width: "13rem" }}
                   type="submit"
+                  onKeyDown={(e) =>something(e)}
                 >
                   Buyurtma
                 </Button>

@@ -40,6 +40,8 @@ function Orders() {
   let page = searchParams.get("page") || 1;
   let size = searchParams.get("size") || 10;
   const createdAt = searchParams.get("createdAt[eq]") || "";
+  const createdAtGte = searchParams.get("createdAt[gte]") || "";
+  const createdAtLte = searchParams.get("createdAt[lte]") || "";
   const orderStatus = searchParams.get("orderStatus") || "";
   const regionId = searchParams.get("regionId") || "";
   const districtId = searchParams.get("districtId") || "";
@@ -63,7 +65,9 @@ function Orders() {
     orderStatus,
     regionId,
     districtId,
+    createdAtLte,
     storeOwnerId,
+    createdAtGte,
     createdAt,
     url,
     search,
@@ -606,6 +610,8 @@ function Orders() {
     const dateCreatedAt = createdAt
       ? new Date(createdAt)
       : "";
+      const dateCreatedAtGte = createdAtGte&& new Date(createdAtGte)
+      const dateCreatedAtLte = createdAtLte&& new Date(createdAtLte)
     try {
     
       let res;
@@ -635,7 +641,11 @@ function Orders() {
                 ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
                 : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
               : ""
-          }`
+          }
+          ${
+            ( dateCreatedAtGte) ? `&createdAt[gte]=${dateCreatedAtGte}` : ""
+           }${dateCreatedAtLte ? `&createdAt[lte]=${dateCreatedAtLte}` : ""}
+          `
         );
       } else {
         res = await http(
