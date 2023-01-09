@@ -209,6 +209,22 @@ exports.downloadWord = catchAsync(
                     alignment: AlignmentType.CENTER,
                     children: [
                       new TextRun({
+                        text: "Firma: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].storeOwner
+                            ?.storeName || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
                         text: "ID: -",
                       }),
                       new TextRun("   "),
@@ -317,6 +333,23 @@ exports.downloadWord = catchAsync(
                       }),
                     ],
                   }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Izoh: -"),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[0].note.slice(
+                            orderArr[0].note.indexOf(
+                              "FIRMA"
+                            ) + 7
+                          ) || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
                 ],
               }),
               new TableCell({
@@ -341,6 +374,22 @@ exports.downloadWord = catchAsync(
                                 orderArr[1].createdAt
                               )
                             : null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun({
+                        text: "Firma: -",
+                      }),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].storeOwner
+                            ?.storeName || null
                         }`,
                         bold: true,
                       }),
@@ -453,6 +502,23 @@ exports.downloadWord = catchAsync(
                         } -- ${
                           orderArr[1].storeOwner
                             ?.phoneNumber || null
+                        }`,
+                        bold: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new TextRun("Izoh: -"),
+                      new TextRun("   "),
+                      new TextRun({
+                        text: `${
+                          orderArr[1].note.slice(
+                            orderArr[1].note.indexOf(
+                              "FIRMA"
+                            ) + 7
+                          ) || null
                         }`,
                         bold: true,
                       }),
