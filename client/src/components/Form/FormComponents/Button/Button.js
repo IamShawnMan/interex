@@ -15,6 +15,7 @@ function Button({
   disabled,
   btnStyle,
   onClick,
+  onKeyDown,
   style,
 }) {
   // NAME 1-"btn" 2-"icon" 3-"iconText" 4-"dots"
@@ -54,6 +55,7 @@ function Button({
 
   return (
     <button
+    onKeyDown={onKeyDown}
     nameBtn={nameBtn}
       disabled={disabled}
       className={`${styles[buttonSize]} ${styles[name]} ${
