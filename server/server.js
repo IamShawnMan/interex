@@ -16,7 +16,7 @@ const start = async () => {
   try {
     await database.authenticate();
     await database.sync({
-      force: true,
+      // force: true,
       // alter: true,
     });
     app.listen(PORT, () => {
