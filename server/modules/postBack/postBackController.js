@@ -203,15 +203,16 @@ exports.sendRejectedPost = catchAsync(
   async (req, res, next) => {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
-    let err = new AppError("Validatsiya xatosi", 403);
-    err.isOperational = false;
-    err.errors = validationErrors;
-    return next(err);
+      let err = new AppError("Validatsiya xatosi", 403);
+      err.isOperational = false;
+      err.errors = validationErrors;
+      return next(err);
     }
     const { userRole } = req.user;
     const { id } = req.params;
-    const { postStatus, name, phone, avtoNumber, comment } = req.body;
-  	const note = `Ismi -${name}, Tel - ${phone}, Mashina raqami - ${avtoNumber}, Izoh - ${comment}`
+    const { postStatus, name, phone, avtoNumber, comment } =
+      req.body;
+    const note = `Ismi -${name}, Tel - ${phone}, Mashina raqami - ${avtoNumber}, Izoh - ${comment}`;
     const getRejectedPostById = await PostBack.findByPk(id);
 
     if (!getRejectedPostById) {
