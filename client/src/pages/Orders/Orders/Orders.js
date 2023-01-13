@@ -137,8 +137,10 @@ function Orders() {
 
   const getFile = async () => {
     const dateCreatedAt = new Date(createdAt);
-    const dateCreatedAtGte = createdAtGte && new Date(createdAtGte?createdAtGte:"").toISOString();
-    const dateCreatedAtLte = createdAtLte && new Date(createdAtLte?createdAtLte:"").toISOString();
+    const dateCreatedAtGte =
+      createdAtGte && new Date(createdAtGte ? createdAtGte : "").toISOString();
+    const dateCreatedAtLte =
+      createdAtLte && new Date(createdAtLte ? createdAtLte : "").toISOString();
     http({
       url: `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
         size ? `&size=${search ? 100 : size}` : ""
@@ -153,18 +155,17 @@ function Orders() {
       }${regionId ? `&regionId=${regionId}` : ""}${
         districtId ? `&districtId=${districtId}` : ""
       }${
-        dateCreatedAt&&`${dateCreatedAt}`!=="Invalid Date"
+        dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
           ? orderStatus === "SOLD"
             ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
             : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
-      }
-      ${
-        dateCreatedAtGte&&`${dateCreatedAtGte}`!=="Invalid Date"
+      }${
+        dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
           ? `&createdAt[gte]=${dateCreatedAtGte}`
           : ""
       }${
-        dateCreatedAtLte&&`${dateCreatedAtLte}`!=="Invalid Date"
+        dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
           ? `&createdAt[lte]=${dateCreatedAtLte}`
           : ""
       }
@@ -575,6 +576,7 @@ function Orders() {
     const dateCreatedAt = createdAt ? new Date(createdAt) : "";
     const dateCreatedAtGte = createdAtGte && new Date(createdAtGte);
     const dateCreatedAtLte = createdAtLte && new Date(createdAtLte);
+
     try {
       let res;
       if (
@@ -582,31 +584,34 @@ function Orders() {
         url === "/orders/delivered" ||
         url === "/orders/myorders"
       ) {
-        res = await http(
-          `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
-            size ? `&size=${search ? 100 : size}` : ""
-          }${search ? `&search=${search}` : ""}${
-            orderStatus ? `&orderStatus=${orderStatus}` : ""
-          }${
-            !isStoreOwner
-              ? storeOwnerId
-                ? `&storeOwnerId=${storeOwnerId}`
-                : ""
+        res = await http( `${url ? url.trim() : ""}?${page ? `page=${search ? 1 : page.trim()}` : ""}${
+          size ? `&size=${search ? 100 : size.trim()}`: ""
+        }${search ? `&search=${search.trim()}` : ""}${
+          orderStatus ? `&orderStatus=${orderStatus.trim()}` : ""
+        }${
+          !isStoreOwner
+            ? storeOwnerId
+              ? `&storeOwnerId=${storeOwnerId}`
               : ""
-          }${regionId ? `&regionId=${regionId}` : ""}${
-            districtId ? `&districtId=${districtId}` : ""
-          }${
-            dateCreatedAt&&`${dateCreatedAt}`!=="Invalid Date"
-              ? orderStatus === "SOLD"
-                ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
-                : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
-              : ""
-          }
-          ${dateCreatedAtGte&&`${dateCreatedAtGte}`!=="Invalid Date" ? `&createdAt[gte]=${dateCreatedAtGte}` : ""}${
-            dateCreatedAtLte&&`${dateCreatedAtLte}`!=="Invalid Date" ? `&createdAt[lte]=${dateCreatedAtLte}` : ""
-          }
-          `
-        );
+            : ""
+        }${regionId ? `&regionId=${regionId}` : ""}${
+          districtId ? `&districtId=${districtId}` : ""
+        }${
+          dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
+            ? orderStatus === "SOLD"
+              ? `&updatedAt[eq]=${dateCreatedAt.toISOString().trim() }`
+              : `&createdAt[eq]=${dateCreatedAt.toISOString().trim() }`
+            : ""
+        }${
+          dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
+            ? `&createdAt[gte]=${dateCreatedAtGte.toISOString().trim() }`
+            : ""
+        }${
+          dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
+            ? `&createdAt[lte]=${dateCreatedAtLte.toISOString().trim() }`
+            : ""
+        }
+        `);
       } else {
         res = await http(
           `${url ? url : ""}?${search ? `search=${search}` : ""}`
