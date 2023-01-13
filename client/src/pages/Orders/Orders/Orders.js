@@ -45,9 +45,7 @@ function Orders() {
   const orderStatus = searchParams.get("orderStatus") || "";
   const regionId = searchParams.get("regionId") || "";
   const districtId = searchParams.get("districtId") || "";
-  const storeOwnerId = !isStoreOwner
-    ? searchParams.get("storeOwnerId")
-    : "";
+  const storeOwnerId = !isStoreOwner ? searchParams.get("storeOwnerId") : "";
   const { id } = useParams();
   const [search, setSearch] = useState(null);
   const navigate = useNavigate();
@@ -78,19 +76,13 @@ function Orders() {
     });
     setPrice(res.data);
   };
-  const getAllOrders = async data => {
-    setValue(
-      data?.data?.content ||
-        data?.data?.allOrderbyPackageBack.rows
-    );
+  const getAllOrders = async (data) => {
+    setValue(data?.data?.content || data?.data?.allOrderbyPackageBack.rows);
 
     setPagination(data?.data?.pagination);
-    setOrdersIdArr(
-      data?.data?.ordersArrInPost || data?.data?.orderIdArr
-    );
+    setOrdersIdArr(data?.data?.ordersArrInPost || data?.data?.orderIdArr);
     setPostStatus(
-      data?.data?.currentPostStatus?.postStatus ||
-        data.data.packageBackStatus
+      data?.data?.currentPostStatus?.postStatus || data.data.packageBackStatus
     );
   };
   const changeOrderStatus = async (id, status) => {
@@ -107,7 +99,7 @@ function Orders() {
       toast.error(error?.response?.data?.message);
     }
   };
-  const deleteOrder = async id => {
+  const deleteOrder = async (id) => {
     try {
       const res = await http({
         url: `/orders/${id}`,
@@ -120,7 +112,7 @@ function Orders() {
       toast.error(error?.response?.data?.message);
     }
   };
-  const statusChangeOrder = async id => {
+  const statusChangeOrder = async (id) => {
     console.log(id);
     try {
       const res = await http({
@@ -144,17 +136,15 @@ function Orders() {
   };
 
   const getFile = async () => {
-    const dateCreatedAt = new Date(
-      createdAt ? createdAt : ""
-    );
-    const dateCreatedAtGte = createdAtGte&& new Date(createdAtGte)
-      const dateCreatedAtLte = createdAtLte&& new Date(createdAtLte)
+    const dateCreatedAt = new Date(createdAt);
+    const dateCreatedAtGte =
+      createdAtGte && new Date(createdAtGte ? createdAtGte : "").toISOString();
+    const dateCreatedAtLte =
+      createdAtLte && new Date(createdAtLte ? createdAtLte : "").toISOString();
     http({
-      url: `${url ? url : ""}?${
-        page ? `page=${search ? 1 : page}` : ""
-      }${size ? `&size=${search ? 100 : size}` : ""}${
-        search ? `&search=${search}` : ""
-      }${
+      url: `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
+        size ? `&size=${search ? 100 : size}` : ""
+      }${search ? `&search=${search}` : ""}${
         orderStatus ? `&orderStatus=${orderStatus}` : ""
       }${
         !isStoreOwner
@@ -165,19 +155,24 @@ function Orders() {
       }${regionId ? `&regionId=${regionId}` : ""}${
         districtId ? `&districtId=${districtId}` : ""
       }${
-        dateCreatedAt
+        dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
           ? orderStatus === "SOLD"
             ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
             : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
+      }${
+        dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
+          ? `&createdAt[gte]=${dateCreatedAtGte}`
+          : ""
+      }${
+        dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
+          ? `&createdAt[lte]=${dateCreatedAtLte}`
+          : ""
       }
-      ${
-        ( dateCreatedAtGte) ? `&createdAt[gte]=${dateCreatedAtGte}` : ""
-       }${dateCreatedAtLte ? `&createdAt[lte]=${dateCreatedAtLte}` : ""}
       `,
       method: "GET",
       responseType: "blob",
-    }).then(res => {
+    }).then((res) => {
       const href = URL.createObjectURL(res.data);
       const link = document.createElement("a");
       link.href = href;
@@ -194,7 +189,7 @@ function Orders() {
       url: `packages/${id}/download`,
       method: "GET",
       responseType: "blob",
-    }).then(res => {
+    }).then((res) => {
       const href = URL.createObjectURL(res.data);
       const link = document.createElement("a");
       link.href = href;
@@ -221,21 +216,17 @@ function Orders() {
                     type="checkbox"
                     checked={ordersIdArr.includes(order.id)}
                     onClick={() => {
-                      const index = ordersIdArr.includes(
-                        order.id
-                      );
+                      const index = ordersIdArr.includes(order.id);
                       if (index) {
                         let orderIsArr = ordersIdArr.filter(
-                          i => i !== order.id
+                          (i) => i !== order.id
                         );
                         setOrdersIdArr(orderIsArr);
                       } else {
-                        setOrdersIdArr(prev => [
-                          ...prev,
-                          order.id,
-                        ]);
+                        setOrdersIdArr((prev) => [...prev, order.id]);
                       }
-                    }}></Input>
+                    }}
+                  ></Input>
                 </div>
               )}
             <p style={{ textAligin: "center" }}>{i + 1}</p>
@@ -249,7 +240,7 @@ function Orders() {
     },
     {
       Header: "Manzil",
-      accessor: order => {
+      accessor: (order) => {
         return (
           <>
             {order.region.name}
@@ -262,7 +253,7 @@ function Orders() {
     {
       id: "status",
       Header: "Holati",
-      accessor: order => {
+      accessor: (order) => {
         const colorStatusFn = () => {
           if (order.orderStatus === "SOLD") {
             return "lightgreen";
@@ -286,14 +277,10 @@ function Orders() {
     {
       id: "phoneNumber",
       Header: "Telefon Raqam",
-      accessor: order => {
+      accessor: (order) => {
         return (
           <a href={`tel:${order?.recipientPhoneNumber}`}>
-            <b>
-              {phoneNumberFormat(
-                order?.recipientPhoneNumber
-              )}
-            </b>
+            <b>{phoneNumberFormat(order?.recipientPhoneNumber)}</b>
           </a>
         );
       },
@@ -301,44 +288,37 @@ function Orders() {
     {
       id: "deliveryPrice",
       Header: "Yetkazish narxi",
-      accessor: order => {
+      accessor: (order) => {
         return (
           <>
             {!isCourier && (
               <div>
-                {order.orderStatus === "NEW" &&
-                  id &&
-                  isAdmin && (
-                    <Select
-                      data={price?.map(e => {
-                        return { id: e, name: e };
-                      })}
-                      onChange={async e => {
-                        const res = await http({
-                          url: `orders/${order.id}/devprice`,
-                          method: "PATCH",
-                          data: {
-                            deliveryPrice: e.target.value,
-                          },
-                        });
-                      }}>
-                      Narxi
-                    </Select>
-                  )}
+                {order.orderStatus === "NEW" && id && isAdmin && (
+                  <Select
+                    data={price?.map((e) => {
+                      return { id: e, name: e };
+                    })}
+                    onChange={async (e) => {
+                      const res = await http({
+                        url: `orders/${order.id}/devprice`,
+                        method: "PATCH",
+                        data: {
+                          deliveryPrice: e.target.value,
+                        },
+                      });
+                    }}
+                  >
+                    Narxi
+                  </Select>
+                )}
                 {(order.status !== "NEW" &&
-                  order.deliveryPrice?.toLocaleString(
-                    "Ru-Ru"
-                  )) ||
+                  order.deliveryPrice?.toLocaleString("Ru-Ru")) ||
                   0}{" "}
                 so'm
               </div>
             )}
             {isCourier && (
-              <div>
-                {`${
-                  user.tariff?.toLocaleString("Ru-Ru") || 0
-                } so'm`}
-              </div>
+              <div>{`${user.tariff?.toLocaleString("Ru-Ru") || 0} so'm`}</div>
             )}
           </>
         );
@@ -347,32 +327,28 @@ function Orders() {
     {
       id: "totalPrice",
       Header: "Narxi",
-      accessor: order => {
-        return (
-          <>{`${order.totalPrice?.toLocaleString(
-            "Ru-Ru"
-          )} so'm`}</>
-        );
+      accessor: (order) => {
+        return <>{`${order.totalPrice?.toLocaleString("Ru-Ru")} so'm`}</>;
       },
     },
     {
       id: "createdAt",
       Header: "Sana",
-      accessor: order => {
+      accessor: (order) => {
         return formatDate(order.createdAt);
       },
     },
     {
       id: "updatedAt",
       Header: "O'zgarish",
-      accessor: order => {
+      accessor: (order) => {
         return formatDate(order.updatedAt);
       },
     },
     {
       id: "tugma",
       Header: "",
-      accessor: order => {
+      accessor: (order) => {
         return (
           <div className={styles.actionContainer}>
             {user.userRole === "SUPER_ADMIN" &&
@@ -381,81 +357,61 @@ function Orders() {
                 <Button
                   size="small"
                   name="btn"
-                  onClick={() =>
-                    statusChangeOrder(order.id)
-                  }>
+                  onClick={() => statusChangeOrder(order.id)}
+                >
                   Imkoniyat
                 </Button>
               )}
-            {((isAdmin && url.split("/")[1] !== "posts") ||
-              isStoreOwner) && (
+            {((isAdmin && url.split("/")[1] !== "posts") || isStoreOwner) && (
               <div className={styles.actionContainer}>
-                {user.userRole === "STORE_OWNER" &&order.orderStatus === "NEW"&& (
-                  <>
-                    <Button
-                      size="small"
-                      disabled={
-                        order.orderStatus !== "NEW"
-                          ? true
-                          : false
-                      }
-                      name="btn"
-                      onClick={() => {
-                        navigate(`/orders/${order.id}`);
-                      }}>
-                      O'zgartirish
-                    </Button>
-                    <Button
-                      size="small"
-                      disabled={
-                        order.orderStatus !== "NEW"
-                          ? true
-                          : false
-                      }
-                      name="btn"
-                      btnStyle={{
-                        backgroundColor:
-                          order.orderStatus === "NEW"
-                            ? "red"
-                            : "",
-                      }}
-                      onClick={() => deleteOrder(order.id)}>
-                      O'chirish
-                    </Button>
-                  </>
-                )}
+                {user.userRole === "STORE_OWNER" &&
+                  order.orderStatus === "NEW" && (
+                    <>
+                      <Button
+                        size="small"
+                        disabled={order.orderStatus !== "NEW" ? true : false}
+                        name="btn"
+                        onClick={() => {
+                          navigate(`/orders/${order.id}`);
+                        }}
+                      >
+                        O'zgartirish
+                      </Button>
+                      <Button
+                        size="small"
+                        disabled={order.orderStatus !== "NEW" ? true : false}
+                        name="btn"
+                        btnStyle={{
+                          backgroundColor:
+                            order.orderStatus === "NEW" ? "red" : "",
+                        }}
+                        onClick={() => deleteOrder(order.id)}
+                      >
+                        O'chirish
+                      </Button>
+                    </>
+                  )}
 
-                {isAdmin && id &&order.orderStatus==="NEW"&& (
+                {isAdmin && id && order.orderStatus === "NEW" && (
                   <>
                     <Button
                       name="btn"
-                      disabled={
-                        order.orderStatus === "NEW"
-                          ? false
-                          : true
-                      }
-                      onClick={() =>
-                        changeOrderStatus(
-                          order.id,
-                          "ACCEPTED"
-                        )
-                      }>
+                      disabled={order.orderStatus === "NEW" ? false : true}
+                      onClick={() => changeOrderStatus(order.id, "ACCEPTED")}
+                    >
                       Qabul qilindi
                     </Button>
 
                     <Button
-                      disabled={
-                        order.orderStatus === "NEW"
-                          ? false
-                          : true
-                      }
+                      disabled={order.orderStatus === "NEW" ? false : true}
                       name="btn"
                       onClick={() =>
                         setInfo2({
                           id: order.id,
                           status: "NOT_EXIST",
                         })
-                      }>
+                      }
+                    >
                       Qabul qilinmadi
                     </Button>
                   </>
@@ -482,9 +438,7 @@ function Orders() {
                     }
                     btnStyle={{
                       backgroundColor:
-                        order.orderStatus !== "SOLD"
-                          ? "green"
-                          : "",
+                        order.orderStatus !== "SOLD" ? "green" : "",
                     }}
                     onClick={() => {
                       setInfo({
@@ -493,7 +447,8 @@ function Orders() {
                         postId: id,
                         statusUz: "Buyurtma Sotildi",
                       });
-                    }}>
+                    }}
+                  >
                     Sotildi
                   </Button>
 
@@ -521,7 +476,8 @@ function Orders() {
                         postId: id,
                         statusUz: "Buyurtma Kutilmoqda",
                       });
-                    }}>
+                    }}
+                  >
                     Kutilmoqda
                   </Button>
                   <Button
@@ -536,9 +492,7 @@ function Orders() {
                     name="btn"
                     btnStyle={{
                       backgroundColor:
-                        order.orderStatus !== "REJECTED"
-                          ? "red"
-                          : "",
+                        order.orderStatus !== "REJECTED" ? "red" : "",
                     }}
                     onClick={() => {
                       setInfo({
@@ -547,7 +501,8 @@ function Orders() {
                         postId: id,
                         statusUz: "Buyurtma Qaytarildi",
                       });
-                    }}>
+                    }}
+                  >
                     Qaytdi
                   </Button>
                 </>
@@ -557,7 +512,8 @@ function Orders() {
               name="btn"
               onClick={() => {
                 setInfo(order.id);
-              }}>
+              }}
+            >
               Ma'lumot
             </Button>
           </div>
@@ -617,51 +573,48 @@ function Orders() {
     navigate("/packageback");
   };
   const filterFn = async () => {
-    const dateCreatedAt = createdAt
-      ? new Date(createdAt)
-      : "";
-      const dateCreatedAtGte = createdAtGte&& new Date(createdAtGte)
-      const dateCreatedAtLte = createdAtLte&& new Date(createdAtLte)
+    const dateCreatedAt = createdAt ? new Date(createdAt) : "";
+    const dateCreatedAtGte = createdAtGte && new Date(createdAtGte);
+    const dateCreatedAtLte = createdAtLte && new Date(createdAtLte);
+
     try {
-    
       let res;
       if (
         url === "/orders" ||
         url === "/orders/delivered" ||
         url === "/orders/myorders"
       ) {
-        res = await http(
-          `${url ? url : ""}?${
-            page ? `page=${search ? 1 : page}` : ""
-          }${size ? `&size=${search ? 100 : size}` : ""}${
-            search ? `&search=${search}` : ""
-          }${
-            orderStatus ? `&orderStatus=${orderStatus}` : ""
-          }${
-            !isStoreOwner
-              ? storeOwnerId
-                ? `&storeOwnerId=${storeOwnerId}`
-                : ""
+        res = await http( `${url ? url.trim() : ""}?${page ? `page=${search ? 1 : page.trim()}` : ""}${
+          size ? `&size=${search ? 100 : size.trim()}`: ""
+        }${search ? `&search=${search.trim()}` : ""}${
+          orderStatus ? `&orderStatus=${orderStatus.trim()}` : ""
+        }${
+          !isStoreOwner
+            ? storeOwnerId
+              ? `&storeOwnerId=${storeOwnerId}`
               : ""
-          }${regionId ? `&regionId=${regionId}` : ""}${
-            districtId ? `&districtId=${districtId}` : ""
-          }${
-            dateCreatedAt
-              ? orderStatus === "SOLD"
-                ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
-                : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
-              : ""
-          }
-          ${
-            ( dateCreatedAtGte) ? `&createdAt[gte]=${dateCreatedAtGte}` : ""
-           }${dateCreatedAtLte ? `&createdAt[lte]=${dateCreatedAtLte}` : ""}
-          `
-        );
+            : ""
+        }${regionId ? `&regionId=${regionId}` : ""}${
+          districtId ? `&districtId=${districtId}` : ""
+        }${
+          dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
+            ? orderStatus === "SOLD"
+              ? `&updatedAt[eq]=${dateCreatedAt.toISOString().trim() }`
+              : `&createdAt[eq]=${dateCreatedAt.toISOString().trim() }`
+            : ""
+        }${
+          dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
+            ? `&createdAt[gte]=${dateCreatedAtGte.toISOString().trim() }`
+            : ""
+        }${
+          dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
+            ? `&createdAt[lte]=${dateCreatedAtLte.toISOString().trim() }`
+            : ""
+        }
+        `);
       } else {
         res = await http(
-          `${url ? url : ""}?${
-            search ? `search=${search}` : ""
-          }`
+          `${url ? url : ""}?${search ? `search=${search}` : ""}`
         );
       }
 
@@ -674,23 +627,20 @@ function Orders() {
     setInfo(false);
   };
   return (
-    <Layout
-      pageName="Jo'natmalar Ro'yxati"
-      setSearch={setSearch}
-      info={info}>
+    <Layout pageName="Jo'natmalar Ro'yxati" setSearch={setSearch} info={info}>
       {url === "/new-post" && (
         <div
           style={{
             width: "100%",
             display: "flex",
             gap: "1rem",
-          }}>
+          }}
+        >
           {user.userRole === "COURIER" && (
             <div style={{ width: "100%" }}>
               <Button
                 disabled={
-                  url === "/new-post" ||
-                  url === "/postback/rejected/orders"
+                  url === "/new-post" || url === "/postback/rejected/orders"
                     ? true
                     : false
                 }
@@ -699,10 +649,9 @@ function Orders() {
                   url === "/postback"
                     ? navigate("/postback/rejected/orders")
                     : navigate("/new-post");
-                }}>
-                {url === "/postback"
-                  ? "Pochta yaratish"
-                  : "Bugungi pochta"}
+                }}
+              >
+                {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
               </Button>
             </div>
           )}
@@ -713,7 +662,8 @@ function Orders() {
                 name="btn"
                 onClick={() => {
                   navigate("/posts");
-                }}>
+                }}
+              >
                 Hamma pochtalar
               </Button>
             </div>
@@ -725,7 +675,8 @@ function Orders() {
                 name="btn"
                 onClick={() => {
                   navigate("/postback");
-                }}>
+                }}
+              >
                 Qaytgan pochtalar
               </Button>
             </div>
@@ -739,7 +690,8 @@ function Orders() {
           style={{
             display: "flex",
             justifyContent: "end",
-          }}>
+          }}
+        >
           <img
             width="100"
             onClick={() => getFile()}
@@ -754,10 +706,9 @@ function Orders() {
           style={{
             display: "flex",
             justifyContent: "end",
-          }}>
-          <h1
-            style={{ cursor: "pointer" }}
-            onClick={() => getFileWord()}>
+          }}
+        >
+          <h1 style={{ cursor: "pointer" }} onClick={() => getFileWord()}>
             Word
           </h1>
         </div>
@@ -773,7 +724,8 @@ function Orders() {
             btnStyle={{
               width: "13rem",
               marginBottom: "1rem",
-            }}>
+            }}
+          >
             Buyurtma
           </Button>
         )}
@@ -786,11 +738,13 @@ function Orders() {
                 display: "flex",
                 gap: "2rem",
                 width: "50%",
-              }}>
+              }}
+            >
               <Button
                 style={{ width: "13rem" }}
                 name="btn"
-                onClick={dailyOrders}>
+                onClick={dailyOrders}
+              >
                 Bugungilar
               </Button>
               <Button
@@ -802,7 +756,8 @@ function Orders() {
                         navigate("/postback");
                       }
                     : filterFn
-                }>
+                }
+              >
                 Hammasi
               </Button>
             </div>
@@ -810,9 +765,7 @@ function Orders() {
       </div>
       {(url === "/orders" ||
         url === "/orders/delivered" ||
-        url === "/orders/myorders") && (
-        <Filter filterFn={filterFn} url={url} />
-      )}
+        url === "/orders/myorders") && <Filter filterFn={filterFn} url={url} />}
       {value?.length > 0 ? (
         <BasicTable
           columns={cols}
@@ -833,11 +786,7 @@ function Orders() {
         <OrderInfo id={info} onClose={closeHandler} />
       )}
       {info && typeof info === "object" && (
-        <PostSendCourier
-          id={info}
-          url={url}
-          onClose={closeHandler}
-        />
+        <PostSendCourier id={info} url={url} onClose={closeHandler} />
       )}
       {info2 && (
         <AdminRejectedModal
@@ -849,8 +798,7 @@ function Orders() {
         />
       )}
       <div style={{ display: "flex", gap: 1 }}>
-        {(url.split("/")[1] === "posts" ||
-          url.split("/")[2] === "rejected") &&
+        {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
           (postStatus === "NEW" ||
             url.split("/")[3] === "regionorders" ||
             url.split("/")[2] === "rejected") && (
@@ -863,7 +811,8 @@ function Orders() {
                 url.split("/")[2] === "rejected"
                   ? postRejectedCreateOrUpdateFn
                   : postCreateOrUpdateFn
-              }>
+              }
+            >
               {url.split("/")[3] === "regionorders" ||
               url.split("/")[2] === "rejected"
                 ? url === "/postback/rejected/orders"
@@ -872,18 +821,17 @@ function Orders() {
                 : "Yangilash"}
             </Button>
           )}
-        {isStoreOwner &&
-          id &&
-          postStatus === "REJECTED_NEW" && (
-            <Button
-              type="submit"
-              size="small"
-              name="btn"
-              disabled={value?.length === 0}
-              onClick={packageRejected}>
-              Qabul qildim
-            </Button>
-          )}
+        {isStoreOwner && id && postStatus === "REJECTED_NEW" && (
+          <Button
+            type="submit"
+            size="small"
+            name="btn"
+            disabled={value?.length === 0}
+            onClick={packageRejected}
+          >
+            Qabul qildim
+          </Button>
+        )}
       </div>
     </Layout>
   );
