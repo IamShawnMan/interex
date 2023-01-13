@@ -58,9 +58,7 @@ exports.getAllOrders = catchAsync(
         ...queryBuilder.queryOptions.where,
       };
     }
-    let allOrders = await Order.findAndCountAll({
-      ...queryBuilder.queryOptions,
-    });
+    let allOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
     allOrders = queryBuilder.createPagination(allOrders);
     res.json({
       status: "success",
