@@ -576,7 +576,7 @@ function Orders() {
     const dateCreatedAt = createdAt ? new Date(createdAt) : "";
     const dateCreatedAtGte = createdAtGte && new Date(createdAtGte);
     const dateCreatedAtLte = createdAtLte && new Date(createdAtLte);
-
+console.log("filterFn");
     try {
       let res;
       if (
@@ -584,10 +584,10 @@ function Orders() {
         url === "/orders/delivered" ||
         url === "/orders/myorders"
       ) {
-        res = await http( `${url ? url.trim() : ""}?${page ? `page=${search ? 1 : page.trim()}` : ""}${
-          size ? `&size=${search ? 100 : size.trim()}`: ""
-        }${search ? `&search=${search.trim()}` : ""}${
-          orderStatus ? `&orderStatus=${orderStatus.trim()}` : ""
+        res = await http( `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
+          size ? `&size=${search ? 100 : size}`: ""
+        }${search ? `&search=${search}` : ""}${
+          orderStatus ? `&orderStatus=${orderStatus}` : ""
         }${
           !isStoreOwner
             ? storeOwnerId
@@ -599,16 +599,16 @@ function Orders() {
         }${
           dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
             ? orderStatus === "SOLD"
-              ? `&updatedAt[eq]=${dateCreatedAt.toISOString().trim() }`
-              : `&createdAt[eq]=${dateCreatedAt.toISOString().trim() }`
+              ? `&updatedAt[eq]=${dateCreatedAt.toISOString() }`
+              : `&createdAt[eq]=${dateCreatedAt.toISOString() }`
             : ""
         }${
           dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
-            ? `&createdAt[gte]=${dateCreatedAtGte.toISOString().trim() }`
+            ? `&createdAt[gte]=${dateCreatedAtGte.toISOString() }`
             : ""
         }${
           dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
-            ? `&createdAt[lte]=${dateCreatedAtLte.toISOString().trim() }`
+            ? `&createdAt[lte]=${dateCreatedAtLte.toISOString() }`
             : ""
         }
         `);
