@@ -24,7 +24,7 @@ function Sidebar(props) {
         authorization: "",
       },
     });
-    navigate("/");
+    navigate("/login");
   };
   return (
     <>

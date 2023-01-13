@@ -147,24 +147,34 @@ function Orders() {
     const dateCreatedAt = new Date(
       createdAt ? createdAt : ""
     );
+    const dateCreatedAtGte = createdAtGte&& new Date(createdAtGte)
+      const dateCreatedAtLte = createdAtLte&& new Date(createdAtLte)
     http({
-      url: `orders/download?page=${page}&size=${size}${
+      url: `${url ? url : ""}?${
+        page ? `page=${search ? 1 : page}` : ""
+      }${size ? `&size=${search ? 100 : size}` : ""}${
+        search ? `&search=${search}` : ""
+      }${
         orderStatus ? `&orderStatus=${orderStatus}` : ""
-      }${regionId ? `&regionId=${regionId}` : ""}${
-        districtId ? `&districtId=${districtId}` : ""
       }${
         !isStoreOwner
           ? storeOwnerId
             ? `&storeOwnerId=${storeOwnerId}`
             : ""
           : ""
+      }${regionId ? `&regionId=${regionId}` : ""}${
+        districtId ? `&districtId=${districtId}` : ""
       }${
-        createdAt
+        dateCreatedAt
           ? orderStatus === "SOLD"
             ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
             : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
-      }`,
+      }
+      ${
+        ( dateCreatedAtGte) ? `&createdAt[gte]=${dateCreatedAtGte}` : ""
+       }${dateCreatedAtLte ? `&createdAt[lte]=${dateCreatedAtLte}` : ""}
+      `,
       method: "GET",
       responseType: "blob",
     }).then(res => {
