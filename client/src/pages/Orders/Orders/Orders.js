@@ -160,11 +160,11 @@ function Orders() {
           : ""
       }
       ${
-        dateCreatedAtGte
+        dateCreatedAtGte&&`${dateCreatedAtGte}`!=="Invalid Date"
           ? `&createdAt[gte]=${dateCreatedAtGte}`
           : ""
       }${
-        dateCreatedAtLte
+        dateCreatedAtLte&&`${dateCreatedAtLte}`!=="Invalid Date"
           ? `&createdAt[lte]=${dateCreatedAtLte}`
           : ""
       }
@@ -596,14 +596,14 @@ function Orders() {
           }${regionId ? `&regionId=${regionId}` : ""}${
             districtId ? `&districtId=${districtId}` : ""
           }${
-            dateCreatedAt
+            dateCreatedAt&&`${dateCreatedAt}`!=="Invalid Date"
               ? orderStatus === "SOLD"
                 ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
                 : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
               : ""
           }
-          ${dateCreatedAtGte ? `&createdAt[gte]=${dateCreatedAtGte}` : ""}${
-            dateCreatedAtLte ? `&createdAt[lte]=${dateCreatedAtLte}` : ""
+          ${dateCreatedAtGte&&`${dateCreatedAtGte}`!=="Invalid Date" ? `&createdAt[gte]=${dateCreatedAtGte}` : ""}${
+            dateCreatedAtLte&&`${dateCreatedAtLte}`!=="Invalid Date" ? `&createdAt[lte]=${dateCreatedAtLte}` : ""
           }
           `
         );
