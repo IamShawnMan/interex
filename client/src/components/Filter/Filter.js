@@ -69,7 +69,8 @@ function Filter({ url }) {
     );
   };
   const filterHandler = async (data) => {
-    console.log(data);
+    // console.log(data);
+    console.log(size);
     navigate(
       `${url}?page=${page}&size=${size}${
         data?.status ? `&orderStatus=${data.status}` : ""
@@ -81,9 +82,15 @@ function Filter({ url }) {
             ? `&storeOwnerId=${data.storeOwnerId}`
             : ""
           : ""
-      }${(data?.createdAt&&!fromTo) ? `&createdAt[eq]=${data.createdAt}` : ""}${
-       ( data?.gteCreatedAt&&fromTo) ? `&createdAt[gte]=${data.gteCreatedAt}` : ""
-      }${(data?.lteCreatedAt&&fromTo) ? `&createdAt[lte]=${data.lteCreatedAt}` : ""}`
+      }${data?.createdAt && !fromTo ? `&createdAt[eq]=${data.createdAt}` : ""}${
+        data?.gteCreatedAt && fromTo
+          ? `&createdAt[gte]=${data.gteCreatedAt}`
+          : ""
+      }${
+        data?.lteCreatedAt && fromTo
+          ? `&createdAt[lte]=${data.lteCreatedAt}`
+          : ""
+      }`
     );
   };
 
