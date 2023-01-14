@@ -160,7 +160,8 @@ function Orders() {
             ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
             : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
-      }${
+      }
+      ${
         dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
           ? `&createdAt[gte]=${dateCreatedAtGte}`
           : ""
