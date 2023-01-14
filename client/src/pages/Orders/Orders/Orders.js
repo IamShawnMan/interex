@@ -142,7 +142,7 @@ function Orders() {
     const dateCreatedAtLte =
       createdAtLte && new Date(createdAtLte ? createdAtLte : "").toISOString();
     http({
-      url: `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
+      url: `orders/download?page=${page}${
         size ? `&size=${search ? 100 : size}` : ""
       }${search ? `&search=${search}` : ""}${
         orderStatus ? `&orderStatus=${orderStatus}` : ""
