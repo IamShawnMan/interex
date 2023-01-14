@@ -113,6 +113,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
             [Op.eq]: order.recipientPhoneNumber,
           },
         },
+        { storeOwnerId: { [Op.eq]: req.user.id } },
         {
           orderStatus: { [Op.eq]: statusOrder.STATUS_NEW },
         },
@@ -224,7 +225,10 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     });
   } else {
     return next(
-      new AppError("buyurtmani raqami takrorlansinmi?", 400)
+      new AppError(
+        "Buyurtma telefon raqami takrorlansinmi?",
+        400
+      )
     );
   }
 });
