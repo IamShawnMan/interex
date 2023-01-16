@@ -44,12 +44,12 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	let regionName = "Barcha viloyatlar";
 	let storeName = "Barcha firmalar";
 	let orderDate = "";
-	req.query.createdAt["eq"]
+	req.query?.createdAt["eq"]
 		? (orderDate = new Date(req.query.createdAt["eq"])
 				.toLocaleString()
 				.split(",")[0])
 		: "";
-	req.query.createdAt["gte"] || req.query.createdAt["lte"]
+	req.query?.createdAt["gte"] || req.query?.createdAt["lte"]
 		? (orderDate = `${new Date(req.query.createdAt["gte"])
 				.toLocaleString()
 				.split(",")[0]} - ${new Date(req.query.createdAt["lte"])
