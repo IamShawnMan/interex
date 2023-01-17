@@ -156,21 +156,24 @@ function Orders() {
         districtId ? `&districtId=${districtId}` : ""
       }${
         dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
-          ? orderStatus === "SOLD"
+          ? orderStatus === "SOLD" || orderStatus === "REJECTED"
             ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
             : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
       }
       ${
         dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
-          ? `&createdAt[gte]=${dateCreatedAtGte}`
+          ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+            ? `&updatedAt[gte]=${dateCreatedAtGte}`
+            : `&createdAt[gte]=${dateCreatedAtGte}`
           : ""
       }${
         dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
-          ? `&createdAt[lte]=${dateCreatedAtLte}`
+          ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+            ? `&updatedAt[lte]=${dateCreatedAtLte}`
+            : `&createdAt[lte]=${dateCreatedAtLte}`
           : ""
-      }
-      `,
+      }`,
       method: "GET",
       responseType: "blob",
     }).then((res) => {
@@ -577,7 +580,7 @@ function Orders() {
     const dateCreatedAt = createdAt ? new Date(createdAt) : "";
     const dateCreatedAtGte = createdAtGte && new Date(createdAtGte);
     const dateCreatedAtLte = createdAtLte && new Date(createdAtLte);
-console.log("filterFn");
+    console.log("filterFn");
     try {
       let res;
       if (
@@ -585,11 +588,11 @@ console.log("filterFn");
         url === "/orders/delivered" ||
         url === "/orders/myorders"
       ) {
-        res = await http( `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
-          size ? `&size=${search ? 100 : size}`: ""
-        }${search ? `&search=${search}` : ""}${
-          orderStatus ? `&orderStatus=${orderStatus}` : ""
-        }${
+        res = await http(`${url ? url : ""}?${
+          page ? `page=${search ? 1 : page}` : ""
+        }${size ? `&size=${search ? 100 : size}` : ""}${
+          search ? `&search=${search}` : ""
+        }${orderStatus ? `&orderStatus=${orderStatus}` : ""}${
           !isStoreOwner
             ? storeOwnerId
               ? `&storeOwnerId=${storeOwnerId}`
@@ -599,20 +602,23 @@ console.log("filterFn");
           districtId ? `&districtId=${districtId}` : ""
         }${
           dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
-            ? orderStatus === "SOLD"
-              ? `&updatedAt[eq]=${dateCreatedAt.toISOString() }`
-              : `&createdAt[eq]=${dateCreatedAt.toISOString() }`
+            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+              ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
+              : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
             : ""
         }${
           dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
-            ? `&createdAt[gte]=${dateCreatedAtGte.toISOString() }`
+            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+              ? `&updatedAt[gte]=${dateCreatedAtGte.toISOString()}`
+              : `&createdAt[gte]=${dateCreatedAtGte.toISOString()}`
             : ""
         }${
           dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
-            ? `&createdAt[lte]=${dateCreatedAtLte.toISOString() }`
+            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+              ? `&updatedAt[lte]=${dateCreatedAtLte.toISOString()}`
+              : `&createdAt[lte]=${dateCreatedAtLte.toISOString()}`
             : ""
-        }
-        `);
+        }`);
       } else {
         res = await http(
           `${url ? url : ""}?${search ? `search=${search}` : ""}`
