@@ -33,27 +33,30 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Kuryerdan qaytgan pul", width: 10 },
 		{ header: "Foyda", width: 10 },
 		{ header: "Firma puli", width: 10 },
-		{ header: "Yaratilgan sana", key: "createdAt", width: 12 },
+		req.query.orderStatus === "SOLD" || req.query.orderStatus === "REJECTED" ? 
+		{ header: "Sana", key: "updatedAt", width: 12 } : 
+		{ header: "Sana", key: "createdAt", width: 12 },
 		{ header: "Klient", key: "recipient", width: 15 },
 		{ header: "Mahsulot soni", key: "packageId", width: 10 },
 		{ header: "Izoh", key: "note", width: 30 },
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
+	console.log(req.query);
 	let downloadOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
 	let regionName = "Barcha viloyatlar";
 	let storeName = "Barcha firmalar";
 	let orderDate = "";
-	if(req.query.orderStatus === "SOLD") {
+	if(req.query.orderStatus === "SOLD" || req.query.orderStatus === "REJECTED") {
 		req.query?.updatedAt["eq"]
 		? (orderDate = new Date(req.query.updatedAt["eq"])
 				.toLocaleString()
 				.split(",")[0])
 		: "";
 	req.query?.updatedAt["gte"] || req.query?.updatedAt["lte"]
-		? (orderDate = `${new Date(req.query.createdAt["gte"])
+		? (orderDate = `${new Date(req.query.updatedAt["gte"])
 				.toLocaleString()
-				.split(",")[0]} - ${new Date(req.query.createdAt["lte"])
+				.split(",")[0]} - ${new Date(req.query.updatedAt["lte"])
 				.toLocaleString()
 				.split(",")[0]}`)
 		: "";
@@ -425,7 +428,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`F${endRow}:G${endRow}`);
 	};
-	if(req.query.orderStatus === "SOLD") {
+	if(req.query.orderStatus === "SOLD"  || req.query.orderStatus === "REJECTED") {
 		if (
 			(req.query.regionId &&
 			!req.query.storeOwnerId &&
