@@ -44,18 +44,34 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	let regionName = "Barcha viloyatlar";
 	let storeName = "Barcha firmalar";
 	let orderDate = "";
-	req.query?.createdAt["eq"]
-		? (orderDate = new Date(req.query.createdAt["eq"])
+	if(req.query.orderStatus === "SOLD") {
+		req.query?.updatedAt["eq"]
+		? (orderDate = new Date(req.query.updatedAt["eq"])
 				.toLocaleString()
 				.split(",")[0])
 		: "";
-	req.query?.createdAt["gte"] || req.query?.createdAt["lte"]
+	req.query?.updatedAt["gte"] || req.query?.updatedAt["lte"]
 		? (orderDate = `${new Date(req.query.createdAt["gte"])
 				.toLocaleString()
 				.split(",")[0]} - ${new Date(req.query.createdAt["lte"])
 				.toLocaleString()
 				.split(",")[0]}`)
 		: "";
+	}
+	else {
+		req.query?.createdAt["eq"]
+		? (orderDate = new Date(req.query.createdAt["eq"])
+				.toLocaleString()
+				.split(",")[0])
+		: "";
+		req.query?.createdAt["gte"] || req.query?.createdAt["lte"]
+		? (orderDate = `${new Date(req.query.createdAt["gte"])
+				.toLocaleString()
+				.split(",")[0]} - ${new Date(req.query.createdAt["lte"])
+				.toLocaleString()
+				.split(",")[0]}`)
+		: "";
+	}
 	const region = await Region.findOne({
 		attributes: ["id", "name"],
 		where: {
@@ -409,243 +425,485 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`F${endRow}:G${endRow}`);
 	};
-	if (
-		(req.query.regionId &&
-		!req.query.storeOwnerId &&
-		!req.query.createdAt &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) || 
-		(req.query.createdAt["gte"] &&
-		!req.query.regionId &&
-		!req.query.storeOwnerId &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN))
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(16, 3);
-		totalPrice2();
+	if(req.query.orderStatus === "SOLD") {
+		if (
+			(req.query.regionId &&
+			!req.query.storeOwnerId &&
+			!req.query.updatedAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) || 
+			(req.query.updatedAt["gte"] &&
+			!req.query.regionId &&
+			!req.query.storeOwnerId &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN))
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			req.query.storeOwnerId &&
+			!req.query.regionId &&
+			!req.query.updatedAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			req.query.updatedAt["eq"] &&
+			!req.query.regionId &&
+			!req.query.storeOwnerId &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(16, 4);
+			totalPrice1();
+		}
+		if (
+			req.query.regionId &&
+			req.query.storeOwnerId &&
+			!req.query.updatedAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(15, 3);
+			totalPrice3();
+		}
+		if (
+			req.query.regionId &&
+			!req.query.storeOwnerId &&
+			req.query.updatedAt["eq"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(15, 4);
+			totalPrice2();
+		}
+		if (
+			req.query.regionId &&
+			!req.query.storeOwnerId &&
+			req.query.updatedAt["gte"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			!req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.updatedAt["eq"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(15, 4);
+			totalPrice2();
+		}
+		if (
+			!req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.updatedAt["gte"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.updatedAt["eq"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(14, 4);
+			totalPrice3();
+		}
+		if (
+			req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.updatedAt["gte"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(15, 3);
+			totalPrice3();
+		}
+		if (
+			!req.query.regionId &&
+			!req.query.storeOwnerId &&
+			!req.query.updatedAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(17, 3);
+			totalPrice1();
+		}
+		if (
+			!req.query.regionId &&
+			!req.query.updatedAt &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(11, 3);
+			totalPrice4();
+		}
+		if (
+			req.query.updatedAt["eq"] &&
+			!req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(11, 3);
+			worksheet.spliceColumns(12, 1);
+			totalPrice4();
+		}
+		if (
+			req.query.updatedAt["gte"] &&
+			!req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(11, 3);
+			totalPrice4();
+		}
+		if (
+			!req.query.updatedAt &&
+			req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(10, 3);
+			totalPrice5();
+		}
+		if (
+			req.query.updatedAt["eq"] &&
+			req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(10, 3);
+			worksheet.spliceColumns(11, 1);
+			totalPrice5();
+		}
+		if (
+			req.query.updatedAt["gte"] &&
+			req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(10, 3);
+			totalPrice5();
+		}
+		if (
+			!req.query.regionId &&
+			!req.query.updatedAt &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(10, 1);
+			worksheet.spliceColumns(13, 2);
+			worksheet.spliceColumns(14, 3);
+			totalPrice6();
+		}
+		if (
+			req.query.updatedAt["eq"] &&
+			!req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(10, 1);
+			worksheet.spliceColumns(13, 6);
+			totalPrice6();
+		}
+		if (
+			req.query.updatedAt["gte"] &&
+			!req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(10, 1);
+			worksheet.spliceColumns(13, 2);
+			worksheet.spliceColumns(14, 3);
+			totalPrice6();
+		}
+		if (
+			!req.query.updatedAt &&
+			req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(12, 3);
+			worksheet.spliceColumns(13, 3);
+			totalPrice7();
+		}
+		if (
+			req.query.updatedAt["eq"] &&
+			req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(12, 7);
+			totalPrice7();
+		}
+		if (
+			req.query.updatedAt["gte"] &&
+			req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(12, 3);
+			worksheet.spliceColumns(13, 3);
+			totalPrice7();
+		}
 	}
-	if (
-		req.query.storeOwnerId &&
-		!req.query.regionId &&
-		!req.query.createdAt &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(16, 3);
-		totalPrice2();
-	}
-	if (
-		req.query.createdAt["eq"] &&
-		!req.query.regionId &&
-		!req.query.storeOwnerId &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(16, 4);
-		totalPrice1();
-	}
-	if (
-		req.query.regionId &&
-		req.query.storeOwnerId &&
-		!req.query.createdAt &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(15, 3);
-		totalPrice3();
-	}
-	if (
-		req.query.regionId &&
-		!req.query.storeOwnerId &&
-		req.query.createdAt["eq"] &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(15, 4);
-		totalPrice2();
-	}
-	if (
-		req.query.regionId &&
-		!req.query.storeOwnerId &&
-		req.query.createdAt["gte"] &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(16, 3);
-		totalPrice2();
-	}
-	if (
-		!req.query.regionId &&
-		req.query.storeOwnerId &&
-		req.query.createdAt["eq"] &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(15, 4);
-		totalPrice2();
-	}
-	if (
-		!req.query.regionId &&
-		req.query.storeOwnerId &&
-		req.query.createdAt["gte"] &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(16, 3);
-		totalPrice2();
-	}
-	if (
-		req.query.regionId &&
-		req.query.storeOwnerId &&
-		req.query.createdAt["eq"] &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(14, 4);
-		totalPrice3();
-	}
-	if (
-		req.query.regionId &&
-		req.query.storeOwnerId &&
-		req.query.createdAt["gte"] &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(15, 3);
-		totalPrice3();
-	}
-	if (
-		!req.query.regionId &&
-		!req.query.storeOwnerId &&
-		!req.query.createdAt &&
-		(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
-	) {
-		worksheet.spliceColumns(17, 3);
-		totalPrice1();
-	}
-	if (
-		!req.query.regionId &&
-		!req.query.createdAt &&
-		userRole === userRoles.STORE_OWNER
-	) {
-		storeName = req.user.storeName;
-		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(11, 3);
-		totalPrice4();
-	}
-	if (
-		req.query.createdAt["eq"] &&
-		!req.query.regionId &&
-		userRole === userRoles.STORE_OWNER
-	) {
-		storeName = req.user.storeName;
-		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(11, 3);
-		worksheet.spliceColumns(12, 1);
-		totalPrice4();
-	}
-	if (
-		req.query.createdAt["gte"] &&
-		!req.query.regionId &&
-		userRole === userRoles.STORE_OWNER
-	) {
-		storeName = req.user.storeName;
-		worksheet.spliceColumns(5, 1);
-		worksheet.spliceColumns(11, 3);
-		totalPrice4();
-	}
-	if (
-		!req.query.createdAt &&
-		req.query.regionId &&
-		userRole === userRoles.STORE_OWNER
-	) {
-		storeName = req.user.storeName;
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(10, 3);
-		totalPrice5();
-	}
-	if (
-		req.query.createdAt["eq"] &&
-		req.query.regionId &&
-		userRole === userRoles.STORE_OWNER
-	) {
-		storeName = req.user.storeName;
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(10, 3);
-		worksheet.spliceColumns(11, 1);
-		totalPrice5();
-	}
-	if (
-		req.query.createdAt["gte"] &&
-		req.query.regionId &&
-		userRole === userRoles.STORE_OWNER
-	) {
-		storeName = req.user.storeName;
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(4, 1);
-		worksheet.spliceColumns(10, 3);
-		totalPrice5();
-	}
-	if (
-		!req.query.regionId &&
-		!req.query.createdAt &&
-		userRole === userRoles.COURIER
-	) {
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(13, 2);
-		worksheet.spliceColumns(14, 3);
-		totalPrice6();
-	}
-	if (
-		req.query.createdAt["eq"] &&
-		!req.query.regionId &&
-		userRole === userRoles.COURIER
-	) {
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(13, 6);
-		totalPrice6();
-	}
-	if (
-		req.query.createdAt["gte"] &&
-		!req.query.regionId &&
-		userRole === userRoles.COURIER
-	) {
-		worksheet.spliceColumns(10, 1);
-		worksheet.spliceColumns(13, 2);
-		worksheet.spliceColumns(14, 3);
-		totalPrice6();
-	}
-	if (
-		!req.query.createdAt &&
-		req.query.regionId &&
-		userRole === userRoles.COURIER
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(12, 3);
-		worksheet.spliceColumns(13, 3);
-		totalPrice7();
-	}
-	if (
-		req.query.createdAt["eq"] &&
-		req.query.regionId &&
-		userRole === userRoles.COURIER
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(12, 7);
-		totalPrice7();
-	}
-	if (
-		req.query.createdAt["gte"] &&
-		req.query.regionId &&
-		userRole === userRoles.COURIER
-	) {
-		worksheet.spliceColumns(3, 1);
-		worksheet.spliceColumns(12, 3);
-		worksheet.spliceColumns(13, 3);
-		totalPrice7();
+	else {
+		if (
+			(req.query.regionId &&
+			!req.query.storeOwnerId &&
+			!req.query.createdAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) || 
+			(req.query.createdAt["gte"] &&
+			!req.query.regionId &&
+			!req.query.storeOwnerId &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN))
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			req.query.storeOwnerId &&
+			!req.query.regionId &&
+			!req.query.createdAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			req.query.createdAt["eq"] &&
+			!req.query.regionId &&
+			!req.query.storeOwnerId &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(16, 4);
+			totalPrice1();
+		}
+		if (
+			req.query.regionId &&
+			req.query.storeOwnerId &&
+			!req.query.createdAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(15, 3);
+			totalPrice3();
+		}
+		if (
+			req.query.regionId &&
+			!req.query.storeOwnerId &&
+			req.query.createdAt["eq"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(15, 4);
+			totalPrice2();
+		}
+		if (
+			req.query.regionId &&
+			!req.query.storeOwnerId &&
+			req.query.createdAt["gte"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			!req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.createdAt["eq"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(15, 4);
+			totalPrice2();
+		}
+		if (
+			!req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.createdAt["gte"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(16, 3);
+			totalPrice2();
+		}
+		if (
+			req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.createdAt["eq"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(14, 4);
+			totalPrice3();
+		}
+		if (
+			req.query.regionId &&
+			req.query.storeOwnerId &&
+			req.query.createdAt["gte"] &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(15, 3);
+			totalPrice3();
+		}
+		if (
+			!req.query.regionId &&
+			!req.query.storeOwnerId &&
+			!req.query.createdAt &&
+			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)
+		) {
+			worksheet.spliceColumns(17, 3);
+			totalPrice1();
+		}
+		if (
+			!req.query.regionId &&
+			!req.query.createdAt &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(11, 3);
+			totalPrice4();
+		}
+		if (
+			req.query.createdAt["eq"] &&
+			!req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(11, 3);
+			worksheet.spliceColumns(12, 1);
+			totalPrice4();
+		}
+		if (
+			req.query.createdAt["gte"] &&
+			!req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(5, 1);
+			worksheet.spliceColumns(11, 3);
+			totalPrice4();
+		}
+		if (
+			!req.query.createdAt &&
+			req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(10, 3);
+			totalPrice5();
+		}
+		if (
+			req.query.createdAt["eq"] &&
+			req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(10, 3);
+			worksheet.spliceColumns(11, 1);
+			totalPrice5();
+		}
+		if (
+			req.query.createdAt["gte"] &&
+			req.query.regionId &&
+			userRole === userRoles.STORE_OWNER
+		) {
+			storeName = req.user.storeName;
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(4, 1);
+			worksheet.spliceColumns(10, 3);
+			totalPrice5();
+		}
+		if (
+			!req.query.regionId &&
+			!req.query.createdAt &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(10, 1);
+			worksheet.spliceColumns(13, 2);
+			worksheet.spliceColumns(14, 3);
+			totalPrice6();
+		}
+		if (
+			req.query.createdAt["eq"] &&
+			!req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(10, 1);
+			worksheet.spliceColumns(13, 6);
+			totalPrice6();
+		}
+		if (
+			req.query.createdAt["gte"] &&
+			!req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(10, 1);
+			worksheet.spliceColumns(13, 2);
+			worksheet.spliceColumns(14, 3);
+			totalPrice6();
+		}
+		if (
+			!req.query.createdAt &&
+			req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(12, 3);
+			worksheet.spliceColumns(13, 3);
+			totalPrice7();
+		}
+		if (
+			req.query.createdAt["eq"] &&
+			req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(12, 7);
+			totalPrice7();
+		}
+		if (
+			req.query.createdAt["gte"] &&
+			req.query.regionId &&
+			userRole === userRoles.COURIER
+		) {
+			worksheet.spliceColumns(3, 1);
+			worksheet.spliceColumns(12, 3);
+			worksheet.spliceColumns(13, 3);
+			totalPrice7();
+		}
 	}
 	worksheet.getCell(`B2`).value = `${orderDate}`;
 	worksheet.getCell(`D2`).value = `${regionName}`;
