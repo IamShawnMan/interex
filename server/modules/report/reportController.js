@@ -42,12 +42,11 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	];
 	const queryBuilder = new QueryBuilder(req.query);
 	queryBuilder.filter();
-	console.log(req.query);
 	let downloadOrders = await Order.findAndCountAll(queryBuilder.queryOptions);
 	let regionName = "Barcha viloyatlar";
 	let storeName = "Barcha firmalar";
 	let orderDate = "";
-	if(req.query.orderStatus === "SOLD" || req.query.orderStatus === "REJECTED") {
+	if((req.query?.orderStatus === "SOLD" || req.query?.orderStatus === "REJECTED") && req.query.updatedAt) {
 		req.query?.updatedAt["eq"]
 		? (orderDate = new Date(req.query.updatedAt["eq"])
 				.toLocaleString()
@@ -61,7 +60,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 				.split(",")[0]}`)
 		: "";
 	}
-	else {
+	else if(req.query.createdAt) {
 		req.query?.createdAt["eq"]
 		? (orderDate = new Date(req.query.createdAt["eq"])
 				.toLocaleString()
@@ -429,20 +428,22 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.mergeCells(`F${endRow}:G${endRow}`);
 	};
 	if(req.query.orderStatus === "SOLD"  || req.query.orderStatus === "REJECTED") {
+		console.log(req.query);
 		if (
 			(req.query.regionId &&
 			!req.query.storeOwnerId &&
 			!req.query.updatedAt &&
 			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) || 
-			(req.query.updatedAt["gte"] &&
-			!req.query.regionId &&
-			!req.query.storeOwnerId &&
-			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN))
-		) {
-			worksheet.spliceColumns(3, 1);
-			worksheet.spliceColumns(16, 3);
-			totalPrice2();
-		}
+			(req.query.updatedAt)) {
+				if(req.query.updatedAt["gte"] &&
+				!req.query.regionId &&
+				!req.query.storeOwnerId &&
+				(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) {
+					worksheet.spliceColumns(3, 1);
+					worksheet.spliceColumns(16, 3);
+					totalPrice2();
+				}
+			}
 		if (
 			req.query.storeOwnerId &&
 			!req.query.regionId &&
@@ -453,7 +454,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(16, 3);
 			totalPrice2();
 		}
-		if (
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["eq"] &&
 			!req.query.regionId &&
 			!req.query.storeOwnerId &&
@@ -461,7 +463,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		) {
 			worksheet.spliceColumns(16, 4);
 			totalPrice1();
-		}
+		}}
 		if (
 			req.query.regionId &&
 			req.query.storeOwnerId &&
@@ -473,7 +475,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(15, 3);
 			totalPrice3();
 		}
-		if (
+		if(req.query.updatedAt) {
+			if (
 			req.query.regionId &&
 			!req.query.storeOwnerId &&
 			req.query.updatedAt["eq"] &&
@@ -482,8 +485,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(3, 1);
 			worksheet.spliceColumns(15, 4);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			req.query.regionId &&
 			!req.query.storeOwnerId &&
 			req.query.updatedAt["gte"] &&
@@ -492,8 +496,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(3, 1);
 			worksheet.spliceColumns(16, 3);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			!req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.updatedAt["eq"] &&
@@ -502,8 +507,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(5, 1);
 			worksheet.spliceColumns(15, 4);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			!req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.updatedAt["gte"] &&
@@ -512,8 +518,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(5, 1);
 			worksheet.spliceColumns(16, 3);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.updatedAt["eq"] &&
@@ -523,8 +530,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(4, 1);
 			worksheet.spliceColumns(14, 4);
 			totalPrice3();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.updatedAt["gte"] &&
@@ -534,7 +542,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(4, 1);
 			worksheet.spliceColumns(15, 3);
 			totalPrice3();
-		}
+		}}
 		if (
 			!req.query.regionId &&
 			!req.query.storeOwnerId &&
@@ -554,7 +562,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(11, 3);
 			totalPrice4();
 		}
-		if (
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["eq"] &&
 			!req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -564,8 +573,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(11, 3);
 			worksheet.spliceColumns(12, 1);
 			totalPrice4();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["gte"] &&
 			!req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -574,7 +584,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(5, 1);
 			worksheet.spliceColumns(11, 3);
 			totalPrice4();
-		}
+		}}
 		if (
 			!req.query.updatedAt &&
 			req.query.regionId &&
@@ -586,7 +596,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(10, 3);
 			totalPrice5();
 		}
-		if (
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["eq"] &&
 			req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -597,8 +608,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(10, 3);
 			worksheet.spliceColumns(11, 1);
 			totalPrice5();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["gte"] &&
 			req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -608,7 +620,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(4, 1);
 			worksheet.spliceColumns(10, 3);
 			totalPrice5();
-		}
+		}}
 		if (
 			!req.query.regionId &&
 			!req.query.updatedAt &&
@@ -619,7 +631,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(14, 3);
 			totalPrice6();
 		}
-		if (
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["eq"] &&
 			!req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -627,8 +640,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(10, 1);
 			worksheet.spliceColumns(13, 6);
 			totalPrice6();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["gte"] &&
 			!req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -637,7 +651,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(13, 2);
 			worksheet.spliceColumns(14, 3);
 			totalPrice6();
-		}
+		}}
 		if (
 			!req.query.updatedAt &&
 			req.query.regionId &&
@@ -648,7 +662,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(13, 3);
 			totalPrice7();
 		}
-		if (
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["eq"] &&
 			req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -656,8 +671,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(3, 1);
 			worksheet.spliceColumns(12, 7);
 			totalPrice7();
-		}
-		if (
+		}}
+		if(req.query.updatedAt) {
+			if (
 			req.query.updatedAt["gte"] &&
 			req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -666,23 +682,24 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(12, 3);
 			worksheet.spliceColumns(13, 3);
 			totalPrice7();
-		}
+		}}
 	}
-	else {
+	else if(req.query.orderStatus !== "SOLD"  || req.query.orderStatus !== "REJECTED") {
 		if (
 			(req.query.regionId &&
 			!req.query.storeOwnerId &&
 			!req.query.createdAt &&
 			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) || 
-			(req.query.createdAt["gte"] &&
-			!req.query.regionId &&
-			!req.query.storeOwnerId &&
-			(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN))
-		) {
-			worksheet.spliceColumns(3, 1);
-			worksheet.spliceColumns(16, 3);
-			totalPrice2();
-		}
+			(req.query.createdAt)) {
+				if(req.query.createdAt["gte"] &&
+				!req.query.regionId &&
+				!req.query.storeOwnerId &&
+				(userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN)) {
+					worksheet.spliceColumns(3, 1);
+				worksheet.spliceColumns(16, 3);
+				totalPrice2();
+				}
+			}
 		if (
 			req.query.storeOwnerId &&
 			!req.query.regionId &&
@@ -693,7 +710,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(16, 3);
 			totalPrice2();
 		}
-		if (
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["eq"] &&
 			!req.query.regionId &&
 			!req.query.storeOwnerId &&
@@ -701,7 +719,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		) {
 			worksheet.spliceColumns(16, 4);
 			totalPrice1();
-		}
+		}}
 		if (
 			req.query.regionId &&
 			req.query.storeOwnerId &&
@@ -794,7 +812,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(11, 3);
 			totalPrice4();
 		}
-		if (
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["eq"] &&
 			!req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -804,8 +823,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(11, 3);
 			worksheet.spliceColumns(12, 1);
 			totalPrice4();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["gte"] &&
 			!req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -814,7 +834,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(5, 1);
 			worksheet.spliceColumns(11, 3);
 			totalPrice4();
-		}
+		}}
 		if (
 			!req.query.createdAt &&
 			req.query.regionId &&
@@ -826,7 +846,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(10, 3);
 			totalPrice5();
 		}
-		if (
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["eq"] &&
 			req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -837,8 +858,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(10, 3);
 			worksheet.spliceColumns(11, 1);
 			totalPrice5();
-		}
-		if (
+		}}
+		if(req.query.createdAt){
+			if (
 			req.query.createdAt["gte"] &&
 			req.query.regionId &&
 			userRole === userRoles.STORE_OWNER
@@ -848,7 +870,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(4, 1);
 			worksheet.spliceColumns(10, 3);
 			totalPrice5();
-		}
+		}}
 		if (
 			!req.query.regionId &&
 			!req.query.createdAt &&
@@ -859,7 +881,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(14, 3);
 			totalPrice6();
 		}
-		if (
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["eq"] &&
 			!req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -867,8 +890,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(10, 1);
 			worksheet.spliceColumns(13, 6);
 			totalPrice6();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["gte"] &&
 			!req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -877,7 +901,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(13, 2);
 			worksheet.spliceColumns(14, 3);
 			totalPrice6();
-		}
+		}}
 		if (
 			!req.query.createdAt &&
 			req.query.regionId &&
@@ -888,7 +912,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(13, 3);
 			totalPrice7();
 		}
-		if (
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["eq"] &&
 			req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -896,8 +921,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(3, 1);
 			worksheet.spliceColumns(12, 7);
 			totalPrice7();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			req.query.createdAt["gte"] &&
 			req.query.regionId &&
 			userRole === userRoles.COURIER
@@ -906,7 +932,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(12, 3);
 			worksheet.spliceColumns(13, 3);
 			totalPrice7();
-		}
+		}}
 	}
 	worksheet.getCell(`B2`).value = `${orderDate}`;
 	worksheet.getCell(`D2`).value = `${regionName}`;
