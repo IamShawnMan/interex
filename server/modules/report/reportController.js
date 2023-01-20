@@ -428,7 +428,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		worksheet.mergeCells(`F${endRow}:G${endRow}`);
 	};
 	if(req.query.orderStatus === "SOLD"  || req.query.orderStatus === "REJECTED") {
-		console.log(req.query);
 		if (
 			(req.query.regionId &&
 			!req.query.storeOwnerId &&
