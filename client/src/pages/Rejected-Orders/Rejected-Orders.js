@@ -19,6 +19,7 @@ function RejectedOrders() {
   const [value, setValue] = useState([]);
   const location = useLocation();
   const { user } = useContext(AppContext);
+  console.log("REJECTED ORDERS");
 
   const url = location.pathname;
   useEffect(() => {
@@ -110,13 +111,14 @@ function RejectedOrders() {
     } catch (error) {}
   };
   const updatePostAndOrdersStatusHandler = async () => {
+    console.log("updatePostAndOrdersStatusHandler");
     try {
       const res = await http({
         url: "/postback/new/receiverejectedpost",
         data: { ordersArr: ordersIdArr, postBackId: id },
         method: "PUT",
       });
-      navigate("/orders");
+      navigate("/rejected/posts");
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }

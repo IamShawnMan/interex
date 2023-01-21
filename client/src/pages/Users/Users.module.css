@@ -1,0 +1,33 @@
+.button{
+    border: none;
+    border-bottom: 3px solid gray;
+    cursor: pointer;
+    background-color: inherit;
+    width: 15%;
+    color:gray;
+    padding: 5px;
+}
+.buttonActive{
+    border-bottom: 3px solid #7D41ED;
+    color:black;
+    font-weight: bold;
+
+}
+.buttonDiv{
+    margin-top: 2rem;
+
+}
+.addUser{
+    width: 30%;
+}
+@media (max-width: 756px) {
+    .button{
+        width: 25%;
+    }
+}
+@media (max-width: 478px) {
+    .button{
+        width: 50%;
+        
+    }
+}

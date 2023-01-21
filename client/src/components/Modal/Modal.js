@@ -1,28 +1,24 @@
-import ReactDOM from "react-dom";
-import styles from "./Modal.module.css";
-const Backdrop = (props) => {
-  return <div onClick={props.onClose} className={styles.backdrop}></div>;
-};
-
-const Overlay = (props) => {
-  return <div className={styles.modal}>{props.children}</div>;
-};
-
-const portalElement = document.getElementById("overlay");
-
-function Modal(props) {
+import { Modal as AntModal } from "antd";
+import style from "../../pages/Users/UserMutation.module.css"
+import { ReactComponent as Close } from "../../assets/icons/close.svg";
+const Modal = ({children,onClose}) => {
+  const setting = {
+    visible: true,
+    centered: true,
+    closable: false,
+    footer: null,
+    mask: true,
+  };
   return (
-    <>
-      {ReactDOM.createPortal(
-        <Backdrop onClose={props.onClose}></Backdrop>,
-        portalElement
-      )}
-      {ReactDOM.createPortal(
-        <Overlay>{props.children}</Overlay>,
-        portalElement
-      )}
-    </>
+    <section>
+      <AntModal {...setting}>
+      <section className={style.container}>
+      <Close className={style.close} onClick={() =>onClose()} />
+        {children}
+        </section>
+      </AntModal>
+    </section>
   );
-}
+};
 
 export default Modal;

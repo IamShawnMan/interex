@@ -19,7 +19,6 @@ const AdminRejectedModal = ({ id, filter, onClose }) => {
         }
       };
   return (
-    <Modal onClose={onClose}>
 
       <div style={{ padding: "20px"}}>
        <h2> Mahsulotni bekor qilish</h2>
@@ -42,7 +41,6 @@ const AdminRejectedModal = ({ id, filter, onClose }) => {
         </Button>
             </div>
       </div>
-    </Modal>
   );
 };
 

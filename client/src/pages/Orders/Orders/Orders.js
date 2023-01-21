@@ -23,6 +23,7 @@ import PostSendCourier from "../../Posts/PostSendCourier";
 import Photo from "./photo.png";
 import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
 import AdminRejectedModal from "../AdminRejectedModal";
+import Modal from "../../../components/Modal/Modal";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -789,19 +790,19 @@ function Orders() {
         <p>Malumotlar yoq</p>
       )}
       {info && typeof info !== "object" && (
-        <OrderInfo id={info} onClose={closeHandler} />
+      <Modal children={  <OrderInfo id={info} onClose={closeHandler} />} onClose={closeHandler}/>
       )}
       {info && typeof info === "object" && (
-        <PostSendCourier id={info} url={url} onClose={closeHandler} />
+       <Modal children={<PostSendCourier id={info} url={url} onClose={closeHandler} />} onClose={closeHandler}/> 
       )}
       {info2 && (
-        <AdminRejectedModal
+     <Modal children={ <AdminRejectedModal
           id={info2}
           filter={filterFn}
           onClose={() => {
             setInfo2(false);
           }}
-        />
+        />} onClose={() => setInfo2(false)}/>  
       )}
       <div style={{ display: "flex", gap: 1 }}>
         {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
