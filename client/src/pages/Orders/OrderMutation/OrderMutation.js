@@ -93,6 +93,19 @@ filterFn()
   useEffect(() => {
     isUpdate && updateData && append({ ...updateData });
   }, [updateData]);
+  const reload=()=>{
+    filterFn()
+    reset({})
+     append({
+        recipient: "",
+        note: "",
+        recipientPhoneNumber: "+998",
+        regionId: "",
+        districtId: "",
+        orderItems: [
+          {productName: '', quantity: '', price: ''}],
+      });
+  }
   const formSubmit = async (data,e) => {
     try {
       const res = await http({
@@ -103,7 +116,7 @@ filterFn()
       setInfo2(null)
       setIsTrue(false)
       toast.success(res.data.message);
-     btn?window.location.reload(): navigate("/orders/myorders");
+     btn?reload(): navigate("/orders/myorders");
 
     } catch (error) {
       console.log(error);

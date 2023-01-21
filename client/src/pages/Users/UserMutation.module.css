@@ -1,0 +1,57 @@
+.container {
+  padding: 10px 0;
+  position: relative;
+  text-align: center;
+}
+.close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+h6 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 40px;
+}
+.selectInput {
+  color: #000;
+  margin: 20px 0 35px;
+  font-family: "Montserrat";
+}
+
+.input {
+  border-radius: 15px;
+  outline: none;
+  font-size: 10px;
+  margin: 15px 0;
+  font-family: "Montserrat" !important;
+}
+.btn {
+  background-color: #00e787;
+  width: 440px;
+  font-size: 18px;
+  font-family: "Montserrat";
+  border-radius: 15px;
+  padding: 17px 0;
+  outline: none;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.5s;
+}
+.btnDis {
+  background-color: #00e78722;
+  width: 440px;
+  font-size: 18px;
+  font-family: "Montserrat";
+  border-radius: 15px;
+  padding: 17px 0;
+  outline: none;
+  color: #242424;
+  border: none;
+  cursor: not-allowed;
+  margin-top: 15px;
+  transition: 0.5s;
+}

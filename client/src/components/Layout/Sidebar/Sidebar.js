@@ -8,6 +8,13 @@ import SettingIcon from "../../../assets/icons/SettingIcon";
 import Recruitment from "../../../assets/icons/Recruitment";
 import DashboardIcon from "../../../assets/icons/DashboardIcon";
 import XButtonIcon from "../../../assets/icons/XButtonIcon";
+import LogoutSVG from "../../../assets/icons/Logout";
+import HomeSVG from "../../../assets/icons/Home";
+import UsersSVG from "../../../assets/icons/Users";
+import OrdersSVG from "../../../assets/icons/Orders";
+import HelpSVG from "../../../assets/icons/Help";
+import PackageSVG from "../../../assets/icons/Package";
+import PostSVG from "../../../assets/icons/Post";
 
 function Sidebar(props) {
   const open = props.hasActive;
@@ -47,15 +54,34 @@ function Sidebar(props) {
             }`}
           >
             ASOSIY MENU
-          </p>
+          </p>{" "}
+          <Link
+            to={"/"}
+            className={`${styles.sidebarLink} ${
+              open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+            } ${url === "/" && styles.active}`}
+          >
+            <HomeSVG
+              classname={`${styles.sidebarLinkSvg} ${
+                url === "/" && styles.active
+              }`}
+            />
+            <p className={`h6  ${!open ? styles.linkP_hidden : styles.linkP}`}>
+              Bosh Sahifa
+            </p>
+          </Link>
           {(user.userRole === "SUPER_ADMIN" || user.userRole === "ADMIN") && (
             <Link
               to={"/users"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              } ${url==="/users"&&styles.active}`}
+              } ${url === "/users" && styles.active}`}
             >
-              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/users"&&styles.active}`} />
+              <UsersSVG
+                classname={`${styles.sidebarLinkSvg} ${
+                  url === "/users" && styles.active
+                }`}
+              />
               {
                 <p
                   className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
@@ -75,9 +101,21 @@ function Sidebar(props) {
             }
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            } ${(url==="/orders/delivered"||url==="/orders/myorders"||url==="/orders")&&styles.active}`}
+            } ${
+              (url === "/orders/delivered" ||
+                url === "/orders/myorders" ||
+                url === "/orders") &&
+              styles.active
+            }`}
           >
-            <DashboardIcon classname={`${styles.sidebarLinkSvg} ${(url==="/orders/delivered"||url==="/orders/myorders"||url==="/orders")&&styles.active}`} />
+            <OrdersSVG
+              classname={`${styles.sidebarLinkSvg} ${
+                (url === "/orders/delivered" ||
+                  url === "/orders/myorders" ||
+                  url === "/orders") &&
+                styles.active
+              }`}
+            />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
               Buyurtmalar
             </p>
@@ -87,62 +125,89 @@ function Sidebar(props) {
               to={"/packageback"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              } ${url==="/packageback"&&styles.active}`}
+              } ${url === "/packageback" && styles.active}`}
             >
-              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/packageback"&&styles.active}`} />
-              <p className={`h6  ${!open ? styles.linkP_hidden : styles.linkP}`}>
+              <PackageSVG
+                classname={`${styles.sidebarLinkSvg} ${
+                  url === "/packageback" && styles.active
+                }`}
+              />
+              <p
+                className={`h6  ${!open ? styles.linkP_hidden : styles.linkP}`}
+              >
                 Paketlar
               </p>
             </Link>
           )}
           {user.userRole === "COURIER" && (
-          <>
-            <Link
-              to={"/new-post"}
-              className={`${styles.sidebarLink} ${
-                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              } ${url==="/new-post"&&styles.active}`}
-            >
-              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/new-post"&&styles.active}`} />
-              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-                Pochta
-              </p>
-            </Link>
+            <>
+              <Link
+                to={"/new-post"}
+                className={`${styles.sidebarLink} ${
+                  open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+                } ${url === "/new-post" && styles.active}`}
+              >
+                <DashboardIcon
+                  classname={`${styles.sidebarLinkSvg} ${
+                    url === "/new-post" && styles.active
+                  }`}
+                />
+                <p
+                  className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
+                >
+                  Pochta
+                </p>
+              </Link>
 
-            <Link
-              to="/postback/rejected/orders"
-              className={`${styles.sidebarLink} ${
-                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              } ${url==="/postback/rejected/orders"&&styles.active}`}
-            >
-              <UsersIcon classname={`${styles.sidebarLinkSvg} ${url==="/postback/rejected/orders"&&styles.active}`} />
-              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-                Pochta Qaytarish
-              </p>
-            </Link>
+              <Link
+                to="/postback/rejected/orders"
+                className={`${styles.sidebarLink} ${
+                  open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+                } ${url === "/postback/rejected/orders" && styles.active}`}
+              >
+                <DashboardIcon
+                  classname={`${styles.sidebarLinkSvg} ${
+                    url === "/postback/rejected/orders" && styles.active
+                  }`}
+                />
+                <p
+                  className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
+                >
+                  Pochta Qaytarish
+                </p>
+              </Link>
 
-            <Link
-              to="/postback"
-              className={`${styles.sidebarLink} ${
-                open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              } ${url==="/postback"&&styles.active}`}
-            >
-              <UsersIcon classname={`${styles.sidebarLinkSvg} ${url==="/postback"&&styles.active}`} />
-              <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
-                Mening pochtalarim
-              </p>
-            </Link>
-          </>
-        )}
-
+              <Link
+                to="/postback"
+                className={`${styles.sidebarLink} ${
+                  open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
+                } ${url === "/postback" && styles.active}`}
+              >
+                <DashboardIcon
+                  classname={`${styles.sidebarLinkSvg} ${
+                    url === "/postback" && styles.active
+                  }`}
+                />
+                <p
+                  className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
+                >
+                  Mening pochtalarim
+                </p>
+              </Link>
+            </>
+          )}
           {user.userRole === "ADMIN" && (
             <Link
               to={"/packages"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              } ${url==="/packages"&&styles.active}`}
+              } ${url === "/packages" && styles.active}`}
             >
-              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/packages"&&styles.active}`} />
+              <PackageSVG
+                classname={`${styles.sidebarLinkSvg} ${
+                  url === "/packages" && styles.active
+                }`}
+              />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Paketlar
               </p>
@@ -153,15 +218,18 @@ function Sidebar(props) {
               to={"/post/create"}
               className={`${styles.sidebarLink} ${
                 open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-              } ${url==="/post/create"&&styles.active}`}
+              } ${url === "/post/create" && styles.active}`}
             >
-              <DashboardIcon classname={`${styles.sidebarLinkSvg} ${url==="/post/create"&&styles.active}`} />
+              <DashboardIcon
+                classname={`${styles.sidebarLinkSvg} ${
+                  url === "/post/create" && styles.active
+                }`}
+              />
               <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
                 Pochtalar
               </p>
             </Link>
           )}
-          
         </div>
         <div className={`${styles.other} ${styles.linksContainer}`}>
           <p
@@ -176,18 +244,22 @@ function Sidebar(props) {
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
           >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
+            <HelpSVG classname={styles.sidebarLinkSvg} />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
               Yordam
             </p>
           </Link>
           <Link
-          to="/settings"
+            to="/settings"
             className={`${styles.sidebarLink} ${
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
-            } ${url==="/settings"&&styles.active}  `}
+            } ${url === "/settings" && styles.active}  `}
           >
-            <SettingIcon classname={`${styles.sidebarLinkSvg} ${url==="/settings"&&styles.active}`} />
+            <SettingIcon
+              classname={`${styles.sidebarLinkSvg} ${
+                url === "/settings" && styles.active
+              }`}
+            />
             <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
               Sozlamalar
             </p>
@@ -198,8 +270,11 @@ function Sidebar(props) {
               open ? styles.sidebarLinkOpen : styles.sidebarLinkClouse
             }`}
           >
-            <UsersIcon classname={styles.sidebarLinkSvg} />
-            <p className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}>
+            <LogoutSVG classname={styles.sidebarLinkSvg} />
+            <p
+              style={{ color: "red" }}
+              className={`h6 ${!open ? styles.linkP_hidden : styles.linkP}`}
+            >
               Chiqish
             </p>
           </Link>

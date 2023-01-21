@@ -2,9 +2,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import style from "./UserMutation.module.css";
 import http from "../../utils/axios-instance";
 import { toast } from "react-toastify";
-import Layout from "../../components/Layout/Layout";
 import Input from "../../components/Form/FormComponents/Input/Input";
 import Button from "../../components/Form/FormComponents/Button/Button";
 import Select from "../../components/Form/FormComponents/Select/Select";
@@ -18,14 +18,14 @@ import {
 	defaultSchema,
 } from "../../utils/yupSchemas";
 
-const UserMutation = () => {
+const UserMutation = ({modal}) => {
 	const navigate = useNavigate();
 	const [role, setRole] = useState(null);
 	const [roles, setRoles] = useState(null);
 	const [regions, setRegions] = useState(null);
 	const [tarifs, setTarifs] = useState(null);
-	const { id } = useParams();
-	const isUpdate = id !== "new";
+	// const { id } = useParams();
+	const isUpdate = modal.id !== "new";
 	const admin = role === "ADMIN";
 	const storeOwner = role === "STORE_OWNER";
 	const courier = role === "COURIER";
@@ -88,7 +88,7 @@ const UserMutation = () => {
   };
   const getById = async () => {
     const res = await http({
-      url: `/users/${id}`,
+      url: `/users/${modal.id}`,
     });
     const user = res.data.data.userById;
     if (user.userRole === "COURIER") {
@@ -101,20 +101,23 @@ const UserMutation = () => {
   const formSubmit = async (data) => {
     try {
       const res = await http({
-        url: isUpdate ? `/users/${id}` : "/users",
+        url: isUpdate ? `/users/${modal.id}` : "/users",
         method: isUpdate ? "PUT" : "POST",
         data,
       });
       toast.success(res.data.message);
-      navigate("/users");
+	  modal.filter()
+	  modal.onClose()
+    //   navigate("/users");
     } catch (error) {
       return error.response.data.message.map((error) => toast.error(error));
     }
   };
   return (
     <>
-      <Layout>
-        <form onSubmit={handleSubmit(formSubmit)} className="form">
+	
+      <h6>{isUpdate ?"Foydalanuvchi Ma'lumotlarini Yangilash":"Foydalanuvchi Qoshish"}</h6>
+        <form style={{padding:"2rem"}} onSubmit={handleSubmit(formSubmit)} className="form">
           <Select
             register={register.bind(null, "userRole")}
             data={roles}
@@ -209,7 +212,6 @@ const UserMutation = () => {
 						{!isUpdate ? "Akkaunt yaratish" : "Akkountni o'zgartirish"}
 					</Button>
 				</form>
-			</Layout>
 		</>
 	);
 };
