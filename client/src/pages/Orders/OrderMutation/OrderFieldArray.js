@@ -106,9 +106,9 @@ const OrderFieldArray = ({
 
         onClick={() => remove(index)}
       >
-        <Button btnStyle={{width:"6rem",backgroundColor:"rgba(255, 0, 0, 0.575)"}} type="button" name="icon" iconName="trash">
+        {/* <Button btnStyle={{width:"6rem",backgroundColor:"rgba(255, 0, 0, 0.575)"}} type="button" name="icon" iconName="trash">
           O'chirish
-        </Button>
+        </Button> */}
       </div>
     </li>
   );
