@@ -730,7 +730,8 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(15, 3);
 			totalPrice3();
 		}
-		if (
+		if(req.query.createdAt) {
+			if (
 			req.query.regionId &&
 			!req.query.storeOwnerId &&
 			req.query.createdAt["eq"] &&
@@ -739,8 +740,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(3, 1);
 			worksheet.spliceColumns(15, 4);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			req.query.regionId &&
 			!req.query.storeOwnerId &&
 			req.query.createdAt["gte"] &&
@@ -749,8 +751,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(3, 1);
 			worksheet.spliceColumns(16, 3);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			!req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.createdAt["eq"] &&
@@ -759,8 +762,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(5, 1);
 			worksheet.spliceColumns(15, 4);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			!req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.createdAt["gte"] &&
@@ -769,8 +773,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(5, 1);
 			worksheet.spliceColumns(16, 3);
 			totalPrice2();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.createdAt["eq"] &&
@@ -780,8 +785,9 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(4, 1);
 			worksheet.spliceColumns(14, 4);
 			totalPrice3();
-		}
-		if (
+		}}
+		if(req.query.createdAt) {
+			if (
 			req.query.regionId &&
 			req.query.storeOwnerId &&
 			req.query.createdAt["gte"] &&
@@ -791,7 +797,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 			worksheet.spliceColumns(4, 1);
 			worksheet.spliceColumns(15, 3);
 			totalPrice3();
-		}
+		}}
 		if (
 			!req.query.regionId &&
 			!req.query.storeOwnerId &&
