@@ -31,14 +31,6 @@ function Layout(props) {
         <div className={styles.layoutBox}>
           <div className={styles.pathRoad}>
             <h1 className={`h2 ${styles.pageName}`}>{props.pageName}</h1>
-            <p
-              onClick={() => {
-                navigate(-1);
-              }}
-              className={styles.goBack}
-            >
-              Orqaga qaytish
-            </p>
           </div>
           <div className={styles.contents}>{props.children}</div>
         </div>

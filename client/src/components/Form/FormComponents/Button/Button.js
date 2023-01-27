@@ -16,6 +16,7 @@ function Button({
   btnStyle,
   onClick,
   onKeyDown,
+  btnClass,
   style,
 }) {
   // NAME 1-"btn" 2-"icon" 3-"iconText" 4-"dots"
@@ -60,7 +61,7 @@ function Button({
       disabled={disabled}
       className={`${styles[buttonSize]} ${styles[name]} ${
         name !== "dots" ? styles.btn : styles.dots
-      }`}
+      } ${btnClass}`}
       style={btnStyle}
       type={type || "submit"}
       onClick={customFunction}

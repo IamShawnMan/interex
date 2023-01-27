@@ -10,7 +10,7 @@
 .formControl {
   position: relative;
   width: 30%;
-  margin: 2rem 3rem 0 3rem;
+  margin: 1rem 1.5rem 0 3rem;
 }
 
 .searchSvg {
@@ -53,6 +53,26 @@
   background-color: #fff;
   box-shadow: 0 0.3rem 0.5rem grey;
   display: none;
+}
+.backIcon {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  gap: 8px;
+
+  /* 7 */
+
+  background: #f6f8fa;
+  border-radius: 4px;
+  border: none;
+  /* Inside auto layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
 }
 
 .userMenuModalItem {
