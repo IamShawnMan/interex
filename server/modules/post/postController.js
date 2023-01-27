@@ -142,13 +142,25 @@ exports.existRegions = catchAsync(
       }
     });
 
-    const regionsWeHave = await Region.findAll({
+    let regionsWeHave = await Region.findAll({
       where: {
         id: {
           [Op.in]: regionsArr,
         },
       },
     });
+    let arr = [];
+    regionsWeHave?.map(region =>
+      arr.push({
+        id: region.id,
+        name: region.name
+          .slice(0, region.name.indexOf(" "))
+          .toUpperCase(),
+      })
+    );
+
+    regionsWeHave = arr;
+    console.log(regionsWeHave);
 
     return res.json({
       status: "success",
