@@ -56,7 +56,9 @@ const PostSendCourier = ({ id, url, onClose }) => {
         data: {
          orderStatus: id.status,
          note: data.comment,
-         expense: data.expense||0
+         expense: data.expense||0,
+         quantity: data.quantity||0,
+         price: data.price||0
         },
       });
     } catch (error) {
@@ -99,13 +101,32 @@ const PostSendCourier = ({ id, url, onClose }) => {
 						register={register.bind(null, "comment")}
 						error={errors.comment?.message}
 					/>
-         {user.userRole==="COURIER"&&(id.status==="SOLD"||id.status==="REJECTED")&&  <Input
+         {user.userRole==="COURIER"&&(id.status==="SOLD"||id.status==="REJECTED")&& 
+         <>
+         <div style={{display: "flex",gap:"2rem"}}>
+         <Input
+						id="text"
+						type="number"
+						placeholder="Soni"
+						register={register.bind(null, "quantity")}
+						error={errors.quantity?.message}
+					/>
+          <Input
+						id="text"
+						type="number"
+						placeholder="Narxi"
+						register={register.bind(null, "price")}
+						error={errors.price?.message}
+					/>
+         </div>
+          <Input
 						id="text"
 						type="number"
 						placeholder="Ortiqcha harajat"
 						register={register.bind(null, "expense")}
 						error={errors.expense?.message}
-					/>}
+					/>
+         </>}
    {user.userRole==="COURIER"&&(id.status==="SOLD"||id.status==="PENDING"||id.status==="REJECTED")&&<ExampleComponent/>}
 
 					<Button type="submit" size="small" name="btn" className="btnLogin">
