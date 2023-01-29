@@ -153,7 +153,7 @@ const Posts = () => {
   }
 
   return (
-    <Layout pageName="Postlar" setSearch={setSearch}>
+    <Layout pageName="Pochtalar" setSearch={setSearch}>
       <div
         style={{
           width: "100%",
