@@ -27,28 +27,18 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/regions", authMiddleware, regionRouter);
 app.use("/api/v1/orders", authMiddleware, orderRoutes);
 app.use("/api/v1/packages", authMiddleware, packageRoutes);
-app.use(
-  "/api/v1/districts",
-  authMiddleware,
-  districtRouter
-);
+app.use("/api/v1/districts", authMiddleware, districtRouter);
 app.use("/api/v1/posts", authMiddleware, postsRoutes);
 app.use("/api/v1/postback", authMiddleware, postBackRouter);
-app.use(
-  "/api/v1/packageback",
-  authMiddleware,
-  packageBackRoutes
-);
+app.use("/api/v1/packageback", authMiddleware, packageBackRoutes);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/build/index.html");
+	res.sendFile(__dirname + "/build/index.html");
 });
 
 app.all("*", (req, res, next) => {
-  return next(
-    new AppError(`${req.path} yo'li mavjud emas`, 404)
-  );
+	return next(new AppError(`${req.path} yo'li mavjud emas`, 404));
 });
 
 app.use(errorController);
