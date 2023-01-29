@@ -120,13 +120,9 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 						[Op.eq]: order.recipientPhoneNumber,
 					},
 				},
+				{ storeOwnerId: { [Op.eq]: req.user.id } },
 				{
 					orderStatus: { [Op.eq]: statusOrder.STATUS_NEW },
-				},
-				{
-					storeOwnerId: {
-						[Op.eq]: storeOwnerId,
-					},
 				},
 			],
 		},
@@ -468,6 +464,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 	await orderById.save();
 	myPackage.packageTotalPrice += orderById.totalPrice;
 	await myPackage.save();
+	console.log(myPackage.packageTotalPrice);
 	res.status(203).json({
 		status: "success",
 		message: "buyurtma taxrirlandi",

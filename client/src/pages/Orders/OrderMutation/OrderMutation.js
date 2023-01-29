@@ -53,11 +53,6 @@ function OrderMutation() {
   const [info2, setInfo2] = useState(null);
   const [isTrue, setIsTrue] = useState(false);
 
-  const something=(event)=> {
-    if (event.keyCode === 13) {
-        console.log('enter')
-    }
-}
   const isUpdate = id !== "new";
   const navigate = useNavigate();
   const {
@@ -71,6 +66,21 @@ function OrderMutation() {
 useEffect(()=>{
 filterFn()
 },[])
+
+// useEffect((e) => {
+
+// keyDownHandler(e)
+// }, []);
+//   const keyDownHandler = event => {
+//     console.log('User pressed: ', event.key);
+
+//     if (event.key === 'Enter') {
+//       event.preventDefault();
+// console.log("enterrrrr");
+//       // 👇️ call submit function here
+//       handleSubmit((data,e) => formSubmit(data,e));
+//     }
+//   };
   useEffect(() => {
     getAllRegions();
     if (isUpdate && !updateData) {
@@ -93,7 +103,21 @@ filterFn()
   useEffect(() => {
     isUpdate && updateData && append({ ...updateData });
   }, [updateData]);
+  const reload=()=>{
+    filterFn()
+    reset({})
+     append({
+        recipient: "",
+        note: "",
+        recipientPhoneNumber: "+998",
+        regionId: "",
+        districtId: "",
+        orderItems: [
+          {productName: '', quantity: '', price: ''}],
+      });
+  }
   const formSubmit = async (data,e) => {
+    console.log("formSubmit");
     try {
       const res = await http({
         url: isUpdate ? `/orders/${id}` : `/orders${isTrue?`?phone=free`:""}`,
@@ -103,7 +127,7 @@ filterFn()
       setInfo2(null)
       setIsTrue(false)
       toast.success(res.data.message);
-     btn?window.location.reload(): navigate("/orders/myorders");
+     btn?reload(): navigate("/orders/myorders");
 
     } catch (error) {
       console.log(error);
@@ -326,6 +350,11 @@ filterFn()
   const closeHandler = () => {
     setInfo(false);
   };
+  const something=(event)=> {
+    if (event.keyCode === 13) {
+        console.log('enter')
+    }
+}
   const { fields, append, remove } = useFieldArray({
     control,
     name: "orders",
@@ -336,7 +365,11 @@ filterFn()
         <OrderInfo id={info} onClose={closeHandler} />
       )}
 
-      <form onSubmit={handleSubmit((data,e) => formSubmit(data,e))}>
+      <form onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSubmit((data,e) => formSubmit(data,e))
+                        }
+                    }} onSubmit={handleSubmit((data,e) => formSubmit(data,e))}>
         <ul style={{ overflowY: "avto", listStyle: "none" }}>
           {errors.orders?.type === "min" && (
             <p style={{ color: "red" }}>{errors.orders.message}</p>

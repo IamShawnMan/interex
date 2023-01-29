@@ -23,6 +23,7 @@ import PostSendCourier from "../../Posts/PostSendCourier";
 import Photo from "./photo.png";
 import { phoneNumberFormat } from "../../../utils/phoneNumberFormatter";
 import AdminRejectedModal from "../AdminRejectedModal";
+import Modal from "../../../components/Modal/Modal";
 function Orders() {
   const { user } = useContext(AppContext);
   const isAdmin = user.userRole === "ADMIN";
@@ -142,7 +143,7 @@ function Orders() {
     const dateCreatedAtLte =
       createdAtLte && new Date(createdAtLte ? createdAtLte : "").toISOString();
     http({
-      url: `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
+      url: `orders/download?page=${page}${
         size ? `&size=${search ? 100 : size}` : ""
       }${search ? `&search=${search}` : ""}${
         orderStatus ? `&orderStatus=${orderStatus}` : ""
@@ -156,20 +157,23 @@ function Orders() {
         districtId ? `&districtId=${districtId}` : ""
       }${
         dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
-          ? orderStatus === "SOLD"
+          ? orderStatus === "SOLD" || orderStatus === "REJECTED"
             ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
             : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
           : ""
       }${
         dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
-          ? `&createdAt[gte]=${dateCreatedAtGte}`
+          ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+            ? `&updatedAt[gte]=${dateCreatedAtGte}`
+            : `&createdAt[gte]=${dateCreatedAtGte}`
           : ""
       }${
         dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
-          ? `&createdAt[lte]=${dateCreatedAtLte}`
+          ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+            ? `&updatedAt[lte]=${dateCreatedAtLte}`
+            : `&createdAt[lte]=${dateCreatedAtLte}`
           : ""
-      }
-      `,
+      }`,
       method: "GET",
       responseType: "blob",
     }).then((res) => {
@@ -576,7 +580,7 @@ function Orders() {
     const dateCreatedAt = createdAt ? new Date(createdAt) : "";
     const dateCreatedAtGte = createdAtGte && new Date(createdAtGte);
     const dateCreatedAtLte = createdAtLte && new Date(createdAtLte);
-console.log("filterFn");
+    console.log("filterFn");
     try {
       let res;
       if (
@@ -584,11 +588,11 @@ console.log("filterFn");
         url === "/orders/delivered" ||
         url === "/orders/myorders"
       ) {
-        res = await http( `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
-          size ? `&size=${search ? 100 : size}`: ""
-        }${search ? `&search=${search}` : ""}${
-          orderStatus ? `&orderStatus=${orderStatus}` : ""
-        }${
+        res = await http(`${url ? url : ""}?${
+          page ? `page=${search ? 1 : page}` : ""
+        }${size ? `&size=${search ? 100 : size}` : ""}${
+          search ? `&search=${search}` : ""
+        }${orderStatus ? `&orderStatus=${orderStatus}` : ""}${
           !isStoreOwner
             ? storeOwnerId
               ? `&storeOwnerId=${storeOwnerId}`
@@ -598,20 +602,23 @@ console.log("filterFn");
           districtId ? `&districtId=${districtId}` : ""
         }${
           dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
-            ? orderStatus === "SOLD"
-              ? `&updatedAt[eq]=${dateCreatedAt.toISOString() }`
-              : `&createdAt[eq]=${dateCreatedAt.toISOString() }`
+            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+              ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
+              : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
             : ""
         }${
           dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
-            ? `&createdAt[gte]=${dateCreatedAtGte.toISOString() }`
+            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+              ? `&updatedAt[gte]=${dateCreatedAtGte.toISOString()}`
+              : `&createdAt[gte]=${dateCreatedAtGte.toISOString()}`
             : ""
         }${
           dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
-            ? `&createdAt[lte]=${dateCreatedAtLte.toISOString() }`
+            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+              ? `&updatedAt[lte]=${dateCreatedAtLte.toISOString()}`
+              : `&createdAt[lte]=${dateCreatedAtLte.toISOString()}`
             : ""
-        }
-        `);
+        }`);
       } else {
         res = await http(
           `${url ? url : ""}?${search ? `search=${search}` : ""}`
@@ -783,19 +790,19 @@ console.log("filterFn");
         <p>Malumotlar yoq</p>
       )}
       {info && typeof info !== "object" && (
-        <OrderInfo id={info} onClose={closeHandler} />
+      <Modal children={  <OrderInfo id={info} onClose={closeHandler} />} onClose={closeHandler}/>
       )}
       {info && typeof info === "object" && (
-        <PostSendCourier id={info} url={url} onClose={closeHandler} />
+       <Modal children={<PostSendCourier id={info} url={url} onClose={closeHandler} />} onClose={closeHandler}/> 
       )}
       {info2 && (
-        <AdminRejectedModal
+     <Modal children={ <AdminRejectedModal
           id={info2}
           filter={filterFn}
           onClose={() => {
             setInfo2(false);
           }}
-        />
+        />} onClose={() => setInfo2(false)}/>  
       )}
       <div style={{ display: "flex", gap: 1 }}>
         {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&

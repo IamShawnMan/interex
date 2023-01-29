@@ -163,7 +163,7 @@ function Filter({ url }) {
           type="button"
           onClick={() => setFromTo(!fromTo)}
         >
-          {fromTo ? "From To" : "Aniq Sana"}
+          {fromTo ? "Dan Gacha" : "Aniq Sana"}
         </Button>
         {!fromTo ? (
           <Input type="date" register={register.bind(null, "createdAt")}>

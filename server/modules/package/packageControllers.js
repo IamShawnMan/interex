@@ -136,6 +136,9 @@ exports.downloadWord = catchAsync(async (req, res, next) => {
 		};
 	} else {
 		whereOrderStatus = {
+			storeOwnerId: {
+				[Op.eq]: req.user.id,
+			},
 			orderStatus: {
 				[Op.eq]: statusOrder.STATUS_NEW,
 			},
@@ -342,6 +345,9 @@ exports.downloadWord = catchAsync(async (req, res, next) => {
 								new Paragraph({
 									alignment: AlignmentType.CENTER,
 									children: [
+										new TextRun({
+											text: "Firma: -",
+										}),
 										new TextRun("   "),
 										new TextRun({
 											text: `${orderArr[1].storeOwner?.storeName || null}`,
@@ -453,8 +459,8 @@ exports.downloadWord = catchAsync(async (req, res, next) => {
 										new TextRun("   "),
 										new TextRun({
 											text: `${
-												orderArr[1].note.slice(
-													orderArr[1].note.indexOf("FIRMA") + 7
+												orderArr[1].note?.slice(
+													orderArr[1].note?.indexOf("FIRMA") + 7
 												) || null
 											}`,
 											bold: true,

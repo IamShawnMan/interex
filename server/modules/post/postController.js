@@ -142,14 +142,13 @@ exports.existRegions = catchAsync(
       }
     });
 
-    const regionsWeHave = await Region.findAll({
+    let regionsWeHave = await Region.findAll({
       where: {
         id: {
           [Op.in]: regionsArr,
         },
       },
     });
-
     return res.json({
       status: "success",
       message: "regions array",

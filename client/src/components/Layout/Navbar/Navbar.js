@@ -11,7 +11,7 @@ import AppContext from "../../../context/AppContext";
 import ArrowForBtn from "../../../assets/icons/ArrowForBtn";
 import http from "../../../utils/axios-instance";
 import { toast } from "react-toastify";
-
+import {ReactComponent as BackIcon} from "../../../assets/icons/backIcon.svg";
 function Navbar(props) {
 	const { user, onReset } = useContext(AppContext);
 	const [show, setShow] = useState(false);
@@ -61,7 +61,14 @@ function Navbar(props) {
 			>
 				<ArrowForBtn />
 			</div>
-
+			<button
+			className={styles.backIcon}
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              {<BackIcon/>}
+            </button>
 			<div className={styles.formControl}>
 				<Input
 					onChange={(e) => {
@@ -73,7 +80,6 @@ function Navbar(props) {
 					<SearchIcon classname={styles.searchSvg} />
 				</div>
 			</div>
-			<div></div>
 
 			<div className={styles.userInfo}>
 				<div
