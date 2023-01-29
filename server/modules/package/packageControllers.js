@@ -145,6 +145,9 @@ exports.downloadWord = catchAsync(
       };
     } else {
       whereOrderStatus = {
+        storeOwnerId: {
+          [Op.eq]: req.user.id,
+        },
         orderStatus: {
           [Op.eq]: statusOrder.STATUS_NEW,
         },
@@ -514,8 +517,8 @@ exports.downloadWord = catchAsync(
                       new TextRun("   "),
                       new TextRun({
                         text: `${
-                          orderArr[1].note.slice(
-                            orderArr[1].note.indexOf(
+                          orderArr[1].note?.slice(
+                            orderArr[1].note?.indexOf(
                               "FIRMA"
                             ) + 7
                           ) || null
