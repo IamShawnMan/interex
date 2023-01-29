@@ -19,7 +19,17 @@ const Tracking = require("../tracking/Tracking");
 const userRoles = require("../../core/constants/userRole");
 const multer = require("multer");
 
-exports.saveVoice = catchAsync(async (req, res, next) => {});
+exports.saveVoice = catchAsync(async (req, res, next) => {
+	const storage = multer.diskStorage({
+		filename: function (req, file, cb) {
+			cb(null, file.originalname);
+		},
+		destination: function (req, file, cb) {
+			cb(null, "./uploads");
+		},
+	});
+	const upload = multer({ storage });
+});
 
 exports.getAllOrders = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
