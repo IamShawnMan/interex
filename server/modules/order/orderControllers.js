@@ -58,7 +58,9 @@ exports.getAllOrders = catchAsync(
         ...queryBuilder.queryOptions.where,
       };
     }
-    let allOrders = await Order.findAndCountAll({...queryBuilder.queryOptions});
+    let allOrders = await Order.findAndCountAll({
+      ...queryBuilder.queryOptions,
+    });
     allOrders = queryBuilder.createPagination(allOrders);
     res.json({
       status: "success",
@@ -488,6 +490,7 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
   await orderById.save();
   myPackage.packageTotalPrice += orderById.totalPrice;
   await myPackage.save();
+  console.log(myPackage.packageTotalPrice);
   res.status(203).json({
     status: "success",
     message: "buyurtma taxrirlandi",
