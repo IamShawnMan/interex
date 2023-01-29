@@ -35,7 +35,7 @@ const PostCreate = () => {
     }
   };
   return (
-    <Layout pageName="Post Yaratish">
+    <Layout pageName="Pochta Yaratish">
       {user.userRole === "ADMIN" && (
         <div
           style={{
