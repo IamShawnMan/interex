@@ -32,6 +32,14 @@ function RejectedOrders() {
       Header: "ID",
       accessor: "id",
     },
+
+    {
+      id: "region",
+      Header: "Manzil",
+      accessor: (order) => {
+        return <>{order.district.name}</>;
+      },
+    },
     {
       id: "phoneNumber",
       Header: "Telefon Raqam",
@@ -41,13 +49,6 @@ function RejectedOrders() {
             <b>{phoneNumberFormat(order?.recipientPhoneNumber)}</b>
           </a>
         );
-      },
-    },
-    {
-      id: "region",
-      Header: "Manzil",
-      accessor: (order) => {
-        return <>{order.district.name}</>;
       },
     },
     {
