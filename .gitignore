@@ -4,3 +4,4 @@ client/build
 server/.env.production
 server/static
 node_modules
+client/src/utils/axios-instance.js

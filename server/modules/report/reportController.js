@@ -1045,3 +1045,11 @@ exports.countsInRegionsAndMonths = catchAsync(async (req, res, next) => {
 		res.send({ regions, months });
 	}, 1000);
 });
+
+exports.usefulWorkRate = catchAsync(async (req, res, next) => {
+	const startDate = req.query;
+	const endDate = req.query;
+	const userId = req.user;
+	const user = await User.findByPk(userId);
+	console.log(user);
+});
