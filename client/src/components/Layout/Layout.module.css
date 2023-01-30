@@ -3,7 +3,7 @@
   overflow: hidden;
 }
 .layoutBox {
-  background-color: rgb(228, 228, 228);
+  background-color: rgb(247, 245, 245);
   flex-grow: 1;
   padding: 3.2rem 3rem 2rem 2rem;
   overflow: auto;
