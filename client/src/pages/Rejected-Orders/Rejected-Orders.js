@@ -10,6 +10,7 @@ import styles from "./Rejected-Orders.module.css";
 import { toast } from "react-toastify";
 import AppContext from "../../context/AppContext";
 import OrderInfo from "../Orders/OrderInfo/OrderInfo";
+import { phoneNumberFormat } from "../../utils/phoneNumberFormatter";
 function RejectedOrders() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -31,16 +32,23 @@ function RejectedOrders() {
       Header: "ID",
       accessor: "id",
     },
-    {
-      id: "recipient",
-      Header: "Xaridor",
-      accessor: "recipient",
-    },
+
     {
       id: "region",
       Header: "Manzil",
       accessor: (order) => {
         return <>{order.district.name}</>;
+      },
+    },
+    {
+      id: "phoneNumber",
+      Header: "Telefon Raqam",
+      accessor: (order) => {
+        return (
+          <a href={`tel:${order?.recipientPhoneNumber}`}>
+            <b>{phoneNumberFormat(order?.recipientPhoneNumber)}</b>
+          </a>
+        );
       },
     },
     {
@@ -81,7 +89,7 @@ function RejectedOrders() {
             >
               Ma'lumot
             </Button>
-            {ordersIdArr &&order.orderStatus==="REJECTED_DELIVERING"&& (
+            {ordersIdArr && order.orderStatus === "REJECTED_DELIVERING" && (
               <Input
                 disabled={postStatus && postStatus !== "NEW"}
                 type="checkbox"
@@ -128,15 +136,15 @@ function RejectedOrders() {
   };
   return (
     <Layout>
-  
       {value.length > 0 ? (
         <>
-          {info &&  (
-        <OrderInfo id={info} onClose={closeHandler} />
-      )}
+          {info && <OrderInfo id={info} onClose={closeHandler} />}
           <BasicTable columns={cols} data={value} />
           <Button
-            disabled={value[0].orderStatus==="REJECTED_NOT_DELIVERED"||value[0].orderStatus==="REJECTED_DELIVERED"}
+            disabled={
+              value[0].orderStatus === "REJECTED_NOT_DELIVERED" ||
+              value[0].orderStatus === "REJECTED_DELIVERED"
+            }
             btnStyle={{ width: "13rem" }}
             name="btn"
             type="button"
