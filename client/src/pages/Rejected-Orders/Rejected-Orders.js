@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import AppContext from "../../context/AppContext";
 import OrderInfo from "../Orders/OrderInfo/OrderInfo";
 import { phoneNumberFormat } from "../../utils/phoneNumberFormatter";
+import Modal from "../../components/Modal/Modal";
 function RejectedOrders() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -138,7 +139,12 @@ function RejectedOrders() {
     <Layout>
       {value.length > 0 ? (
         <>
-          {info && <OrderInfo id={info} onClose={closeHandler} />}
+          {info && (
+            <Modal
+              children={<OrderInfo id={info} onClose={closeHandler} />}
+              onClose={closeHandler}
+            />
+          )}
           <BasicTable columns={cols} data={value} />
           <Button
             disabled={
