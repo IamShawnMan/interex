@@ -213,7 +213,8 @@ function Orders() {
         return (
           <>
             {ordersIdArr &&
-              (url.split("/")[1] === "postback" || id) &&
+              (url.split("/")[1] === "postback" || id) &&(order.orderStatus!=="REJECTED_ACCEPTED")&&
+              //  (url.split("/")[1] === "packageback"|| !isAdmin)&&
               url !== "/posts/1/orders" && (
                 <div>
                   <Input
