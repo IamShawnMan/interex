@@ -116,7 +116,9 @@ const Posts = () => {
             </Button>
 
             {(user.userRole === "ADMIN" ||
-              user.userRole === "COURIER") && (
+              user.userRole === "COURIER") && (   user.userRole !== "COURIER"
+              ? post.postStatus === "REJECTED_NEW"
+              : post.postStatus === "NEW")&&(
               <Button
                 size="small"
                 name="btn"
