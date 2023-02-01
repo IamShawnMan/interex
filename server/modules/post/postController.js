@@ -268,7 +268,7 @@ exports.ordersBeforeSend = catchAsync(
 exports.createPostForAllOrders = catchAsync(
   async (req, res, next) => {
     const { regionId, ordersArr } = req.body;
-
+  
     let newPost = await Post.findOne({
       where: {
         regionId: {
@@ -285,7 +285,21 @@ exports.createPostForAllOrders = catchAsync(
         regionId: regionId,
       });
     }
-
+  if (ordersArr.length === 0) {
+      await Post.destroy({
+        where: {
+          id: {
+            [Op.eq]: newPost.id,
+          },
+        },
+      });
+      return res.json({
+        status: "success",
+        message: "Ushbu pochta bekor qilindi",
+        error: null,
+        data: null,
+      });
+    }
     await Order.update(
       {
         postId: newPost.id,
@@ -331,8 +345,25 @@ exports.createPostForAllOrders = catchAsync(
 
 exports.createPostForCustomOrders = catchAsync(
   async (req, res, next) => {
-    const { postId, ordersArr } = req.body;
+    const { postId, ordersArr } = req.body; 
+     
     const postByPk = await Post.findByPk(postId);
+    console.log(ordersArr);
+    if (ordersArr.length === 0) {
+      await Post.destroy({
+        where: {
+          id: {
+            [Op.eq]: postId,
+          },
+        },
+      });
+      return res.json({
+        status: "success",
+        message: "Ushbu pochta bekor qilindi",
+        error: null,
+        data: null,
+      });
+    }
     const subtractingOrders = await Order.sum(
       "totalPrice",
       {
@@ -382,22 +413,7 @@ exports.createPostForCustomOrders = catchAsync(
       });
     });
 
-    if (ordersArr.length < 1) {
-      await Post.destroy({
-        where: {
-          id: {
-            [Op.eq]: postId,
-          },
-        },
-      });
-
-      return res.json({
-        status: "success",
-        message: "Ushbu pochta bekor qilindi",
-        error: null,
-        data: null,
-      });
-    }
+  
 
     res.json({
       status: "success",

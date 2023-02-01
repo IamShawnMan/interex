@@ -210,12 +210,13 @@ function Orders() {
       id: "NO",
       Header: "NO",
       accessor: (order, i) => {
+        console.log(order);
         return (
           <>
             {ordersIdArr &&
               (url.split("/")[1] === "postback" || id) &&(order.orderStatus!=="REJECTED_ACCEPTED")&&
               //  (url.split("/")[1] === "packageback"|| !isAdmin)&&
-              url !== "/posts/1/orders" && (
+              url !== "/posts/1/orders" &&order.orderStatus!=="DELIVERED" &&(
                 <div>
                   <Input
                     type="checkbox"
@@ -821,8 +822,8 @@ function Orders() {
                   : postCreateOrUpdateFn
               }
             >
-              {url.split("/")[3] === "regionorders" ||
-              url.split("/")[2] === "rejected"
+              {(url.split("/")[3] === "regionorders" ||
+              url.split("/")[2] === "rejected")
                 ? url === "/postback/rejected/orders"
                   ? "Pochta Qaytarish"
                   : "Pochta yaratish"
