@@ -111,6 +111,7 @@ const Posts = () => {
                 <Button
                   size="small"
                   name="btn"
+                  btnStyle={{backgroundColor:"green"}}
                   disabled={
                     user.userRole === "COURIER"
                       ? post.postStatus !== "REJECTED_NEW"
