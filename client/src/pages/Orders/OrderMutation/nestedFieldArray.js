@@ -64,27 +64,26 @@ function OrderItems(props) {
             >
               Buyurtma narxi
             </Input>
-            <div
-              onClick={() => remove(index)}
-              style={{
-                width: "17rem",
-              }}
+       
+           <Button
+              size="normal"
+              name="iconText"
+              type="submit"
+              btnStyle={{ width: "13rem" }}
             >
-              <Button type="button" name="iconText" iconName="trash">
-                O'chirish
-              </Button>
-            </div>
+              {props.isUpdate ? "Buyurtmani o'zgartirish" : "Saqlash"}
+            </Button>
           </li>
         ))}
       </ul>
-      <div
+      {/* <div
         className={styles.btnIconTextContainer}
         onClick={() => append({ productName: "", quantity: "", price: "" })}
       >
         <Button type="button" btnStyle={{backgroundColor:"green"}} name="icon" iconName="plus">
           Mahsulot
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

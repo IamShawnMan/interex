@@ -14,12 +14,13 @@ import { formatDate } from "../../../utils/dateFormatter";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import { BasicTable } from "../../../components/Table/BasicTable";
 import StoreOwnerTrueFalseNumber from "./StoreOwnerTrueFalseNumber";
+import Modal from "../../../components/Modal/Modal";
 
 const schema = object().shape({
   orders: array()
     .of(
       object().shape({
-        recipient: string().trim().required("Xaridor ismini kriting"),
+        recipient: string(),
         // note: string().trim().required("Izoh kriting"),
         recipientPhoneNumber: string()
           .trim()
@@ -101,7 +102,8 @@ filterFn()
       });
   }, [regionId]);
   useEffect(() => {
-    isUpdate && updateData && append({ ...updateData });
+    isUpdate && updateData && append({ ...updateData, orderItems: [
+      {productName: '', quantity: '', price: ''}], });
   }, [updateData]);
   const reload=()=>{
     filterFn()
@@ -127,7 +129,7 @@ filterFn()
       setInfo2(null)
       setIsTrue(false)
       toast.success(res.data.message);
-     btn?reload(): navigate("/orders/myorders");
+  !isUpdate?reload():navigate("/orders/myorders")
 
     } catch (error) {
       console.log(error);
@@ -301,7 +303,7 @@ filterFn()
         return (
           <div className={styles.actionContainer}>
               <div className={styles.actionContainer}>
-                  <>
+                  <div style={{display: 'flex', flexDirection: 'column',gap:"5px",marginBottom:"5px"}}> 
                     <Button
                       size="small"
                       disabled={
@@ -332,7 +334,7 @@ filterFn()
                       onClick={() => deleteOrder(order.id)}>
                       O'chirish
                     </Button>
-                  </>
+                  </div>
               </div>
             <Button
               size="small"
@@ -362,7 +364,7 @@ filterFn()
   return (
     <Layout>
          {info && typeof info !== "object" && (
-        <OrderInfo id={info} onClose={closeHandler} />
+       <Modal children={<OrderInfo id={info} onClose={closeHandler} />} onClose={closeHandler} /> 
       )}
 
       <form onKeyDown={(e) => {
@@ -393,7 +395,7 @@ filterFn()
         </ul>
         <div className={styles.btnBox}>
           <div className={styles.btnContainer}>
-            {!isUpdate && (
+            {/* {!isUpdate && (
               <div
                 className={styles.btnIconTextContainer}
                 onClick={() =>
@@ -411,22 +413,22 @@ filterFn()
                   Buyurtma
                 </Button>
               </div>
-            )}
-            <Button
+            )} */}
+            {/* <Button
               size="normal"
               name="iconText"
               type="submit"
               btnStyle={{ width: "13rem" }}
             >
               {isUpdate ? "Buyurtmani o'zgartirish" : "Saqlash"}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </form>
       {info2&&<StoreOwnerTrueFalseNumber message={info2} set={(data)=>setIsTrue(data)} onClose={() => {
             setInfo2(false);
           }}/>}
-      {value?.length > 0 ? (
+      {value?.length > 0&&!isUpdate ? (
         <BasicTable
           columns={cols}
           data={value}

@@ -257,7 +257,21 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 			regionId: regionId,
 		});
 	}
-
+	if (ordersArr.length === 0) {
+		await Post.destroy({
+			where: {
+				id: {
+					[Op.eq]: newPost.id,
+				},
+			},
+		});
+		return res.json({
+			status: "success",
+			message: "Ushbu pochta bekor qilindi",
+			error: null,
+			data: null,
+		});
+	}
 	await Order.update(
 		{
 			postId: newPost.id,
@@ -302,9 +316,10 @@ exports.createPostForAllOrders = catchAsync(async (req, res, next) => {
 
 exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 	const { postId, ordersArr } = req.body;
-	const postByPk = await Post.findByPk(postId);
 
-	if (ordersArr.length < 1) {
+	const postByPk = await Post.findByPk(postId);
+	console.log(ordersArr);
+	if (ordersArr.length === 0) {
 		await Post.destroy({
 			where: {
 				id: {
@@ -312,7 +327,6 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 				},
 			},
 		});
-
 		return res.json({
 			status: "success",
 			message: "Ushbu pochta bekor qilindi",
@@ -320,45 +334,6 @@ exports.createPostForCustomOrders = catchAsync(async (req, res, next) => {
 			data: null,
 		});
 	}
-	// ordersArr.length<1?return await Post.destroy({where:{id:{[Op.eq]: postId}}}):""
-
-	const subtractingOrders = await Order.sum("totalPrice", {
-		where: {
-			orderStatus: {
-				[Op.eq]: orderStatuses.STATUS_DELIVERING,
-			},
-			id: {
-				[Op.notIn]: ordersArr,
-			},
-			postId: {
-				[Op.eq]: postId,
-			},
-		},
-	});
-
-	postByPk.postTotalPrice -= subtractingOrders;
-	await postByPk.save();
-
-	const ordersNotInPost = await Order.update(
-		{
-			postId: null,
-			orderStatus: orderStatuses.STATUS_ACCEPTED,
-			orderStatusUz: orderStatusesUz.STATUS_ADMIN_OLDI,
-		},
-		{
-			where: {
-				orderStatus: {
-					[Op.eq]: orderStatuses.STATUS_DELIVERING,
-				},
-				id: {
-					[Op.notIn]: ordersArr,
-				},
-				postId: {
-					[Op.eq]: postId,
-				},
-			},
-		}
-	);
 
 	ordersNotInPost.map(async (order) => {
 		await Tracking.create({
