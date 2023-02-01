@@ -102,7 +102,8 @@ filterFn()
       });
   }, [regionId]);
   useEffect(() => {
-    isUpdate && updateData && append({ ...updateData });
+    isUpdate && updateData && append({ ...updateData, orderItems: [
+      {productName: '', quantity: '', price: ''}], });
   }, [updateData]);
   const reload=()=>{
     filterFn()
@@ -128,7 +129,7 @@ filterFn()
       setInfo2(null)
       setIsTrue(false)
       toast.success(res.data.message);
-     btn?reload(): navigate("/orders/myorders");
+  !isUpdate?reload():navigate("/orders/myorders")
 
     } catch (error) {
       console.log(error);
@@ -302,7 +303,7 @@ filterFn()
         return (
           <div className={styles.actionContainer}>
               <div className={styles.actionContainer}>
-                  <>
+                  <div style={{display: 'flex', flexDirection: 'column',gap:"5px",marginBottom:"5px"}}> 
                     <Button
                       size="small"
                       disabled={
@@ -333,7 +334,7 @@ filterFn()
                       onClick={() => deleteOrder(order.id)}>
                       O'chirish
                     </Button>
-                  </>
+                  </div>
               </div>
             <Button
               size="small"
@@ -394,7 +395,7 @@ filterFn()
         </ul>
         <div className={styles.btnBox}>
           <div className={styles.btnContainer}>
-            {!isUpdate && (
+            {/* {!isUpdate && (
               <div
                 className={styles.btnIconTextContainer}
                 onClick={() =>
@@ -412,22 +413,22 @@ filterFn()
                   Buyurtma
                 </Button>
               </div>
-            )}
-            <Button
+            )} */}
+            {/* <Button
               size="normal"
               name="iconText"
               type="submit"
               btnStyle={{ width: "13rem" }}
             >
               {isUpdate ? "Buyurtmani o'zgartirish" : "Saqlash"}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </form>
       {info2&&<StoreOwnerTrueFalseNumber message={info2} set={(data)=>setIsTrue(data)} onClose={() => {
             setInfo2(false);
           }}/>}
-      {value?.length > 0 ? (
+      {value?.length > 0&&!isUpdate ? (
         <BasicTable
           columns={cols}
           data={value}
