@@ -256,6 +256,7 @@ exports.getTodaysRejectedPost = catchAsync(
       .search(["recipientPhoneNumber", "recipient"])
       .sort();
 
+    queryBuilder.queryOptions.order = [["createdAt", "desc"]];
     queryBuilder.queryOptions.include = [
       {
         model: District,
@@ -318,6 +319,7 @@ exports.getAllRejectedPosts = catchAsync(
       .paginate()
       .search(["note"]);
 
+    queryBuilder.queryOptions.order = [["createdAt", "desc"]];
     queryBuilder.queryOptions.include = [
       { model: Region, as: "region", attributes: ["name"] },
     ];
@@ -365,6 +367,7 @@ exports.getAllRejectedOrdersInPost = catchAsync(
     const { id } = req.params;
     const queryBuilder = new QueryBuilder(req.query);
 
+    queryBuilder.queryOptions.order = [["createdAt", "desc"]];
     queryBuilder.queryOptions.include = [
       { model: Region, as: "region", attributes: ["name"] },
       {
