@@ -319,7 +319,7 @@ exports.getAllRejectedPosts = catchAsync(
       .paginate()
       .search(["note"]);
 
-    queryBuilder.queryOptions.order = [["createdAt", "desc"]];
+    queryBuilder.queryOptions.order = [["postStatusUz", "asc"],["updatedAt", "desc"]];
     queryBuilder.queryOptions.include = [
       { model: Region, as: "region", attributes: ["name"] },
     ];
