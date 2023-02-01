@@ -691,7 +691,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	const { regionId, userRoleUz } = req.user;
 	const { id } = req.params;
-	const { orderStatus, note, expense } = req.body;
+	const { orderStatus, note, expense, quantity, price } = req.body;
 	const postOrdersById = await Order.findByPk(id, {
 		where: {
 			regionId: {
