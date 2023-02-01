@@ -14,12 +14,13 @@ import { formatDate } from "../../../utils/dateFormatter";
 import OrderInfo from "../OrderInfo/OrderInfo";
 import { BasicTable } from "../../../components/Table/BasicTable";
 import StoreOwnerTrueFalseNumber from "./StoreOwnerTrueFalseNumber";
+import Modal from "../../../components/Modal/Modal";
 
 const schema = object().shape({
   orders: array()
     .of(
       object().shape({
-        recipient: string().trim().required("Xaridor ismini kriting"),
+        recipient: string(),
         // note: string().trim().required("Izoh kriting"),
         recipientPhoneNumber: string()
           .trim()
@@ -362,7 +363,7 @@ filterFn()
   return (
     <Layout>
          {info && typeof info !== "object" && (
-        <OrderInfo id={info} onClose={closeHandler} />
+       <Modal children={<OrderInfo id={info} onClose={closeHandler} />} onClose={closeHandler} /> 
       )}
 
       <form onKeyDown={(e) => {

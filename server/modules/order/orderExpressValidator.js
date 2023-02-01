@@ -1,10 +1,6 @@
 const { body} = require("express-validator");
 
 exports.creatingOrderValidator = [
-  body("orders.*.recipient")
-    .trim()
-    .notEmpty()
-    .withMessage("Buyurtma egasi bo'sh bo'lishi mumkin emas"),
   body("orders.*.regionId")
     .notEmpty()
     .withMessage("Viloyat tanlanmadi"),
