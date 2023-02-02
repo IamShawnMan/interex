@@ -33,8 +33,6 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		{ header: "Kuryerdan qaytgan pul", width: 10 },
 		{ header: "Foyda", width: 10 },
 		{ header: "Firma puli", width: 10 },
-		req.query.orderStatus === "SOLD" || req.query.orderStatus === "REJECTED" ? 
-		{ header: "Sana", key: "updatedAt", width: 12 } : 
 		{ header: "Sana", key: "createdAt", width: 12 },
 		{ header: "Klient", key: "recipient", width: 15 },
 		{ header: "Mahsulot soni", key: "packageId", width: 10 },
