@@ -18,6 +18,8 @@ const Order = require("./Order");
 const Tracking = require("../tracking/Tracking");
 const userRoles = require("../../core/constants/userRole");
 const multer = require("multer");
+const rejected = require("../../core/constants/rejectedReasons");
+const pending = require("../../core/constants/pendingReasons");
 
 exports.saveVoice = catchAsync(async (req, res, next) => {
 	const storage = multer.diskStorage({
@@ -689,7 +691,7 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
 exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 	const { regionId, userRoleUz } = req.user;
 	const { id } = req.params;
-	const { orderStatus, note, expense } = req.body;
+	const { orderStatus, note, expense, quantity, price } = req.body;
 	const postOrdersById = await Order.findByPk(id, {
 		where: {
 			regionId: {
@@ -844,6 +846,20 @@ exports.getDailyOrders = catchAsync(async (req, res, next) => {
 		data: {
 			...ordersOneDay,
 			oneDayOrdersArrInPost,
+		},
+	});
+});
+
+exports.penidingRejactedReasons = catchAsync(async (req, res, next) => {
+	const rejectedReasons = Object.values(rejected);
+	const pendingReasons = Object.values(pending);
+	res.json({
+		status: "success",
+		error: null,
+		message: "Pending rejected reasons",
+		data: {
+			rejectedReasons,
+			pendingReasons,
 		},
 	});
 });

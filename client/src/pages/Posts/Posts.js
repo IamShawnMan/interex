@@ -1,8 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Link,
   useLocation,
@@ -42,9 +38,7 @@ const Posts = () => {
             ? `/posts?page=${page}&size=${size}${
                 search ? `&search=${search}` : ""
               }`
-            : `/postback/rejectedposts${
-                search ? `?search=${search}` : ""
-              }`,
+            : `/postback/rejectedposts${search ? `?search=${search}` : ""}`,
       });
       setValue(res.data.data.content);
       setPagination(res.data.data.pagination);
@@ -69,12 +63,8 @@ const Posts = () => {
     {
       id: "postTotalPrice",
       Header: "Pochta narxi",
-      accessor: post => {
-        return (
-          <>
-            {post.postTotalPrice?.toLocaleString("Ru-Ru")}
-          </>
-        );
+      accessor: (post) => {
+        return <>{post.postTotalPrice?.toLocaleString("Ru-Ru")}</>;
       },
     },
     {
@@ -85,14 +75,14 @@ const Posts = () => {
 
     {
       Header: "Oxirgi o'zgarish",
-      accessor: order => {
+      accessor: (order) => {
         return formatDate(order.updatedAt);
       },
     },
     {
       id: "tugma",
       Header: "",
-      accessor: post => {
+      accessor: (post) => {
         return (
           <div
             style={{
@@ -101,38 +91,39 @@ const Posts = () => {
               margin: "0 auto",
               gap: "0.5rem",
               width: "14rem",
-            }}>
+            }}
+          >
             <Button
               size="small"
               name="btn"
               onClick={() => {
                 url === "/postback"
-                  ? navigate(
-                      `/postback/rejectedposts/${post.id}`
-                    )
+                  ? navigate(`/postback/rejectedposts/${post.id}`)
                   : navigate(`/posts/${post.id}/orders`);
-              }}>
+              }}
+            >
               Ma'lumot
             </Button>
 
-            {(user.userRole === "ADMIN" ||
-              user.userRole === "COURIER") && (   user.userRole !== "COURIER"
-              ? post.postStatus === "REJECTED_NEW"
-              : post.postStatus === "NEW")&&(
-              <Button
-                size="small"
-                name="btn"
-                disabled={
-                  user.userRole === "COURIER"
-                    ? post.postStatus !== "REJECTED_NEW"
-                    : post.postStatus !== "NEW"
-                }
-                onClick={() => {
-                  setInfo(post.id);
-                }}>
-                Pochtani jo'natish
-              </Button>
-            )}
+            {(user.userRole === "ADMIN" || user.userRole === "COURIER") &&
+              (post.postStatus === "REJECTED_NEW" ||
+                post.postStatus === "NEW") && (
+                <Button
+                  size="small"
+                  name="btn"
+                  btnStyle={{backgroundColor:"green"}}
+                  disabled={
+                    user.userRole === "COURIER"
+                      ? post.postStatus !== "REJECTED_NEW"
+                      : post.postStatus !== "NEW"
+                  }
+                  onClick={() => {
+                    setInfo(post.id);
+                  }}
+                >
+                  Pochtani jo'natish
+                </Button>
+              )}
           </div>
         );
       },
@@ -161,13 +152,13 @@ const Posts = () => {
           width: "100%",
           display: "flex",
           gap: "1rem",
-        }}>
+        }}
+      >
         {user.userRole === "COURIER" && (
           <div style={{ width: "100%" }}>
             <Button
               disabled={
-                url === "/new-post" ||
-                url === "/postback/rejected/orders"
+                url === "/new-post" || url === "/postback/rejected/orders"
                   ? true
                   : false
               }
@@ -176,10 +167,9 @@ const Posts = () => {
                 url === "/postback"
                   ? navigate("/postback/rejected/orders")
                   : navigate("/new-post");
-              }}>
-              {url === "/postback"
-                ? "Pochta yaratish"
-                : "Bugungi pochta"}
+              }}
+            >
+              {url === "/postback" ? "Pochta yaratish" : "Bugungi pochta"}
             </Button>
           </div>
         )}
@@ -190,7 +180,8 @@ const Posts = () => {
               name="btn"
               onClick={() => {
                 navigate("/posts");
-              }}>
+              }}
+            >
               Hamma pochtalar
             </Button>
           </div>
@@ -202,7 +193,8 @@ const Posts = () => {
               name="btn"
               onClick={() => {
                 navigate("/postback");
-              }}>
+              }}
+            >
               Qaytgan pochtalar
             </Button>
           </div>
@@ -214,14 +206,16 @@ const Posts = () => {
             width: "100%",
             display: "flex",
             gap: "2rem",
-          }}>
+          }}
+        >
           <Button
             name="btn"
             type="button"
             disabled={url === "/posts"}
             onClick={() => {
               navigate("/posts");
-            }}>
+            }}
+          >
             Pochtalar
           </Button>
           <Button
@@ -230,7 +224,8 @@ const Posts = () => {
             disabled={url === "/rejected/posts"}
             onClick={() => {
               navigate("/rejected/posts");
-            }}>
+            }}
+          >
             Qaytarilgan pochtalar
           </Button>
           <Button
@@ -238,7 +233,8 @@ const Posts = () => {
             type="button"
             onClick={() => {
               navigate("/post/create");
-            }}>
+            }}
+          >
             Pochta Yaratish
           </Button>
         </div>
@@ -262,9 +258,7 @@ const Posts = () => {
           url="/posts"
         />
       ) : (
-        <>
-          {viewAllPosts && <p>Pochta ma'lumotlari yo'q</p>}
-        </>
+        <>{viewAllPosts && <p>Pochta ma'lumotlari yo'q</p>}</>
       )}
     </Layout>
   );
