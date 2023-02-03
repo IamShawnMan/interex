@@ -44,33 +44,36 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 	let regionName = "Barcha viloyatlar";
 	let storeName = "Barcha firmalar";
 	let orderDate = "";
-	if((req.query?.orderStatus === "SOLD" || req.query?.orderStatus === "REJECTED") && req.query.updatedAt) {
+	if (
+		(req.query?.orderStatus === "SOLD" ||
+			req.query?.orderStatus === "REJECTED") &&
+		req.query.updatedAt
+	) {
 		req.query?.updatedAt["eq"]
-		? (orderDate = new Date(req.query.updatedAt["eq"])
-				.toLocaleString()
-				.split(",")[0])
-		: "";
-	req.query?.updatedAt["gte"] || req.query?.updatedAt["lte"]
-		? (orderDate = `${new Date(req.query.updatedAt["gte"])
-				.toLocaleString()
-				.split(",")[0]} - ${new Date(req.query.updatedAt["lte"])
-				.toLocaleString()
-				.split(",")[0]}`)
-		: "";
-	}
-	else if(req.query.createdAt) {
+			? (orderDate = new Date(req.query.updatedAt["eq"])
+					.toLocaleString()
+					.split(",")[0])
+			: "";
+		req.query?.updatedAt["gte"] || req.query?.updatedAt["lte"]
+			? (orderDate = `${
+					new Date(req.query.updatedAt["gte"]).toLocaleString().split(",")[0]
+			  } - ${
+					new Date(req.query.updatedAt["lte"]).toLocaleString().split(",")[0]
+			  }`)
+			: "";
+	} else if (req.query.createdAt) {
 		req.query?.createdAt["eq"]
-		? (orderDate = new Date(req.query.createdAt["eq"])
-				.toLocaleString()
-				.split(",")[0])
-		: "";
+			? (orderDate = new Date(req.query.createdAt["eq"])
+					.toLocaleString()
+					.split(",")[0])
+			: "";
 		req.query?.createdAt["gte"] || req.query?.createdAt["lte"]
-		? (orderDate = `${new Date(req.query.createdAt["gte"])
-				.toLocaleString()
-				.split(",")[0]} - ${new Date(req.query.createdAt["lte"])
-				.toLocaleString()
-				.split(",")[0]}`)
-		: "";
+			? (orderDate = `${
+					new Date(req.query.createdAt["gte"]).toLocaleString().split(",")[0]
+			  } - ${
+					new Date(req.query.createdAt["lte"]).toLocaleString().split(",")[0]
+			  }`)
+			: "";
 	}
 	const region = await Region.findOne({
 		attributes: ["id", "name"],
@@ -283,7 +286,7 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 		};
 		worksheet.mergeCells(`G${endRow}:H${endRow}`);
 	};
-	if (userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN){
+	if (userRole === userRoles.ADMIN || userRole === userRoles.SUPER_ADMIN) {
 		worksheet.spliceColumns(17, 3);
 		totalPrice1();
 	}
@@ -373,6 +376,17 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 	const startDate = today.setUTCHours(0, 0, 0, 0);
 	const endDate = today.setUTCHours(23, 59, 59, 999);
+	const timeStamp = new Date().getTime();
+	const yesterdayTimeStamp = timeStamp - 24 * 60 * 60 * 1000;
+	const yesterdayDate = new Date(yesterdayTimeStamp);
+	const yesterdayStartTime = yesterdayDate.setUTCHours(0, 0, 0, 0);
+	const yesterdayEndTime = yesterdayDate.setUTCHours(23, 59, 59, 999);
+	console.log(
+		yesterdayDate,
+		startDate,
+		endDate,
+		"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+	);
 
 	//................Statistics for ADMIN and SUPER_ADMIN starts here ....................
 	if (
@@ -394,12 +408,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						createdAt: {
-							[Op.gte]: startDate,
+							[Op.gte]: yesterdayStartTime,
 						},
 					},
 					{
 						createdAt: {
-							[Op.lte]: endDate,
+							[Op.lte]: yesterdayEndTime,
 						},
 					},
 					{
@@ -416,12 +430,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: startDate,
+							[Op.gte]: yesterdayStartTime,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: endDate,
+							[Op.lte]: yesterdayEndTime,
 						},
 					},
 					{
@@ -438,12 +452,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: startDate,
+							[Op.gte]: yesterdayStartTime,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: endDate,
+							[Op.lte]: yesterdayEndTime,
 						},
 					},
 					{
@@ -470,12 +484,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						createdAt: {
-							[Op.gte]: startDate,
+							[Op.gte]: yesterdayStartTime,
 						},
 					},
 					{
 						createdAt: {
-							[Op.lte]: endDate,
+							[Op.lte]: yesterdayEndTime,
 						},
 					},
 					{
@@ -491,12 +505,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: startDate,
+							[Op.gte]: yesterdayStartTime,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: endDate,
+							[Op.lte]: yesterdayEndTime,
 						},
 					},
 					{
@@ -517,12 +531,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: startDate,
+							[Op.gte]: yesterdayStartTime,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: endDate,
+							[Op.lte]: yesterdayEndTime,
 						},
 					},
 					{
@@ -572,12 +586,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 					[Op.and]: [
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 						{
@@ -604,12 +618,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 					[Op.and]: [
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 						{
@@ -660,12 +674,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 						{
@@ -692,12 +706,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 						{
@@ -743,12 +757,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 					],
@@ -770,12 +784,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 					],
@@ -811,12 +825,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 					],
@@ -838,12 +852,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: startDate,
+								[Op.gte]: yesterdayStartTime,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: endDate,
+								[Op.lte]: yesterdayEndTime,
 							},
 						},
 					],
