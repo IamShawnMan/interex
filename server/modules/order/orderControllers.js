@@ -699,6 +699,11 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 			},
 		},
 	});
+	const postOrderItemsById = await OrderItem.findOne({
+		where: {
+			orderId: postOrdersById.id
+		}
+	})
 	const oldStatus = postOrdersById.orderStatus;
 	let orderStatusUz;
 	orderStatus === statusOrder.STATUS_SOLD
@@ -728,6 +733,22 @@ exports.changeStatusDeliveredOrders = catchAsync(async (req, res, next) => {
 			note: `${postOrdersById.dataValues.note} ${userRoleUz}: ${note}`,
 			expense,
 		});
+	}
+	if (
+		(postOrdersById.orderStatus === "SOLD") && (quantity && price)
+	) {
+		const halfOrderPrice = +postOrdersById.totalPrice - price
+		const halfOrderQuantity = +postOrderItemsById.quantity - quantity
+		postOrdersById.update({totalPrice: price})
+		postOrderItemsById.update({quantity: quantity, orderItemTotalPrice: price})
+		const halfOrder = await Order.create({id: `${id}-o`, totalPrice: halfOrderPrice, recipient: postOrdersById.recipient,
+		note: postOrdersById.note, recipientPhoneNumber: postOrdersById.recipientPhoneNumber, 
+		orderStatus: statusOrder.STATUS_REJECTED, orderStatusUz: statusOrderUz.STATUS_OTKAZ,
+		deliveryPrice: postOrdersById.deliveryPrice, expense: expense, regionId: postOrdersById.regionId,
+		districtId: postOrdersById.districtId, storeOwnerId: postOrdersById.storeOwnerId, 
+		packageId: postOrdersById.packageId, postId: postOrdersById.postId})
+		await OrderItem.create({productName: postOrderItemsById.productName,
+		quantity: halfOrderQuantity, orderItemTotalPrice: halfOrderPrice, orderId: halfOrder.id})
 	}
 
 	await Tracking.create({
