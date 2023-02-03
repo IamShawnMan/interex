@@ -249,9 +249,9 @@ function Orders() {
       accessor: (order) => {
         return (
           <>
-            {order.region.name}
+            {order.region?.name}
             <br />
-            {order.district.name}
+            {order.district?.name}
           </>
         );
       },
