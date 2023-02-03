@@ -3,7 +3,10 @@ import Sidebar from "./Sidebar/Sidebar";
 import Navbar from "./Navbar/Navbar";
 import ArrrowForBtn from "../../assets/icons/ArrowForBtn";
 import styles from "./Layout.module.css";
+import styles1 from "./Navbar/Navbar.module.css";
+
 import { useNavigate } from "react-router-dom";
+import {ReactComponent as BackIcon} from "../../assets/icons/backIcon.svg";
 
 function Layout(props) {
   const [arrowChange, setArrowChange] = useState(true);
@@ -32,6 +35,14 @@ function Layout(props) {
           <div className={styles.pathRoad}>
             <h1 className={`h2 ${styles.pageName}`}>{props.pageName}</h1>
           </div>
+          <button
+			className={styles1.backIcon}
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              {<BackIcon/>}
+            </button>
           <div className={styles.contents}>{props.children}</div>
         </div>
       </div>
