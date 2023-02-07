@@ -32,7 +32,7 @@ const schema = object().shape({
             object().shape({
               productName: string().trim().required("Mahsulot nomini kriting"),
               quantity: string().trim().required("Mahsulot sonini kriting"),
-              price: string().trim().required("Mahsulot narxini kriting"),
+              // price: string().trim().required("Mahsulot narxini kriting"),
             })
           )
           .min(1, "Mahsulotlar kamida 1ta bolishi kerak"),

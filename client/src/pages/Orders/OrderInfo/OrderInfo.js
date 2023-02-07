@@ -102,7 +102,7 @@ const OrderInfo = ({ id, onClose }) => {
           </li>
           <li className="h6">
             <p className="bold inline-block"> Eslatma:</p>
-            <span>{value?.note}</span>
+            <span>{value?.note.split(" ").splice(1).join(" ")}</span>
           </li>
         </ul>
         {items?.length > 0 ? (
