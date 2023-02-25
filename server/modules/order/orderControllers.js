@@ -235,6 +235,13 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 exports.getOrderById = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
+	const trackingByOrderId = await Tracking.findAll({
+		where:{
+			orderId:{
+				[Op.eq]: id,
+			}
+		}
+	})
 	const orderById = await Order.findByPk(id, {
 		include: [
 			{
@@ -265,7 +272,7 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 		status: "success",
 		message: `${orderById.recipient} mijozning buyurtmasi`,
 		error: null,
-		data: { orderById },
+		data: { orderById, trackingByOrderId },
 	});
 });
 
