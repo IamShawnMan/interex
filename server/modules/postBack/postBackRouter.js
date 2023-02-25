@@ -7,7 +7,6 @@ const postNoteValidator = require("../post/postNoteValidator")
 module.exports = router
   .get("/rejected/orders", roleMiddleware(["COURIER"]), postBackController.rejectedOrdersBeforeSend)
   .get("/rejected/coming", roleMiddleware(["COURIER"]), postBackController.getTodaysRejectedPost)
-  .get("/rejected/count", postBackController.countRejectedOrders)
   .post("/new/rejected", roleMiddleware(["COURIER"]), postBackController.createPostForAllRejectedOrders)
   .put("/:id/send/rejected", roleMiddleware(["COURIER"]), postBackController.sendRejectedPost)
   .get("/rejectedposts", roleMiddleware(["ADMIN", "COURIER"]), postBackController.getAllRejectedPosts)

@@ -2,7 +2,6 @@ const User = require("./User");
 const catchAsync = require("../../core/utils/catchAsync");
 const AppError = require("../../core/utils/AppError");
 const userRole = require("../../core/constants/userRole");
-const userTariff = require("../../core/constants/userTariff");
 const { validationResult } = require("express-validator");
 const QueryBuilder = require("../../core/utils/QueryBuilder");
 const { Op } = require("sequelize");
@@ -171,18 +170,6 @@ exports.getUserRole = catchAsync(async (req, res, next) => {
     error: null,
     data: {
       roles,
-    },
-  });
-});
-
-exports.getTariff = catchAsync(async (req, res, next) => {
-  const tariffs = Object.values(userTariff);
-  res.status(200).json({
-    status: "success",
-    message: "Barcha tariflar",
-    error: null,
-    data: {
-      tariffs,
     },
   });
 });
