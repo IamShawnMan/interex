@@ -160,7 +160,7 @@ const OrderInfo = ({ id, onClose }) => {
           <p className={stylesInfo.p}>Pochtada</p>
           <p className={stylesInfo.p}>Viloyatda</p>
           <p className={stylesInfo.p}>{(tracking?.slice(-1)[0]?.toStatus==="SOLD"&&"Sotildi")||
-         ( tracking?.slice(-1)[0]?.toStatus==="REJECTED"&&"Atkaz")||(tracking?.slice(-1)[0]?.toStatus==="PENDING"&&"Kutilmoqda")}</p>
+         ( tracking?.slice(-1)[0]?.toStatus==="REJECTED"&&"Otkaz")||(tracking?.slice(-1)[0]?.toStatus==="PENDING"&&"Kutilmoqda")}</p>
         </div>
       </div>
     </div>
