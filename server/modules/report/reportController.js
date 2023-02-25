@@ -379,6 +379,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 	let rejectedOrders = 0;
 	let allStores = 0;
 	let allUsers = 0;
+	let expenses = 0;
 	let today = new Date();
 	const rejectedOrderStatuses = Object.values(orderStatuses).slice(8);
 	const startDate = today.setUTCHours(0, 0, 0, 0);
@@ -423,11 +424,11 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 							[Op.lte]: yesterdayEndTime,
 						},
 					},
-					{
-						orderStatus: {
-							[Op.ne]: orderStatuses.STATUS_NEW,
-						},
-					},
+					// {
+					// 	orderStatus: {
+					// 		[Op.ne]: orderStatuses.STATUS_NEW,
+					// 	},
+					// },
 				],
 			},
 		});
@@ -437,12 +438,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: yesterdayStartTime,
+							[Op.gte]: startDate,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: yesterdayEndTime,
+							[Op.lte]: endDate,
 						},
 					},
 					{
@@ -459,12 +460,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: yesterdayStartTime,
+							[Op.gte]: startDate,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: yesterdayEndTime,
+							[Op.lte]: endDate,
 						},
 					},
 					{
@@ -512,12 +513,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: yesterdayStartTime,
+							[Op.gte]: startDate,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: yesterdayEndTime,
+							[Op.lte]: endDate,
 						},
 					},
 					{
@@ -538,12 +539,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 				[Op.and]: [
 					{
 						updatedAt: {
-							[Op.gte]: yesterdayStartTime,
+							[Op.gte]: startDate,
 						},
 					},
 					{
 						updatedAt: {
-							[Op.lte]: yesterdayEndTime,
+							[Op.lte]: endDate,
 						},
 					},
 					{
@@ -573,18 +574,36 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 		if (region.name === "Samarqand viloyati") {
 			allOrders = await Order.count({
 				where: {
-					regionId: {
-						[Op.eq]: regionId,
-					},
-					districtId: {
-						[Op.notIn]: [101, 106],
-					},
-					orderStatus: {
-						[Op.in]: [
-							orderStatuses.STATUS_DELIVERED,
-							orderStatuses.STATUS_PENDING,
-						],
-					},
+					[Op.and]: [
+						{
+							createdAt: {
+								[Op.gte]: yesterdayStartTime,
+							},
+						},
+						{
+							createdAt: {
+								[Op.lte]: yesterdayEndTime,
+							},
+						},
+						{
+							regionId: {
+								[Op.eq]: regionId,
+							},
+						},
+						{
+							districtId: {
+								[Op.notIn]: [101, 106],
+							},
+						},
+						{
+							orderStatus: {
+								[Op.in]: [
+									orderStatuses.STATUS_DELIVERED,
+									orderStatuses.STATUS_PENDING,
+								],
+							},
+						},
+					],
 				},
 			});
 
@@ -593,12 +612,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 					[Op.and]: [
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 						{
@@ -625,12 +644,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 					[Op.and]: [
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 						{
@@ -654,20 +673,36 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 		} else if (region.name === "Navoiy viloyati") {
 			allOrders = await Order.count({
 				where: {
-					[Op.or]: {
-						regionId: {
-							[Op.eq]: regionId,
+					[Op.and]: [
+						{
+							createdAt: {
+								[Op.gte]: yesterdayStartTime,
+							},
 						},
-						districtId: {
-							[Op.in]: [101, 106],
+						{
+							createdAt: {
+								[Op.lte]: yesterdayEndTime,
+							},
 						},
-					},
-					orderStatus: {
-						[Op.in]: [
-							orderStatuses.STATUS_DELIVERED,
-							orderStatuses.STATUS_PENDING,
-						],
-					},
+						{
+							regionId: {
+								[Op.eq]: regionId,
+							},
+						},
+						{
+							districtId: {
+								[Op.in]: [101, 106],
+							},
+						},
+						{
+							orderStatus: {
+								[Op.in]: [
+									orderStatuses.STATUS_DELIVERED,
+									orderStatuses.STATUS_PENDING,
+								],
+							},
+						},
+					],
 				},
 			});
 
@@ -681,12 +716,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 						{
@@ -713,12 +748,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 						{
@@ -737,15 +772,31 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 		} else if (region.name === "Xorazm viloyati") {
 			allOrders = await Order.count({
 				where: {
-					regionId: {
-						[Op.in]: [1, regionId],
-					},
-					orderStatus: {
-						[Op.in]: [
-							orderStatuses.STATUS_DELIVERED,
-							orderStatuses.STATUS_PENDING,
-						],
-					},
+					[Op.and]: [
+						{
+							createdAt: {
+								[Op.gte]: yesterdayStartTime,
+							},
+						},
+						{
+							createdAt: {
+								[Op.lte]: yesterdayEndTime,
+							},
+						},
+						{
+							regionId: {
+								[Op.in]: [1, regionId],
+							},
+						},
+						{
+							orderStatus: {
+								[Op.in]: [
+									orderStatuses.STATUS_DELIVERED,
+									orderStatuses.STATUS_PENDING,
+								],
+							},
+						},
+					],
 				},
 			});
 
@@ -764,12 +815,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 					],
@@ -791,12 +842,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 					],
@@ -805,15 +856,31 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 		} else {
 			allOrders = await Order.count({
 				where: {
-					regionId: {
-						[Op.eq]: regionId,
-					},
-					orderStatus: {
-						[Op.in]: [
-							orderStatuses.STATUS_DELIVERED,
-							orderStatuses.STATUS_PENDING,
-						],
-					},
+					[Op.and]: [
+						{
+							createdAt: {
+								[Op.gte]: yesterdayStartTime,
+							},
+						},
+						{
+							createdAt: {
+								[Op.lte]: yesterdayEndTime,
+							},
+						},
+						{
+							regionId: {
+								[Op.eq]: regionId,
+							},
+						},
+						{
+							orderStatus: {
+								[Op.in]: [
+									orderStatuses.STATUS_DELIVERED,
+									orderStatuses.STATUS_PENDING,
+								],
+							},
+						},
+					],
 				},
 			});
 
@@ -832,12 +899,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 					],
@@ -859,12 +926,12 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
 						},
 						{
 							updatedAt: {
-								[Op.gte]: yesterdayStartTime,
+								[Op.gte]: startDate,
 							},
 						},
 						{
 							updatedAt: {
-								[Op.lte]: yesterdayEndTime,
+								[Op.lte]: endDate,
 							},
 						},
 					],
