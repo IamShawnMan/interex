@@ -28,3 +28,10 @@ width: 54px;
 height: 5px;
 background: rgba(122, 122, 122, 0.4);
 }
+.rectangleColor{
+    background: rgba(38, 17, 195, 0.4);
+
+}
+.ellipseColor{
+    background: rgba(38, 17, 195, 0.4);
+}

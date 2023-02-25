@@ -16,13 +16,15 @@ import PochtaQizil from "./PochtaQizil.png";
 const OrderInfo = ({ id, onClose }) => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(null);
+  const [tracking, setTracking] = useState(null);
   useEffect(() => {
     getById();
-  }, []);
+  }, []); 
   const getById = async () => {
     const res = await http({
       url: `/orders/${id}`,
     });
+    setTracking(res.data.data.trackingByOrderId)
     setValue(res.data.data.orderById);
     setItems(res.data.data.orderById.items);
   };
@@ -111,38 +113,42 @@ const OrderInfo = ({ id, onClose }) => {
         ) : (
           <p>Malumotlar yoq</p>
         )}
+{console.log(tracking)}
         <div className={stylesInfo.container}>
-          <div className={stylesInfo.ellipse}>
+          <div className={`${stylesInfo.ellipse} ${tracking?.length===0||tracking?.length>0 ?`${stylesInfo.ellipseColor}`:""}`}>
             <img
               width="40"
-              src={value?.orderStatusUz === "YANGI" ? CarYellow : Car}
+              src={ Car}
               alt=""
               className={stylesInfo.svg}
             />
           </div>
-          <div className={stylesInfo.rectangle}></div>
-          <div className={stylesInfo.ellipse}>
+          <div className={`${stylesInfo.rectangle} ${tracking?.length===1||tracking?.length>1 ?`${stylesInfo.rectangleColor}`:""}`}></div>
+          <div className={`${stylesInfo.ellipse} ${tracking?.length===1||tracking?.length>1 ?`${stylesInfo.ellipseColor}`:""}`}>
             <img
               width="40"
-              src={value?.orderStatusUz === "OLDI" ? AdminGreen : Admin}
+              src={Admin}
               alt=""
               className={stylesInfo.svg}
             />
           </div>
-          <div className={stylesInfo.rectangle}></div>
-          <div className={stylesInfo.ellipse}>
+          <div className={`${stylesInfo.rectangle} ${tracking?.length===2||tracking?.length>2 ?`${stylesInfo.rectangleColor}`:""}`}></div>
+         
+          <div className={`${stylesInfo.ellipse} ${tracking?.length===2||tracking?.length>2 ?`${stylesInfo.ellipseColor}`:""}`}>
             <img
               width="40"
-              src={value?.orderStatusUz === "YO`LDA" ? PochtaQizil : Pochta}
+              src={Clock}
               alt=""
               className={stylesInfo.svg}
             />
-          </div>
-          <div className={stylesInfo.rectangle}></div>
-          <div className={stylesInfo.ellipse}>
+          </div> 
+          <div className={`${stylesInfo.rectangle} ${tracking?.length===3||tracking?.length>3 ?`${stylesInfo.rectangleColor}`:""}`}></div>
+          {console.log(tracking?.slice(-1))}
+          <div  className={`${stylesInfo.ellipse}`} style={{backgroundColor:(tracking?.slice(-1)[0]?.toStatus==="SOLD"&&"green")||
+         ( tracking?.slice(-1)[0]?.toStatus==="REJECTED"&&"red")||(tracking?.slice(-1)[0]?.toStatus==="PENDING"&&"yellow")}}>
             <img
               width="40"
-              src={value?.orderStatusUz === "BORDI" ? ClockYellow : Clock}
+              src={Pochta}
               alt=""
               className={stylesInfo.svg}
             />
@@ -150,10 +156,11 @@ const OrderInfo = ({ id, onClose }) => {
         </div>
 
         <div className={stylesInfo.container}>
-          <p className={stylesInfo.p}>Yangi</p>
-          <p className={stylesInfo.p}>Admin Oldi</p>
-          <p className={stylesInfo.p}>Admin Jonatdi</p>
-          <p className={stylesInfo.p}>Kurierda</p>
+          <p className={stylesInfo.p}>Firmada</p>
+          <p className={stylesInfo.p}>Pochtada</p>
+          <p className={stylesInfo.p}>Viloyatda</p>
+          <p className={stylesInfo.p}>{(tracking?.slice(-1)[0]?.toStatus==="SOLD"&&"Sotildi")||
+         ( tracking?.slice(-1)[0]?.toStatus==="REJECTED"&&"Atkaz")||(tracking?.slice(-1)[0]?.toStatus==="PENDING"&&"Kutilmoqda")}</p>
         </div>
       </div>
     </div>
