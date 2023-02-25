@@ -199,7 +199,7 @@ exports.receiveOrdersinPackageBack = catchAsync(
     }
 
     res.status(203).json({
-      status: "success0",
+      status: "success",
       message: "Qaytgan paketlar qabul qilindi",
       errors: null,
       data: null,

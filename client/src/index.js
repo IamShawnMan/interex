@@ -4,7 +4,7 @@ import "./styles/index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import AppContextProvider from "./context/AppContextProvider";
-import { AudioRecorder } from 'react-audio-voice-recorder';
+// import { AudioRecorder } from 'react-audio-voice-recorder';
 
 const addAudioElement = (blob) => {
   const url = URL.createObjectURL(blob);
@@ -20,7 +20,7 @@ root.render(
 	<BrowserRouter>
 		<AppContextProvider>
 			<App />
-			<AudioRecorder onRecordingComplete={addAudioElement} />
+			{/* <AudioRecorder onRecordingComplete={addAudioElement} /> */}
 		</AppContextProvider>
 	</BrowserRouter>
 );

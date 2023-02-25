@@ -65,9 +65,9 @@ exports.createValidator = [
 		}),
 	body("tariff")
 		.custom(async(value, {req}) => {
-			if(req.body.userRole === "COURIER") {
-				if(value === undefined || value.trim() === "") {
-					throw new Error("Tarif tanlanmadi")
+			if(req.body.userRole === "COURIER" || req.body.userRole === "STORE_OWNER") {
+				if(value < 0 || value === undefined || value > 10000000) {
+					throw new Error("Tarif xato kiritildi")
 				}
 			} 
 		}),
@@ -125,9 +125,9 @@ exports.updateValidator = [
     	}),
 	body("tariff")
 		.custom(async(value, {req}) => {
-			if(req.body.userRole === "COURIER") {
-				if(value === undefined || value.trim() === "") {
-					throw new Error("Tarif tanlanmadi")
+			if(req.body.userRole === "COURIER" || req.body.userRole === "STORE_OWNER") {
+				if(value < 0 || value === undefined || value > 10000000) {
+					throw new Error("Tarif xato kiritildi")
 				}
 			} 
 		}),

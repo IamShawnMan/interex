@@ -325,6 +325,13 @@ exports.exportOrders = catchAsync(async (req, res, next) => {
 					color: { argb: "dd2727" },
 				};
 			}
+			if (cell.model.value === "BORDI") {
+				row.fill = {
+					type: "pattern",
+					pattern: "solid",
+					fgColor: { argb: "f88f8f" },
+				};
+			}
 			if (
 				cell.model.value === "FIRMA OLDI" ||
 				cell.model.value === "FIRMA OLMADI" ||

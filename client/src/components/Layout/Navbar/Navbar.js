@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 function Navbar(props) {
 	const { user, onReset } = useContext(AppContext);
 	const [show, setShow] = useState(false);
-	const [notification, setNotification] = useState(false);
 	const [arrowChange, setArrowChange] = useState(true);
 	const navigate = useNavigate();
 	const activeAndNotActiveHandler = () => {
@@ -26,24 +25,11 @@ function Navbar(props) {
 		onReset();
 		navigate("/");
 	};
-	useEffect(() => {
-		getNotifications();
-	}, []);
+	
 	const modalShow = () => {
 		setShow(!show);
 	};
-	const getNotifications = async (click) => {
-		try {
-			const res = await http({
-				url: "/postback/rejected/count",
-			});
-			click && toast.success("Hech Qanday Eslatmalar Yo'q");
-			setNotification(null);
-		} catch (error) {
-			toast.error(error.response.data.message);
-			setNotification(error.response.data.message);
-		}
-	};
+
 
 	// show &&
 	//   document.addEventListener("click", () => {
@@ -68,21 +54,13 @@ function Navbar(props) {
 					}}
 					placeholder={"Qidirish"}
 				/>
-				<div className={styles.searchSvg}>
+				{/* <div className={styles.searchSvg}>
 					<SearchIcon classname={styles.searchSvg} />
-				</div>
+				</div> */}
 			</div>
 
 			<div className={styles.userInfo}>
-				<div
-					className={styles.RoundNotificationSvg}
-					onClick={() => getNotifications(true)}
-				>
-					<RoundNotifications
-						classname={styles.RoundNotificationSvg}
-						classRed={notification && styles.notification}
-					/>
-				</div>
+			
 
 				<div style={{ margin: "0 auto", textAlign: "center" }}>
 					<p className={`h5`}>{`${`${

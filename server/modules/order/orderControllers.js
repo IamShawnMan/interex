@@ -274,6 +274,11 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 	const { userRole } = req.user;
 	const { orderStatus } = req.body;
 	let orderById = await Order.findByPk(id);
+	const storebyOrder = await User.findOne({
+		where: {
+			id: { [Op.eq]: orderById.storeOwnerId },
+		},
+	});
 	let orderStatusUz;
 	if (userRole === rolesUser.ADMIN) {
 		orderStatus === statusOrder.STATUS_ACCEPTED
@@ -286,7 +291,7 @@ exports.changeOrderStatus = catchAsync(async (req, res, next) => {
 		});
 		if (orderById.orderStatus === statusOrder.STATUS_ACCEPTED) {
 			await orderById.update({
-				deliveryPrice: dprice || 50000,
+				deliveryPrice: dprice || storebyOrder.tariff,
 			});
 		} else {
 			await orderById.update({ deliveryPrice: null });
@@ -555,13 +560,14 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 	const { deliveryPrice } = req.body;
 
 	const existedOrder = await Order.findByPk(id);
-	const ownerId = existedOrder.storeOwnerId;
-	console.log(ownerId);
+	const storebyOrder = await User.findOne({
+		where: { id: { [Op.eq]: existedOrder.storeOwnerId } },
+	});
 	if (!existedOrder) {
 		return next(new AppError("Bunday order mavjud emas", 404));
 	}
 	existedOrder.update({
-		deliveryPrice: deliveryPrice || 50000,
+		deliveryPrice: deliveryPrice || storebyOrder.tariff,
 	});
 	res.json({
 		status: "success",

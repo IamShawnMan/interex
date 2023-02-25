@@ -8,7 +8,6 @@ const Modal = ({ children, onClose }) => {
     closable: false,
     footer: null,
     mask: true,
-    
   };
   return (
     <section>
