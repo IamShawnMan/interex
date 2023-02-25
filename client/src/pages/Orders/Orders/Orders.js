@@ -306,6 +306,7 @@ function Orders() {
                 {order.orderStatus === "NEW" && id && isAdmin && (
                   <Input
                     type="number"
+                    
                     onChange={async (e) => {
                       const res = await http({
                         url: `orders/${order.id}/devprice`,

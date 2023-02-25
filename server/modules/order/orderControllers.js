@@ -566,10 +566,13 @@ exports.changeDevPrice = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const { deliveryPrice } = req.body;
 
+// return console.log(deliveryPrice);	
+ 
 	const existedOrder = await Order.findByPk(id);
 	const storebyOrder = await User.findOne({
 		where: { id: { [Op.eq]: existedOrder.storeOwnerId } },
 	});
+
 	if (!existedOrder) {
 		return next(new AppError("Bunday order mavjud emas", 404));
 	}
