@@ -300,10 +300,7 @@ function Orders() {
             {!isCourier && (
               <div>
                 {order.orderStatus === "NEW" && id && isAdmin && (
-                  <Select
-                    data={price?.map((e) => {
-                      return { id: e, name: e };
-                    })}
+                  <Input
                     onChange={async (e) => {
                       const res = await http({
                         url: `orders/${order.id}/devprice`,
@@ -315,7 +312,7 @@ function Orders() {
                     }}
                   >
                     Narxi
-                  </Select>
+                  </Input>
                 )}
                 {(order.status !== "NEW" &&
                   order.deliveryPrice?.toLocaleString("Ru-Ru")) ||
