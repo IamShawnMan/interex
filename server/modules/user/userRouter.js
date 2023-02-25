@@ -14,7 +14,6 @@ router
 		userController.createUsers
 	);
 router.get("/roles", userController.getUserRole);
-router.get("/tariffs", userController.getTariff);
 router
 	.route("/:id")
 	.get(roleMiddleware(["SUPER_ADMIN", "ADMIN"]), userController.getById)
