@@ -295,7 +295,9 @@ exports.changeOrderStatus = catchAsync(
     const { orderStatus } = req.body;
     let orderById = await Order.findByPk(id);
     const storebyOrder = await User.findOne({
-      id: { [Op.eq]: orderById.storeOwnerId },
+      where: {
+        id: { [Op.eq]: orderById.storeOwnerId },
+      },
     });
     let orderStatusUz;
     if (userRole === rolesUser.ADMIN) {
@@ -313,7 +315,7 @@ exports.changeOrderStatus = catchAsync(
         statusOrder.STATUS_ACCEPTED
       ) {
         await orderById.update({
-          deliveryPrice: storebyOrder.storeownerTariff,
+          deliveryPrice: dprice || storebyOrder.tariff,
         });
       } else {
         await orderById.update({ deliveryPrice: null });
@@ -609,7 +611,7 @@ exports.changeDevPrice = catchAsync(
       );
     }
     existedOrder.update({
-      deliveryPrice: storebyOrder.storeownerTariff,
+      deliveryPrice: deliveryPrice || storebyOrder.tariff,
     });
     res.json({
       status: "success",
