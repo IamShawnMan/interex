@@ -64,11 +64,13 @@ const OrderInfo = ({ id, onClose }) => {
             listStyle: "none",
             textAlign: "center",
           }}
-        >
-          <li className="h6">
-            <p className="bold inline-block">Xaridor Ismi:</p>{" "}
-            <span>{value?.recipient}</span>
+        >  <li className="h3">
+            {/* <p className="bold inline-block"> Firma nomi:</p> */}
+            <span>
+              <b> {value?.storeOwner?.storeName}</b>
+            </span>
           </li>
+         
           <li className="h6">
             <p className="bold inline-block"> Xaridor telefon raqami:</p>
             <span>
@@ -78,10 +80,6 @@ const OrderInfo = ({ id, onClose }) => {
             </span>
           </li>
 
-          <li className="h6">
-            <p className="bold inline-block">Mahsulot narxi:</p>{" "}
-            <span>{value?.totalPrice.toLocaleString("Ru-Ru")} so'm</span>
-          </li>
           <li className="h6">
             <p className="bold inline-block">Mahsulot holati:</p>{" "}
             {value?.orderStatusUz}
@@ -95,11 +93,10 @@ const OrderInfo = ({ id, onClose }) => {
             <span>{value?.district?.name}</span>
           </li>
           <li className="h6">
-            <p className="bold inline-block"> Firma nomi:</p>
-            <span>
-              <b> {value?.storeOwner?.storeName}</b>
-            </span>
+            <p className="bold inline-block"> Ortiqcha harajat: </p>
+            <span> {value?.expense.toLocaleString("Ru-Ru")} so'm</span>
           </li>
+        
           <li className="h6">
             <p className="bold inline-block"> Eslatma:</p>
             <span>{value?.note.split(" ").splice(1).join(" ")}</span>

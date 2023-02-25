@@ -32,6 +32,7 @@ function Layout(props) {
           setSearch={props.setSearch}
         />
         <div className={styles.layoutBox}>
+          <div style={{display: 'flex',alignItems: 'center',justifyContent: 'space-between'}}>
           <div className={styles.pathRoad}>
             <h1 className={`h2 ${styles.pageName}`}>{props.pageName}</h1>
           </div>
@@ -42,7 +43,7 @@ function Layout(props) {
               }}
             >
               {<BackIcon/>}
-            </button>
+            </button></div>
           <div className={styles.contents}>{props.children}</div>
         </div>
       </div>
