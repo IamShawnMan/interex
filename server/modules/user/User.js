@@ -58,14 +58,10 @@ const User = sequelize.define("user", {
     chatId: {
         type: DataTypes.INTEGER
     },
-    courierTariff: {
+    tariff: {
         type: DataTypes.INTEGER,
         defaultValue: null
-    },
-    storeownerTariff: {
-        type: DataTypes.INTEGER,
-        defaultValue: null
-    },
+    }
 }, {
     underscored: true,
     hooks: {

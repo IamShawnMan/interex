@@ -63,22 +63,14 @@ exports.createValidator = [
 			}
 		  } 
 		}),
-	body("courierTariff")
+	body("tariff")
 		.custom(async(value, {req}) => {
-			if(req.body.userRole === "COURIER") {
+			if(req.body.userRole === "COURIER" || req.body.userRole === "STORE_OWNER") {
 				if(value < 0 || value === undefined || value > 10000000) {
-					throw new Error("Kuryer tarifi xato kiritildi")
+					throw new Error("Tarif xato kiritildi")
 				}
 			} 
 		}),
-	body("storeownerTariff")
-		.custom(async(value, {req}) => {
-			if(req.body.userRole === "STORE_OWNER") {
-				if(value < 0 || value === undefined || value > 10000000) {
-					throw new Error("Firma tarifi xato kiritildi")
-				}
-			} 
-		})
 ];
 
 exports.updateValidator = [
@@ -131,22 +123,14 @@ exports.updateValidator = [
         	}
       	} 
     	}),
-	body("courierTariff")
+	body("tariff")
 		.custom(async(value, {req}) => {
-			if(req.body.userRole === "COURIER") {
+			if(req.body.userRole === "COURIER" || req.body.userRole === "STORE_OWNER") {
 				if(value < 0 || value === undefined || value > 10000000) {
-					throw new Error("Kuryer tarifi xato kiritildi")
+					throw new Error("Tarif xato kiritildi")
 				}
 			} 
 		}),
-	body("storeownerTariff")
-		.custom(async(value, {req}) => {
-			if(req.body.userRole === "STORE_OWNER") {
-				if(value < 0 || value === undefined || value > 10000000) {
-					throw new Error("Firma tarifi xato kiritildi")
-				}
-			} 
-		})
 ];
 
 exports.passwordChangeValidator = [
