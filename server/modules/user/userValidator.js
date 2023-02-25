@@ -78,7 +78,7 @@ exports.createValidator = [
 					throw new Error("Firma tarifi xato kiritildi")
 				}
 			} 
-		}),
+		})
 ];
 
 exports.updateValidator = [
@@ -146,7 +146,7 @@ exports.updateValidator = [
 					throw new Error("Firma tarifi xato kiritildi")
 				}
 			} 
-		}),
+		})
 ];
 
 exports.passwordChangeValidator = [
