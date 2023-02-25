@@ -68,9 +68,9 @@ function Navbar(props) {
 					}}
 					placeholder={"Qidirish"}
 				/>
-				<div className={styles.searchSvg}>
+				{/* <div className={styles.searchSvg}>
 					<SearchIcon classname={styles.searchSvg} />
-				</div>
+				</div> */}
 			</div>
 
 			<div className={styles.userInfo}>

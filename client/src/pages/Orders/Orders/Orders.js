@@ -210,7 +210,7 @@ function Orders() {
       id: "NO",
       Header: "NO",
       accessor: (order, i) => {
-        console.log(order.orderStatus);
+        console.log(order);
         return (
           <>
             {ordersIdArr &&

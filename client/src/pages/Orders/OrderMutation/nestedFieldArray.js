@@ -3,6 +3,8 @@ import { useFieldArray } from "react-hook-form";
 import Input from "../../../components/Form/FormComponents/Input/Input";
 import Button from "../../../components/Form/FormComponents/Button/Button";
 import styles from "./nestedField.module.css";
+import CurrencyInput from 'react-currency-input-field'
+
 function OrderItems(props) {
   const { fields, append, remove } = useFieldArray({
     control: props.control,
@@ -64,7 +66,13 @@ function OrderItems(props) {
             >
               Buyurtma narxi
             </Input>
-       
+            {/* <CurrencyInput
+            {...props.register(`orders.${props.orderIndex}.orderItems.${index}.price`)}
+  id="input-example"
+  name="input-name"
+  placeholder="Buyurtma narxi"
+  onValueChange={(value, name) => console.log(value, name)}
+/> */}
            <Button
               size="normal"
               name="iconText"
