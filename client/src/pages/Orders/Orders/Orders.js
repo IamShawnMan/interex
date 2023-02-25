@@ -214,9 +214,13 @@ function Orders() {
         return (
           <>
             {ordersIdArr &&
-              (url.split("/")[1] === "postback" || id) &&(order.orderStatus!=="REJECTED_ACCEPTED")&&
+              (url.split("/")[1] === "postback" || id) &&
+              order.orderStatus !== "REJECTED_ACCEPTED" &&
               //  &&
-              url !== "/posts/1/orders" &&order.orderStatus!=="DELIVERED" &&order.orderStatus!=="REJECTED_ACCEPTED"&&order.orderStatus!=="REJECTED_NOT_EXIST"&&(
+              url !== "/posts/1/orders" &&
+              order.orderStatus !== "DELIVERED" &&
+              order.orderStatus !== "REJECTED_ACCEPTED" &&
+              order.orderStatus !== "REJECTED_NOT_EXIST" && (
                 <div>
                   <Input
                     type="checkbox"
@@ -301,6 +305,7 @@ function Orders() {
               <div>
                 {order.orderStatus === "NEW" && id && isAdmin && (
                   <Input
+                    type="number"
                     onChange={async (e) => {
                       const res = await http({
                         url: `orders/${order.id}/devprice`,
@@ -587,37 +592,39 @@ function Orders() {
         url === "/orders/delivered" ||
         url === "/orders/myorders"
       ) {
-        res = await http(`${url ? url : ""}?${
-          page ? `page=${search ? 1 : page}` : ""
-        }${size ? `&size=${search ? 100 : size}` : ""}${
-          search ? `&search=${search}` : ""
-        }${orderStatus ? `&orderStatus=${orderStatus}` : ""}${
-          !isStoreOwner
-            ? storeOwnerId
-              ? `&storeOwnerId=${storeOwnerId}`
+        res = await http(
+          `${url ? url : ""}?${page ? `page=${search ? 1 : page}` : ""}${
+            size ? `&size=${search ? 100 : size}` : ""
+          }${search ? `&search=${search}` : ""}${
+            orderStatus ? `&orderStatus=${orderStatus}` : ""
+          }${
+            !isStoreOwner
+              ? storeOwnerId
+                ? `&storeOwnerId=${storeOwnerId}`
+                : ""
               : ""
-            : ""
-        }${regionId ? `&regionId=${regionId}` : ""}${
-          districtId ? `&districtId=${districtId}` : ""
-        }${
-          dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
-            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
-              ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
-              : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
-            : ""
-        }${
-          dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
-            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
-              ? `&updatedAt[gte]=${dateCreatedAtGte.toISOString()}`
-              : `&createdAt[gte]=${dateCreatedAtGte.toISOString()}`
-            : ""
-        }${
-          dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
-            ? orderStatus === "SOLD" || orderStatus === "REJECTED"
-              ? `&updatedAt[lte]=${dateCreatedAtLte.toISOString()}`
-              : `&createdAt[lte]=${dateCreatedAtLte.toISOString()}`
-            : ""
-        }`);
+          }${regionId ? `&regionId=${regionId}` : ""}${
+            districtId ? `&districtId=${districtId}` : ""
+          }${
+            dateCreatedAt && `${dateCreatedAt}` !== "Invalid Date"
+              ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+                ? `&updatedAt[eq]=${dateCreatedAt.toISOString()}`
+                : `&createdAt[eq]=${dateCreatedAt.toISOString()}`
+              : ""
+          }${
+            dateCreatedAtGte && `${dateCreatedAtGte}` !== "Invalid Date"
+              ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+                ? `&updatedAt[gte]=${dateCreatedAtGte.toISOString()}`
+                : `&createdAt[gte]=${dateCreatedAtGte.toISOString()}`
+              : ""
+          }${
+            dateCreatedAtLte && `${dateCreatedAtLte}` !== "Invalid Date"
+              ? orderStatus === "SOLD" || orderStatus === "REJECTED"
+                ? `&updatedAt[lte]=${dateCreatedAtLte.toISOString()}`
+                : `&createdAt[lte]=${dateCreatedAtLte.toISOString()}`
+              : ""
+          }`
+        );
       } else {
         res = await http(
           `${url ? url : ""}?${search ? `search=${search}` : ""}`
@@ -789,19 +796,32 @@ function Orders() {
         <p>Malumotlar yoq</p>
       )}
       {info && typeof info !== "object" && (
-      <Modal children={  <OrderInfo id={info} onClose={closeHandler} />} onClose={closeHandler}/>
+        <Modal
+          children={<OrderInfo id={info} onClose={closeHandler} />}
+          onClose={closeHandler}
+        />
       )}
       {info && typeof info === "object" && (
-       <Modal children={<PostSendCourier id={info} url={url} onClose={closeHandler} />} onClose={closeHandler}/> 
+        <Modal
+          children={
+            <PostSendCourier id={info} url={url} onClose={closeHandler} />
+          }
+          onClose={closeHandler}
+        />
       )}
       {info2 && (
-     <Modal children={ <AdminRejectedModal
-          id={info2}
-          filter={filterFn}
-          onClose={() => {
-            setInfo2(false);
-          }}
-        />} onClose={() => setInfo2(false)}/>  
+        <Modal
+          children={
+            <AdminRejectedModal
+              id={info2}
+              filter={filterFn}
+              onClose={() => {
+                setInfo2(false);
+              }}
+            />
+          }
+          onClose={() => setInfo2(false)}
+        />
       )}
       <div style={{ display: "flex", gap: 1 }}>
         {(url.split("/")[1] === "posts" || url.split("/")[2] === "rejected") &&
@@ -819,8 +839,8 @@ function Orders() {
                   : postCreateOrUpdateFn
               }
             >
-              {(url.split("/")[3] === "regionorders" ||
-              url.split("/")[2] === "rejected")
+              {url.split("/")[3] === "regionorders" ||
+              url.split("/")[2] === "rejected"
                 ? url === "/postback/rejected/orders"
                   ? "Pochta Qaytarish"
                   : "Pochta yaratish"
