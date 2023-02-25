@@ -27,7 +27,7 @@
   position: absolute;
   top: 45%;
   left: -1.1%;
-  /* transform: translateY(-50%); */
+  transform: translateY(300%);
 }
 
 .userInfo {
