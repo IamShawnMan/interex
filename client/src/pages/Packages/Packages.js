@@ -30,7 +30,7 @@ function Package() {
       setPackages(res.data.data.content);
       setPagination(res.data.data.pagination);
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

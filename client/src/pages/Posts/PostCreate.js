@@ -28,7 +28,6 @@ const PostCreate = () => {
       const res = await http({
         url: `/posts/new/regions`,
       });
-      console.log(res.data.data);
       setRegionValue(res.data.data);
     } catch (error) {
       toast.error(error.response.data.message);

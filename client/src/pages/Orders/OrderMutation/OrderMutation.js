@@ -119,7 +119,6 @@ filterFn()
       });
   }
   const formSubmit = async (data,e) => {
-    console.log("formSubmit");
     try {
       const res = await http({
         url: isUpdate ? `/orders/${id}` : `/orders${isTrue?`?phone=free`:""}`,
@@ -132,7 +131,6 @@ filterFn()
   !isUpdate?reload():navigate("/orders/myorders")
 
     } catch (error) {
-      console.log(error);
       if(error.response.status===400){
       setInfo2(error.response.data.message);
       }else{
@@ -177,7 +175,6 @@ filterFn()
         let res = await http(
           `/orders/myorders?orderStatus=NEW`
         );
-   console.log(res);
         setValue(res.data?.data?.content)
 
     } catch (error) {
@@ -354,7 +351,7 @@ filterFn()
   };
   const something=(event)=> {
     if (event.keyCode === 13) {
-        console.log('enter')
+      
     }
 }
   const { fields, append, remove } = useFieldArray({
