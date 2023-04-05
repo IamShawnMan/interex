@@ -70,7 +70,6 @@ function Filter({ url }) {
   };
   const filterHandler = async (data) => {
     // console.log(data);
-    console.log(size);
     navigate(
       `${url}?page=${page}&size=${size}${
         data?.status ? `&orderStatus=${data.status}` : ""

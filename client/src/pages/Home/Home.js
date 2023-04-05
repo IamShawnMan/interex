@@ -36,7 +36,6 @@ function Home() {
 			setRegions(res.data.regions);
 			setMonth(res.data.months);
 		} catch (error) {
-			console.log(error);
 			toast.error(error?.response.data.message);
 		}
 	};

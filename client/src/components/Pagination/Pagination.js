@@ -11,8 +11,7 @@ function Pagination(props) {
   const navigate = useNavigate();
  let search=props.search?.split("&")
  search= search?.splice(2)
- search=search?.join("&")
- console.log(search);
+ search=search?.join("&");
   const [pagesCount, setPagesCount] = useState(6);
   const offset = pagesCount - 6;
   const page = searchParams.get("page") || 1;

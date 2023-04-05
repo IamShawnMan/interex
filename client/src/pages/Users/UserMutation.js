@@ -96,7 +96,6 @@ const UserMutation = ({ modal }) => {
     reset(user);
   };
   const formSubmit = async (data) => {
-    console.log(data);
     try {
       const res = await http({
         url: isUpdate ? `/users/${modal.id}` : "/users",

@@ -114,7 +114,6 @@ function Orders() {
     }
   };
   const statusChangeOrder = async (id) => {
-    console.log(id);
     try {
       const res = await http({
         url: `/orders/${id}`,
@@ -122,7 +121,6 @@ function Orders() {
         data: {},
       });
       filterFn();
-      console.log(res);
       toast.success(res.data?.message);
     } catch (error) {
       toast.error(error?.response?.data?.message);
@@ -210,7 +208,6 @@ function Orders() {
       id: "NO",
       Header: "NO",
       accessor: (order, i) => {
-        console.log(order);
         return (
           <>
             {ordersIdArr &&
@@ -585,7 +582,6 @@ function Orders() {
     const dateCreatedAt = createdAt ? new Date(createdAt) : "";
     const dateCreatedAtGte = createdAtGte && new Date(createdAtGte);
     const dateCreatedAtLte = createdAtLte && new Date(createdAtLte);
-    console.log("filterFn");
     try {
       let res;
       if (

@@ -113,7 +113,6 @@ const OrderInfo = ({ id, onClose }) => {
         ) : (
           <p>Malumotlar yoq</p>
         )}
-{console.log(tracking)}
         <div className={stylesInfo.container}>
           <div className={`${stylesInfo.ellipse} ${tracking?.length===0||tracking?.length>0 ?`${stylesInfo.ellipseColor}`:""}`}>
             <img
@@ -143,7 +142,6 @@ const OrderInfo = ({ id, onClose }) => {
             />
           </div> 
           <div className={`${stylesInfo.rectangle} ${tracking?.length===3||tracking?.length>3 ?`${stylesInfo.rectangleColor}`:""}`}></div>
-          {console.log(tracking?.slice(-1))}
           <div  className={`${stylesInfo.ellipse}`} style={{backgroundColor:(tracking?.slice(-1)[0]?.toStatus==="SOLD"&&"green")||
          ( tracking?.slice(-1)[0]?.toStatus==="REJECTED"&&"red")||(tracking?.slice(-1)[0]?.toStatus==="PENDING"&&"yellow")}}>
             <img
