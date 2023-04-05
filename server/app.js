@@ -4,7 +4,7 @@ const AppError = require("./core/utils/AppError");
 const userRouter = require("./modules/user/userRouter");
 const regionRouter = require("./modules/region/regionRouter");
 const authRouter = require("./modules/auth/authRouter");
-const telegramBot = require("./core/utils/telegramBot");
+// const telegramBot = require("./core/utils/telegramBot");
 const cors = require("cors");
 
 // ROUTES
