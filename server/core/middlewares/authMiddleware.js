@@ -6,14 +6,19 @@ const authMiddleware = (req, res, next) => {
   if (!authHeader) {
     return next(new AppError("Registratsiyadan o'tilmagan", 401));
   }
-  const token = authHeader.slice(7);
+  const token = authHeader.slice(7); // This assumes "Bearer <token>"
 
-  const user = jwt.verify(token, process.env.JWT_SECRET);
-  if (!user) {
+  try {
+    // Specify the algorithm explicitly during verification
+    const user = jwt.verify(token, process.env.JWT_SECRET, {
+      algorithms: ["HS512"],
+    });
+    req.user = user;
+    next();
+  } catch (error) {
+    // Handle errors from jwt.verify
     return next(new AppError("Registratsiyadan o'tilmagan", 401));
   }
-  req.user = user;
-  next();
 };
 
 module.exports = authMiddleware;
