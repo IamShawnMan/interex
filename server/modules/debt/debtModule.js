@@ -17,5 +17,5 @@ const Debt = sequelize.define(
   { underscored: true }
 );
 
-User.hasMany(CouriersDebt, { as: "debt" });
+User.hasMany(Debt, { as: "debt" });
 module.exports = Debt;
