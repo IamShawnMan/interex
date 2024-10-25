@@ -13,9 +13,13 @@ const Debt = sequelize.define(
     debt: {
       type: DataTypes.INTEGER,
     },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   { underscored: true }
 );
 
-User.hasMany(Debt, { as: "debt" });
+// Debt.belongsTo(User, { primaryKey: "userId", as: "user" });
 module.exports = Debt;

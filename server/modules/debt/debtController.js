@@ -36,21 +36,8 @@ exports.createDebt = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.getAllDebts = catchAsync(async (req, res, next) => {
-//   const { userRole } = req.user;
-//   const query = req.query;
-//   const queryBuilder = new QueryBuilder(req, query);
-
-//   // if (userRole !== "ADMIN" || userRole !== "SUPER_ADMIN") {
-//   //   return next(new AppError("Only ADMIN and SUPER_ADMIN can access", 403));
-//   // }
-
-//   let allDebts = await Debt.findAll();
-//   allDebts = queryBuilder.createPagination(allDebts);
-// });
-
 exports.getCouriersDebt = catchAsync(async (req, res, next) => {
-  const { userRole } = req.user;
+  const { userRole, userId } = req.user;
 
   if (userRole === "STORE_OWNER") {
     return next(
@@ -63,8 +50,15 @@ exports.getCouriersDebt = catchAsync(async (req, res, next) => {
         model: User,
         as: "user",
         where: {
-          role: "COURIER",
+          userRole: "COURIER",
         },
+        attributes: [
+          "firstName",
+          "lastName",
+          "userRole",
+          "createdAt",
+          "updatedAt",
+        ],
       },
     ],
   });
@@ -78,3 +72,5 @@ exports.getCouriersDebt = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.get

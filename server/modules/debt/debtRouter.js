@@ -18,4 +18,9 @@ module.exports = router
     "/alldebts",
     roleMiddleware(["ADMIN", "SUPER_ADMIN"]),
     debtController.getAllDebts
+  )
+  .get(
+    "/couriersdebt",
+    roleMiddleware(["ADMIN", "SUPER_ADMIN", "COURIER"]),
+    debtController.getCouriersDebt
   );

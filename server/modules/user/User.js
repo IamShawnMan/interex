@@ -1,78 +1,84 @@
-const {DataTypes} = require("sequelize")
-const sequelize = require("../../core/config/database/database")
-const {hash} = require("bcrypt")
-const userRole = require("../../core/constants/userRole")
-const userRoleUz = require("../../core/constants/userRoleUz")
+const { DataTypes } = require("sequelize");
+const sequelize = require("../../core/config/database/database");
+const { hash } = require("bcrypt");
+const userRole = require("../../core/constants/userRole");
+const userRoleUz = require("../../core/constants/userRoleUz");
 const Region = require("../region/Region");
-const userStatus = require("../../core/constants/userStatus")
+const userStatus = require("../../core/constants/userStatus");
+const Debt = require("../debt/debtModule");
 
-const User = sequelize.define("user", {
+const User = sequelize.define(
+  "user",
+  {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     firstName: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     lastName: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     passportNumber: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     username: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     userRole: {
-        type: DataTypes.ENUM(Object.values(userRole)),
-        allowNull: false
+      type: DataTypes.ENUM(Object.values(userRole)),
+      allowNull: false,
     },
     userRoleUz: {
-        type: DataTypes.ENUM(Object.values(userRoleUz)),
-        allowNull: false
+      type: DataTypes.ENUM(Object.values(userRoleUz)),
+      allowNull: false,
     },
     regionId: {
-        type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
     },
     status: {
-        type: DataTypes.ENUM(Object.values(userStatus)),
-        defaultValue: userStatus.ACTIVE
+      type: DataTypes.ENUM(Object.values(userStatus)),
+      defaultValue: userStatus.ACTIVE,
     },
     storeName: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     chatId: {
-        type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
     },
     tariff: {
-        type: DataTypes.INTEGER,
-        defaultValue: null
-    }
-}, {
+      type: DataTypes.INTEGER,
+      defaultValue: null,
+    },
+  },
+  {
     underscored: true,
     hooks: {
-        async beforeCreate(user) {
-            user.password = await hash(user.password, 8)
-        }, 
-    }
-})
+      async beforeCreate(user) {
+        user.password = await hash(user.password, 8);
+      },
+    },
+  }
+);
 
+Region.hasMany(User, { as: "user" });
+User.belongsTo(Region);
 
-Region.hasMany(User, {as: "user"})
-User.belongsTo(Region)
-
-module.exports = User
+User.hasMany(Debt, { foreignKey: "userId", as: "debts" });
+Debt.belongsTo(User);
+module.exports = User;
