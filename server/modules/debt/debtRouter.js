@@ -2,25 +2,26 @@ const express = require("express");
 const router = express.Router();
 const debtController = require("./debtController");
 const roleMiddleware = require("../../core/middlewares/roleMiddleware");
+const userRoles = require("../../core/constants/userRole");
 
 module.exports = router
   .get(
     "/",
-    roleMiddleware(["SUPER_ADMIN", "ADMIN"]),
+    roleMiddleware([
+      userRoles.ADMIN,
+      userRoles.SUPER_ADMIN,
+      userRoles.COURIER,
+      userRoles.STORE_OWNER,
+    ]),
     debtController.getAllDebts
   )
   .post(
     "/new",
-    roleMiddleware(["ADMIN", "SUPER_ADMIN"]),
+    roleMiddleware([userRoles.ADMIN, userRoles.SUPER_ADMIN]),
     debtController.createDebt
   )
   .get(
-    "/alldebts",
-    roleMiddleware(["ADMIN", "SUPER_ADMIN"]),
-    debtController.getAllDebts
-  )
-  .get(
-    "/couriersdebt",
-    roleMiddleware(["ADMIN", "SUPER_ADMIN", "COURIER"]),
-    debtController.getCouriersDebt
+    "/user/:id",
+    roleMiddleware([userRoles.ADMIN, userRoles.SUPER_ADMIN]),
+    debtController.getDebtByUserId
   );
