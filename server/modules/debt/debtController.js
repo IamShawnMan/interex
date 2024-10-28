@@ -103,7 +103,7 @@ exports.createDebt = catchAsync(async (req, res, next) => {
 exports.getDebtByUserId = catchAsync(async (req, res, next) => {
   const query = req.query;
   const queryBuilder = new QueryBuilder(req, query);
-  const { id } = req.params;
+  const { id } = req.body;
 
   let debtByUserId = await Debt.findAndCountAll({
     where: {
@@ -111,6 +111,19 @@ exports.getDebtByUserId = catchAsync(async (req, res, next) => {
         [Op.eq]: id,
       },
     },
+    include: [
+      {
+        model: User,
+        as: "user",
+        attributes: [
+          "firstName",
+          "lastName",
+          "userRole",
+          "createdAt",
+          "updatedAt",
+        ],
+      },
+    ],
   });
 
   debtByUserId = queryBuilder.createPagination(debtByUserId);
