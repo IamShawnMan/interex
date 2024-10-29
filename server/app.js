@@ -16,6 +16,7 @@ const postsRoutes = require("./modules/post/postRouter");
 const postBackRouter = require("./modules/postBack/postBackRouter");
 const packageBackRoutes = require("./modules/packageBack/packageBackRouter");
 const debtRoutes = require("./modules/debt/debtRouter");
+const financeRoutes = require("./modules/finance/financeRouter");
 require("./modules/user/User");
 
 // telegramBot();
@@ -33,6 +34,7 @@ app.use("/api/v1/posts", authMiddleware, postsRoutes);
 app.use("/api/v1/postback", authMiddleware, postBackRouter);
 app.use("/api/v1/packageback", authMiddleware, packageBackRoutes);
 app.use("/api/v1/debt", authMiddleware, debtRoutes);
+app.use("/api/v1/finance", authMiddleware, financeRoutes);
 app.use(express.static(__dirname + "/build"));
 
 app.get("*", (req, res) => {
